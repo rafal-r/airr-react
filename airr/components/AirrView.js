@@ -1,20 +1,7 @@
 import React from 'react';
-import AirrNavComponent from './AirrNavComponent.js';
+import AirrComponent from './AirrComponent.js';
 
-class AirrView extends AirrNavComponent {
-
-    constructor(props) {
-        super(props);
-        console.log('constructor ' + props.name);
-    }
-
-    componentDidMount(nextProps, nextState) {
-        // console.log('componentDidMount ' + this.props.name);
-    }
-
-    componentWillUpdate(nextProps, nextState) {
-        // console.log('componentWillUpdate ' + this.props.name);
-    }
+class AirrView extends AirrComponent {
 
     render() {
         let className = 'view';

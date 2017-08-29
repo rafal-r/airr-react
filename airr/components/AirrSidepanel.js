@@ -1,8 +1,8 @@
 import React from 'react';
-import AirrNavComponent from './AirrNavComponent.js';
+import AirrComponent from './AirrComponent';
 import Airr from '../Airr';
 
-class AirrSidepanel extends AirrNavComponent {
+class AirrSidepanel extends AirrComponent {
 
     side;
     size;
@@ -352,6 +352,7 @@ class AirrSidepanel extends AirrNavComponent {
     translateTo(finishVal) {
         this.bgLayerDOM.style.webkitTransition = 'opacity .2s ease-in';
         this.bgLayerDOM.style.transition = 'opacity .2s ease-in';
+        // eslint-disable-next-line
         this.bgLayerDOM.offsetHeight;
 
         if (finishVal === this.shownVal) {
@@ -363,6 +364,7 @@ class AirrSidepanel extends AirrNavComponent {
         } else if (finishVal === this.hiddenVal) {
             this.bgLayerDOM.style.opacity = 0;
         }
+        // eslint-disable-next-line
         this.sidepanelDOM.offsetHeight;
         this.sidepanelDOM.style.webkitTransition = 'initial';
         this.sidepanelDOM.style.transition = 'initial';
@@ -371,9 +373,12 @@ class AirrSidepanel extends AirrNavComponent {
         this.dragCtnDOM.style.webkitTransition = 'transform 0.2s ease-out';
         this.dragCtnDOM.style.transition = 'transform 0.2s ease-out';
 
+        // eslint-disable-next-line
         this.dragCtnDOM.offsetHeight;
         this.dragCtnDOM.style.webkitTransform = this.transformScheme.replace('%v', finishVal);
         this.dragCtnDOM.style.transform = this.transformScheme.replace('%v', finishVal);
+
+        // eslint-disable-next-line
         this.dragCtnDOM.offsetHeight;
 
         this.dragCtnDOM.style.webkitTransition = 'initial';

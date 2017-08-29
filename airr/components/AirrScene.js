@@ -1,10 +1,10 @@
 import React from 'react';
-import AirrNavComponent from './AirrNavComponent.js';
+import AirrComponent from './AirrComponent.js';
 import AirrFX from '../utils/AirrFX.js';
 import AirrMayer from './AirrMayer';
 import update from 'react-addons-update';
 
-class AirrScene extends AirrNavComponent {
+class AirrScene extends AirrComponent {
     viewsDOMRefs = {};
     sceneDOM = null;
     containerDOM = null;
@@ -20,13 +20,6 @@ class AirrScene extends AirrNavComponent {
             return item;
         });
 
-        let activeViewName = null;
-        views.forEach((view) => {
-            if (view.props.active) {
-                activeViewName = view.props.name;
-            }
-        });
-
         if (props.sidepanel && typeof props.sidepanel.props.enabled === 'undefined') {
             props.sidepanel.props.enabled = true; //force default explicit value, e.g needed when checking if panel is enabled in `openMayer` method
         }
@@ -35,13 +28,29 @@ class AirrScene extends AirrNavComponent {
             active: props.active,
             width: props.width,
             height: props.height,
-            activeViewName: activeViewName,
+            activeViewName: props.activeViewName,
             animation: props.animation,
-            views: props.views,
+            views: views,
             sidepanel: props.sidepanel,
             GUIDisabled: false,
             mayers: []
         };
+
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps');
+
+        if (this.state.activeViewName !== nextProps.activeViewName) {
+            if (this.state.animation) {
+                this.changeActiveView(nextProps.activeViewName)
+            }
+            else {
+                this.setState({
+                    activeViewName: nextProps.activeViewName
+                });
+            }
+        }
     }
 
     openMayer(config) {
@@ -79,22 +88,23 @@ class AirrScene extends AirrNavComponent {
                 const newMayerDefinition = update(this.state.mayers, {$splice: [[mayerConfigIndex, 1]]});
                 delete this.mayersCompsRefs[name];
                 this.setState({mayers: newMayerDefinition});
-            });
-        }
 
-        if (this.state.sidepanel) {
-            let hasMayerLeft = false;
-            const children = [...this.sceneDOM.children];
-            children.forEach((item) => {
-                if (item.classList.contains('mayer')) {
-                    hasMayerLeft = true;
+                if (this.state.sidepanel) {
+                    let hasMayerLeft = false;
+                    const children = [...this.sceneDOM.children];
+                    children.forEach((item) => {
+                        if (item.classList.contains('mayer')) {
+                            hasMayerLeft = true;
+                        }
+                    });
+
+                    if (!hasMayerLeft) {
+                        this.enableSidepanel();
+                    }
                 }
             });
-
-            if (!hasMayerLeft) {
-                this.enableSidepanel();
-            }
         }
+
 
     }
 
@@ -122,16 +132,10 @@ class AirrScene extends AirrNavComponent {
 
             let found = false;
 
-            const views = this.state.views.map((view) => {
-                if (view.props.name === this.state.activeViewName) {
-                    view.props.active = false;
-                }
-                else if (view.props.name === newViewName) {
+            this.state.views.forEach((view) => {
+                if (view.props.name === newViewName) {
                     found = true;
-                    view.props.active = true;
                 }
-
-                return view;
             });
 
             if (!found) {
@@ -141,7 +145,6 @@ class AirrScene extends AirrNavComponent {
                 this.doViewAnimation(newViewName, this.state.activeViewName, () => {
                     this.setState({
                         activeViewName: newViewName,
-                        views: views,
                         GUIDisabled: false
                     });
                 });
@@ -216,18 +219,32 @@ class AirrScene extends AirrNavComponent {
     }
 
     render() {
-        let className = 'view scene';
-        let views = [];
-        const containerClassList = ['container', this.state.animation + '-animation'];
-        let containerStyle = {};
+        console.log('Airr Scene render');
 
+        const containerClassList = ['container', this.state.animation + '-animation'];
+
+        let className = 'view scene';
         this.state.active && (className += ' active');
+
+        let views = [];
         this.state.views.forEach((item) => {
-            item.props.width = this.state.width;
-            item.props.height = this.state.height;
-            views.push(React.createElement(item.type, item.props));
+
+            let viewProps = {};
+            Object.assign(viewProps, item.props);
+
+            viewProps.width = this.state.width;
+            viewProps.height = this.state.height;
+
+            if (viewProps.name === this.state.activeViewName) {
+                viewProps.active = true;
+            }
+
+            views.push(React.createElement(item.type, viewProps));
         });
 
+
+
+        let containerStyle = {};
         if (this.state.animation === 'slide') {
             containerStyle = {width: this.props.width ? this.props.width * 2 + 'px' : parseFloat(this.props.width) * 2 + 'px'};
         }
@@ -259,6 +276,7 @@ class AirrScene extends AirrNavComponent {
                      ref={div => this.containerDOM = div}>
                     {views}
                 </div>
+                {this.props.children}
                 {sidepanel}
                 {mayers}
                 {blankmask}
@@ -269,6 +287,7 @@ class AirrScene extends AirrNavComponent {
 
 AirrScene.defaultProps = {
     animation: 'slide',
+    activeViewName: null,
     name: '',
     active: false,
     width: null,

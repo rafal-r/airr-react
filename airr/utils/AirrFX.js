@@ -18,6 +18,7 @@ AirrFX.doOverlayOutAnimation = (animated, parent, ts, headTo, finishCallback) =>
     animated.style.webkitBackfaceVisibility = 'hidden';
     animated.style.backfaceVisibility = 'hidden';
 
+    // eslint-disable-next-line
     animated.offsetHeight; // Trigger a reflow, flushing the CSS changes
 
     animated.style.webkitTransition = 'opacity ' + ts * 2 + 'ms ease-out, -webkit-transform ' + ts + 'ms ease-out';
@@ -89,6 +90,7 @@ AirrFX.doOverlayAnimation = (animated, parent, ts, headTo, finishCallback) => {
         }
     }
 
+    // eslint-disable-next-line
     animated.offsetHeight; // Trigger a reflow, flushing the CSS changes
 
     animated.style.webkitTransition = 'opacity ' + ts * 2 + 'ms ease-out, -webkit-transform ' + ts + 'ms ease-out';
@@ -137,6 +139,7 @@ AirrFX.doSlideAnimation = (newElement, parent, container, ts, direction, finishC
         container.style.webkitTransform = 'translate3d(' + (-1 * parent.clientWidth) + 'px,0,0)';
         container.style.transform = 'translate3d(' + (-1 * parent.clientWidth) + 'px,0,0)';
 
+        // eslint-disable-next-line
         container.offsetHeight; // Trigger a reflow, flushing the CSS changes
 
         container.style.webkitTransition = '-webkit-transform ' + ts + 'ms ease-out';

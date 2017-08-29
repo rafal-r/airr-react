@@ -1,8 +1,8 @@
 import React from 'react';
-import AirrNavComponent from './AirrNavComponent.js';
 import AirrFX from '../utils/AirrFX';
+import AirrComponent from './AirrComponent';
 
-class AirrMayer extends AirrNavComponent {
+class AirrMayer extends AirrComponent {
 
     // <button class="btn text alert">YES</button>
     // <button class="btn text success">CANCEL</button>
