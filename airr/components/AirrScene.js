@@ -2,13 +2,17 @@ import React from 'react';
 import AirrComponent from './AirrComponent.js';
 import AirrFX from '../utils/AirrFX.js';
 import AirrMayer from './AirrMayer';
-import update from 'react-addons-update';
+import update from 'immutability-helper';
 
 class AirrScene extends AirrComponent {
+    //TODO Czy nie zamienić activeViewName na activeViewIndex
+    
     viewsDOMRefs = {};
     sceneDOM = null;
     containerDOM = null;
+    navbarDOM = null;
     mayersCompsRefs = {};
+    sidepanelComp = null;
 
     constructor(props) {
         super(props);
@@ -20,12 +24,17 @@ class AirrScene extends AirrComponent {
             return item;
         });
 
-        if (props.sidepanel && typeof props.sidepanel.props.enabled === 'undefined') {
-            props.sidepanel.props.enabled = true; //force default explicit value, e.g needed when checking if panel is enabled in `openMayer` method
+        if (props.sidepanel) {
+            props.sidepanel.props.ref = comp => this.sidepanelComp = comp;
+            if (typeof props.sidepanel.props.enabled === 'undefined') {
+                props.sidepanel.props.enabled = true; //force default explicit value, e.g needed when checking if panel is enabled in `openMayer` method
+            }
         }
+
 
         this.state = {
             active: props.active,
+            navbar: props.navbar,
             width: props.width,
             height: props.height,
             activeViewName: props.activeViewName,
@@ -35,7 +44,6 @@ class AirrScene extends AirrComponent {
             GUIDisabled: false,
             mayers: []
         };
-
     }
 
     componentWillReceiveProps(nextProps) {
@@ -43,9 +51,8 @@ class AirrScene extends AirrComponent {
 
         if (this.state.activeViewName !== nextProps.activeViewName) {
             if (this.state.animation) {
-                this.changeActiveView(nextProps.activeViewName)
-            }
-            else {
+                this.changeActiveView(nextProps.activeViewName);
+            } else {
                 this.setState({
                     activeViewName: nextProps.activeViewName
                 });
@@ -53,11 +60,52 @@ class AirrScene extends AirrComponent {
         }
     }
 
+    getViewIndex(viewName) {
+        let index = -1;
+
+        this.state.views.forEach((config, i) => {
+            if (config.props.name === viewName) {
+                index = i;
+            }
+        });
+
+        return index;
+    }
+
+    popView() {
+        const index = this.getViewIndex(this.state.activeViewName);
+
+        if (index >= 1) {
+            const prevIndex = index - 1;
+            const prevViewName = this.state.views[prevIndex].props.name;
+            const newviewdefinition = update(this.state.views, {$splice: [[index, 1]]});
+
+            this.changeActiveView(prevViewName, () => {
+                this.setState({
+                    views: newviewdefinition
+                });
+            });
+        } else {
+            console.warn('[Airr] Can`t pop view. Only one view in stack.');
+        }
+    }
+
+    pushView(config) {
+        config.props.key = config.props.name;
+        config.props.viewDOMRef = (view) => this.viewsDOMRefs[config.props.name] = view;
+
+        const newviewdefinition = update(this.state.views, {$push: [config]});
+        
+        this.setState({views: newviewdefinition}, () => {
+            this.changeActiveView(config.props.name);
+        });
+    }
+
     openMayer(config) {
         let cancel = false;
         this.state.mayers.forEach(item => {
             if (item.name === config.name) {
-                console.warn('Scene allready has Mayer with this name: ' + item.name);
+                console.warn('[Airr] Scene allready has Mayer with this name: ' + item.name);
                 cancel = true;
             }
         });
@@ -120,60 +168,73 @@ class AirrScene extends AirrComponent {
         this.mayersCompsRefs = {};
     }
 
-    changeActiveView(newViewName) {
+    changeActiveView(newViewName, callback) {
         if (typeof newViewName === 'string') {
 
-            this.setState({GUIDisabled: true});
+            this.setState({GUIDisabled: true}, () => {
 
-            if (newViewName === this.state.activeViewName) {
-                console.warn('This View is already active.');
-                return;
-            }
+                if (newViewName === this.state.activeViewName) {
+                    console.warn('[Airr] This View is already active.');
+                    return;
+                }
 
-            let found = false;
+                let found = false;
 
-            this.state.views.forEach((view) => {
-                if (view.props.name === newViewName) {
-                    found = true;
+                this.state.views.forEach((view) => {
+                    if (view.props.name === newViewName) {
+                        found = true;
+                    }
+                });
+
+                if (!found) {
+                    console.warn('[Airr] View with name ' + newViewName + ' is not presence in this Scene.');
+                } else {
+                    this.doViewAnimation(newViewName, this.state.activeViewName, () => {
+                        this.setState({
+                            activeViewName: newViewName,
+                            GUIDisabled: false
+                        }, () => {
+                            if (typeof callback === 'function') {
+                                callback();
+                            }
+                        });
+                    });
                 }
             });
 
-            if (!found) {
-                console.warn('View with name ' + newViewName + ' is not presence in this Scene.');
-            }
-            else {
-                this.doViewAnimation(newViewName, this.state.activeViewName, () => {
-                    this.setState({
-                        activeViewName: newViewName,
-                        GUIDisabled: false
-                    });
-                });
-            }
-        }
-        else {
-            console.warn('You must specify view name property as string value');
+        } else {
+            console.warn('[Airr] You must specify view name property as string value');
         }
     }
 
     doViewAnimation(newViewName, oldViewName, callback) {
         const newViewDOM = this.viewsDOMRefs[newViewName];
-        let oldViewIndex, newViewIndex;
-
-        this.state.views.forEach((item, i) => {
-            if (item.props.name === newViewName) {
-                newViewIndex = i;
-            }
-            if (item.props.name === oldViewName) {
-                oldViewIndex = i;
-            }
-        });
-
+        const oldViewIndex = this.getViewIndex(oldViewName);
+        const newViewIndex = this.getViewIndex(newViewName);
 
         if (this.state.animation === 'slide') {
             const direction = newViewIndex > oldViewIndex ? 1 : -1;
+            
+            if (this.state.navbar) {
+                const newTitle = document.createElement('div');
+                const oldTitle = this.navbarDOM.querySelector('.title');
+                newTitle.classList.add('new-title');
+                newTitle.textContent = this.state.views[this.getViewIndex(newViewName)].props.title;
+                
+                this.navbarDOM.appendChild(newTitle);
+                
+                const transVal = (this.navbarDOM.querySelector('.title').clientWidth / 2 + newTitle.clientWidth / 2) * direction;
+                newTitle.style.webkitTransform = `translate3d(${transVal}px,0,0)`;
+                newTitle.style.transform = `translate3d(${transVal}px,0,0)`;
+                AirrFX.doTitlebarAnimation(oldTitle, newTitle, this.props.animationTime, direction === 1 ? 'left' : 'right', this.navbarDOM);
+                setTimeout(()=> {
+                    oldTitle.style.cssText = null;
+                    this.navbarDOM.removeChild(newTitle);
+                }, this.props.animationTime);
+            }
+            
             AirrFX.doSlideAnimation(newViewDOM, this.sceneDOM, this.containerDOM, this.props.animationTime, direction, callback);
-        }
-        else {
+        } else if (this.state.animation === 'overlay') {
             AirrFX.doOverlayAnimation(newViewDOM, this.sceneDOM, this.props.animationTime, 'top', callback);
         }
     }
@@ -218,6 +279,29 @@ class AirrScene extends AirrComponent {
         });
     }
 
+    getNavbarTitle() {
+        let title = '';
+        this.state.views.forEach((item) => {
+            if (item.props.name === this.state.activeViewName) {
+                title = item.props.title;
+            }
+        });
+
+        return title;
+    }
+
+    handleBackButton(e) {
+        if (this.state.views.length > 1) {
+            this.popView();
+        }
+    }
+
+    handleMenuButton(e) {
+        if (this.sidepanelComp) {
+            this.sidepanelComp.isShown() ? this.sidepanelComp.hide() : this.sidepanelComp.show();
+        }
+    }
+
     render() {
         console.log('Airr Scene render');
 
@@ -228,7 +312,6 @@ class AirrScene extends AirrComponent {
 
         let views = [];
         this.state.views.forEach((item) => {
-
             let viewProps = {};
             Object.assign(viewProps, item.props);
 
@@ -257,7 +340,7 @@ class AirrScene extends AirrComponent {
 
         let blankmask = null;
         if (this.state.GUIDisabled) {
-            blankmask = <div className="blank-mask"/>
+            blankmask = <div className="blank-mask"/>;
         }
 
         let mayers = [];
@@ -269,32 +352,47 @@ class AirrScene extends AirrComponent {
             });
         }
 
+        let navbar = null;
+        if (this.state.navbar) {
+            const back = this.state.views.length > 1 ? <div className="back" onClick={(e) => this.handleBackButton(e)}><div></div></div> : null;
+            const menu = this.state.sidepanel ? <div className="menu" onClick={(e) => this.handleMenuButton(e)}><div></div></div> : null;
+            navbar = (
+                    <div className="navbar" ref={dom => this.navbarDOM = dom}>
+                        {back}
+                        <div className="title">{this.getNavbarTitle()}</div>
+                        {menu}
+                    </div>
+                    );
+        }
+
         return (
-            <div className={className} style={{width: this.props.width + 'px', height: this.props.height + 'px'}}
-                 ref={div => this.sceneDOM = div}>
-                <div className={containerClassList.join(' ')} style={containerStyle}
-                     ref={div => this.containerDOM = div}>
-                    {views}
+                <div className={className} style={{width: this.props.width + 'px', height: this.props.height + 'px'}}
+                     ref={div => this.sceneDOM = div}>
+                                    {navbar}
+                    <div className={containerClassList.join(' ')} style={containerStyle}
+                         ref={div => this.containerDOM = div}>
+                        {views}
+                    </div>
+                    {this.props.children}
+                    {sidepanel}
+                    {mayers}
+                    {blankmask}
                 </div>
-                {this.props.children}
-                {sidepanel}
-                {mayers}
-                {blankmask}
-            </div>
-        );
+                            );
+                }
     }
-}
 
-AirrScene.defaultProps = {
-    animation: 'slide',
-    activeViewName: null,
-    name: '',
-    active: false,
-    width: null,
-    animationTime: 300,
-    height: null,
-    sidepanel: null, //{type: Foo, props: {}}
-    views: []
-};
+    AirrScene.defaultProps = {
+        animation: 'slide', //slide or overlay
+        navbar: false, //bool
+        activeViewName: null, //string 
+        name: '', //Scene name
+        active: false, //bool
+        width: null, //number
+        height: null, //number
+        animationTime: 300, //number
+        sidepanel: null, //{type: AirrSidepanel, props: {}}
+        views: [] //array
+    };
 
-export default AirrScene;
+    export default AirrScene;

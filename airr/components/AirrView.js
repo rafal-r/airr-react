@@ -21,6 +21,7 @@ class AirrView extends AirrComponent {
 
 AirrView.defaultProps = {
     name: '',
+    title: '', //titlebar name
     active: false,
     width: null,
     height: null,

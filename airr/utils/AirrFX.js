@@ -1,17 +1,71 @@
 function AirrFX() {
 }
 
+
+AirrFX.doTitlebarAnimation = function(oldTitle, newTitle, t, direction, navbar) {
+    t = t || 300;
+    // Trigger a reflow, flushing the CSS changes
+    // eslint-disable-next-line
+    oldTitle.offsetHeight; 
+    // eslint-disable-next-line
+    newTitle.offsetHeight;
+    
+    newTitle.style.webkitBackfaceVisibility = 'hidden';
+    newTitle.style.backfaceVisibility = 'hidden';
+    oldTitle.style.webkitBackfaceVisibility = 'hidden';
+    oldTitle.style.backfaceVisibility = 'hidden';
+    
+    oldTitle.style.webkitTransition = 'opacity ' + t + 'ms ease-out, -webkit-transform ' + t + 'ms ease-out';
+    oldTitle.style.webkitTransition = 'opacity ' + t + 'ms ease-out, transform ' + t + 'ms ease-out';
+    oldTitle.style.transition = 'opacity ' + t + 'ms ease-out, -webkit-transform ' + t + 'ms ease-out';
+    oldTitle.style.transition = 'opacity ' + t + 'ms ease-out, transform ' + t + 'ms ease-out';    
+    newTitle.style.webkitTransition = 'opacity ' + t + 'ms ease-out, -webkit-transform ' + t + 'ms ease-out';
+    newTitle.style.webkitTransition = 'opacity ' + t + 'ms ease-out, transform ' + t + 'ms ease-out';
+    newTitle.style.transition = 'opacity ' + t + 'ms ease-out, -webkit-transform ' + t + 'ms ease-out';
+    newTitle.style.transition = 'opacity ' + t + 'ms ease-out, transform ' + t + 'ms ease-out';    
+    
+    // Trigger a reflow, flushing the CSS changes
+    // eslint-disable-next-line
+    oldTitle.offsetHeight; 
+    // eslint-disable-next-line
+    newTitle.offsetHeight;
+    
+    
+    if (['top', 'bottom'].indexOf(direction) !== -1) {
+        if (direction === 'top') {
+            oldTitle.style.webkitTransform = 'translate3d(0,-' + navbar.clientHeight + 'px,0)';
+            oldTitle.style.transform = 'translate3d(0,-' + navbar.clientHeight + 'px,0)';
+        } else {
+            oldTitle.style.webkitTransform = 'translate3d(0,' + navbar.clientHeight + 'px,0)';
+            oldTitle.style.transform = 'translate3d(0,' + navbar.clientHeight + 'px,0)';
+        }
+    } else {
+        if (direction === 'left') {
+            oldTitle.style.webkitTransform = 'translate3d(-' + oldTitle.clientWidth + 'px,0,0)';
+            oldTitle.style.transform = 'translate3d(-' + oldTitle.clientWidth + 'px,0,0)';
+        } else {
+            oldTitle.style.webkitTransform = 'translate3d(' + oldTitle.clientWidth + 'px,0,0)';
+            oldTitle.style.transform = 'translate3d(' + oldTitle.clientWidth + 'px,0,0)';
+        }
+    }
+    
+    newTitle.style.webkitTransform = 'translate3d(0,0,0)';
+    newTitle.style.transform = 'translate3d(0,0,0)';
+    oldTitle.style.opacity = 0;
+    newTitle.style.opacity = 1;
+    
+};
 /**
  *
  * @param {HTMLElement} animated
  * @param {HTMLElement} parent
- * @param {int} ts Timestamp
+ * @param {int} t Time in miliseconds
  * @param {string} headTo top,bottom,left,right
  * @param {function} finishCallback
  * @returns {void}
  */
-AirrFX.doOverlayOutAnimation = (animated, parent, ts, headTo, finishCallback) => {
-    ts = ts || 300;
+AirrFX.doOverlayOutAnimation = function (animated, parent, t, headTo, finishCallback) {
+    t = t || 300;
     headTo = headTo || 'top';
 
     animated.style.opacity = 1;
@@ -21,10 +75,10 @@ AirrFX.doOverlayOutAnimation = (animated, parent, ts, headTo, finishCallback) =>
     // eslint-disable-next-line
     animated.offsetHeight; // Trigger a reflow, flushing the CSS changes
 
-    animated.style.webkitTransition = 'opacity ' + ts * 2 + 'ms ease-out, -webkit-transform ' + ts + 'ms ease-out';
-    animated.style.webkitTransition = 'opacity ' + ts * 2 + 'ms ease-out, transform ' + ts + 'ms ease-out';
-    animated.style.transition = 'opacity ' + ts * 2 + 'ms ease-out, -webkit-transform ' + ts + 'ms ease-out';
-    animated.style.transition = 'opacity ' + ts * 2 + 'ms ease-out, transform ' + ts + 'ms ease-out';
+    animated.style.webkitTransition = 'opacity ' + t * 2 + 'ms ease-out, -webkit-transform ' + t + 'ms ease-out';
+    animated.style.webkitTransition = 'opacity ' + t * 2 + 'ms ease-out, transform ' + t + 'ms ease-out';
+    animated.style.transition = 'opacity ' + t * 2 + 'ms ease-out, -webkit-transform ' + t + 'ms ease-out';
+    animated.style.transition = 'opacity ' + t * 2 + 'ms ease-out, transform ' + t + 'ms ease-out';
 
     animated.style.zIndex = 102;
     animated.style.opacity = 0;
@@ -51,7 +105,7 @@ AirrFX.doOverlayOutAnimation = (animated, parent, ts, headTo, finishCallback) =>
         if (typeof finishCallback === 'function') {
             finishCallback();
         }
-    }, ts + 100);
+    }, t * 2);
 };
 
 /**
@@ -59,13 +113,13 @@ AirrFX.doOverlayOutAnimation = (animated, parent, ts, headTo, finishCallback) =>
  *
  * @param {HTMLElement} animated
  * @param {HTMLElement} parent
- * @param {int} ts Timestamp
+ * @param {int} t Time in miliseconds
  * @param {string} headTo top,bottom,left,right
  * @param {function} finishCallback
  * @returns {void}
  */
-AirrFX.doOverlayAnimation = (animated, parent, ts, headTo, finishCallback) => {
-    ts = ts || 300;
+AirrFX.doOverlayAnimation = function (animated, parent, t, headTo, finishCallback) {
+    t = t || 300;
     headTo = headTo || 'top';
 
     animated.style.opacity = 0;
@@ -93,10 +147,10 @@ AirrFX.doOverlayAnimation = (animated, parent, ts, headTo, finishCallback) => {
     // eslint-disable-next-line
     animated.offsetHeight; // Trigger a reflow, flushing the CSS changes
 
-    animated.style.webkitTransition = 'opacity ' + ts * 2 + 'ms ease-out, -webkit-transform ' + ts + 'ms ease-out';
-    animated.style.webkitTransition = 'opacity ' + ts * 2 + 'ms ease-out, transform ' + ts + 'ms ease-out';
-    animated.style.transition = 'opacity ' + ts * 2 + 'ms ease-out, -webkit-transform ' + ts + 'ms ease-out';
-    animated.style.transition = 'opacity ' + ts * 2 + 'ms ease-out, transform ' + ts + 'ms ease-out';
+    animated.style.webkitTransition = 'opacity ' + t * 2 + 'ms ease-out, -webkit-transform ' + t + 'ms ease-out';
+    animated.style.webkitTransition = 'opacity ' + t * 2 + 'ms ease-out, transform ' + t + 'ms ease-out';
+    animated.style.transition = 'opacity ' + t * 2 + 'ms ease-out, -webkit-transform ' + t + 'ms ease-out';
+    animated.style.transition = 'opacity ' + t * 2 + 'ms ease-out, transform ' + t + 'ms ease-out';
 
     animated.style.zIndex = 102;
     animated.style.opacity = 1;
@@ -114,7 +168,7 @@ AirrFX.doOverlayAnimation = (animated, parent, ts, headTo, finishCallback) => {
         if (typeof finishCallback === 'function') {
             finishCallback();
         }
-    }, ts * 2);
+    }, t * 2);
 };
 
 /**
@@ -122,13 +176,13 @@ AirrFX.doOverlayAnimation = (animated, parent, ts, headTo, finishCallback) => {
  * @param {HTMLElement} newElement
  * @param {HTMLElement} parent
  * @param {HTMLElement} container
- * @param {int} ts
+ * @param {int} t Time in miliseconds
  * @param {int} direction 1|-1
  * @param {function} finishCallback
  * @returns {void}
  */
-AirrFX.doSlideAnimation = (newElement, parent, container, ts, direction, finishCallback) => {
-    ts = ts || 300;
+AirrFX.doSlideAnimation = function (newElement, parent, container, t, direction, finishCallback) {
+    t = t || 300;
 
     newElement.style.display = 'block';
 
@@ -142,16 +196,16 @@ AirrFX.doSlideAnimation = (newElement, parent, container, ts, direction, finishC
         // eslint-disable-next-line
         container.offsetHeight; // Trigger a reflow, flushing the CSS changes
 
-        container.style.webkitTransition = '-webkit-transform ' + ts + 'ms ease-out';
-        container.style.transition = '-webkit-transform ' + ts + 'ms ease-out';
-        container.style.transition = 'transform ' + ts + 'ms ease-out';
+        container.style.webkitTransition = '-webkit-transform ' + t + 'ms ease-out';
+        container.style.transition = '-webkit-transform ' + t + 'ms ease-out';
+        container.style.transition = 'transform ' + t + 'ms ease-out';
 
         container.style.webkitTransform = 'translate3d(0,0,0)';
         container.style.transform = 'translate3d(0,0,0)';
     } else {
-        container.style.webkitTransition = '-webkit-transform ' + ts + 'ms ease-out';
-        container.style.transition = '-webkit-transform ' + ts + 'ms ease-out';
-        container.style.transition = 'transform ' + ts + 'ms ease-out';
+        container.style.webkitTransition = '-webkit-transform ' + t + 'ms ease-out';
+        container.style.transition = '-webkit-transform ' + t + 'ms ease-out';
+        container.style.transition = 'transform ' + t + 'ms ease-out';
 
         container.style.webkitTransform = 'translate3d(' + (-1 * parent.clientWidth) + 'px,0,0)';
         container.style.transform = 'translate3d(' + (-1 * parent.clientWidth) + 'px,0,0)';
@@ -173,10 +227,10 @@ AirrFX.doSlideAnimation = (newElement, parent, container, ts, direction, finishC
         if (typeof finishCallback === 'function') {
             finishCallback();
         }
-    }, ts + 100);
+    }, t);
 };
 
-AirrFX.doVerticalScrollAnimation = (element, scrollDuration, direction) => {
+AirrFX.doVerticalScrollAnimation = function (element, scrollDuration, direction) {
     if (['top', 'bottom'].indexOf(direction) === -1) {
         throw new Error('Invalid direction parameter speciefied');
     }
