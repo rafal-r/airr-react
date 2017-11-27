@@ -9,7 +9,7 @@
 	},
 	"main": "airr-react.js",
 	"scripts": {
-                "build": "babel lib -d dist"
+		"build": "babel lib -d dist"
 	},
 	"keywords": [
 		"react",
