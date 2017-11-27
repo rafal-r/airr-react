@@ -1,0 +1,34 @@
+{
+	"name": "airr-react",
+	"version": "1.0.0",
+	"description": "Reusable React components for building mobile hybrid apps",
+	"dependencies": {
+		"immutability-helper": "^2.5.0",
+		"prop-types": "^15.6.0",
+		"react": "^16.1.1"
+	},
+	"main": "airr-react.js",
+	"scripts": {
+                "build": "babel lib -d dist"
+	},
+	"keywords": [
+		"react",
+		"cordova",
+		"mobile",
+		"hybrid",
+		"app"
+	],
+	"author": "Rafal Rajtar",
+	"license": "MIT",
+        "repository": {
+            "type": "git",
+            "url": "git+https://github.com/rafal-r/airr-react"
+        },    
+	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-core": "^6.26.0",
+		"babel-preset-es2015": "^6.24.1",
+		"babel-preset-react": "^6.24.1",
+		"babel-preset-stage-0": "^6.24.1"
+	}
+}
