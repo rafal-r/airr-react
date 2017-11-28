@@ -8,8 +8,10 @@ It can be used for:
 * rapidly designing prototypes showing you ideas,
 * creating common web apps.
 
-To quickly check all it's main features go and see demonstration app:
-[airr-react demo app](http://react.airr.pl)
+To check all main features of library go and see demonstration app:
+[airr-react demo app](http://react.airr.pl) - browse in Chrome for best experience 
+
+Libary code was designed to handle WebViews runtimes from Android 4.4+ and iOS8+.
 
 ## Prerequisites
 Before you continue with project installation make sure you have installed:
