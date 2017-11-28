@@ -28,7 +28,11 @@ class AirrSidepanel extends AirrComponent {
 
     lastTouch;
     enabled = false;
-
+    
+    startEvent;
+    moveEvent;
+    endEvent;
+    
     constructor(props) {
         super(props);
 
@@ -36,6 +40,11 @@ class AirrSidepanel extends AirrComponent {
         this.handleTouchStart = this.handleTouchStart.bind(this);
         this.handleTouchEnd = this.handleTouchEnd.bind(this);
         this.handleHideTouchMove = this.handleHideTouchMove.bind(this);
+        
+        const isTouchSupported = 'ontouchstart' in window;
+        this.startEvent = isTouchSupported ? 'touchstart' : 'mousedown';
+        this.moveEvent = isTouchSupported ? 'touchmove' : 'mousemove';
+        this.endEvent = isTouchSupported ? 'touchend' : 'mouseup';        
     }
 
     updateSide() {
@@ -90,14 +99,14 @@ class AirrSidepanel extends AirrComponent {
 
     enable() {
         if (!this.isEnabled()) {
-            this.sceneDOM.addEventListener('touchstart', this.handleTouchStart, eventSupportPasive);
+            this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, eventSupportPasive);
             this.enabled = true;
         }
     }
 
     disable() {
         if (this.isEnabled()) {
-            this.sceneDOM.removeEventListener('touchstart', this.handleTouchStart);
+            this.sceneDOM.removeEventListener(this.startEvent, this.handleTouchStart);
             this.enabled = false;
         }
     }
@@ -130,9 +139,22 @@ class AirrSidepanel extends AirrComponent {
             }
         }
     }
-
+    
+    getPosition(e, axis) {
+        return 'changedTouches' in e ? e.changedTouches[0]['client' + axis] : e['client' + axis];
+    }
+    getLastPosition(e) {
+        return 'changedTouches' in e ? e.changedTouches[0] : {clientX: e.clientX, clientY: e.clientY};
+    }
+    getEventX(e) {
+        return 'changedTouches' in e ? e.changedTouches[0].clientX : e.clientX;
+    }
+    getEventY(e) {
+        return 'changedTouches' in e ? e.changedTouches[0].clientY : e.clientY;
+    }
+    
     handleTouchStart(e) {
-        const pos = e.changedTouches[0]['client' + this.axis];
+        const pos = this.getPosition(e, this.axis);
         let dragCtnOnTouchPath = false;
 
         if (e.path) {
@@ -151,53 +173,53 @@ class AirrSidepanel extends AirrComponent {
                 || (['right', 'bottom'].indexOf(this.side) !== -1 && pos > (this.hiddenVal - 20)))) { //corner touch, show moves
 
             this.sidepanelDOM.style.display = 'block';
-            this.sceneDOM.addEventListener('touchmove', this.handleShowTouchMove, eventSupportPasive);
-            this.sceneDOM.addEventListener('touchend', this.handleTouchEnd, false);
+            this.sceneDOM.addEventListener(this.moveEvent, this.handleShowTouchMove, eventSupportPasive);
+            this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
 
             this.triggerCustom('showTouchStart');
 
             const showmoveend = () => {
-                this.sceneDOM.removeEventListener('touchend', showmoveend); //remove self to act like once listener
-                this.sceneDOM.removeEventListener('touchmove', this.handleShowTouchMove);
+                this.sceneDOM.removeEventListener(this.endEvent, showmoveend); //remove self to act like once listener
+                this.sceneDOM.removeEventListener(this.moveEvent, this.handleShowTouchMove);
                 this.triggerCustom('showTouchEnd');
             };
 
-            this.sceneDOM.addEventListener('touchend', showmoveend, false);
+            this.sceneDOM.addEventListener(this.endEvent, showmoveend, false);
 
         } else if (this.currentVal === this.shownVal) { //fully visible, hide moves
-            this.sceneDOM.addEventListener('touchmove', this.handleHideTouchMove, eventSupportPasive);
-            this.sceneDOM.addEventListener('touchend', this.handleTouchEnd, false);
+            this.sceneDOM.addEventListener(this.moveEvent, this.handleHideTouchMove, eventSupportPasive);
+            this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
 
             this.triggerCustom('hideTouchStart');
 
             const hidemoveend = () => {
-                this.sceneDOM.removeEventListener('touchend', hidemoveend);
-                this.sceneDOM.removeEventListener('touchmove', this.handleHideTouchMove);
+                this.sceneDOM.removeEventListener(this.endEvent, hidemoveend);
+                this.sceneDOM.removeEventListener(this.moveEvent, this.handleHideTouchMove);
                 this.triggerCustom('hideTouchEnd');
             };
 
-            this.sceneDOM.addEventListener('touchend', hidemoveend, false);
+            this.sceneDOM.addEventListener(this.endEvent, hidemoveend, false);
         }
 
         if (e.target === this.bgLayerDOM) { //tap to hide
             if ((['left', 'top'].indexOf(this.side) !== -1 && this.currentVal === 0) || (['right', 'bottom'].indexOf(this.side) !== -1 && this.currentVal)) {
 
                 const hidedragctn = (e) => {
-                    this.sceneDOM.removeEventListener('touchend', hidedragctn);
-                    if (Math.abs(pos - e.changedTouches[0]['client' + this.axis]) <= 2.5) { //little diff allowance
+                    this.sceneDOM.removeEventListener(this.endEvent, hidedragctn);
+                    if (Math.abs(pos - this.getPosition(e, this.axis)) <= 2.5) { //little diff allowance
                         this.hide();
                     }
                 };
 
-                this.sceneDOM.addEventListener('touchend', hidedragctn, false);
+                this.sceneDOM.addEventListener(this.endEvent, hidedragctn, false);
             }
         }
 
-        this.lastTouch = e.changedTouches[0];
+        this.lastTouch = this.getLastPosition(e);
     }
 
     handleShowTouchMove(e) {
-        const pos = e.changedTouches[0]['client' + this.axis];
+        const pos = this.getPosition(e, this.axis);
         let newVal, progress;
 
         if (['left', 'top'].indexOf(this.side) !== -1) {
@@ -227,7 +249,7 @@ class AirrSidepanel extends AirrComponent {
             this.dragCtnDOM.style.transform = this.transformScheme.replace('%v', this.currentVal);
         }
 
-        this.lastTouch = e.changedTouches[0];
+        this.lastTouch = this.getLastPosition(e);
 
         if (!eventSupportPasive) {
             e.preventDefault();
@@ -238,8 +260,8 @@ class AirrSidepanel extends AirrComponent {
         let progress, newVal, change, moveAxis;
 
         if (this.lastTouch) {
-            if (Math.abs(this.lastTouch.clientX - e.changedTouches[0].clientX) >= Math.abs(this.lastTouch.clientY - e.changedTouches[0].clientY)) {
-                if (e.changedTouches[0].clientX - this.lastTouch.clientX <= 0) {
+            if (Math.abs(this.lastTouch.clientX - this.getEventX(e)) >= Math.abs(this.lastTouch.clientY - this.getEventY(e))) {
+                if (this.getEventX(e) - this.lastTouch.clientX <= 0) {
                     // move = 'left';
                     moveAxis = 'X';
                 } else {
@@ -247,7 +269,7 @@ class AirrSidepanel extends AirrComponent {
                     moveAxis = 'X';
                 }
             } else {
-                if (e.changedTouches[0].clientY - this.lastTouch.clientY <= 0) {
+                if (this.getEventY(e) - this.lastTouch.clientY <= 0) {
                     // move = 'top';
                     moveAxis = 'Y';
                 } else {
@@ -259,10 +281,10 @@ class AirrSidepanel extends AirrComponent {
 
         if (moveAxis === this.axis
                 && (
-                        (['left', 'top'].indexOf(this.side) !== -1 && e.changedTouches[0]['client' + moveAxis] < this.size)
-                        || (['right', 'bottom'].indexOf(this.side) !== -1 && e.changedTouches[0]['client' + moveAxis] > (this.hiddenVal - this.size))
+                        (['left', 'top'].indexOf(this.side) !== -1 && this.getPosition(e, moveAxis) < this.size)
+                        || (['right', 'bottom'].indexOf(this.side) !== -1 && this.getPosition(e, moveAxis) > (this.hiddenVal - this.size))
                         )) {
-            change = e.changedTouches[0]['client' + this.axis] - this.lastTouch['client' + this.axis];
+            change = this.getPosition(e, this.axis) - this.lastTouch['client' + this.axis];
             newVal = this.currentVal + change;
 
             if (this.side === 'left' || this.side === 'top') {
@@ -297,7 +319,7 @@ class AirrSidepanel extends AirrComponent {
             }
         }
 
-        this.lastTouch = e.changedTouches[0];
+        this.lastTouch = this.getLastPosition(e);
         if (!eventSupportPasive) {
             e.preventDefault();
         }
@@ -329,7 +351,7 @@ class AirrSidepanel extends AirrComponent {
             this.translateTo(val);
         }
 
-        this.sceneDOM.removeEventListener('touchend', this.handleTouchEnd);
+        this.sceneDOM.removeEventListener(this.endEvent, this.handleTouchEnd);
     }
 
     hide() {
