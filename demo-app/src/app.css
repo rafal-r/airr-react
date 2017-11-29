@@ -13,32 +13,32 @@ html,body {
     background-color: #efefef;
 }
 
-.navbar {
+.airr-navbar {
     background-color: #1f1f1f;
     border-bottom: 1px solid #fff;
 }
-.navbar .title span,
-.navbar .new-title span {
+.airr-navbar .title span,
+.airr-navbar .new-title span {
     color: #ccbfa2;
     font-size: 1.2rem;
     font-weight: 700;
 }
-.navbar .back div {
+.airr-navbar .back div {
     background: url(svg/back.svg) no-repeat center center;
     background-size: 69% auto;
     -webkit-transition: -webkit-transform .05s linear;
     -webkit-transition: transform .05s linear;
     transition: transform .05s linear;
 }
-.navbar .back.clicked div {
+.airr-navbar .back.clicked div {
     -webkit-transform: scale(.8);
     transform: scale(.8);
 }
-.navbar .menu div {
+.airr-navbar .menu div {
     background: url(svg/menu.svg) no-repeat center center;
     background-size: 49% auto;
 }
-.view {
+.airr-view {
     background-color: #efefef;
 }
 p {
@@ -48,7 +48,7 @@ p {
 .info {
     font-size: .75rem;
 }
-.mayer .btns button {
+.airr-mayer .btns button {
     border: 1px solid #000;
     border-radius: 5px;
 }
@@ -263,54 +263,54 @@ textarea {
 .sidepanel-view .radio-flat-group .radio.checked.full span {
     width: 100%;
 }
-.sidepanel > div:last-child {
+.airr-sidepanel > div:last-child {
     background-color: rgba(31, 31, 31, 0.9);
     color: #ccbfa2;
 }
-.sidepanel.left > div:last-child {
+.airr-sidepanel.left > div:last-child {
     border-right: 1px solid #ccbfa2;
 }
-.sidepanel.right > div:last-child {
+.airr-sidepanel.right > div:last-child {
     border-left: 1px solid #ccbfa2;
 }
-.sidepanel.top > div:last-child {
+.airr-sidepanel.top > div:last-child {
     border-bottom: 1px solid #ccbfa2;
 }
-.sidepanel.bottom > div:last-child {
+.airr-sidepanel.bottom > div:last-child {
     border-top: 1px solid #ccbfa2;
 }
-.sidepanel .brd-b,
-.sidepanel .brd-t,
-.sidepanel .brd-l,
-.sidepanel .brd-r {
+.airr-sidepanel .brd-b,
+.airr-sidepanel .brd-t,
+.airr-sidepanel .brd-l,
+.airr-sidepanel .brd-r {
     border-color: #ccbfa2;
 }
-.sidepanel .col {
+.airr-sidepanel .col {
     padding-left: 1rem;
     padding-right: 1rem;
 }
-.sidepanel .intro {
+.airr-sidepanel .intro {
     margin-top: 3rem;
     font-size: 1.2rem;
     text-align: center;
     font-weight: 600;
 }
-.sidepanel .intro span.info {
+.airr-sidepanel .intro span.info {
     font-size: .8rem;
     text-align: center;
     font-weight: 400;
     display: block;
 }
-.sidepanel .description {
+.airr-sidepanel .description {
     margin-top: 1rem;
     font-size: .9rem;
     text-align: center;
 }
-.sidepanel .header {
+.airr-sidepanel .header {
     font-size: 1rem;
 }
-.sidepanel.top .wrap,
-.sidepanel.bottom .wrap {
+.airr-sidepanel.top .wrap,
+.airr-sidepanel.bottom .wrap {
     display: flex;
     justify-content: start;    
     align-items: center;
@@ -319,32 +319,32 @@ textarea {
     overflow-x: scroll;
     width: 100%;
 }
-.sidepanel.top .wrap > div:nth-child(1),
-.sidepanel.bottom .wrap > div:nth-child(1) {
+.airr-sidepanel.top .wrap > div:nth-child(1),
+.airr-sidepanel.bottom .wrap > div:nth-child(1) {
     flex: 0 0 45%;
 }
-.sidepanel.top .wrap > div:nth-child(2),
-.sidepanel.bottom .wrap > div:nth-child(2) {
+.airr-sidepanel.top .wrap > div:nth-child(2),
+.airr-sidepanel.bottom .wrap > div:nth-child(2) {
     flex: 0 0 45%;
 }
-.sidepanel.top .wrap > div:nth-child(3),
-.sidepanel.bottom .wrap > div:nth-child(3) {
+.airr-sidepanel.top .wrap > div:nth-child(3),
+.airr-sidepanel.bottom .wrap > div:nth-child(3) {
     flex: 0 0 100%;
 }
-.sidepanel.top .wrap .header,
-.sidepanel.bottom .wrap .header,
-.sidepanel.top .wrap .intro,
-.sidepanel.bottom .wrap .intro,
-.sidepanel.top .wrap .description,
-.sidepanel.bottom .wrap .description {
+.airr-sidepanel.top .wrap .header,
+.airr-sidepanel.bottom .wrap .header,
+.airr-sidepanel.top .wrap .intro,
+.airr-sidepanel.bottom .wrap .intro,
+.airr-sidepanel.top .wrap .description,
+.airr-sidepanel.bottom .wrap .description {
     margin-top: 0;
     text-align: left;
     margin-right: 10px;
 }
-.sidepanel.top .wrap .intro,
-.sidepanel.bottom .wrap .intro,
-.sidepanel.top .wrap span.info,
-.sidepanel.bottom .wrap span.info {
+.airr-sidepanel.top .wrap .intro,
+.airr-sidepanel.bottom .wrap .intro,
+.airr-sidepanel.top .wrap span.info,
+.airr-sidepanel.bottom .wrap span.info {
     text-align: center;
 }
 

@@ -39,7 +39,7 @@ class Scene extends Component {
         
         let content;
         if (type === 'inheritance') {
-            content = <div>Inheritance implementation is based on extending CompositeScene class. <br/>This class has few methods for views manipulation and allready defined render method.<br/>This approach might be usefull when you need to quickly implement simpler Scene with less complexity and controll. When this is your case and You are 100% sure that this Scene won't be modified from parent class, use this approach.</div>;
+            content = <div>Inheritance implementation is based on extending AirrCompositeScene class. <br/>This class has few methods for views manipulation and allready defined render method.<br/>This approach might be usefull when you need to quickly implement simpler Scene with less complexity and controll. When this is your case and You are 100% sure that this Scene won't be modified from parent class, use this approach.</div>;
         }
         else {
             content = <div>When using this approach you are in controll of 100% of Scene code and behaviour.<br/>You must repeat certain code lines when dealing with typicall things like views changing but on the other hand this gives you flexibility and controll.</div>;
