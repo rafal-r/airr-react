@@ -34,7 +34,7 @@ var AirrView = function (_AirrComponent) {
     _createClass(AirrView, [{
         key: 'render',
         value: function render() {
-            var className = 'view';
+            var className = 'airr-view';
             var style = this.props.style || {};
 
             style.width = this.props.width + 'px';

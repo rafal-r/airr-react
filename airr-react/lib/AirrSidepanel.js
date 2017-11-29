@@ -414,7 +414,7 @@ class AirrSidepanel extends AirrComponent {
 
     render() {
         this.updateSide();
-        const className = "sidepanel " + this.props.side;
+        const className = "airr-sidepanel " + this.props.side;
         return (
                 <div className={className} ref={dom => this.sidepanelDOM = dom} style={this.sidepanelStyle}>
                     <div ref={dom => this.bgLayerDOM = dom} style={this.bgLayerStyle} />

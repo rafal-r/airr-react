@@ -101,7 +101,7 @@ var AirrMayer = function (_AirrComponent) {
 
             return _react2.default.createElement(
                 'div',
-                { className: 'mayer', ref: function ref(dom) {
+                { className: 'airr-mayer', ref: function ref(dom) {
                         return _this2.mayerDOM = dom;
                     } },
                 _react2.default.createElement('div', { className: 'bg' }),

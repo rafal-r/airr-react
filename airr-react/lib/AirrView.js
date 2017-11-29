@@ -5,7 +5,7 @@ import AirrComponent from './AirrComponent';
 class AirrView extends AirrComponent {
 
     render() {
-        let className = 'view';
+        let className = 'airr-view';
         let style = this.props.style || {};
 
         style.width = this.props.width + 'px';

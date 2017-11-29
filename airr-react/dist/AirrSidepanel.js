@@ -448,7 +448,7 @@ var AirrSidepanel = function (_AirrComponent) {
             var _this4 = this;
 
             this.updateSide();
-            var className = "sidepanel " + this.props.side;
+            var className = "airr-sidepanel " + this.props.side;
             return _react2.default.createElement(
                 'div',
                 { className: className, ref: function ref(dom) {

@@ -428,7 +428,7 @@ var AirrScene = function (_AirrComponent) {
                         var hasMayerLeft = false;
                         var children = [].concat(_toConsumableArray(_this7.refs.dom.children));
                         children.forEach(function (item) {
-                            if (item.classList.contains('mayer')) {
+                            if (item.classList.contains('airr-mayer')) {
                                 hasMayerLeft = true;
                             }
                         });
@@ -840,12 +840,12 @@ var AirrScene = function (_AirrComponent) {
         value: function render() {
             var _this10 = this;
 
-            var containerClassList = ['container'];
+            var containerClassList = ['airr-container'];
             if (this.state.animation) {
                 containerClassList.push(this.state.animation + '-animation');
             }
 
-            var className = 'view scene';
+            var className = 'airr-view airr-scene';
             this.state.active && (className += ' active');
 
             var views = [];
@@ -881,7 +881,7 @@ var AirrScene = function (_AirrComponent) {
 
             var blankmask = null;
             if (this.state.GUIDisabled) {
-                blankmask = _react2.default.createElement('div', { className: 'blank-mask' });
+                blankmask = _react2.default.createElement('div', { className: 'airr-blank-mask' });
             }
 
             var mayers = [];
@@ -923,7 +923,7 @@ var AirrScene = function (_AirrComponent) {
                 });
                 navbar = _react2.default.createElement(
                     'div',
-                    { className: 'navbar', ref: function ref(dom) {
+                    { className: 'airr-navbar', ref: function ref(dom) {
                             return _this10.navbarDOM = dom;
                         }, style: { height: this.state.navbarHeight + 'px' } },
                     back,

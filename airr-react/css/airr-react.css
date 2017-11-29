@@ -44,7 +44,7 @@ body {
     -webkit-user-select: none; /* prevent copy paste, to allow, change 'none' to 'text' */
 }
 
-.blank-mask {
+.airr-blank-mask {
     position: absolute;
     top: 0;
     left: 0;
@@ -53,7 +53,7 @@ body {
     z-index: 110;
 }
 
-.mayer {
+.airr-mayer {
     position: absolute;
     top: 0;
     right: 0;
@@ -77,7 +77,7 @@ body {
     display: -webkit-box;
     display: -ms-flexbox;
 }
-.mayer .bg {
+.airr-mayer .bg {
     position: absolute;
     top: 0;
     left: 0;
@@ -85,18 +85,18 @@ body {
     bottom: 0;
     background-color: rgba(240, 240, 210, 0.7);
 }
-.mayer .ctn {
+.airr-mayer .ctn {
     background-color: #fff;
     padding: 2rem;
     position: relative;
     width: 100%;
 }
 
-.mayer.full .ctn {
+.airr-mayer.full .ctn {
     overflow: scroll;
 }
 
-.mayer.full .btns {
+.airr-mayer.full .btns {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -105,16 +105,16 @@ body {
     background: rgba(255, 255, 255, 0.5);
 }
 
-.mayer.full .ctn > div.text {
+.airr-mayer.full .ctn > div.text {
     padding-bottom: 3.75rem;
 }
 
-.mayer .btns {
+.airr-mayer .btns {
     padding-top: 1rem;
     overflow: auto;
 }
 
-.mayer .btns button {
+.airr-mayer .btns button {
     padding: 0.5rem 1.5rem;
     background-color: #000;
     color: #fff;
@@ -122,12 +122,12 @@ body {
     margin-top: 0.3rem;
 }
 
-.mayer .btns button:active {
+.airr-mayer .btns button:active {
     background-color: #fff !important;
     color: #000;
 }
 
-.mayer .btns button:last-child {
+.airr-mayer .btns button:last-child {
     float: right;
 }
 
@@ -143,15 +143,15 @@ textarea:focus, input:focus {
     display: none;
 }
 
-.view,
-.container {
+.airr-view,
+.airr-container {
     height: 100%;
     width: 100%;
     overflow: hidden;
     position: relative;
 }
 
-.container > .view {
+.airr-container > .airr-view {
     display: none;
     overflow: scroll;
     -webkit-backface-visibility: hidden;
@@ -160,15 +160,15 @@ textarea:focus, input:focus {
     perspective: 1000px;
 }
 
-.container > .view.scene {
+.airr-container > .airr-view.airr-scene {
     overflow: hidden;
 }
 
-.container > .view.active {
+.airr-container > .airr-view.active {
     display: block;
 }
 
-.sidepanel {
+.airr-sidepanel {
     position: absolute;
     z-index: 105;
     top: 0;
@@ -179,7 +179,7 @@ textarea:focus, input:focus {
     display: none;
 }
 
-.sidepanel > div:first-child {
+.airr-sidepanel > div:first-child {
     position: absolute;
     top: 0;
     left: 0;
@@ -189,7 +189,7 @@ textarea:focus, input:focus {
     opacity: 0;
 }
 
-.sidepanel > div:last-child {
+.airr-sidepanel > div:last-child {
     background-color: #fff;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -198,8 +198,8 @@ textarea:focus, input:focus {
     perspective: 1000px;
 }
 
-.container.fade-animation > .view,
-.container.overlay-animation > .view {
+.airr-container.fade-animation > .airr-view,
+.airr-container.overlay-animation > .airr-view {
     display: block;
     position: absolute;
     top: 0;
@@ -207,13 +207,13 @@ textarea:focus, input:focus {
     z-index: 100;
 }
 
-.container.fade-animation > .view.active,
-.container.overlay-animation > .view.active {
+.airr-container.fade-animation > .airr-view.active,
+.airr-container.overlay-animation > .airr-view.active {
     z-index: 101;
     opacity: 1;
 }
 
-.container.slide-animation > .view {
+.airr-container.slide-animation > .airr-view {
     float: left;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -221,7 +221,7 @@ textarea:focus, input:focus {
     perspective: 1000px;
 }
 
-.navbar {
+.airr-navbar {
     display: -webkit-flex;
     display: flex;
     -webkit-align-items: center;
@@ -231,27 +231,27 @@ textarea:focus, input:focus {
     position: relative;
     z-index: 10;
 }
-.navbar .back {
+.airr-navbar .back {
     width: 3rem;
     height: 100%;
     position: absolute;
     left: 0;
     top: 0;
 }
-.navbar .back div {
+.airr-navbar .back div {
     height: 100%;
 }
-.navbar .menu {
+.airr-navbar .menu {
     width: 3rem;
     height: 100%;
     position: absolute;
     right: 0;
     top: 0;
 }
-.navbar .menu div {
+.airr-navbar .menu div {
     height: 100%;
 }
-.navbar .new-title {
+.airr-navbar .new-title {
     position: absolute;
     opacity: 0;
     left: 0;
@@ -265,8 +265,8 @@ textarea:focus, input:focus {
     -webkit-justify-content: center;
     justify-content: center;        
 }
-.navabr .title,
-.navabr .new-title {
+.airr-navbar .title,
+.airr-navbar .new-title {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;    
 }

@@ -332,7 +332,7 @@ class AirrScene extends AirrComponent {
                     let hasMayerLeft = false;
                     const children = [...this.refs.dom.children];
                     children.forEach((item) => {
-                        if (item.classList.contains('mayer')) {
+                        if (item.classList.contains('airr-mayer')) {
                             hasMayerLeft = true;
                         }
                     });
@@ -706,12 +706,12 @@ class AirrScene extends AirrComponent {
     }
 
     render() {
-        const containerClassList = ['container'];
+        const containerClassList = ['airr-container'];
         if (this.state.animation) {
             containerClassList.push(this.state.animation + '-animation');
         }
 
-        let className = 'view scene';
+        let className = 'airr-view airr-scene';
         this.state.active && (className += ' active');
 
         let views = [];
@@ -748,7 +748,7 @@ class AirrScene extends AirrComponent {
 
         let blankmask = null;
         if (this.state.GUIDisabled) {
-            blankmask = <div className="blank-mask"/>;
+            blankmask = <div className="airr-blank-mask"/>;
         }
 
         let mayers = [];
@@ -775,7 +775,7 @@ class AirrScene extends AirrComponent {
                 }
             });
             navbar = (
-                    <div className="navbar" ref={dom => this.navbarDOM = dom} style={{height: this.state.navbarHeight + 'px'}}>
+                    <div className="airr-navbar" ref={dom => this.navbarDOM = dom} style={{height: this.state.navbarHeight + 'px'}}>
                         {back}
                         <div className="title"><span>{title}</span></div>
                         {menu}

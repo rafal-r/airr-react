@@ -61,7 +61,7 @@ class AirrMayer extends AirrComponent {
         }
 
         return (
-                <div className="mayer" ref={dom => this.mayerDOM = dom}>
+                <div className="airr-mayer" ref={dom => this.mayerDOM = dom}>
                     <div className="bg" />
                     <div className="ctn" ref={dom => this.ctnDOM = dom}>
                         <div className="text">
