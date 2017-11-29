@@ -39,7 +39,7 @@ class MainScene extends Component {
                     description: (
                         <div>
                             <p>
-                                Sipenal component let you add draggable content container to one of four sides of Scene component. 
+                                Sidepanel component let you add draggable content container to one of four sides of Scene component. 
                                 This space if offten used to hold application menu or current view options.
                             </p>
                         </div>
