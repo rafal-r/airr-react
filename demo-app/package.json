@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "airr-react": "^1.0.0",
+    "airr-react": "^1.0.2",
     "babel-polyfill": "^6.26.0",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
