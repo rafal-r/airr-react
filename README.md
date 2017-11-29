@@ -55,7 +55,7 @@ You can search for these methods in demo-app code to find out how they are used.
 ## Usage
 For components usage please reffer at the moment to the demo app code. 
 The demo app itself has also many descriptions that tell more about components. 
-So please go ahead and test it [demo app](http://react.airr.pl) then play with the code for more understanding.
+So please go ahead and test [demo app](http://react.airr.pl) then play with the code for more understanding.
 
 For the real documentation - it it planned to be written in the future;
 
