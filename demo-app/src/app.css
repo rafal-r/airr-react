@@ -267,6 +267,22 @@ textarea {
     background-color: rgba(31, 31, 31, 0.9);
     color: #ccbfa2;
 }
+.airr-sidepanel > div::-webkit-scrollbar,
+.airr-sidepanel.top .wrap::-webkit-scrollbar,
+.airr-sidepanel.bottom .wrap::-webkit-scrollbar {
+    width: 2px;
+    height: 5px;
+}
+.airr-sidepanel.top > div::-webkit-scrollbar,
+.airr-sidepanel.bottom > div::-webkit-scrollbar {
+    display: none;
+}
+.airr-sidepanel > div::-webkit-scrollbar-thumb,
+.airr-sidepanel.top .wrap::-webkit-scrollbar-thumb:horizontal,
+.airr-sidepanel.bottom .wrap::-webkit-scrollbar-thumb:horizontal {
+    background-color: #ccbfa2;
+}
+
 .airr-sidepanel.left > div:last-child {
     border-right: 1px solid #ccbfa2;
 }
@@ -275,9 +291,13 @@ textarea {
 }
 .airr-sidepanel.top > div:last-child {
     border-bottom: 1px solid #ccbfa2;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 .airr-sidepanel.bottom > div:last-child {
     border-top: 1px solid #ccbfa2;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 .airr-sidepanel .brd-b,
 .airr-sidepanel .brd-t,
