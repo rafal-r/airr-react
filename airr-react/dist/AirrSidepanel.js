@@ -14,9 +14,9 @@ var _AirrComponent2 = require('./AirrComponent');
 
 var _AirrComponent3 = _interopRequireDefault(_AirrComponent2);
 
-var _eventSupportPasive = require('./eventSupportPasive');
+var _eventHelpers = require('./eventHelpers');
 
-var _eventSupportPasive2 = _interopRequireDefault(_eventSupportPasive);
+var _eventHelpers2 = _interopRequireDefault(_eventHelpers);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42,10 +42,9 @@ var AirrSidepanel = function (_AirrComponent) {
         _this.handleTouchEnd = _this.handleTouchEnd.bind(_this);
         _this.handleHideTouchMove = _this.handleHideTouchMove.bind(_this);
 
-        var isTouchSupported = 'ontouchstart' in window;
-        _this.startEvent = isTouchSupported ? 'touchstart' : 'mousedown';
-        _this.moveEvent = isTouchSupported ? 'touchmove' : 'mousemove';
-        _this.endEvent = isTouchSupported ? 'touchend' : 'mouseup';
+        _this.startEvent = _eventHelpers2.default.isMobileDevice ? 'touchstart' : 'mousedown';
+        _this.moveEvent = _eventHelpers2.default.isMobileDevice ? 'touchmove' : 'mousemove';
+        _this.endEvent = _eventHelpers2.default.isMobileDevice ? 'touchend' : 'mouseup';
         return _this;
     }
 
@@ -106,7 +105,7 @@ var AirrSidepanel = function (_AirrComponent) {
         key: 'enable',
         value: function enable() {
             if (!this.isEnabled()) {
-                this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, _eventSupportPasive2.default);
+                this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, _eventHelpers2.default.supportPassive);
                 this.enabled = true;
             }
         }
@@ -194,7 +193,7 @@ var AirrSidepanel = function (_AirrComponent) {
                 //corner touch, show moves
 
                 this.sidepanelDOM.style.display = 'block';
-                this.sceneDOM.addEventListener(this.moveEvent, this.handleShowTouchMove, _eventSupportPasive2.default);
+                this.sceneDOM.addEventListener(this.moveEvent, this.handleShowTouchMove, _eventHelpers2.default.supportPassive);
                 this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
 
                 this.triggerCustom('showTouchStart');
@@ -208,7 +207,7 @@ var AirrSidepanel = function (_AirrComponent) {
                 this.sceneDOM.addEventListener(this.endEvent, showmoveend, false);
             } else if (this.currentVal === this.shownVal) {
                 //fully visible, hide moves
-                this.sceneDOM.addEventListener(this.moveEvent, this.handleHideTouchMove, _eventSupportPasive2.default);
+                this.sceneDOM.addEventListener(this.moveEvent, this.handleHideTouchMove, _eventHelpers2.default.supportPassive);
                 this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
 
                 this.triggerCustom('hideTouchStart');
@@ -276,7 +275,7 @@ var AirrSidepanel = function (_AirrComponent) {
 
             this.lastTouch = this.getLastPosition(e);
 
-            if (!_eventSupportPasive2.default) {
+            if (!_eventHelpers2.default.supportPassive) {
                 e.preventDefault();
             }
         }
@@ -345,7 +344,7 @@ var AirrSidepanel = function (_AirrComponent) {
             }
 
             this.lastTouch = this.getLastPosition(e);
-            if (!_eventSupportPasive2.default) {
+            if (!_eventHelpers2.default.supportPassive) {
                 e.preventDefault();
             }
         }
