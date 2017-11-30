@@ -61,6 +61,10 @@ Real docs are planned to be written in the future.
 Methods and properties descriptions aswell as properties specification can be found in library directory at `airr-react/lib`.
 For Airr Components descriptions check [the demo app](http://react.airr.pl). 
 
+### Building project for Cordova
+Remember about proper configuration for specific platforms:
+* Android - add `"homepage": "file:///android_asset/www"` entry to your package.json
+
 ## License
 
 This project is licensed under the MIT License
