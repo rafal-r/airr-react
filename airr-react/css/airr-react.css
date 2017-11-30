@@ -203,7 +203,11 @@ textarea:focus, input:focus {
     overflow-x: hidden;
     perspective: 1000px;
 }
-
+.airr-sidepanel.bottom > div:last-child,
+.airr-sidepanel.top > div:last-child {
+    overflow-y: hidden;
+    overflow-x: scroll;
+}
 .airr-container.fade-animation > .airr-view,
 .airr-container.overlay-animation > .airr-view {
     display: block;
