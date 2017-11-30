@@ -153,11 +153,12 @@ textarea:focus, input:focus {
 
 .airr-container > .airr-view {
     display: none;
-    overflow: scroll;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-perspective: 1000px;
     perspective: 1000px;
+    overflow-y: scroll;
+    overflow-x: auto;
 }
 
 .airr-container > .airr-view.airr-scene {
@@ -194,7 +195,8 @@ textarea:focus, input:focus {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-perspective: 1000px;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: auto;
     perspective: 1000px;
 }
 
