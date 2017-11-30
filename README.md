@@ -56,7 +56,7 @@ You can search for these methods in demo-app code to find out how they are used.
 ## Usage
 For components usage please reffer at the moment to the demo app code. 
 
-## Documentation.
+## Documentation
 Real docs are planned to be written in the future. 
 Methods and properties descriptions aswell as properties specification can be found in library directory at `airr-react/lib`.
 For Airr Components descriptions check [the demo app](http://react.airr.pl). 
