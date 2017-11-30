@@ -9,7 +9,8 @@ It can be used for:
 * creating common web apps.
 
 To check all main features of library go and see demonstration app:
-[airr-react demo app](http://react.airr.pl) - browse in Chrome for best experience 
+### [airr-react demo app](http://react.airr.pl) 
+browse in Chrome for best experience. 
 
 Libary code was designed to handle WebViews runtimes from Android 4.4+ and iOS8+.
 
