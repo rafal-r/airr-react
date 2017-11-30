@@ -8,7 +8,11 @@
 }
 
 *::-webkit-scrollbar {
-    display: none;
+    width: 3px;
+    height: 5px;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #ddd;
 }
 
 :after, :before {
@@ -158,7 +162,7 @@ textarea:focus, input:focus {
     -webkit-perspective: 1000px;
     perspective: 1000px;
     overflow-y: scroll;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 .airr-container > .airr-view.airr-scene {
@@ -196,7 +200,7 @@ textarea:focus, input:focus {
     backface-visibility: hidden;
     -webkit-perspective: 1000px;
     overflow-y: scroll;
-    overflow-x: auto;
+    overflow-x: hidden;
     perspective: 1000px;
 }
 
