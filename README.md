@@ -67,4 +67,6 @@ Remember about proper configuration for specific platforms:
 
 ## License
 
-This project is licensed under the MIT License
+Licensed under the MIT License.
+Copyright (c) 2017 Rafal Rajtar
+
