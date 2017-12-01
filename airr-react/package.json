@@ -16,7 +16,8 @@
 		"cordova",
 		"mobile",
 		"hybrid",
-		"app"
+		"app",
+		"react-components"
 	],
 	"author": "Rafal Rajtar",
 	"license": "MIT",
