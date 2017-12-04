@@ -6,7 +6,7 @@ It can be your starting point for creating unique apps.
 
 It can be used for:
 * creating custom looking and behaving mobile apps,
-* rapidly designing prototypes showing you ideas,
+* rapidly designing prototypes showing your ideas,
 * creating common web apps.
 
 Create unique apps with minimal or none overwrites upon choosen library styles and structures and keep your DOM tree simple. 
@@ -70,13 +70,14 @@ For components usage please reffer at the moment to the demo app code.
 ## Documentation
 
 Real docs are planned to be written in the future. 
-Methods and properties descriptions aswell as properties specification can be found in library directory at `airr-react/lib`.
+Methods and properties descriptions aswell as properties specification can be found in library files at `airr-react/lib`.
 For Airr Components descriptions check [the demo app](http://react.airr.pl). 
 
 ### Building project for Cordova
 
 When building your production code using `npm run build` with `react-scripts` remember about proper configuration for specific platforms:
 * Android - add `"homepage": "file:///android_asset/www"` entry to your package.json
+* iOS - snippet will be added soon
 
 ## License
 
