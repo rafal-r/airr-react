@@ -1,14 +1,18 @@
 # airr-react
 
 This library is set of several React components that allows building mobile apps using React, HTML5 and Cordova.
-Airr-react defines few basic classes and features that every UI of mobile app has. It can be your starting point for creating unique apps.
+Airr-react defines few basic UI classes and features that every mobile app has. 
+It can be your starting point for creating unique apps.
 
 It can be used for:
 * creating custom looking and behaving mobile apps,
 * rapidly designing prototypes showing you ideas,
 * creating common web apps.
 
-To check all main features of library go and see demonstration app:
+Create unique apps with minimal or none overwrites upon choosen library styles and structures and keep your DOM tree simple. 
+Core elements are allready defined and working and the rest is up to you.
+
+To check all main features go and see demonstration app:
 
 **[airr-react demo app](http://react.airr.pl)**
 
@@ -71,7 +75,7 @@ For Airr Components descriptions check [the demo app](http://react.airr.pl).
 
 ### Building project for Cordova
 
-Remember about proper configuration for specific platforms:
+When building your production code using `npm run build` with `react-scripts` remember about proper configuration for specific platforms:
 * Android - add `"homepage": "file:///android_asset/www"` entry to your package.json
 
 ## License
