@@ -1,5 +1,9 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -15,8 +19,6 @@ var _AirrComponent2 = require('./AirrComponent');
 var _AirrComponent3 = _interopRequireDefault(_AirrComponent2);
 
 var _eventHelpers = require('./eventHelpers');
-
-var _eventHelpers2 = _interopRequireDefault(_eventHelpers);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42,9 +44,9 @@ var AirrSidepanel = function (_AirrComponent) {
         _this.handleTouchEnd = _this.handleTouchEnd.bind(_this);
         _this.handleHideTouchMove = _this.handleHideTouchMove.bind(_this);
 
-        _this.startEvent = _eventHelpers2.default.isMobileDevice ? 'touchstart' : 'mousedown';
-        _this.moveEvent = _eventHelpers2.default.isMobileDevice ? 'touchmove' : 'mousemove';
-        _this.endEvent = _eventHelpers2.default.isMobileDevice ? 'touchend' : 'mouseup';
+        _this.startEvent = _eventHelpers.isMobileDevice ? 'touchstart' : 'mousedown';
+        _this.moveEvent = _eventHelpers.isMobileDevice ? 'touchmove' : 'mousemove';
+        _this.endEvent = _eventHelpers.isMobileDevice ? 'touchend' : 'mouseup';
         return _this;
     }
 
@@ -105,7 +107,7 @@ var AirrSidepanel = function (_AirrComponent) {
         key: 'enable',
         value: function enable() {
             if (!this.isEnabled()) {
-                this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, _eventHelpers2.default.supportPassive);
+                this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, _eventHelpers.supportPassive);
                 this.enabled = true;
             }
         }
@@ -193,7 +195,7 @@ var AirrSidepanel = function (_AirrComponent) {
                 //corner touch, show moves
 
                 this.sidepanelDOM.style.display = 'block';
-                this.sceneDOM.addEventListener(this.moveEvent, this.handleShowTouchMove, _eventHelpers2.default.supportPassive);
+                this.sceneDOM.addEventListener(this.moveEvent, this.handleShowTouchMove, _eventHelpers.supportPassive);
                 this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
 
                 this.triggerCustom('showTouchStart');
@@ -207,7 +209,7 @@ var AirrSidepanel = function (_AirrComponent) {
                 this.sceneDOM.addEventListener(this.endEvent, showmoveend, false);
             } else if (this.currentVal === this.shownVal) {
                 //fully visible, hide moves
-                this.sceneDOM.addEventListener(this.moveEvent, this.handleHideTouchMove, _eventHelpers2.default.supportPassive);
+                this.sceneDOM.addEventListener(this.moveEvent, this.handleHideTouchMove, _eventHelpers.supportPassive);
                 this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
 
                 this.triggerCustom('hideTouchStart');
@@ -275,7 +277,7 @@ var AirrSidepanel = function (_AirrComponent) {
 
             this.lastTouch = this.getLastPosition(e);
 
-            if (!_eventHelpers2.default.supportPassive) {
+            if (!_eventHelpers.supportPassive) {
                 e.preventDefault();
             }
         }
@@ -344,7 +346,7 @@ var AirrSidepanel = function (_AirrComponent) {
             }
 
             this.lastTouch = this.getLastPosition(e);
-            if (!_eventHelpers2.default.supportPassive) {
+            if (!_eventHelpers.supportPassive) {
                 e.preventDefault();
             }
         }
@@ -470,6 +472,8 @@ var AirrSidepanel = function (_AirrComponent) {
     return AirrSidepanel;
 }(_AirrComponent3.default);
 
+exports.default = AirrSidepanel;
+
 AirrSidepanel.propTypes = {
     side: _propTypes2.default.oneOf(['left', 'right', 'top', 'bottom']),
     dragCtnStyle: _propTypes2.default.object,
@@ -488,5 +492,3 @@ AirrSidepanel.defaultProps = {
     sceneWidth: null, //number parent side width dimension
     sceneHeight: null //number parent side height dimension
 };
-
-module.exports = AirrSidepanel;

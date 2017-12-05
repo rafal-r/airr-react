@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AirrComponent from './AirrComponent';
 
-class AirrView extends AirrComponent {
+export default class AirrView extends AirrComponent {
 
     render() {
         let className = 'airr-view';
@@ -34,5 +34,3 @@ AirrView.defaultProps = {
     width: null,
     height: null
 };
-
-module.exports = AirrView;

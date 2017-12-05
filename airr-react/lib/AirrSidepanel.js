@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AirrComponent from './AirrComponent';
-import eventHelpers from './eventHelpers';
+import {isMobileDevice, supportPassive} from './eventHelpers';
 
-class AirrSidepanel extends AirrComponent {
+export default class AirrSidepanel extends AirrComponent {
 
     side;
     size;
@@ -41,9 +41,9 @@ class AirrSidepanel extends AirrComponent {
         this.handleTouchEnd = this.handleTouchEnd.bind(this);
         this.handleHideTouchMove = this.handleHideTouchMove.bind(this);
         
-        this.startEvent = eventHelpers.isMobileDevice ? 'touchstart' : 'mousedown';
-        this.moveEvent = eventHelpers.isMobileDevice ? 'touchmove' : 'mousemove';
-        this.endEvent = eventHelpers.isMobileDevice ? 'touchend' : 'mouseup';        
+        this.startEvent = isMobileDevice ? 'touchstart' : 'mousedown';
+        this.moveEvent = isMobileDevice ? 'touchmove' : 'mousemove';
+        this.endEvent = isMobileDevice ? 'touchend' : 'mouseup';        
     }
 
     updateSide() {
@@ -98,7 +98,7 @@ class AirrSidepanel extends AirrComponent {
 
     enable() {
         if (!this.isEnabled()) {
-            this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, eventHelpers.supportPassive);
+            this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, supportPassive);
             this.enabled = true;
         }
     }
@@ -172,7 +172,7 @@ class AirrSidepanel extends AirrComponent {
                 || (['right', 'bottom'].indexOf(this.side) !== -1 && pos > (this.hiddenVal - 20)))) { //corner touch, show moves
 
             this.sidepanelDOM.style.display = 'block';
-            this.sceneDOM.addEventListener(this.moveEvent, this.handleShowTouchMove, eventHelpers.supportPassive);
+            this.sceneDOM.addEventListener(this.moveEvent, this.handleShowTouchMove, supportPassive);
             this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
 
             this.triggerCustom('showTouchStart');
@@ -186,7 +186,7 @@ class AirrSidepanel extends AirrComponent {
             this.sceneDOM.addEventListener(this.endEvent, showmoveend, false);
 
         } else if (this.currentVal === this.shownVal) { //fully visible, hide moves
-            this.sceneDOM.addEventListener(this.moveEvent, this.handleHideTouchMove, eventHelpers.supportPassive);
+            this.sceneDOM.addEventListener(this.moveEvent, this.handleHideTouchMove, supportPassive);
             this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
 
             this.triggerCustom('hideTouchStart');
@@ -250,7 +250,7 @@ class AirrSidepanel extends AirrComponent {
 
         this.lastTouch = this.getLastPosition(e);
 
-        if (!eventHelpers.supportPassive) {
+        if (!supportPassive) {
             e.preventDefault();
         }
     }
@@ -319,7 +319,7 @@ class AirrSidepanel extends AirrComponent {
         }
 
         this.lastTouch = this.getLastPosition(e);
-        if (!eventHelpers.supportPassive) {
+        if (!supportPassive) {
             e.preventDefault();
         }
     }
@@ -442,5 +442,3 @@ AirrSidepanel.defaultProps = {
     sceneWidth: null, //number parent side width dimension
     sceneHeight: null //number parent side height dimension
 };
-
-module.exports = AirrSidepanel;

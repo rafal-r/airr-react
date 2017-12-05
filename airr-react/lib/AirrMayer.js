@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AirrFX from './AirrFX';
 import AirrComponent from './AirrComponent';
 
-class AirrMayer extends AirrComponent {
+export default class AirrMayer extends AirrComponent {
 
     // <button class="btn text alert">YES</button>
     // <button class="btn text success">CANCEL</button>
@@ -98,5 +98,3 @@ AirrMayer.defaultProps = {
     buttons: [], //array with buttons configuration
     animationTime: 300 //number time in miliseconds of mayer appear/disappear animation
 };
-
-module.exports = AirrMayer;

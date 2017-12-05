@@ -1,5 +1,9 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = AirrFX;
 function AirrFX() {}
 
 /**
@@ -186,5 +190,3 @@ AirrFX.doVerticalScrollAnimation = function (element, scrollDuration, direction)
         }
     }, 15);
 };
-
-module.exports = AirrFX;

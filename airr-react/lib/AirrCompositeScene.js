@@ -3,7 +3,7 @@ import AirrScene from './AirrScene';
 import AirrComponent from './AirrComponent';
 import update from 'immutability-helper';
 
-class AirrCompositeScene extends AirrComponent {
+export default class AirrCompositeScene extends AirrComponent {
 
     constructor(props) {
         super(props);
@@ -79,5 +79,3 @@ class AirrCompositeScene extends AirrComponent {
 }
 AirrCompositeScene.propTypes = AirrScene.propTypes;
 AirrCompositeScene.defaultProps = AirrScene.defaultProps;
-
-module.exports = AirrCompositeScene;

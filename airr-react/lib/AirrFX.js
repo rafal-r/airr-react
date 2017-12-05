@@ -1,4 +1,4 @@
-function AirrFX() {
+export default function AirrFX() {
 }
 
 /**
@@ -185,5 +185,3 @@ AirrFX.doVerticalScrollAnimation = function (element, scrollDuration, direction)
         }
     }, 15);
 };
-
-module.exports = AirrFX;

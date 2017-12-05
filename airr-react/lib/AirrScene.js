@@ -5,7 +5,7 @@ import AirrFX from './AirrFX';
 import AirrMayer from './AirrMayer';
 import update from 'immutability-helper';
 
-class AirrScene extends AirrComponent {
+export default class AirrScene extends AirrComponent {
 
     viewsCompsRefs = {};
     containerDOM = null;
@@ -907,5 +907,3 @@ AirrScene.defaultProps = {
     mayers: [], //mayers conf list
     title: '' //titlebar name
 };
-
-module.exports = AirrScene;

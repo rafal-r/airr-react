@@ -1,6 +1,6 @@
 import {Component} from 'react';
 
-class AirrComponent extends Component {
+export default class AirrComponent extends Component {
     customEvents = [];
 
     onCustom(eventName, handler) {
@@ -30,5 +30,3 @@ class AirrComponent extends Component {
         }
     }
 };
-
-module.exports = AirrComponent;
