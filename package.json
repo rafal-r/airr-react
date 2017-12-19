@@ -13,11 +13,12 @@
 	},
 	"keywords": [
 		"react",
+		"react-components",
 		"cordova",
 		"mobile",
 		"hybrid",
 		"app",
-		"react-components"
+		"frontend"
 	],
 	"author": "Rafal Rajtar",
 	"license": "MIT",
