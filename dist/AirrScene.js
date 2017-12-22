@@ -68,7 +68,7 @@ var AirrScene = function (_AirrComponent) {
 
         _this.state = {
             active: props.active,
-            navbar: props.navbar,
+            navbar: Number(props.navbar),
             navbarHeight: props.navbarHeight,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
@@ -225,6 +225,59 @@ var AirrScene = function (_AirrComponent) {
                 }
             }
 
+            if (this.state.navbar !== Number(nextProps.navbar)) {
+                if (this.state.animation) {
+
+                    if (!nextProps.navbar) {
+                        //disable
+                        //possible previous state -1,1
+
+                        if ([1, true].indexOf(this.state.navbar) !== -1) {
+                            //currently enabled,visible
+                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 1 }, ['opacity ' + this.props.animationTime + 'ms linear'], { opacity: 0 }, null, this.props.animationTime, function () {
+                                return _this3.setState({ navbar: nextProps.navbar });
+                            });
+                        } else {
+                            //currently hidden, just disable without animation
+                            this.setState({ navbar: nextProps.navbar });
+                        }
+                    } else if ([1, true].indexOf(nextProps.navbar) !== -1) {
+                        //enable
+                        //possible previous state -1,0
+
+                        if (this.state.navbar === -1) {
+                            //currently hidden
+                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 0 }, ['opacity ' + this.props.animationTime + 'ms linear'], { opacity: 1 }, null, this.props.animationTime, function () {
+                                return _this3.setState({ navbar: nextProps.navbar });
+                            });
+                        } else {
+                            //currently disabled
+                            //firstly add navbar to dom with hidden settings, then animate in
+                            this.setState({ navbar: -1 }, function () {
+                                _AirrFX2.default.doTransitionAnimation(_this3.navbarDOM, { opacity: 0 }, ['opacity ' + _this3.props.animationTime + 'ms linear'], { opacity: 1 }, null, _this3.props.animationTime, function () {
+                                    return _this3.setState({ navbar: nextProps.navbar });
+                                });
+                            });
+                        }
+                    } else if (nextProps.navbar === -1) {
+                        //hide
+                        //possible previous state 0,1
+
+                        if ([1, true].indexOf(this.state.navbar) !== -1) {
+                            //currently visible
+                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 1 }, ['opacity ' + this.props.animationTime + 'ms linear'], { opacity: 0 }, null, this.props.animationTime, function () {
+                                return _this3.setState({ navbar: nextProps.navbar });
+                            });
+                        } else {
+                            //currently disabled, just add hidden
+                            this.setState({ navbar: nextProps.navbar });
+                        }
+                    }
+                } else {
+                    this.setState({ navbar: nextProps.navbar });
+                }
+            }
+
             //SIMPLE STATE UPDATES OPERATIONS:
             if (this.state.active !== nextProps.active) {
                 this.setState({ active: nextProps.active });
@@ -234,9 +287,6 @@ var AirrScene = function (_AirrComponent) {
             }
             if (this.state.sidepanel !== nextProps.sidepanel) {
                 this.setState({ sidepanel: nextProps.sidepanel });
-            }
-            if (this.state.navbar !== nextProps.navbar) {
-                this.setState({ navbar: nextProps.navbar });
             }
             if (this.state.navbarHeight !== nextProps.navbarHeight) {
                 this.setState({ navbarHeight: nextProps.navbarHeight });
@@ -925,11 +975,13 @@ var AirrScene = function (_AirrComponent) {
                         title = v.props.title;
                     }
                 });
+                var navbarStyle = { height: this.state.navbarHeight + 'px', opacity: [1, true].indexOf(this.state.navbar) !== -1 ? 1 : 0 };
+
                 navbar = _react2.default.createElement(
                     'div',
                     { className: 'airr-navbar', ref: function ref(dom) {
                             return _this10.navbarDOM = dom;
-                        }, style: { height: this.state.navbarHeight + 'px' } },
+                        }, style: navbarStyle },
                     back,
                     _react2.default.createElement(
                         'div',
@@ -944,16 +996,15 @@ var AirrScene = function (_AirrComponent) {
                 );
             }
 
+            var sceneStyle = { width: this.state.width + 'px', height: this.state.height + 'px' };
+
             return _react2.default.createElement(
                 'div',
-                { className: className,
-                    style: { width: this.state.width + 'px', height: this.state.height + 'px' },
-                    ref: 'dom' },
+                { style: sceneStyle, className: className, ref: 'dom' },
                 navbar,
                 _react2.default.createElement(
                     'div',
-                    { className: containerClassList.join(' '), style: containerStyle,
-                        ref: function ref(div) {
+                    { className: containerClassList.join(' '), style: containerStyle, ref: function ref(div) {
                             return _this10.containerDOM = div;
                         } },
                     views
@@ -969,9 +1020,28 @@ var AirrScene = function (_AirrComponent) {
     return AirrScene;
 }(_AirrComponent3.default);
 
-exports.default = AirrScene;
+AirrScene.defaultProps = {
+    name: '', //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
+    width: null, //number
+    height: null, //number
+    activeViewName: null, //string 
 
-
+    GUIDisabled: false, //bool
+    animation: 'slide', //slide,overlay,fade or false if no animation
+    animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
+    navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
+    navbarHeight: 48, //navbar height in px
+    backButton: false, //bool
+    backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
+    handleBackButton: null, //parent function to handle back button tap
+    handleBackBehaviourOnFirstView: null, //null or function e.g. if this scene is view in some parent scene, and you want to pop out of it - this function will come from parent scene and will handle this behaviour
+    stackMode: true, //bool - if false Scene views will be assumed as tabs rather then stack order views. (view change vs. view pop/push)
+    active: false, //bool is currently active in parent scene
+    sidepanel: null, //{type: AirrSidepanel, props: {}}
+    views: [], //array,
+    mayers: [], //mayers conf list
+    title: '' //titlebar name
+};
 AirrScene.propTypes = {
     name: _propTypes2.default.string.isRequired,
     width: _propTypes2.default.number.isRequired,
@@ -979,9 +1049,9 @@ AirrScene.propTypes = {
     activeViewName: _propTypes2.default.string.isRequired,
 
     GUIDisabled: _propTypes2.default.bool,
-    animation: _propTypes2.default.oneOf(['slide', 'overlay', 'fade']),
+    animation: _propTypes2.default.oneOf(['slide', 'overlay', 'fade', false]),
     animationTime: _propTypes2.default.number,
-    navbar: _propTypes2.default.bool,
+    navbar: _propTypes2.default.oneOf([-1, 0, false, 1, true]),
     navbarHeight: _propTypes2.default.number,
     backButton: _propTypes2.default.bool,
     backButtonOnFirstView: _propTypes2.default.bool,
@@ -1055,25 +1125,4 @@ AirrScene.propTypes = {
     mayers: _propTypes2.default.arrayOf(_propTypes2.default.object),
     title: _propTypes2.default.string
 };
-AirrScene.defaultProps = {
-    name: '', //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
-    width: null, //number
-    height: null, //number
-    activeViewName: null, //string 
-
-    GUIDisabled: false, //bool
-    animation: 'slide', //slide,overlay or fade
-    animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
-    navbar: false, //bool
-    navbarHeight: 48, //navbar height in px
-    backButton: false, //bool
-    backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
-    handleBackButton: null, //parent function to handle back button tap
-    handleBackBehaviourOnFirstView: null, //null or function e.g. if this scene is view in some parent scene, and you want to pop out of it - this function will come from parent scene and will handle this behaviour
-    stackMode: true, //bool - if false Scene views will be assumed as tabs rather then stack order views. (view change vs. view pop/push)
-    active: false, //bool is currently active in parent scene
-    sidepanel: null, //{type: AirrSidepanel, props: {}}
-    views: [], //array,
-    mayers: [], //mayers conf list
-    title: '' //titlebar name
-};
+exports.default = AirrScene;
