@@ -1,4 +1,4 @@
-import {CompositeScene} from 'airr-react';
+import {CompositeScene} from './../lib/Airr';
 import MainScene from './MainScene';
 
 export default class Viewport extends CompositeScene {

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View} from 'airr-react';
+import {View} from './../../lib/Airr';
 import Menu from '../ui/Menu';
 import './css/Welcome.css';
 

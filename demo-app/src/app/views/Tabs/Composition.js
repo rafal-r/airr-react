@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {View} from 'airr-react';
-import {Scene} from 'airr-react';
+import {View} from './../../../lib/Airr';
+import {Scene} from './../../../lib/Airr';
 
 import '..//css/Tabs.css';
 

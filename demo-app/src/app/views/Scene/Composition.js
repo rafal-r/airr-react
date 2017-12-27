@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Scene} from 'airr-react';
+import {Scene} from './../../../lib/Airr';
 import Slide from './Slide';
 import update from 'immutability-helper';
 

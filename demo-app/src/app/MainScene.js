@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Scene} from 'airr-react';
-import {Sidepanel} from 'airr-react';
+import {Scene} from './../lib/Airr';
+import {Sidepanel} from './../lib/Airr';
 import Welcome from './views/Welcome.js';
 import MayersView from './views/Mayers.js';
 import SidepanelView from './views/Sidepanel.js';

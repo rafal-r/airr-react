@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View} from 'airr-react';
+import {View} from './../../lib/Airr';
 
 class Mayers extends Component {
     

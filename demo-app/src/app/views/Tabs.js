@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View} from 'airr-react';
+import {View} from './../../lib/Airr';
 import Composition from './Tabs/Composition';
 import Inheritance from './Tabs/Inheritance';
 import Menu from '../ui/Menu';

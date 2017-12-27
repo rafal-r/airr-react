@@ -1,5 +1,5 @@
 import Slide from './Slide';
-import {CompositeScene} from 'airr-react';
+import {CompositeScene} from './../../../lib/Airr';
 import update from 'immutability-helper';
 
 class Inheritance extends CompositeScene {
