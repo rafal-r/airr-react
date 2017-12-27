@@ -280,13 +280,13 @@ export default class AirrScene extends AirrComponent {
                         this.setState({navbar: nextProps.navbar})
                     }
 
-                } else if ([1,true].indexOf(nextProps.navbar) !== -1) { //enable
+                } else if ([1,true].indexOf(nextProps.navbar) !== -1) { //show
                     //possible previous state -1,0
 
                     if (this.state.navbar === -1) { //currently hidden
                         AirrFX.doTransitionAnimation(
                                 this.navbarDOM,
-                                {opacity: 0},
+                                {opacity: 0, visibility: 'visible'},
                                 [`opacity ${this.props.animationTime}ms linear`],
                                 {opacity: 1},
                                 null,
@@ -298,7 +298,7 @@ export default class AirrScene extends AirrComponent {
                         this.setState({navbar: -1}, () => {
                             AirrFX.doTransitionAnimation(
                                 this.navbarDOM,
-                                {opacity: 0},
+                                {opacity: 0, visibility: 'visible'},
                                 [`opacity ${this.props.animationTime}ms linear`],
                                 {opacity: 1},
                                 null,
@@ -960,7 +960,11 @@ export default class AirrScene extends AirrComponent {
                     title = v.props.title;
                 }
             });
-            const navbarStyle = {height: this.state.navbarHeight + 'px', opacity: ([1,true].indexOf(this.state.navbar) !== -1 ? 1 : 0)};
+            const navbarStyle = {height: this.state.navbarHeight + 'px'};
+            
+            if ([1,true].indexOf(this.state.navbar) === -1) {
+                navbarStyle.visibility = 'hidden';
+            }
             
             navbar = (
                 <div className="airr-navbar" ref={dom => this.navbarDOM = dom} style={navbarStyle}>
