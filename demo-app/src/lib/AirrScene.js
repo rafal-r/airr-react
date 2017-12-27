@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import AirrComponent from './AirrComponent';
 import AirrFX from './AirrFX';
@@ -644,8 +645,17 @@ export default class AirrScene extends AirrComponent {
             const newTitle = document.createElement('div');
             const textSpan = document.createElement('span');
             const oldTitle = this.navbarDOM.querySelector('.title');
+            const newViewTitle = this.state.views[this.getViewIndex(newViewName)].props.title
+            
             newTitle.classList.add('new-title');
-            textSpan.textContent = this.state.views[this.getViewIndex(newViewName)].props.title;
+            
+            if (typeof newViewTitle === 'string') {
+                textSpan.textContent = this.state.views[this.getViewIndex(newViewName)].props.title;
+            }
+            else if (typeof newViewTitle === 'object' && ('$$typeof' in newViewTitle)) { //react.element
+                ReactDOM.render(newViewTitle, textSpan);
+            }
+            
             newTitle.appendChild(textSpan);
 
             this.navbarDOM.insertBefore(newTitle, this.navbarDOM.children[0]);

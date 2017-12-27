@@ -4,11 +4,17 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _propTypes = require('prop-types');
 
@@ -629,8 +635,17 @@ var AirrScene = function (_AirrComponent) {
                 var newTitle = document.createElement('div');
                 var textSpan = document.createElement('span');
                 var oldTitle = this.navbarDOM.querySelector('.title');
+                var newViewTitle = this.state.views[this.getViewIndex(newViewName)].props.title;
+
                 newTitle.classList.add('new-title');
-                textSpan.textContent = this.state.views[this.getViewIndex(newViewName)].props.title;
+
+                if (typeof newViewTitle === 'string') {
+                    textSpan.textContent = this.state.views[this.getViewIndex(newViewName)].props.title;
+                } else if ((typeof newViewTitle === 'undefined' ? 'undefined' : _typeof(newViewTitle)) === 'object' && '$$typeof' in newViewTitle) {
+                    //react.element
+                    _reactDom2.default.render(newViewTitle, textSpan);
+                }
+
                 newTitle.appendChild(textSpan);
 
                 this.navbarDOM.insertBefore(newTitle, this.navbarDOM.children[0]);
