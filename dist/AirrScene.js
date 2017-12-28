@@ -248,19 +248,19 @@ var AirrScene = function (_AirrComponent) {
                             this.setState({ navbar: nextProps.navbar });
                         }
                     } else if ([1, true].indexOf(nextProps.navbar) !== -1) {
-                        //enable
+                        //show
                         //possible previous state -1,0
 
                         if (this.state.navbar === -1) {
                             //currently hidden
-                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 0 }, ['opacity ' + this.props.animationTime + 'ms linear'], { opacity: 1 }, null, this.props.animationTime, function () {
+                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 0, visibility: 'visible' }, ['opacity ' + this.props.animationTime + 'ms linear'], { opacity: 1 }, null, this.props.animationTime, function () {
                                 return _this3.setState({ navbar: nextProps.navbar });
                             });
                         } else {
                             //currently disabled
                             //firstly add navbar to dom with hidden settings, then animate in
                             this.setState({ navbar: -1 }, function () {
-                                _AirrFX2.default.doTransitionAnimation(_this3.navbarDOM, { opacity: 0 }, ['opacity ' + _this3.props.animationTime + 'ms linear'], { opacity: 1 }, null, _this3.props.animationTime, function () {
+                                _AirrFX2.default.doTransitionAnimation(_this3.navbarDOM, { opacity: 0, visibility: 'visible' }, ['opacity ' + _this3.props.animationTime + 'ms linear'], { opacity: 1 }, null, _this3.props.animationTime, function () {
                                     return _this3.setState({ navbar: nextProps.navbar });
                                 });
                             });
@@ -632,23 +632,57 @@ var AirrScene = function (_AirrComponent) {
 
             if (this.state.navbar) {
                 //perform navbar animations
-                var newTitle = document.createElement('div');
-                var textSpan = document.createElement('span');
-                var oldTitle = this.navbarDOM.querySelector('.title');
-                var newViewTitle = this.state.views[this.getViewIndex(newViewName)].props.title;
+                var mockTitle = document.createElement('div');
+                var mockTextSpan = document.createElement('span');
+                var titleNode = this.navbarDOM.querySelector('.title');
+                var titleTextSpan = titleNode.children[0];
+                var newViewTitle = this.state.views[newViewIndex].props.title;
+                var currentViewTitle = this.state.views[oldViewIndex].props.title;
 
-                newTitle.classList.add('new-title');
+                mockTitle.classList.add('mock-title');
 
-                if (typeof newViewTitle === 'string') {
-                    textSpan.textContent = this.state.views[this.getViewIndex(newViewName)].props.title;
-                } else if ((typeof newViewTitle === 'undefined' ? 'undefined' : _typeof(newViewTitle)) === 'object' && '$$typeof' in newViewTitle) {
+                if (typeof currentViewTitle === 'string') {
+                    mockTextSpan.textContent = currentViewTitle;
+                } else if ((typeof currentViewTitle === 'undefined' ? 'undefined' : _typeof(currentViewTitle)) === 'object' && '$$typeof' in currentViewTitle) {
                     //react.element
-                    _reactDom2.default.render(newViewTitle, textSpan);
+                    _reactDom2.default.render(currentViewTitle, mockTextSpan);
                 }
 
-                newTitle.appendChild(textSpan);
+                if (typeof newViewTitle === 'string') {
+                    titleTextSpan.textContent = newViewTitle;
+                } else if ((typeof newViewTitle === 'undefined' ? 'undefined' : _typeof(newViewTitle)) === 'object' && '$$typeof' in newViewTitle) {
+                    //react.element
+                    _reactDom2.default.render(newViewTitle, titleTextSpan);
+                }
 
-                this.navbarDOM.insertBefore(newTitle, this.navbarDOM.children[0]);
+                mockTitle.appendChild(mockTextSpan);
+
+                this.navbarDOM.insertBefore(mockTitle, this.navbarDOM.children[0]);
+                titleNode.style.opacity = 0;
+
+                _AirrFX2.default.doTransitionAnimation(titleNode, {
+                    webkitTransform: 'translate3d(' + ((titleNode.clientWidth / 2 + mockTextSpan.clientWidth / 2) * direction + 'px') + ',0,0)',
+                    transform: 'translate3d(' + ((titleNode.clientWidth / 2 + mockTextSpan.clientWidth / 2) * direction + 'px') + ',0,0)',
+                    opacity: 0
+                }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
+                    webkitTransform: 'translate3d(0,0,0)',
+                    transform: 'translate3d(0,0,0)',
+                    opacity: 1
+                }, null, this.props.animationTime);
+
+                _AirrFX2.default.doTransitionAnimation(mockTitle, {
+                    webkitTransform: 'translate3d(0,0,0)',
+                    transform: 'translate3d(0,0,0)',
+                    opacity: 1
+                }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
+                    webkitTransform: 'translate3d(' + (mockTextSpan.clientWidth * direction * -1 + 'px') + ',0,0)',
+                    transform: 'translate3d(' + (mockTextSpan.clientWidth * direction * -1 + 'px') + ',0,0)',
+                    opacity: 0
+                }, null, this.props.animationTime);
+
+                setTimeout(function () {
+                    _this9.navbarDOM.removeChild(mockTitle);
+                }, this.props.animationTime);
 
                 if (this.state.backButton && this.props.stackMode) {
                     var backDOM = this.navbarDOM.querySelector('.back');
@@ -678,32 +712,6 @@ var AirrScene = function (_AirrComponent) {
                         }, null, this.props.animationTime);
                     }
                 }
-
-                _AirrFX2.default.doTransitionAnimation(oldTitle, {
-                    webkitTransform: 'translate3d(0,0,0)',
-                    transform: 'translate3d(0,0,0)',
-                    opacity: 1
-                }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                    webkitTransform: 'translate3d(' + (oldTitle.clientWidth * direction * -1 + 'px') + ',0,0)',
-                    transform: 'translate3d(' + (oldTitle.clientWidth * direction * -1 + 'px') + ',0,0)',
-                    opacity: 0
-                }, null, this.props.animationTime);
-
-                _AirrFX2.default.doTransitionAnimation(newTitle, {
-                    webkitTransform: 'translate3d(' + ((oldTitle.clientWidth / 2 + textSpan.clientWidth / 2) * direction + 'px') + ',0,0)',
-                    transform: 'translate3d(' + ((oldTitle.clientWidth / 2 + textSpan.clientWidth / 2) * direction + 'px') + ',0,0)',
-                    opacity: 0
-                }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                    webkitTransform: 'translate3d(0,0,0)',
-                    transform: 'translate3d(0,0,0)',
-                    opacity: 1
-                }, null, this.props.animationTime);
-
-                setTimeout(function () {
-                    newTitle.classList.remove('new-title');
-                    newTitle.classList.add('title');
-                    _this9.navbarDOM.removeChild(oldTitle);
-                }, this.props.animationTime);
             }
 
             if (this.state.animation === 'slide') {
@@ -966,6 +974,7 @@ var AirrScene = function (_AirrComponent) {
 
             var navbar = null;
             if (this.state.navbar) {
+
                 var back = null;
                 if (this.state.backButton) {
                     var backClassName = 'back ' + (this.getViewIndex(this.state.activeViewName) < 1 && !this.state.backButtonOnFirstView ? 'hidden' : '');
@@ -977,6 +986,7 @@ var AirrScene = function (_AirrComponent) {
                         _react2.default.createElement('div', null)
                     );
                 }
+
                 var menu = this.state.sidepanel ? _react2.default.createElement(
                     'div',
                     { className: 'menu', onClick: function onClick(e) {
@@ -984,13 +994,18 @@ var AirrScene = function (_AirrComponent) {
                         } },
                     _react2.default.createElement('div', null)
                 ) : null;
+
                 var title = null;
                 views.forEach(function (v) {
                     if (v.props.name === _this10.state.activeViewName) {
                         title = v.props.title;
                     }
                 });
-                var navbarStyle = { height: this.state.navbarHeight + 'px', opacity: [1, true].indexOf(this.state.navbar) !== -1 ? 1 : 0 };
+
+                var navbarStyle = { height: this.state.navbarHeight + 'px' };
+                if ([1, true].indexOf(this.state.navbar) === -1) {
+                    navbarStyle.visibility = 'hidden';
+                }
 
                 navbar = _react2.default.createElement(
                     'div',

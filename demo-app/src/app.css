@@ -18,7 +18,7 @@ html,body {
     border-bottom: 1px solid #fff;
 }
 .airr-navbar .title span,
-.airr-navbar .new-title span {
+.airr-navbar .mock-title span {
     color: #ccbfa2;
     font-size: 1.2rem;
     font-weight: 700;

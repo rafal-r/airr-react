@@ -261,9 +261,9 @@ textarea:focus, input:focus {
 .airr-navbar .menu div {
     height: 100%;
 }
-.airr-navbar .new-title {
+.airr-navbar .mock-title {
     position: absolute;
-    opacity: 0;
+    opacity: 1;
     left: 0;
     top: 0;
     width: 100%;
@@ -276,7 +276,7 @@ textarea:focus, input:focus {
     justify-content: center;        
 }
 .airr-navbar .title,
-.airr-navbar .new-title {
+.airr-navbar .mock-title {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;    
 }

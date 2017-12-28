@@ -642,24 +642,58 @@ export default class AirrScene extends AirrComponent {
         const direction = newViewIndex > oldViewIndex ? 1 : -1;
 
         if (this.state.navbar) { //perform navbar animations
-            const newTitle = document.createElement('div');
-            const textSpan = document.createElement('span');
-            const oldTitle = this.navbarDOM.querySelector('.title');
-            const newViewTitle = this.state.views[this.getViewIndex(newViewName)].props.title
+            const mockTitle = document.createElement('div');
+            const mockTextSpan = document.createElement('span');
+            const titleNode = this.navbarDOM.querySelector('.title');
+            const titleTextSpan = titleNode.children[0];
+            const newViewTitle = this.state.views[newViewIndex].props.title
+            const currentViewTitle = this.state.views[oldViewIndex].props.title
             
-            newTitle.classList.add('new-title');
+            mockTitle.classList.add('mock-title');
+            
+            if (typeof currentViewTitle === 'string') {
+                mockTextSpan.textContent = currentViewTitle;
+            }
+            else if (typeof currentViewTitle === 'object' && ('$$typeof' in currentViewTitle)) { //react.element
+                ReactDOM.render(currentViewTitle, mockTextSpan);
+            }
             
             if (typeof newViewTitle === 'string') {
-                textSpan.textContent = this.state.views[this.getViewIndex(newViewName)].props.title;
+                titleTextSpan.textContent = newViewTitle;
             }
             else if (typeof newViewTitle === 'object' && ('$$typeof' in newViewTitle)) { //react.element
-                ReactDOM.render(newViewTitle, textSpan);
+                ReactDOM.render(newViewTitle, titleTextSpan);
             }
             
-            newTitle.appendChild(textSpan);
+            mockTitle.appendChild(mockTextSpan);
 
-            this.navbarDOM.insertBefore(newTitle, this.navbarDOM.children[0]);
+            this.navbarDOM.insertBefore(mockTitle, this.navbarDOM.children[0]);
+            titleNode.style.opacity = 0;
+            
+            AirrFX.doTransitionAnimation(titleNode, {
+                webkitTransform: `translate3d(${(titleNode.clientWidth / 2 + mockTextSpan.clientWidth / 2) * direction + 'px'},0,0)`,
+                transform: `translate3d(${(titleNode.clientWidth / 2 + mockTextSpan.clientWidth / 2) * direction + 'px'},0,0)`,
+                opacity: 0
+            }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
+                webkitTransform: `translate3d(0,0,0)`,
+                transform: `translate3d(0,0,0)`,
+                opacity: 1
+            }, null, this.props.animationTime);
 
+            AirrFX.doTransitionAnimation(mockTitle, {
+                webkitTransform: 'translate3d(0,0,0)',
+                transform: 'translate3d(0,0,0)',
+                opacity: 1
+            }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
+                webkitTransform: `translate3d(${mockTextSpan.clientWidth * direction * -1 + 'px'},0,0)`,
+                transform: `translate3d(${mockTextSpan.clientWidth * direction * -1 + 'px'},0,0)`,
+                opacity: 0
+            }, null, this.props.animationTime);
+
+            setTimeout(() => {
+                this.navbarDOM.removeChild(mockTitle);
+            }, this.props.animationTime);
+            
             if (this.state.backButton && this.props.stackMode) {
                 const backDOM = this.navbarDOM.querySelector('.back');
                 if (oldViewIndex === 0) {
@@ -688,33 +722,6 @@ export default class AirrScene extends AirrComponent {
 
                 }
             }
-
-
-            AirrFX.doTransitionAnimation(oldTitle, {
-                webkitTransform: 'translate3d(0,0,0)',
-                transform: 'translate3d(0,0,0)',
-                opacity: 1
-            }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                webkitTransform: `translate3d(${oldTitle.clientWidth * direction * -1 + 'px'},0,0)`,
-                transform: `translate3d(${oldTitle.clientWidth * direction * -1 + 'px'},0,0)`,
-                opacity: 0
-            }, null, this.props.animationTime);
-
-            AirrFX.doTransitionAnimation(newTitle, {
-                webkitTransform: `translate3d(${(oldTitle.clientWidth / 2 + textSpan.clientWidth / 2) * direction + 'px'},0,0)`,
-                transform: `translate3d(${(oldTitle.clientWidth / 2 + textSpan.clientWidth / 2) * direction + 'px'},0,0)`,
-                opacity: 0
-            }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                webkitTransform: `translate3d(0,0,0)`,
-                transform: `translate3d(0,0,0)`,
-                opacity: 1
-            }, null, this.props.animationTime);
-
-            setTimeout(() => {
-                newTitle.classList.remove('new-title');
-                newTitle.classList.add('title');
-                this.navbarDOM.removeChild(oldTitle);
-            }, this.props.animationTime);
         }
 
         if (this.state.animation === 'slide') {
@@ -948,20 +955,23 @@ export default class AirrScene extends AirrComponent {
 
         let navbar = null;
         if (this.state.navbar) {
+            
             let back = null;
             if (this.state.backButton) {
                 const backClassName = 'back ' + (this.getViewIndex(this.state.activeViewName) < 1 && !this.state.backButtonOnFirstView ? 'hidden' : '');
-                back = <div className={backClassName} onClick={(e) => this.handleBackButton(e)}><div></div></div>;
+                back = (<div className={backClassName} onClick={(e) => this.handleBackButton(e)}><div /></div>);
             }
-            const menu = this.state.sidepanel ? <div className="menu" onClick={(e) => this.handleMenuButton(e)}><div></div></div> : null;
+            
+            const menu = this.state.sidepanel ? <div className="menu" onClick={(e) => this.handleMenuButton(e)}><div /></div> : null;
+            
             let title = null;
             views.forEach((v) => {
                 if (v.props.name === this.state.activeViewName) {
                     title = v.props.title;
                 }
             });
-            const navbarStyle = {height: this.state.navbarHeight + 'px'};
             
+            const navbarStyle = {height: this.state.navbarHeight + 'px'};
             if ([1,true].indexOf(this.state.navbar) === -1) {
                 navbarStyle.visibility = 'hidden';
             }
@@ -988,6 +998,6 @@ export default class AirrScene extends AirrComponent {
                     {mayers}
                     {blankmask}
                 </div>
-                );
+        );
     }
 }
