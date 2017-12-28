@@ -2,7 +2,6 @@
   "name": "demo-app",
   "version": "0.1.0",
   "dependencies": {
-    "airr-react": "^1.0.9",
     "babel-polyfill": "^6.26.0",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
