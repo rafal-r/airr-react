@@ -1,6 +1,6 @@
 {
 	"name": "airr-react",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Reusable React components for building mobile hybrid apps",
 	"dependencies": {
 		"immutability-helper": "^2.5.0",
@@ -9,7 +9,7 @@
 	},
 	"main": "airr-react.js",
 	"scripts": {
-		"build": "babel lib -d dist"
+		"build": "babel lib -d dist --copy-files"
 	},
 	"keywords": [
 		"react",
