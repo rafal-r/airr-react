@@ -4,17 +4,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _propTypes = require('prop-types');
 
@@ -75,6 +69,7 @@ var AirrScene = function (_AirrComponent) {
         _this.state = {
             active: props.active,
             navbar: Number(props.navbar),
+            mockTitle: false,
             navbarHeight: props.navbarHeight,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
@@ -536,7 +531,7 @@ var AirrScene = function (_AirrComponent) {
 
             if (typeof newViewName === 'string') {
 
-                this.setState({ GUIDisabled: true }, function () {
+                this.setState({ GUIDisabled: true, mockTitle: newViewName }, function () {
 
                     if (newViewName === _this8.state.activeViewName) {
                         console.warn('[Airr] This View is already active.');
@@ -544,17 +539,9 @@ var AirrScene = function (_AirrComponent) {
                         return;
                     }
 
-                    var found = false;
+                    var viewIndex = _this8.getViewIndex(newViewName);
 
-                    _this8.state.views.forEach(function (view) {
-                        if (view.props.name === newViewName) {
-                            found = true;
-                        }
-                    });
-
-                    if (!found) {
-                        console.warn('[Airr] View with name ' + newViewName + ' is not presence in this Scene.');
-                    } else {
+                    if (viewIndex !== -1) {
                         var oldViewName = _this8.state.activeViewName;
                         var newViewComp = _this8.viewsCompsRefs[newViewName];
                         var oldViewComp = _this8.viewsCompsRefs[oldViewName];
@@ -572,7 +559,8 @@ var AirrScene = function (_AirrComponent) {
                             _this8.doViewAnimation(newViewName, oldViewName, function () {
                                 _this8.setState({
                                     activeViewName: newViewName,
-                                    GUIDisabled: false
+                                    GUIDisabled: false,
+                                    mockTitle: false
                                 }, function () {
                                     if (typeof newViewComp.viewAfterActivation === 'function') {
                                         newViewComp.viewAfterActivation();
@@ -589,7 +577,8 @@ var AirrScene = function (_AirrComponent) {
                         } else {
                             _this8.setState({
                                 activeViewName: newViewName,
-                                GUIDisabled: false
+                                GUIDisabled: false,
+                                mockTitle: false
                             }, function () {
                                 if (typeof newViewComp.viewAfterActivation === 'function') {
                                     newViewComp.viewAfterActivation();
@@ -603,6 +592,8 @@ var AirrScene = function (_AirrComponent) {
                                 }
                             });
                         }
+                    } else {
+                        console.warn('[Airr] View with name ' + newViewName + ' is not presence in this Scene.');
                     }
                 });
             } else {
@@ -632,33 +623,9 @@ var AirrScene = function (_AirrComponent) {
 
             if (this.state.navbar) {
                 //perform navbar animations
-                var mockTitle = document.createElement('div');
-                var mockTextSpan = document.createElement('span');
                 var titleNode = this.navbarDOM.querySelector('.title');
-                var titleTextSpan = titleNode.children[0];
-                var newViewTitle = this.state.views[newViewIndex].props.title;
-                var currentViewTitle = this.state.views[oldViewIndex].props.title;
-
-                mockTitle.classList.add('mock-title');
-
-                if (typeof currentViewTitle === 'string') {
-                    mockTextSpan.textContent = currentViewTitle;
-                } else if ((typeof currentViewTitle === 'undefined' ? 'undefined' : _typeof(currentViewTitle)) === 'object' && '$$typeof' in currentViewTitle) {
-                    //react.element
-                    _reactDom2.default.render(currentViewTitle, mockTextSpan);
-                }
-
-                if (typeof newViewTitle === 'string') {
-                    titleTextSpan.textContent = newViewTitle;
-                } else if ((typeof newViewTitle === 'undefined' ? 'undefined' : _typeof(newViewTitle)) === 'object' && '$$typeof' in newViewTitle) {
-                    //react.element
-                    _reactDom2.default.render(newViewTitle, titleTextSpan);
-                }
-
-                mockTitle.appendChild(mockTextSpan);
-
-                this.navbarDOM.insertBefore(mockTitle, this.navbarDOM.children[0]);
-                titleNode.style.opacity = 0;
+                var mockTitle = this.navbarDOM.querySelector('.mock-title');
+                var mockTextSpan = mockTitle.children[0];
 
                 _AirrFX2.default.doTransitionAnimation(titleNode, {
                     webkitTransform: 'translate3d(' + ((titleNode.clientWidth / 2 + mockTextSpan.clientWidth / 2) * direction + 'px') + ',0,0)',
@@ -679,10 +646,6 @@ var AirrScene = function (_AirrComponent) {
                     transform: 'translate3d(' + (mockTextSpan.clientWidth * direction * -1 + 'px') + ',0,0)',
                     opacity: 0
                 }, null, this.props.animationTime);
-
-                setTimeout(function () {
-                    _this9.navbarDOM.removeChild(mockTitle);
-                }, this.props.animationTime);
 
                 if (this.state.backButton && this.props.stackMode) {
                     var backDOM = this.navbarDOM.querySelector('.back');
@@ -974,8 +937,10 @@ var AirrScene = function (_AirrComponent) {
 
             var navbar = null;
             if (this.state.navbar) {
-
+                var mockTitle = null;
+                var title = '';
                 var back = null;
+
                 if (this.state.backButton) {
                     var backClassName = 'back ' + (this.getViewIndex(this.state.activeViewName) < 1 && !this.state.backButtonOnFirstView ? 'hidden' : '');
                     back = _react2.default.createElement(
@@ -995,16 +960,24 @@ var AirrScene = function (_AirrComponent) {
                     _react2.default.createElement('div', null)
                 ) : null;
 
-                var title = null;
-                views.forEach(function (v) {
-                    if (v.props.name === _this10.state.activeViewName) {
-                        title = v.props.title;
-                    }
-                });
-
                 var navbarStyle = { height: this.state.navbarHeight + 'px' };
                 if ([1, true].indexOf(this.state.navbar) === -1) {
                     navbarStyle.visibility = 'hidden';
+                }
+
+                if (this.state.mockTitle) {
+                    mockTitle = this.state.mockTitle ? _react2.default.createElement(
+                        'div',
+                        { className: 'mock-title' },
+                        _react2.default.createElement(
+                            'span',
+                            null,
+                            this.state.views[this.getViewIndex(this.state.activeViewName)].props.title
+                        )
+                    ) : null;
+                    title = this.state.views[this.getViewIndex(this.state.mockTitle)].props.title;
+                } else {
+                    title = this.state.views[this.getViewIndex(this.state.activeViewName)].props.title;
                 }
 
                 navbar = _react2.default.createElement(
@@ -1012,10 +985,11 @@ var AirrScene = function (_AirrComponent) {
                     { className: 'airr-navbar', ref: function ref(dom) {
                             return _this10.navbarDOM = dom;
                         }, style: navbarStyle },
+                    mockTitle,
                     back,
                     _react2.default.createElement(
                         'div',
-                        { className: 'title' },
+                        { className: 'title', style: { opacity: this.state.mockTitle ? 0 : 1 } },
                         _react2.default.createElement(
                             'span',
                             null,
