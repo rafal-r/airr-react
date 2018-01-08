@@ -6,7 +6,7 @@ export default class AirrView extends AirrComponent {
 
     render() {
         let className = 'airr-view';
-        let style = this.props.style || {};
+        let style = typeof this.props.style === 'object' ? Object.assign({}, this.props.style) : {};
 
         style.width = this.props.width + 'px';
         style.height = this.props.height + 'px';

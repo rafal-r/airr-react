@@ -36,12 +36,14 @@ class Mayers extends Component {
         console.log('Mayer viewAfterDeactivation');
     }
 
-    viewBeforeActivation() {
+    viewBeforeActivation(endCallback) {
         console.log('Mayer viewBeforeActivation');
+        endCallback();
     }
 
-    viewBeforeDeactivation() {
+    viewBeforeDeactivation(endCallback) {
         console.log('Mayer viewBeforeDeactivation');
+        endCallback();
     }
 
     componentWillMount() {
@@ -63,7 +65,7 @@ class Mayers extends Component {
         
         if (e.target.classList.contains('leaveTo')) {
             this.setState({leaveTo: e.target.dataset.value});
-            }
+        }
     }
 
     render() {
