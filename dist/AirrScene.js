@@ -140,47 +140,49 @@ var AirrScene = function (_AirrComponent) {
         value: function componentWillReceiveProps(nextProps) {
             var _this3 = this;
 
-            if (this.state.views.length !== nextProps.views.length) {
-                //Is views array different in length ?
+            if (!this.callingBeforeActivation && !this.callingBeforeDeactivation) {
+                if (this.state.views.length !== nextProps.views.length) {
+                    //Is views array different in length ?
 
-                if (this.state.activeViewName !== nextProps.activeViewName) {
-                    if (this.state.views.length > nextProps.views.length) {
-                        //Views POP operation
-                        var oldActiveViewName = this.state.activeViewName;
-                        this.changeActiveView(nextProps.activeViewName, function () {
-                            _this3.setState({ views: _this3.prepareViews(nextProps.views) });
-                            delete _this3.viewsCompsRefs[oldActiveViewName];
-                        });
+                    if (this.state.activeViewName !== nextProps.activeViewName) {
+                        if (this.state.views.length > nextProps.views.length) {
+                            //Views POP operation
+                            var oldActiveViewName = this.state.activeViewName;
+                            this.changeActiveView(nextProps.activeViewName, function () {
+                                _this3.setState({ views: _this3.prepareViews(nextProps.views) });
+                                delete _this3.viewsCompsRefs[oldActiveViewName];
+                            });
+                        } else {
+                            //Views PUSH operation
+                            this.setState({ views: this.prepareViews(nextProps.views) }, function () {
+                                return _this3.changeActiveView(nextProps.activeViewName);
+                            });
+                        }
                     } else {
-                        //Views PUSH operation
-                        this.setState({ views: this.prepareViews(nextProps.views) }, function () {
-                            return _this3.changeActiveView(nextProps.activeViewName);
-                        });
+                        this.setState({ views: this.prepareViews(nextProps.views) });
                     }
                 } else {
-                    this.setState({ views: this.prepareViews(nextProps.views) });
-                }
-            } else {
-                //else check if every view configuration is the same
-                var equal = true;
-                this.state.views.forEach(function (item, i) {
-                    if (item !== nextProps.views[i]) {
-                        equal = false; //NOT equal!
-                        return;
-                    }
-                });
-
-                if (!equal) {
-                    //update views state
-                    this.setState({ views: this.prepareViews(nextProps.views) }, function () {
-                        if (_this3.state.activeViewName !== nextProps.activeViewName) {
-                            //now we can check if active view has changed
-                            _this3.changeActiveView(nextProps.activeViewName);
+                    //else check if every view configuration is the same
+                    var equal = true;
+                    this.state.views.forEach(function (item, i) {
+                        if (item !== nextProps.views[i]) {
+                            equal = false; //NOT equal!
+                            return;
                         }
                     });
-                } else if (this.state.activeViewName !== nextProps.activeViewName) {
-                    ///if only active view has changed
-                    this.changeActiveView(nextProps.activeViewName);
+
+                    if (!equal) {
+                        //update views state
+                        this.setState({ views: this.prepareViews(nextProps.views) }, function () {
+                            if (_this3.state.activeViewName !== nextProps.activeViewName) {
+                                //now we can check if active view has changed
+                                _this3.changeActiveView(nextProps.activeViewName);
+                            }
+                        });
+                    } else if (this.state.activeViewName !== nextProps.activeViewName) {
+                        ///if only active view has changed
+                        this.changeActiveView(nextProps.activeViewName);
+                    }
                 }
             }
 
@@ -547,11 +549,19 @@ var AirrScene = function (_AirrComponent) {
                         var oldViewComp = _this8.viewsCompsRefs[oldViewName];
 
                         if (typeof newViewComp.viewBeforeActivation === 'function') {
-                            newViewComp.viewBeforeActivation();
+                            _this8.callingBeforeActivation = true;
+
+                            newViewComp.viewBeforeActivation(function () {
+                                _this8.callingBeforeActivation = false;
+                            });
                         }
 
                         if (typeof oldViewComp.viewBeforeDeactivation === 'function') {
-                            oldViewComp.viewBeforeDeactivation();
+                            _this8.callingBeforeDeactivation = true;
+
+                            oldViewComp.viewBeforeDeactivation(function () {
+                                _this8.callingBeforeDeactivation = false;
+                            });
                         }
 
                         if (_this8.state.animation) {
