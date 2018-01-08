@@ -188,41 +188,43 @@ export default class AirrScene extends AirrComponent {
 
     componentWillReceiveProps(nextProps) {
 
-        if (this.state.views.length !== nextProps.views.length) { //Is views array different in length ?
+        if (!this.callingBeforeActivation && !this.callingBeforeDeactivation) {
+            if (this.state.views.length !== nextProps.views.length) { //Is views array different in length ?
 
-            if (this.state.activeViewName !== nextProps.activeViewName) {
-                if (this.state.views.length > nextProps.views.length) { //Views POP operation
-                    const oldActiveViewName = this.state.activeViewName;
-                    this.changeActiveView(nextProps.activeViewName, () => {
-                        this.setState({views: this.prepareViews(nextProps.views)});
-                        delete this.viewsCompsRefs[oldActiveViewName];
-                    });
-                } else { //Views PUSH operation
-                    this.setState({views: this.prepareViews(nextProps.views)}, () => this.changeActiveView(nextProps.activeViewName));
+                if (this.state.activeViewName !== nextProps.activeViewName) {
+                    if (this.state.views.length > nextProps.views.length) { //Views POP operation
+                        const oldActiveViewName = this.state.activeViewName;
+                        this.changeActiveView(nextProps.activeViewName, () => {
+                            this.setState({views: this.prepareViews(nextProps.views)});
+                            delete this.viewsCompsRefs[oldActiveViewName];
+                        });
+                    } else { //Views PUSH operation
+                        this.setState({views: this.prepareViews(nextProps.views)}, () => this.changeActiveView(nextProps.activeViewName));
+                    }
+                } else {
+                    this.setState({views: this.prepareViews(nextProps.views)});
                 }
-            } else {
-                this.setState({views: this.prepareViews(nextProps.views)});
-            }
-        } else { //else check if every view configuration is the same
-            let equal = true;
-            this.state.views.forEach((item, i) => {
-                if (item !== nextProps.views[i]) {
-                    equal = false; //NOT equal!
-                    return;
-                }
-            });
-
-            if (!equal) { //update views state
-                this.setState({views: this.prepareViews(nextProps.views)}, () => {
-                    if (this.state.activeViewName !== nextProps.activeViewName) { //now we can check if active view has changed
-                        this.changeActiveView(nextProps.activeViewName);
+            } else { //else check if every view configuration is the same
+                let equal = true;
+                this.state.views.forEach((item, i) => {
+                    if (item !== nextProps.views[i]) {
+                        equal = false; //NOT equal!
+                        return;
                     }
                 });
-            } else if (this.state.activeViewName !== nextProps.activeViewName) { ///if only active view has changed
-                this.changeActiveView(nextProps.activeViewName);
+
+                if (!equal) { //update views state
+                    this.setState({views: this.prepareViews(nextProps.views)}, () => {
+                        if (this.state.activeViewName !== nextProps.activeViewName) { //now we can check if active view has changed
+                            this.changeActiveView(nextProps.activeViewName);
+                        }
+                    });
+                } else if (this.state.activeViewName !== nextProps.activeViewName) { ///if only active view has changed
+                    this.changeActiveView(nextProps.activeViewName);
+                }
             }
         }
-
+        
         if (this.state.mayers.length !== nextProps.mayers.length) { //Is mayer array different in length ?
             if (this.state.mayers.length > nextProps.mayers.length) { //close mayer
                 //find missing mayer name
@@ -566,11 +568,19 @@ export default class AirrScene extends AirrComponent {
                     const oldViewComp = this.viewsCompsRefs[oldViewName];
 
                     if (typeof newViewComp.viewBeforeActivation === 'function') {
-                        newViewComp.viewBeforeActivation();
+                        this.callingBeforeActivation = true;
+                        
+                        newViewComp.viewBeforeActivation(() => {
+                            this.callingBeforeActivation = false;
+                        });
                     }
 
                     if (typeof oldViewComp.viewBeforeDeactivation === 'function') {
-                        oldViewComp.viewBeforeDeactivation();
+                        this.callingBeforeDeactivation = true;
+                        
+                        oldViewComp.viewBeforeDeactivation(() => {
+                            this.callingBeforeDeactivation = false;
+                        });
                     }
 
                     if (this.state.animation) {
@@ -924,7 +934,7 @@ export default class AirrScene extends AirrComponent {
             let mockTitle = null
             let title = ''
             let back = null
-            
+
             if (this.state.backButton) {
                 const backClassName = 'back ' + (this.getViewIndex(this.state.activeViewName) < 1 && !this.state.backButtonOnFirstView ? 'hidden' : '')
                 back = (<div className={backClassName} onClick={(e) => this.handleBackButton(e)}><div /></div>)
@@ -936,39 +946,38 @@ export default class AirrScene extends AirrComponent {
             if ([1, true].indexOf(this.state.navbar) === -1) {
                 navbarStyle.visibility = 'hidden';
             }
-            
-            
+
+
             if (this.state.mockTitle) {
                 mockTitle = this.state.mockTitle ? <div className="mock-title"><span>{this.state.views[this.getViewIndex(this.state.activeViewName)].props.title}</span></div> : null
                 title = this.state.views[this.getViewIndex(this.state.mockTitle)].props.title
-            }
-            else {
+            } else {
                 title = this.state.views[this.getViewIndex(this.state.activeViewName)].props.title
             }
 
             navbar = (
-                <div className="airr-navbar" ref={dom => this.navbarDOM = dom} style={navbarStyle}>
-                    {mockTitle}
-                    {back}
-                    <div className="title" style={{opacity: this.state.mockTitle ? 0 : 1}}><span>{title}</span></div>
-                    {menu}
-                </div>
-            );
-        }
-
-        const sceneStyle = {width: this.state.width + 'px', height: this.state.height + 'px'};
-
-        return (
-                <div style={sceneStyle} className={className} ref="dom">
-                    {navbar}
-                    <div className={containerClassList.join(' ')} style={containerStyle} ref={div => this.containerDOM = div}>
-                        {views}
+                        <div className="airr-navbar" ref={dom => this.navbarDOM = dom} style={navbarStyle}>
+                        {mockTitle}
+                        {back}
+                        <div className="title" style={{opacity: this.state.mockTitle ? 0 : 1}}><span>{title}</span></div>
+                        {menu}
                     </div>
-                    {this.props.children}
-                    {sidepanel}
-                    {mayers}
-                    {blankmask}
-                </div>
-                );
+                                );
+                    }
+
+            const sceneStyle = {width: this.state.width + 'px', height: this.state.height + 'px'};
+
+            return (
+                    <div style={sceneStyle} className={className} ref="dom">
+                        {navbar}
+                        <div className={containerClassList.join(' ')} style={containerStyle} ref={div => this.containerDOM = div}>
+                            {views}
+                        </div>
+                        {this.props.children}
+                        {sidepanel}
+                        {mayers}
+                        {blankmask}
+                    </div>
+                    );
+        }
     }
-}
