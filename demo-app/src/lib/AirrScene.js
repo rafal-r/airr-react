@@ -10,8 +10,8 @@ export default class AirrScene extends AirrComponent {
         name: '', //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
         width: null, //number
         height: null, //number
-        activeViewName: null, //string 
 
+        activeViewName: null, //string 
         GUIDisabled: false, //bool
         animation: 'slide', //slide,overlay,fade or false if no animation
         animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
@@ -33,8 +33,8 @@ export default class AirrScene extends AirrComponent {
         name: PropTypes.string.isRequired,
         width: PropTypes.number.isRequired,
         height: PropTypes.number.isRequired,
-        activeViewName: PropTypes.string.isRequired,
 
+        activeViewName: PropTypes.string,
         GUIDisabled: PropTypes.bool,
         animation: PropTypes.oneOf(['slide', 'overlay', 'fade', false]),
         animationTime: PropTypes.number,
@@ -189,6 +189,7 @@ export default class AirrScene extends AirrComponent {
     componentWillReceiveProps(nextProps) {
 
         if (!this.callingBeforeActivation && !this.callingBeforeDeactivation) {
+
             if (this.state.views.length !== nextProps.views.length) { //Is views array different in length ?
 
                 if (this.state.activeViewName !== nextProps.activeViewName) {
@@ -220,11 +221,16 @@ export default class AirrScene extends AirrComponent {
                         }
                     });
                 } else if (this.state.activeViewName !== nextProps.activeViewName) { ///if only active view has changed
-                    this.changeActiveView(nextProps.activeViewName);
+
+                    if (nextProps.activeViewName !== null && this.state.activeViewName !== null) {
+                        this.changeActiveView(nextProps.activeViewName);
+                    } else { //if prior or next activeViewName is null then do no animation, simply change state
+                        this.setState({activeViewName: nextProps.activeViewName})
+                    }
                 }
             }
         }
-        
+
         if (this.state.mayers.length !== nextProps.mayers.length) { //Is mayer array different in length ?
             if (this.state.mayers.length > nextProps.mayers.length) { //close mayer
                 //find missing mayer name
@@ -560,66 +566,53 @@ export default class AirrScene extends AirrComponent {
                     return;
                 }
 
-                const viewIndex = this.getViewIndex(newViewName);
-
-                if (viewIndex !== -1) {
+                if (this.getViewIndex(newViewName) !== -1) {
                     const oldViewName = this.state.activeViewName;
                     const newViewComp = this.viewsCompsRefs[newViewName];
                     const oldViewComp = this.viewsCompsRefs[oldViewName];
+                    const animEndCallback = () => {
+                        if (newViewComp && typeof newViewComp.viewAfterActivation === 'function') {
+                            newViewComp.viewAfterActivation();
+                        }
+                        if (oldViewComp && typeof oldViewComp.viewAfterDeactivation === 'function') {
+                            oldViewComp.viewAfterDeactivation();
+                        }
 
-                    if (typeof newViewComp.viewBeforeActivation === 'function') {
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+                    }
+
+                    if (newViewComp && typeof newViewComp.viewBeforeActivation === 'function') {
                         this.callingBeforeActivation = true;
-                        
+
                         newViewComp.viewBeforeActivation(() => {
                             this.callingBeforeActivation = false;
                         });
                     }
 
-                    if (typeof oldViewComp.viewBeforeDeactivation === 'function') {
+                    if (oldViewComp && typeof oldViewComp.viewBeforeDeactivation === 'function') {
                         this.callingBeforeDeactivation = true;
-                        
+
                         oldViewComp.viewBeforeDeactivation(() => {
                             this.callingBeforeDeactivation = false;
                         });
                     }
 
                     if (this.state.animation) {
-
                         this.doViewAnimation(newViewName, oldViewName, () => {
                             this.setState({
                                 activeViewName: newViewName,
                                 GUIDisabled: false,
                                 mockTitle: false
-                            }, () => {
-                                if (typeof newViewComp.viewAfterActivation === 'function') {
-                                    newViewComp.viewAfterActivation();
-                                }
-                                if (typeof oldViewComp.viewAfterDeactivation === 'function') {
-                                    oldViewComp.viewAfterDeactivation();
-                                }
-
-                                if (typeof callback === 'function') {
-                                    callback();
-                                }
-                            });
+                            }, animEndCallback);
                         });
                     } else {
                         this.setState({
                             activeViewName: newViewName,
                             GUIDisabled: false,
                             mockTitle: false
-                        }, () => {
-                            if (typeof newViewComp.viewAfterActivation === 'function') {
-                                newViewComp.viewAfterActivation();
-                            }
-                            if (typeof oldViewComp.viewAfterDeactivation === 'function') {
-                                oldViewComp.viewAfterDeactivation();
-                            }
-
-                            if (typeof callback === 'function') {
-                                callback();
-                            }
-                        });
+                        }, animEndCallback);
                     }
                 } else {
                     console.warn('[Airr] View with name ' + newViewName + ' is not presence in this Scene.');
@@ -640,7 +633,7 @@ export default class AirrScene extends AirrComponent {
      * @returns {void}
      */
     doViewAnimation(newViewName, oldViewName, callback) {
-        const newViewDOM = this.viewsCompsRefs[newViewName].refs.airrView.refs.dom
+        const newViewDOM = this.viewsCompsRefs[newViewName] && this.viewsCompsRefs[newViewName].refs.airrView.refs.dom
         const oldViewIndex = this.getViewIndex(oldViewName)
         const newViewIndex = this.getViewIndex(newViewName)
 
@@ -649,30 +642,36 @@ export default class AirrScene extends AirrComponent {
         if (this.state.navbar) { //perform navbar animations
             const titleNode = this.navbarDOM.querySelector('.title')
             const mockTitle = this.navbarDOM.querySelector('.mock-title')
-            const mockTextSpan = mockTitle.children[0]
+            const mockTextSpan = mockTitle && mockTitle.children[0]
+            const mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0
 
-            AirrFX.doTransitionAnimation(titleNode, {
-                webkitTransform: `translate3d(${(titleNode.clientWidth / 2 + mockTextSpan.clientWidth / 2) * direction + 'px'},0,0)`,
-                transform: `translate3d(${(titleNode.clientWidth / 2 + mockTextSpan.clientWidth / 2) * direction + 'px'},0,0)`,
-                opacity: 0
-            }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                webkitTransform: `translate3d(0,0,0)`,
-                transform: `translate3d(0,0,0)`,
-                opacity: 1
-            }, null, this.props.animationTime)
+            if (titleNode) {
+                AirrFX.doTransitionAnimation(titleNode, {
+                    webkitTransform: `translate3d(${(titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + 'px'},0,0)`,
+                    transform: `translate3d(${(titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + 'px'},0,0)`,
+                    opacity: 0
+                }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
+                    webkitTransform: `translate3d(0,0,0)`,
+                    transform: `translate3d(0,0,0)`,
+                    opacity: 1
+                }, null, this.props.animationTime)
+            }
 
-            AirrFX.doTransitionAnimation(mockTitle, {
-                webkitTransform: 'translate3d(0,0,0)',
-                transform: 'translate3d(0,0,0)',
-                opacity: 1
-            }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                webkitTransform: `translate3d(${mockTextSpan.clientWidth * direction * -1 + 'px'},0,0)`,
-                transform: `translate3d(${mockTextSpan.clientWidth * direction * -1 + 'px'},0,0)`,
-                opacity: 0
-            }, null, this.props.animationTime)
+            if (mockTitle) {
+                AirrFX.doTransitionAnimation(mockTitle, {
+                    webkitTransform: 'translate3d(0,0,0)',
+                    transform: 'translate3d(0,0,0)',
+                    opacity: 1
+                }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
+                    webkitTransform: `translate3d(${mockTextSpanWidth * direction * -1 + 'px'},0,0)`,
+                    transform: `translate3d(${mockTextSpanWidth * direction * -1 + 'px'},0,0)`,
+                    opacity: 0
+                }, null, this.props.animationTime)
+            }
 
             if (this.state.backButton && this.props.stackMode) {
                 const backDOM = this.navbarDOM.querySelector('.back')
+
                 if (oldViewIndex === 0) {
 
                     AirrFX.doTransitionAnimation(backDOM, {
@@ -702,8 +701,8 @@ export default class AirrScene extends AirrComponent {
 
         if (this.state.animation === 'slide') {
             newViewDOM.style.display = 'block'
-            var startProps = {}
-            var endProps = {}
+            let startProps = {}
+            let endProps = {}
 
             if (direction === -1) {
                 startProps.webkitTransform = 'translate3d(' + (-1 * this.refs.dom.clientWidth) + 'px,0,0)'
@@ -934,9 +933,10 @@ export default class AirrScene extends AirrComponent {
             let mockTitle = null
             let title = ''
             let back = null
+            const activeViewIndex = this.getViewIndex(this.state.activeViewName)
 
             if (this.state.backButton) {
-                const backClassName = 'back ' + (this.getViewIndex(this.state.activeViewName) < 1 && !this.state.backButtonOnFirstView ? 'hidden' : '')
+                const backClassName = 'back ' + (activeViewIndex < 1 && !this.state.backButtonOnFirstView ? 'hidden' : '')
                 back = (<div className={backClassName} onClick={(e) => this.handleBackButton(e)}><div /></div>)
             }
 
@@ -949,10 +949,12 @@ export default class AirrScene extends AirrComponent {
 
 
             if (this.state.mockTitle) {
-                mockTitle = this.state.mockTitle ? <div className="mock-title"><span>{this.state.views[this.getViewIndex(this.state.activeViewName)].props.title}</span></div> : null
-                title = this.state.views[this.getViewIndex(this.state.mockTitle)].props.title
+                const mockTitleContent = this.state.views[activeViewIndex] && this.state.views[activeViewIndex].props.title
+                const mockTitleViewIndex = this.getViewIndex(this.state.mockTitle)
+                mockTitle = this.state.mockTitle ? <div className="mock-title"><span>{mockTitleContent}</span></div> : null
+                title = this.state.views[mockTitleViewIndex] ? this.state.views[mockTitleViewIndex].props.title : ''
             } else {
-                title = this.state.views[this.getViewIndex(this.state.activeViewName)].props.title
+                title = this.state.views[activeViewIndex] ? this.state.views[activeViewIndex].props.title : ''
             }
 
             navbar = (

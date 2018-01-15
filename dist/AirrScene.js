@@ -141,6 +141,7 @@ var AirrScene = function (_AirrComponent) {
             var _this3 = this;
 
             if (!this.callingBeforeActivation && !this.callingBeforeDeactivation) {
+
                 if (this.state.views.length !== nextProps.views.length) {
                     //Is views array different in length ?
 
@@ -181,7 +182,13 @@ var AirrScene = function (_AirrComponent) {
                         });
                     } else if (this.state.activeViewName !== nextProps.activeViewName) {
                         ///if only active view has changed
-                        this.changeActiveView(nextProps.activeViewName);
+
+                        if (nextProps.activeViewName !== null && this.state.activeViewName !== null) {
+                            this.changeActiveView(nextProps.activeViewName);
+                        } else {
+                            //if prior or next activeViewName is null then do no animation, simply change state
+                            this.setState({ activeViewName: nextProps.activeViewName });
+                        }
                     }
                 }
             }
@@ -541,14 +548,24 @@ var AirrScene = function (_AirrComponent) {
                         return;
                     }
 
-                    var viewIndex = _this8.getViewIndex(newViewName);
-
-                    if (viewIndex !== -1) {
+                    if (_this8.getViewIndex(newViewName) !== -1) {
                         var oldViewName = _this8.state.activeViewName;
                         var newViewComp = _this8.viewsCompsRefs[newViewName];
                         var oldViewComp = _this8.viewsCompsRefs[oldViewName];
+                        var animEndCallback = function animEndCallback() {
+                            if (newViewComp && typeof newViewComp.viewAfterActivation === 'function') {
+                                newViewComp.viewAfterActivation();
+                            }
+                            if (oldViewComp && typeof oldViewComp.viewAfterDeactivation === 'function') {
+                                oldViewComp.viewAfterDeactivation();
+                            }
 
-                        if (typeof newViewComp.viewBeforeActivation === 'function') {
+                            if (typeof callback === 'function') {
+                                callback();
+                            }
+                        };
+
+                        if (newViewComp && typeof newViewComp.viewBeforeActivation === 'function') {
                             _this8.callingBeforeActivation = true;
 
                             newViewComp.viewBeforeActivation(function () {
@@ -556,7 +573,7 @@ var AirrScene = function (_AirrComponent) {
                             });
                         }
 
-                        if (typeof oldViewComp.viewBeforeDeactivation === 'function') {
+                        if (oldViewComp && typeof oldViewComp.viewBeforeDeactivation === 'function') {
                             _this8.callingBeforeDeactivation = true;
 
                             oldViewComp.viewBeforeDeactivation(function () {
@@ -565,42 +582,19 @@ var AirrScene = function (_AirrComponent) {
                         }
 
                         if (_this8.state.animation) {
-
                             _this8.doViewAnimation(newViewName, oldViewName, function () {
                                 _this8.setState({
                                     activeViewName: newViewName,
                                     GUIDisabled: false,
                                     mockTitle: false
-                                }, function () {
-                                    if (typeof newViewComp.viewAfterActivation === 'function') {
-                                        newViewComp.viewAfterActivation();
-                                    }
-                                    if (typeof oldViewComp.viewAfterDeactivation === 'function') {
-                                        oldViewComp.viewAfterDeactivation();
-                                    }
-
-                                    if (typeof callback === 'function') {
-                                        callback();
-                                    }
-                                });
+                                }, animEndCallback);
                             });
                         } else {
                             _this8.setState({
                                 activeViewName: newViewName,
                                 GUIDisabled: false,
                                 mockTitle: false
-                            }, function () {
-                                if (typeof newViewComp.viewAfterActivation === 'function') {
-                                    newViewComp.viewAfterActivation();
-                                }
-                                if (typeof oldViewComp.viewAfterDeactivation === 'function') {
-                                    oldViewComp.viewAfterDeactivation();
-                                }
-
-                                if (typeof callback === 'function') {
-                                    callback();
-                                }
-                            });
+                            }, animEndCallback);
                         }
                     } else {
                         console.warn('[Airr] View with name ' + newViewName + ' is not presence in this Scene.');
@@ -625,7 +619,7 @@ var AirrScene = function (_AirrComponent) {
         value: function doViewAnimation(newViewName, oldViewName, callback) {
             var _this9 = this;
 
-            var newViewDOM = this.viewsCompsRefs[newViewName].refs.airrView.refs.dom;
+            var newViewDOM = this.viewsCompsRefs[newViewName] && this.viewsCompsRefs[newViewName].refs.airrView.refs.dom;
             var oldViewIndex = this.getViewIndex(oldViewName);
             var newViewIndex = this.getViewIndex(newViewName);
 
@@ -635,30 +629,36 @@ var AirrScene = function (_AirrComponent) {
                 //perform navbar animations
                 var titleNode = this.navbarDOM.querySelector('.title');
                 var mockTitle = this.navbarDOM.querySelector('.mock-title');
-                var mockTextSpan = mockTitle.children[0];
+                var mockTextSpan = mockTitle && mockTitle.children[0];
+                var mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
 
-                _AirrFX2.default.doTransitionAnimation(titleNode, {
-                    webkitTransform: 'translate3d(' + ((titleNode.clientWidth / 2 + mockTextSpan.clientWidth / 2) * direction + 'px') + ',0,0)',
-                    transform: 'translate3d(' + ((titleNode.clientWidth / 2 + mockTextSpan.clientWidth / 2) * direction + 'px') + ',0,0)',
-                    opacity: 0
-                }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                    webkitTransform: 'translate3d(0,0,0)',
-                    transform: 'translate3d(0,0,0)',
-                    opacity: 1
-                }, null, this.props.animationTime);
+                if (titleNode) {
+                    _AirrFX2.default.doTransitionAnimation(titleNode, {
+                        webkitTransform: 'translate3d(' + ((titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + 'px') + ',0,0)',
+                        transform: 'translate3d(' + ((titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + 'px') + ',0,0)',
+                        opacity: 0
+                    }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
+                        webkitTransform: 'translate3d(0,0,0)',
+                        transform: 'translate3d(0,0,0)',
+                        opacity: 1
+                    }, null, this.props.animationTime);
+                }
 
-                _AirrFX2.default.doTransitionAnimation(mockTitle, {
-                    webkitTransform: 'translate3d(0,0,0)',
-                    transform: 'translate3d(0,0,0)',
-                    opacity: 1
-                }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                    webkitTransform: 'translate3d(' + (mockTextSpan.clientWidth * direction * -1 + 'px') + ',0,0)',
-                    transform: 'translate3d(' + (mockTextSpan.clientWidth * direction * -1 + 'px') + ',0,0)',
-                    opacity: 0
-                }, null, this.props.animationTime);
+                if (mockTitle) {
+                    _AirrFX2.default.doTransitionAnimation(mockTitle, {
+                        webkitTransform: 'translate3d(0,0,0)',
+                        transform: 'translate3d(0,0,0)',
+                        opacity: 1
+                    }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
+                        webkitTransform: 'translate3d(' + (mockTextSpanWidth * direction * -1 + 'px') + ',0,0)',
+                        transform: 'translate3d(' + (mockTextSpanWidth * direction * -1 + 'px') + ',0,0)',
+                        opacity: 0
+                    }, null, this.props.animationTime);
+                }
 
                 if (this.state.backButton && this.props.stackMode) {
                     var backDOM = this.navbarDOM.querySelector('.back');
+
                     if (oldViewIndex === 0) {
 
                         _AirrFX2.default.doTransitionAnimation(backDOM, {
@@ -950,9 +950,10 @@ var AirrScene = function (_AirrComponent) {
                 var mockTitle = null;
                 var title = '';
                 var back = null;
+                var activeViewIndex = this.getViewIndex(this.state.activeViewName);
 
                 if (this.state.backButton) {
-                    var backClassName = 'back ' + (this.getViewIndex(this.state.activeViewName) < 1 && !this.state.backButtonOnFirstView ? 'hidden' : '');
+                    var backClassName = 'back ' + (activeViewIndex < 1 && !this.state.backButtonOnFirstView ? 'hidden' : '');
                     back = _react2.default.createElement(
                         'div',
                         { className: backClassName, onClick: function onClick(e) {
@@ -976,18 +977,20 @@ var AirrScene = function (_AirrComponent) {
                 }
 
                 if (this.state.mockTitle) {
+                    var mockTitleContent = this.state.views[activeViewIndex] && this.state.views[activeViewIndex].props.title;
+                    var mockTitleViewIndex = this.getViewIndex(this.state.mockTitle);
                     mockTitle = this.state.mockTitle ? _react2.default.createElement(
                         'div',
                         { className: 'mock-title' },
                         _react2.default.createElement(
                             'span',
                             null,
-                            this.state.views[this.getViewIndex(this.state.activeViewName)].props.title
+                            mockTitleContent
                         )
                     ) : null;
-                    title = this.state.views[this.getViewIndex(this.state.mockTitle)].props.title;
+                    title = this.state.views[mockTitleViewIndex] ? this.state.views[mockTitleViewIndex].props.title : '';
                 } else {
-                    title = this.state.views[this.getViewIndex(this.state.activeViewName)].props.title;
+                    title = this.state.views[activeViewIndex] ? this.state.views[activeViewIndex].props.title : '';
                 }
 
                 navbar = _react2.default.createElement(
@@ -1038,8 +1041,8 @@ AirrScene.defaultProps = {
     name: '', //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
     width: null, //number
     height: null, //number
-    activeViewName: null, //string 
 
+    activeViewName: null, //string 
     GUIDisabled: false, //bool
     animation: 'slide', //slide,overlay,fade or false if no animation
     animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
@@ -1060,8 +1063,8 @@ AirrScene.propTypes = {
     name: _propTypes2.default.string.isRequired,
     width: _propTypes2.default.number.isRequired,
     height: _propTypes2.default.number.isRequired,
-    activeViewName: _propTypes2.default.string.isRequired,
 
+    activeViewName: _propTypes2.default.string,
     GUIDisabled: _propTypes2.default.bool,
     animation: _propTypes2.default.oneOf(['slide', 'overlay', 'fade', false]),
     animationTime: _propTypes2.default.number,
