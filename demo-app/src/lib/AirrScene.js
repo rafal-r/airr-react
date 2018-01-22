@@ -91,7 +91,7 @@ export default class AirrScene extends AirrComponent {
          * For checkout of possible properties go to Mayer declaration.
          * 
          * Example:
-         * this.mayers.views = [
+         * this.state.mayers. = [
          *   {
          *       name: 'demo-mayer',
          *       content: <div>Hello cruel world!</div>,
@@ -508,26 +508,36 @@ export default class AirrScene extends AirrComponent {
 
         if (mayerConfigIndex >= 0 && this.mayersCompsRefs[name]) {
             this.mayersCompsRefs[name].animateOut(() => {
-                const newMayerDefinition = update(this.state.mayers, {$splice: [[mayerConfigIndex, 1]]});
-                delete this.mayersCompsRefs[name];
-                this.setState({mayers: newMayerDefinition});
+                //renew index because after animation
+                //things might have changed
+                mayerConfigIndex = -1;
+                this.state.mayers.forEach((config, i) => {
+                    if (config.name === name) {
+                        mayerConfigIndex = i;
+                    }
+                });
 
-                if (this.state.sidepanel) {
-                    let hasMayerLeft = false;
-                    const children = [...this.refs.dom.children];
-                    children.forEach((item) => {
-                        if (item.classList.contains('airr-mayer')) {
-                            hasMayerLeft = true;
+                if (mayerConfigIndex >= 0 && this.mayersCompsRefs[name]) { //last check if present
+                    const newMayerDefinition = update(this.state.mayers, {$splice: [[mayerConfigIndex, 1]]});
+                    delete this.mayersCompsRefs[name];
+                    this.setState({mayers: newMayerDefinition}, () => {
+                        if (this.state.sidepanel) {
+                            let hasMayerLeft = false;
+                            const children = [...this.refs.dom.children];
+                            children.forEach((item) => {
+                                if (item.classList.contains('airr-mayer')) {
+                                    hasMayerLeft = true;
+                                }
+                            });
+
+                            if (!hasMayerLeft) {
+                                this.enableSidepanel();
+                            }
                         }
                     });
-
-                    if (!hasMayerLeft) {
-                        this.enableSidepanel();
-                    }
                 }
             });
         }
-
 
     }
 
@@ -958,7 +968,7 @@ export default class AirrScene extends AirrComponent {
             }
 
             navbar = (
-                        <div className="airr-navbar" ref={dom => this.navbarDOM = dom} style={navbarStyle}>
+                    <div className="airr-navbar" ref={dom => this.navbarDOM = dom} style={navbarStyle}>
                         {mockTitle}
                         {back}
                         <div className="title" style={{opacity: this.state.mockTitle ? 0 : 1}}><span>{title}</span></div>

@@ -484,22 +484,34 @@ var AirrScene = function (_AirrComponent) {
 
             if (mayerConfigIndex >= 0 && this.mayersCompsRefs[name]) {
                 this.mayersCompsRefs[name].animateOut(function () {
-                    var newMayerDefinition = (0, _immutabilityHelper2.default)(_this7.state.mayers, { $splice: [[mayerConfigIndex, 1]] });
-                    delete _this7.mayersCompsRefs[name];
-                    _this7.setState({ mayers: newMayerDefinition });
+                    //renew index because after animation
+                    //things might have changed
+                    mayerConfigIndex = -1;
+                    _this7.state.mayers.forEach(function (config, i) {
+                        if (config.name === name) {
+                            mayerConfigIndex = i;
+                        }
+                    });
 
-                    if (_this7.state.sidepanel) {
-                        var hasMayerLeft = false;
-                        var children = [].concat(_toConsumableArray(_this7.refs.dom.children));
-                        children.forEach(function (item) {
-                            if (item.classList.contains('airr-mayer')) {
-                                hasMayerLeft = true;
+                    if (mayerConfigIndex >= 0 && _this7.mayersCompsRefs[name]) {
+                        //last check if present
+                        var newMayerDefinition = (0, _immutabilityHelper2.default)(_this7.state.mayers, { $splice: [[mayerConfigIndex, 1]] });
+                        delete _this7.mayersCompsRefs[name];
+                        _this7.setState({ mayers: newMayerDefinition }, function () {
+                            if (_this7.state.sidepanel) {
+                                var hasMayerLeft = false;
+                                var children = [].concat(_toConsumableArray(_this7.refs.dom.children));
+                                children.forEach(function (item) {
+                                    if (item.classList.contains('airr-mayer')) {
+                                        hasMayerLeft = true;
+                                    }
+                                });
+
+                                if (!hasMayerLeft) {
+                                    _this7.enableSidepanel();
+                                }
                             }
                         });
-
-                        if (!hasMayerLeft) {
-                            _this7.enableSidepanel();
-                        }
                     }
                 });
             }
@@ -1121,7 +1133,7 @@ AirrScene.propTypes = {
      * For checkout of possible properties go to Mayer declaration.
      * 
      * Example:
-     * this.mayers.views = [
+     * this.state.mayers. = [
      *   {
      *       name: 'demo-mayer',
      *       content: <div>Hello cruel world!</div>,
