@@ -145,22 +145,28 @@ var AirrScene = function (_AirrComponent) {
                 if (this.state.views.length !== nextProps.views.length) {
                     //Is views array different in length ?
 
-                    if (this.state.activeViewName !== nextProps.activeViewName) {
-                        if (this.state.views.length > nextProps.views.length) {
-                            //Views POP operation
-                            var oldActiveViewName = this.state.activeViewName;
-                            this.changeActiveView(nextProps.activeViewName, function () {
-                                _this3.setState({ views: _this3.prepareViews(nextProps.views) });
-                                delete _this3.viewsCompsRefs[oldActiveViewName];
-                            });
+                    if (this.state.views.length > 0) {
+                        //we have some views to perfom animations between
+                        if (this.state.activeViewName !== nextProps.activeViewName) {
+                            if (this.state.views.length > nextProps.views.length) {
+                                //Views POP operation
+                                var oldActiveViewName = this.state.activeViewName;
+                                this.changeActiveView(nextProps.activeViewName, function () {
+                                    _this3.setState({ views: _this3.prepareViews(nextProps.views) });
+                                    delete _this3.viewsCompsRefs[oldActiveViewName];
+                                });
+                            } else {
+                                //Views PUSH operation
+                                this.setState({ views: this.prepareViews(nextProps.views) }, function () {
+                                    return _this3.changeActiveView(nextProps.activeViewName);
+                                });
+                            }
                         } else {
-                            //Views PUSH operation
-                            this.setState({ views: this.prepareViews(nextProps.views) }, function () {
-                                return _this3.changeActiveView(nextProps.activeViewName);
-                            });
+                            this.setState({ views: this.prepareViews(nextProps.views) });
                         }
                     } else {
-                        this.setState({ views: this.prepareViews(nextProps.views) });
+                        //first view is born out of nothing, do no animation
+                        this.setState({ views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName });
                     }
                 } else {
                     //else check if every view configuration is the same
