@@ -191,20 +191,26 @@ export default class AirrScene extends AirrComponent {
         if (!this.callingBeforeActivation && !this.callingBeforeDeactivation) {
 
             if (this.state.views.length !== nextProps.views.length) { //Is views array different in length ?
-
-                if (this.state.activeViewName !== nextProps.activeViewName) {
-                    if (this.state.views.length > nextProps.views.length) { //Views POP operation
-                        const oldActiveViewName = this.state.activeViewName;
-                        this.changeActiveView(nextProps.activeViewName, () => {
-                            this.setState({views: this.prepareViews(nextProps.views)});
-                            delete this.viewsCompsRefs[oldActiveViewName];
-                        });
-                    } else { //Views PUSH operation
-                        this.setState({views: this.prepareViews(nextProps.views)}, () => this.changeActiveView(nextProps.activeViewName));
+                
+                if (this.state.views.length > 0) { //we have some views to perfom animations between
+                    if (this.state.activeViewName !== nextProps.activeViewName) {
+                        if (this.state.views.length > nextProps.views.length) { //Views POP operation
+                            const oldActiveViewName = this.state.activeViewName;
+                            this.changeActiveView(nextProps.activeViewName, () => {
+                                this.setState({views: this.prepareViews(nextProps.views)});
+                                delete this.viewsCompsRefs[oldActiveViewName];
+                            });
+                        } else { //Views PUSH operation
+                            this.setState({views: this.prepareViews(nextProps.views)}, () => this.changeActiveView(nextProps.activeViewName));
+                        }
+                    } else {
+                        this.setState({views: this.prepareViews(nextProps.views)});
                     }
-                } else {
-                    this.setState({views: this.prepareViews(nextProps.views)});
                 }
+                else { //first view is born out of nothing, do no animation
+                    this.setState({views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName});
+                }
+                
             } else { //else check if every view configuration is the same
                 let equal = true;
                 this.state.views.forEach((item, i) => {
