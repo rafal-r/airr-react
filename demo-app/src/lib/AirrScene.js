@@ -446,7 +446,7 @@ export default class AirrScene extends AirrComponent {
      * @returns {void}
      */
     prepareMayerConfig(config) {
-        if (config.buttons.length) {
+        if (config.buttons && config.buttons.length) {
             config.buttons.forEach(item => {
                 if (item.close) {
                     if (item.handler) {

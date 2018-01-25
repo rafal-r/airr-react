@@ -414,7 +414,7 @@ var AirrScene = function (_AirrComponent) {
         value: function prepareMayerConfig(config) {
             var _this6 = this;
 
-            if (config.buttons.length) {
+            if (config.buttons && config.buttons.length) {
                 config.buttons.forEach(function (item) {
                     if (item.close) {
                         if (item.handler) {
