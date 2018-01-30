@@ -222,13 +222,16 @@ textarea:focus, input:focus {
     z-index: 101;
     opacity: 1;
 }
-
+.airr-container.slide-animation {
+    width: 200%;
+}
 .airr-container.slide-animation > .airr-view {
     float: left;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     -webkit-perspective: 1000px;
     perspective: 1000px;
+    width: 50%;
 }
 
 .airr-navbar {

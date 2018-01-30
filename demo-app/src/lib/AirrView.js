@@ -8,8 +8,6 @@ export default class AirrView extends AirrComponent {
         let className = 'airr-view';
         let style = typeof this.props.style === 'object' ? Object.assign({}, this.props.style) : {};
 
-        style.width = this.props.width + 'px';
-        style.height = this.props.height + 'px';
         this.props.active && (className += ' active');
 
         return (
@@ -21,16 +19,12 @@ export default class AirrView extends AirrComponent {
 };
 
 AirrView.propTypes = {
-    name: PropTypes.string.isRequired, 
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
     title: PropTypes.string, 
     active: PropTypes.bool
 };
 AirrView.defaultProps = {
     name: '',//the name of the view. Must be unique among others views in scene. Will be used as identification string
     title: '', //titlebar name. if parent scene navbar is enabled, this title will be showed there
-    active: false,
-    width: null,
-    height: null
+    active: false
 };

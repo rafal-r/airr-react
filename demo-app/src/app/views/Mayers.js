@@ -70,7 +70,7 @@ class Mayers extends Component {
 
     render() {
         return (
-            <View name={this.props.name} active={this.props.active} width={this.props.width} height={this.props.height} ref="airrView">
+            <View name={this.props.name} active={this.props.active} ref="airrView">
                 <div className="wrap col mayers-view">
                     {this.props.description}
                     <div className="btn-ctn">

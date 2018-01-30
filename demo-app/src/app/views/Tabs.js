@@ -65,7 +65,7 @@ class Tabs extends Component {
 
     render() {
         return (
-                <View name={this.props.name} active={this.props.active} width={this.props.width} height={this.props.height} ref="airrView">
+                <View name={this.props.name} active={this.props.active} ref="airrView">
                     <div className="wrap col tabs-view">
                         {this.props.description}
                         <p className="info">

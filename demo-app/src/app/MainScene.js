@@ -286,8 +286,6 @@ class MainScene extends Component {
                     name={this.props.name}
                     ref="airrView"
                     animationTime={this.props.animationTime}
-                    width={this.props.width}
-                    height={this.props.height}
                     active={this.props.active}
                     navbar={this.props.navbar}
                     backButton={this.props.backButton}

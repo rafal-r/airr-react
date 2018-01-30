@@ -8,8 +8,6 @@ import update from 'immutability-helper';
 export default class AirrScene extends AirrComponent {
     static defaultProps = {
         name: '', //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
-        width: null, //number
-        height: null, //number
 
         activeViewName: null, //string 
         GUIDisabled: false, //bool
@@ -31,8 +29,6 @@ export default class AirrScene extends AirrComponent {
 
     static propTypes = {
         name: PropTypes.string.isRequired,
-        width: PropTypes.number.isRequired,
-        height: PropTypes.number.isRequired,
 
         activeViewName: PropTypes.string,
         GUIDisabled: PropTypes.bool,
@@ -138,8 +134,6 @@ export default class AirrScene extends AirrComponent {
             navbarHeight: props.navbarHeight,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
-            width: props.width,
-            height: props.height,
             activeViewName: props.activeViewName,
             animation: props.animation,
             views: views,
@@ -169,7 +163,7 @@ export default class AirrScene extends AirrComponent {
      * @returns {void}
      */
     updateAnimation(animation) {
-        this.setState({animation: animation});
+        this.setState({ animation: animation });
     }
 
     /**
@@ -183,7 +177,7 @@ export default class AirrScene extends AirrComponent {
             return update(item, updateDefinition);
         });
 
-        this.setState({views: newviewsdefinition});
+        this.setState({ views: newviewsdefinition });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -191,26 +185,26 @@ export default class AirrScene extends AirrComponent {
         if (!this.callingBeforeActivation && !this.callingBeforeDeactivation) {
 
             if (this.state.views.length !== nextProps.views.length) { //Is views array different in length ?
-                
+
                 if (this.state.views.length > 0) { //we have some views to perfom animations between
                     if (this.state.activeViewName !== nextProps.activeViewName) {
                         if (this.state.views.length > nextProps.views.length) { //Views POP operation
                             const oldActiveViewName = this.state.activeViewName;
                             this.changeActiveView(nextProps.activeViewName, () => {
-                                this.setState({views: this.prepareViews(nextProps.views)});
+                                this.setState({ views: this.prepareViews(nextProps.views) });
                                 delete this.viewsCompsRefs[oldActiveViewName];
                             });
                         } else { //Views PUSH operation
-                            this.setState({views: this.prepareViews(nextProps.views)}, () => this.changeActiveView(nextProps.activeViewName));
+                            this.setState({ views: this.prepareViews(nextProps.views) }, () => this.changeActiveView(nextProps.activeViewName));
                         }
                     } else {
-                        this.setState({views: this.prepareViews(nextProps.views)});
+                        this.setState({ views: this.prepareViews(nextProps.views) });
                     }
                 }
                 else { //first view is born out of nothing, do no animation
-                    this.setState({views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName});
+                    this.setState({ views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName });
                 }
-                
+
             } else { //else check if every view configuration is the same
                 let equal = true;
                 this.state.views.forEach((item, i) => {
@@ -221,7 +215,7 @@ export default class AirrScene extends AirrComponent {
                 });
 
                 if (!equal) { //update views state
-                    this.setState({views: this.prepareViews(nextProps.views)}, () => {
+                    this.setState({ views: this.prepareViews(nextProps.views) }, () => {
                         if (this.state.activeViewName !== nextProps.activeViewName) { //now we can check if active view has changed
                             this.changeActiveView(nextProps.activeViewName);
                         }
@@ -231,7 +225,7 @@ export default class AirrScene extends AirrComponent {
                     if (nextProps.activeViewName !== null && this.state.activeViewName !== null) {
                         this.changeActiveView(nextProps.activeViewName);
                     } else { //if prior or next activeViewName is null then do no animation, simply change state
-                        this.setState({activeViewName: nextProps.activeViewName})
+                        this.setState({ activeViewName: nextProps.activeViewName })
                     }
                 }
             }
@@ -270,7 +264,7 @@ export default class AirrScene extends AirrComponent {
             });
 
             if (!equal) { //NOT same, update mayers state
-                this.setState({mayers: nextProps.mayers});
+                this.setState({ mayers: nextProps.mayers });
             }
         }
 
@@ -282,16 +276,16 @@ export default class AirrScene extends AirrComponent {
 
                     if ([1, true].indexOf(this.state.navbar) !== -1) { //currently enabled,visible
                         AirrFX.doTransitionAnimation(
-                                this.navbarDOM,
-                                {opacity: 1},
-                                [`opacity ${this.props.animationTime}ms linear`],
-                                {opacity: 0},
-                                null,
-                                this.props.animationTime,
-                                () => this.setState({navbar: nextProps.navbar})
+                            this.navbarDOM,
+                            { opacity: 1 },
+                            [`opacity ${this.props.animationTime}ms linear`],
+                            { opacity: 0 },
+                            null,
+                            this.props.animationTime,
+                            () => this.setState({ navbar: nextProps.navbar })
                         );
                     } else { //currently hidden, just disable without animation
-                        this.setState({navbar: nextProps.navbar})
+                        this.setState({ navbar: nextProps.navbar })
                     }
 
                 } else if ([1, true].indexOf(nextProps.navbar) !== -1) { //show
@@ -299,25 +293,25 @@ export default class AirrScene extends AirrComponent {
 
                     if (this.state.navbar === -1) { //currently hidden
                         AirrFX.doTransitionAnimation(
-                                this.navbarDOM,
-                                {opacity: 0, visibility: 'visible'},
-                                [`opacity ${this.props.animationTime}ms linear`],
-                                {opacity: 1},
-                                null,
-                                this.props.animationTime,
-                                () => this.setState({navbar: nextProps.navbar})
+                            this.navbarDOM,
+                            { opacity: 0, visibility: 'visible' },
+                            [`opacity ${this.props.animationTime}ms linear`],
+                            { opacity: 1 },
+                            null,
+                            this.props.animationTime,
+                            () => this.setState({ navbar: nextProps.navbar })
                         );
                     } else { //currently disabled
                         //firstly add navbar to dom with hidden settings, then animate in
-                        this.setState({navbar: -1}, () => {
+                        this.setState({ navbar: -1 }, () => {
                             AirrFX.doTransitionAnimation(
-                                    this.navbarDOM,
-                                    {opacity: 0, visibility: 'visible'},
-                                    [`opacity ${this.props.animationTime}ms linear`],
-                                    {opacity: 1},
-                                    null,
-                                    this.props.animationTime,
-                                    () => this.setState({navbar: nextProps.navbar})
+                                this.navbarDOM,
+                                { opacity: 0, visibility: 'visible' },
+                                [`opacity ${this.props.animationTime}ms linear`],
+                                { opacity: 1 },
+                                null,
+                                this.props.animationTime,
+                                () => this.setState({ navbar: nextProps.navbar })
                             );
                         });
                     }
@@ -327,55 +321,54 @@ export default class AirrScene extends AirrComponent {
 
                     if ([1, true].indexOf(this.state.navbar) !== -1) { //currently visible
                         AirrFX.doTransitionAnimation(
-                                this.navbarDOM,
-                                {opacity: 1},
-                                [`opacity ${this.props.animationTime}ms linear`],
-                                {opacity: 0},
-                                null,
-                                this.props.animationTime,
-                                () => this.setState({navbar: nextProps.navbar})
+                            this.navbarDOM,
+                            { opacity: 1 },
+                            [`opacity ${this.props.animationTime}ms linear`],
+                            { opacity: 0 },
+                            null,
+                            this.props.animationTime,
+                            () => this.setState({ navbar: nextProps.navbar })
                         );
                     } else { //currently disabled, just add hidden
-                        this.setState({navbar: nextProps.navbar});
+                        this.setState({ navbar: nextProps.navbar });
                     }
                 }
 
             } else {
-                this.setState({navbar: nextProps.navbar})
+                this.setState({ navbar: nextProps.navbar })
             }
         }
 
 
         //SIMPLE STATE UPDATES OPERATIONS:
         if (this.state.active !== nextProps.active) {
-            this.setState({active: nextProps.active});
+            this.setState({ active: nextProps.active });
         }
         if (this.state.animation !== nextProps.animation) {
-            this.setState({animation: nextProps.animation});
+            this.setState({ animation: nextProps.animation });
         }
         if (this.state.sidepanel !== nextProps.sidepanel) {
-            this.setState({sidepanel: nextProps.sidepanel});
+            this.setState({ sidepanel: nextProps.sidepanel });
         }
         if (this.state.navbarHeight !== nextProps.navbarHeight) {
-            this.setState({navbarHeight: nextProps.navbarHeight});
+            this.setState({ navbarHeight: nextProps.navbarHeight });
         }
         if (this.state.backButton !== nextProps.backButton) {
-            this.setState({backButton: nextProps.backButton});
+            this.setState({ backButton: nextProps.backButton });
         }
         if (this.state.backButtonOnFirstView !== nextProps.backButtonOnFirstView) {
-            this.setState({backButtonOnFirstView: nextProps.backButtonOnFirstView});
-        }
-        if (this.state.width !== nextProps.width) {
-            this.setState({width: nextProps.width});
-        }
-        if (this.state.height !== nextProps.height) {
-            this.setState({height: nextProps.height});
+            this.setState({ backButtonOnFirstView: nextProps.backButtonOnFirstView });
         }
         if (this.state.GUIDisabled !== nextProps.GUIDisabled) {
-            this.setState({GUIDisabled: nextProps.GUIDisabled});
+            this.setState({ GUIDisabled: nextProps.GUIDisabled });
         }
     }
 
+    componentDidMount() {
+        if (this.state.navbar && this.state.navbarHeight && this.containerDOM) {
+            this.containerDOM.style.height = this.containerDOM.parentNode.clientHeight - this.state.navbarHeight + 'px';
+        }
+    }
     /**
      * Returns view index in this.state.views array
      * 
@@ -406,7 +399,7 @@ export default class AirrScene extends AirrComponent {
             const prevIndex = index - 1;
             const prevViewName = this.state.views[prevIndex].props.name;
             const oldViewName = this.state.activeViewName;
-            const newviewdefinition = update(this.state.views, {$splice: [[index, 1]]});
+            const newviewdefinition = update(this.state.views, { $splice: [[index, 1]] });
 
             this.changeActiveView(prevViewName, () => {
                 if (oldViewName in this.viewsCompsRefs) {
@@ -431,9 +424,9 @@ export default class AirrScene extends AirrComponent {
         config.props.key = config.props.name;
         config.props.ref = (comp) => this.viewsCompsRefs[config.props.name] = comp;
 
-        const newviewdefinition = update(this.state.views, {$push: [config]});
+        const newviewdefinition = update(this.state.views, { $push: [config] });
 
-        this.setState({views: newviewdefinition}, () => {
+        this.setState({ views: newviewdefinition }, () => {
             this.changeActiveView(config.props.name);
         });
     }
@@ -493,8 +486,8 @@ export default class AirrScene extends AirrComponent {
         //add special functionality
         this.prepareMayerConfig(config);
 
-        const newMayersDefinition = update(this.state.mayers, {$push: [config]});
-        this.setState({mayers: newMayersDefinition});
+        const newMayersDefinition = update(this.state.mayers, { $push: [config] });
+        this.setState({ mayers: newMayersDefinition });
     }
 
     /**
@@ -524,9 +517,9 @@ export default class AirrScene extends AirrComponent {
                 });
 
                 if (mayerConfigIndex >= 0 && this.mayersCompsRefs[name]) { //last check if present
-                    const newMayerDefinition = update(this.state.mayers, {$splice: [[mayerConfigIndex, 1]]});
+                    const newMayerDefinition = update(this.state.mayers, { $splice: [[mayerConfigIndex, 1]] });
                     delete this.mayersCompsRefs[name];
-                    this.setState({mayers: newMayerDefinition}, () => {
+                    this.setState({ mayers: newMayerDefinition }, () => {
                         if (this.state.sidepanel) {
                             let hasMayerLeft = false;
                             const children = [...this.refs.dom.children];
@@ -554,7 +547,7 @@ export default class AirrScene extends AirrComponent {
      */
     closeALlMayers() {
         if (this.state.mayers.length) {
-            this.setState({mayers: []});
+            this.setState({ mayers: [] });
         }
 
         if (this.state.sidepanel && !this.state.sidepanel.props.enabled) {
@@ -574,11 +567,11 @@ export default class AirrScene extends AirrComponent {
     changeActiveView(newViewName, callback) {
         if (typeof newViewName === 'string') {
 
-            this.setState({GUIDisabled: true, mockTitle: newViewName}, () => {
+            this.setState({ GUIDisabled: true, mockTitle: newViewName }, () => {
 
                 if (newViewName === this.state.activeViewName) {
                     console.warn('[Airr] This View is already active.');
-                    this.setState({GUIDisabled: false});
+                    this.setState({ GUIDisabled: false });
                     return;
                 }
 
@@ -667,10 +660,10 @@ export default class AirrScene extends AirrComponent {
                     transform: `translate3d(${(titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + 'px'},0,0)`,
                     opacity: 0
                 }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                    webkitTransform: `translate3d(0,0,0)`,
-                    transform: `translate3d(0,0,0)`,
-                    opacity: 1
-                }, null, this.props.animationTime)
+                        webkitTransform: `translate3d(0,0,0)`,
+                        transform: `translate3d(0,0,0)`,
+                        opacity: 1
+                    }, null, this.props.animationTime)
             }
 
             if (mockTitle) {
@@ -679,10 +672,10 @@ export default class AirrScene extends AirrComponent {
                     transform: 'translate3d(0,0,0)',
                     opacity: 1
                 }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                    webkitTransform: `translate3d(${mockTextSpanWidth * direction * -1 + 'px'},0,0)`,
-                    transform: `translate3d(${mockTextSpanWidth * direction * -1 + 'px'},0,0)`,
-                    opacity: 0
-                }, null, this.props.animationTime)
+                        webkitTransform: `translate3d(${mockTextSpanWidth * direction * -1 + 'px'},0,0)`,
+                        transform: `translate3d(${mockTextSpanWidth * direction * -1 + 'px'},0,0)`,
+                        opacity: 0
+                    }, null, this.props.animationTime)
             }
 
             if (this.state.backButton && this.props.stackMode) {
@@ -695,10 +688,10 @@ export default class AirrScene extends AirrComponent {
                         transform: 'translate3d(100%,0,0)',
                         opacity: 0
                     }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                        webkitTransform: 'translate3d(0,0,0)',
-                        transform: 'translate3d(0,0,0)',
-                        opacity: 1
-                    }, () => backDOM.classList.remove('hidden'), this.props.animationTime)
+                            webkitTransform: 'translate3d(0,0,0)',
+                            transform: 'translate3d(0,0,0)',
+                            opacity: 1
+                        }, () => backDOM.classList.remove('hidden'), this.props.animationTime)
 
                 } else if (newViewIndex === 0) {
 
@@ -707,10 +700,10 @@ export default class AirrScene extends AirrComponent {
                         transform: 'translate3d(0,0,0)',
                         opacity: 1
                     }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                        webkitTransform: 'translate3d(-100%,0,0)',
-                        transform: 'translate3d(-100%,0,0)',
-                        opacity: 0
-                    }, null, this.props.animationTime)
+                            webkitTransform: 'translate3d(-100%,0,0)',
+                            transform: 'translate3d(-100%,0,0)',
+                            opacity: 0
+                        }, null, this.props.animationTime)
                 }
             }
         }
@@ -751,13 +744,13 @@ export default class AirrScene extends AirrComponent {
                     transform: `translate3d(${this.containerDOM.clientWidth + 'px'},0,0)`,
                     opacity: 0
                 }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                    webkitTransform: `translate3d(0,0,0)`,
-                    transform: `translate3d(0,0,0)`,
-                    opacity: 1
-                }, () => newViewDOM.style.zIndex = 102, this.props.animationTime, () => {
-                    newViewDOM.style.zIndex = ''
-                    callback()
-                });
+                        webkitTransform: `translate3d(0,0,0)`,
+                        transform: `translate3d(0,0,0)`,
+                        opacity: 1
+                    }, () => newViewDOM.style.zIndex = 102, this.props.animationTime, () => {
+                        newViewDOM.style.zIndex = ''
+                        callback()
+                    });
 
             } else {
                 if (this.props.stackMode) {
@@ -766,34 +759,34 @@ export default class AirrScene extends AirrComponent {
                         transform: `translate3d(0,0,0)`,
                         opacity: 1
                     }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                        webkitTransform: `translate3d(0,${this.containerDOM.clientHeight / 4 + 'px'},0)`,
-                        transform: `translate3d(0,${this.containerDOM.clientHeight / 4 + 'px'},0)`,
-                        opacity: 0
-                    }, null, this.props.animationTime, callback)
+                            webkitTransform: `translate3d(0,${this.containerDOM.clientHeight / 4 + 'px'},0)`,
+                            transform: `translate3d(0,${this.containerDOM.clientHeight / 4 + 'px'},0)`,
+                            opacity: 0
+                        }, null, this.props.animationTime, callback)
                 } else {
                     AirrFX.doTransitionAnimation(newViewDOM, {
                         webkitTransform: `translate3d(${(-1 * this.containerDOM.clientWidth) + 'px'},0,0)`,
                         transform: `translate3d(${(-1 * this.containerDOM.clientWidth) + 'px'},0,0)`,
                         opacity: 0
                     }, [`opacity ${this.props.animationTime}ms ease-out`, `transform ${this.props.animationTime}ms ease-out`], {
-                        webkitTransform: `translate3d(0,0,0)`,
-                        transform: `translate3d(0,0,0)`,
-                        opacity: 1
-                    }, () => newViewDOM.style.zIndex = 102, this.props.animationTime, () => {
-                        newViewDOM.style.zIndex = ''
-                        callback()
-                    });
+                            webkitTransform: `translate3d(0,0,0)`,
+                            transform: `translate3d(0,0,0)`,
+                            opacity: 1
+                        }, () => newViewDOM.style.zIndex = 102, this.props.animationTime, () => {
+                            newViewDOM.style.zIndex = ''
+                            callback()
+                        });
                 }
             }
         } else if (this.state.animation === 'fade') {
             AirrFX.doTransitionAnimation(newViewDOM, {
                 opacity: 0
             }, [`opacity ${this.props.animationTime}ms ease-out`], {
-                opacity: 1
-            }, () => newViewDOM.style.zIndex = 102, this.props.animationTime, () => {
-                newViewDOM.style.zIndex = ''
-                callback()
-            });
+                    opacity: 1
+                }, () => newViewDOM.style.zIndex = 102, this.props.animationTime, () => {
+                    newViewDOM.style.zIndex = ''
+                    callback()
+                });
         }
     }
 
@@ -803,7 +796,7 @@ export default class AirrScene extends AirrComponent {
      * @returns {void}
      */
     enableGUI() {
-        this.setState({GUIDisabled: false});
+        this.setState({ GUIDisabled: false });
     }
 
     /**
@@ -812,7 +805,7 @@ export default class AirrScene extends AirrComponent {
      * @returns {undefined}
      */
     disableGUI() {
-        this.setState({GUIDisabled: true});
+        this.setState({ GUIDisabled: true });
     }
 
     /**
@@ -822,8 +815,8 @@ export default class AirrScene extends AirrComponent {
      */
     enableSidepanel() {
         if (this.state.sidepanel) {
-            const newPanelDefinition = update(this.state.sidepanel, {props: {enabled: {$set: true}}});
-            this.setState({sidepanel: newPanelDefinition});
+            const newPanelDefinition = update(this.state.sidepanel, { props: { enabled: { $set: true } } });
+            this.setState({ sidepanel: newPanelDefinition });
         }
     }
 
@@ -834,8 +827,8 @@ export default class AirrScene extends AirrComponent {
      */
     disableSidepanel() {
         if (this.state.sidepanel) {
-            const newPanelDefinition = update(this.state.sidepanel, {props: {enabled: {$set: false}}});
-            this.setState({sidepanel: newPanelDefinition});
+            const newPanelDefinition = update(this.state.sidepanel, { props: { enabled: { $set: false } } });
+            this.setState({ sidepanel: newPanelDefinition });
         }
     }
 
@@ -904,9 +897,6 @@ export default class AirrScene extends AirrComponent {
             let viewProps = {};
             Object.assign(viewProps, item.props);
 
-            viewProps.width = this.state.width;
-            viewProps.height = this.state.navbar ? (parseFloat(this.state.height) - this.state.navbarHeight) : this.state.height;
-
             if (viewProps.name === this.state.activeViewName) {
                 viewProps.active = true;
                 isAnyViewActive = true;
@@ -919,11 +909,6 @@ export default class AirrScene extends AirrComponent {
             console.warn('[Airr] No view was set as active' + (this.props.name && (' in Scene named `' + this.props.name)) + '`.');
         }
 
-        let containerStyle = {};
-        if (this.state.animation === 'slide') {
-            containerStyle = {width: this.state.width ? this.state.width * 2 + 'px' : parseFloat(this.state.width) * 2 + 'px'};
-        }
-
         let sidepanel = null;
         if (this.state.sidepanel) {
             sidepanel = React.createElement(this.state.sidepanel.type, this.state.sidepanel.props);
@@ -932,7 +917,7 @@ export default class AirrScene extends AirrComponent {
 
         let blankmask = null;
         if (this.state.GUIDisabled) {
-            blankmask = <div className="airr-blank-mask"/>;
+            blankmask = <div className="airr-blank-mask" />;
         }
 
         let mayers = [];
@@ -958,7 +943,7 @@ export default class AirrScene extends AirrComponent {
 
             const menu = this.state.sidepanel ? <div className="menu" onClick={(e) => this.handleMenuButton(e)}><div /></div> : null
 
-            const navbarStyle = {height: this.state.navbarHeight + 'px'}
+            const navbarStyle = { height: this.state.navbarHeight + 'px' }
             if ([1, true].indexOf(this.state.navbar) === -1) {
                 navbarStyle.visibility = 'hidden';
             }
@@ -974,28 +959,26 @@ export default class AirrScene extends AirrComponent {
             }
 
             navbar = (
-                    <div className="airr-navbar" ref={dom => this.navbarDOM = dom} style={navbarStyle}>
-                        {mockTitle}
-                        {back}
-                        <div className="title" style={{opacity: this.state.mockTitle ? 0 : 1}}><span>{title}</span></div>
-                        {menu}
-                    </div>
-                                );
-                    }
-
-            const sceneStyle = {width: this.state.width + 'px', height: this.state.height + 'px'};
-
-            return (
-                    <div style={sceneStyle} className={className} ref="dom">
-                        {navbar}
-                        <div className={containerClassList.join(' ')} style={containerStyle} ref={div => this.containerDOM = div}>
-                            {views}
-                        </div>
-                        {this.props.children}
-                        {sidepanel}
-                        {mayers}
-                        {blankmask}
-                    </div>
-                    );
+                <div className="airr-navbar" ref={dom => this.navbarDOM = dom} style={navbarStyle}>
+                    {mockTitle}
+                    {back}
+                    <div className="title" style={{ opacity: this.state.mockTitle ? 0 : 1 }}><span>{title}</span></div>
+                    {menu}
+                </div>
+            );
         }
+
+        return (
+            <div className={className} ref="dom">
+                {navbar}
+                <div className={containerClassList.join(' ')} ref={div => this.containerDOM = div}>
+                    {views}
+                </div>
+                {this.props.children}
+                {sidepanel}
+                {mayers}
+                {blankmask}
+            </div>
+        );
     }
+}
