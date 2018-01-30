@@ -14,8 +14,6 @@ export default class AirrCompositeScene extends AirrComponent {
             navbarHeight: props.navbarHeight,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
-            width: props.width,
-            height: props.height,
             activeViewName: props.activeViewName,
             animation: props.animation,
             views: props.views,
@@ -61,8 +59,6 @@ export default class AirrCompositeScene extends AirrComponent {
                     handleBackBehaviourOnFirstView={this.props.handleBackBehaviourOnFirstView}
                     stackMode={this.props.stackMode}
                     GUIDisabled={this.state.GUIDisabled}
-                    width={this.state.width}
-                    height={this.state.height}
                     active={this.state.active}
                     views={this.state.views}
                     mayers={this.state.mayers}

@@ -73,8 +73,6 @@ var AirrScene = function (_AirrComponent) {
             navbarHeight: props.navbarHeight,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
-            width: props.width,
-            height: props.height,
             activeViewName: props.activeViewName,
             animation: props.animation,
             views: views,
@@ -313,17 +311,17 @@ var AirrScene = function (_AirrComponent) {
             if (this.state.backButtonOnFirstView !== nextProps.backButtonOnFirstView) {
                 this.setState({ backButtonOnFirstView: nextProps.backButtonOnFirstView });
             }
-            if (this.state.width !== nextProps.width) {
-                this.setState({ width: nextProps.width });
-            }
-            if (this.state.height !== nextProps.height) {
-                this.setState({ height: nextProps.height });
-            }
             if (this.state.GUIDisabled !== nextProps.GUIDisabled) {
                 this.setState({ GUIDisabled: nextProps.GUIDisabled });
             }
         }
-
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            if (this.state.navbar && this.state.navbarHeight && this.containerDOM) {
+                this.containerDOM.style.height = this.containerDOM.parentNode.clientHeight - this.state.navbarHeight + 'px';
+            }
+        }
         /**
          * Returns view index in this.state.views array
          * 
@@ -922,9 +920,6 @@ var AirrScene = function (_AirrComponent) {
                 var viewProps = {};
                 Object.assign(viewProps, item.props);
 
-                viewProps.width = _this10.state.width;
-                viewProps.height = _this10.state.navbar ? parseFloat(_this10.state.height) - _this10.state.navbarHeight : _this10.state.height;
-
                 if (viewProps.name === _this10.state.activeViewName) {
                     viewProps.active = true;
                     isAnyViewActive = true;
@@ -935,11 +930,6 @@ var AirrScene = function (_AirrComponent) {
 
             if (!isAnyViewActive) {
                 console.warn('[Airr] No view was set as active' + (this.props.name && ' in Scene named `' + this.props.name) + '`.');
-            }
-
-            var containerStyle = {};
-            if (this.state.animation === 'slide') {
-                containerStyle = { width: this.state.width ? this.state.width * 2 + 'px' : parseFloat(this.state.width) * 2 + 'px' };
             }
 
             var sidepanel = null;
@@ -1031,15 +1021,13 @@ var AirrScene = function (_AirrComponent) {
                 );
             }
 
-            var sceneStyle = { width: this.state.width + 'px', height: this.state.height + 'px' };
-
             return _react2.default.createElement(
                 'div',
-                { style: sceneStyle, className: className, ref: 'dom' },
+                { className: className, ref: 'dom' },
                 navbar,
                 _react2.default.createElement(
                     'div',
-                    { className: containerClassList.join(' '), style: containerStyle, ref: function ref(div) {
+                    { className: containerClassList.join(' '), ref: function ref(div) {
                             return _this10.containerDOM = div;
                         } },
                     views
@@ -1057,8 +1045,6 @@ var AirrScene = function (_AirrComponent) {
 
 AirrScene.defaultProps = {
     name: '', //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
-    width: null, //number
-    height: null, //number
 
     activeViewName: null, //string 
     GUIDisabled: false, //bool
@@ -1079,8 +1065,6 @@ AirrScene.defaultProps = {
 };
 AirrScene.propTypes = {
     name: _propTypes2.default.string.isRequired,
-    width: _propTypes2.default.number.isRequired,
-    height: _propTypes2.default.number.isRequired,
 
     activeViewName: _propTypes2.default.string,
     GUIDisabled: _propTypes2.default.bool,

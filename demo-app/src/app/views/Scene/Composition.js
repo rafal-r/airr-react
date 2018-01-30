@@ -76,8 +76,6 @@ class Composition extends Component {
         return (
                 <Scene name={this.props.name}
                            ref="airrView"
-                           width={this.props.width}
-                           height={this.props.height}
                            active={this.props.active}
                            views={this.state.views}
                            activeViewName={this.state.activeViewName}

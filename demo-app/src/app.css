@@ -12,7 +12,10 @@ html, body, p, h1, h2, h3, h4, h5, h6, div, span, ul, li, a, input, textarea, bu
 html,body {
     background-color: #efefef;
 }
-
+#root {
+    width: 100%;
+    height: 100%;
+}
 .airr-navbar {
     background-color: #1f1f1f;
     border-bottom: 1px solid #fff;
