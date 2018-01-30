@@ -191,7 +191,7 @@ class MainScene extends Component {
             content: cfg.content,
             appearFrom: cfg.appearFrom,
             leaveTo: cfg.leaveTo,
-            avaibleHeight: this.props.height,
+            avaibleHeight: this.props.avaibleHeight,
             buttons: [
                 {
                     content: 'Ok',
@@ -258,7 +258,7 @@ class MainScene extends Component {
             content: content,
             appearFrom: 'top',
             leaveTo: 'bottom',
-            avaibleHeight: this.props.height,
+            avaibleHeight: this.props.avaibleHeight,
             buttons: [
                 {
                     content: 'Ok',

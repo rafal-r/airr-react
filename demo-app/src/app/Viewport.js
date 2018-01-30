@@ -17,7 +17,8 @@ export default class Viewport extends CompositeScene {
                     navbar: true,
                     backButton: true,
                     handleViewportScenePush: this.handleViewportScenePush,
-                    handleBackBehaviourOnFirstView: this.handleBackBehaviourOnFirstView
+                    handleBackBehaviourOnFirstView: this.handleBackBehaviourOnFirstView,
+                    avaibleHeight: window.innerHeight
                 }
             }
         ];
