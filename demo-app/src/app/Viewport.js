@@ -16,6 +16,7 @@ export default class Viewport extends CompositeScene {
                     name: 'main-scene',
                     navbar: true,
                     backButton: true,
+                    navbarMenu: 'toggleSidepanel',
                     handleViewportScenePush: this.handleViewportScenePush,
                     handleBackBehaviourOnFirstView: this.handleBackBehaviourOnFirstView,
                     avaibleHeight: window.innerHeight

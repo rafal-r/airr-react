@@ -48,12 +48,7 @@ var AirrScene = function (_AirrComponent) {
 
         var _this = _possibleConstructorReturn(this, (AirrScene.__proto__ || Object.getPrototypeOf(AirrScene)).call(this, props));
 
-        _this.viewsCompsRefs = {};
-        _this.containerDOM = null;
-        _this.navbarDOM = null;
-        _this.mayersCompsRefs = {};
-        _this.sidepanelComp = null;
-
+        _initialiseProps.call(_this);
 
         var views = _this.prepareViews(props.views);
 
@@ -71,6 +66,7 @@ var AirrScene = function (_AirrComponent) {
             navbar: Number(props.navbar),
             mockTitle: false,
             navbarHeight: props.navbarHeight,
+            navbarMenu: props.navbarMenu,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
             activeViewName: props.activeViewName,
@@ -895,8 +891,8 @@ var AirrScene = function (_AirrComponent) {
          */
 
     }, {
-        key: 'handleMenuButton',
-        value: function handleMenuButton(e) {
+        key: 'handleMenuButtonToggleSidepanel',
+        value: function handleMenuButtonToggleSidepanel(e) {
             if (this.sidepanelComp) {
                 this.sidepanelComp.isShown() ? this.sidepanelComp.hide() : this.sidepanelComp.show();
             }
@@ -971,13 +967,24 @@ var AirrScene = function (_AirrComponent) {
                     );
                 }
 
-                var menu = this.state.sidepanel ? _react2.default.createElement(
-                    'div',
-                    { className: 'menu', onClick: function onClick(e) {
-                            return _this10.handleMenuButton(e);
-                        } },
-                    _react2.default.createElement('div', null)
-                ) : null;
+                var menu = void 0;
+                if (this.state.navbarMenu) {
+                    if (this.state.navbarMenu === 'toggleSidepanel') {
+                        menu = this.state.sidepanel ? _react2.default.createElement(
+                            'div',
+                            { className: 'menu', onClick: function onClick(e) {
+                                    return _this10.handleMenuButtonToggleSidepanel(e);
+                                } },
+                            _react2.default.createElement('div', null)
+                        ) : null;
+                    } else if (Array.isArray(this.state.navbarMenu)) {
+                        menu = _react2.default.createElement(
+                            'div',
+                            { className: 'menu' },
+                            this.state.navbarMenu
+                        );
+                    }
+                }
 
                 var navbarStyle = { height: this.state.navbarHeight + 'px' };
                 if ([1, true].indexOf(this.state.navbar) === -1) {
@@ -1052,6 +1059,7 @@ AirrScene.defaultProps = {
     animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
     navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
     navbarHeight: 48, //navbar height in px
+    navbarMenu: null, //string `toggleSidepanel` or array of React elements
     backButton: false, //bool
     backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
     handleBackButton: null, //parent function to handle back button tap
@@ -1072,6 +1080,21 @@ AirrScene.propTypes = {
     animationTime: _propTypes2.default.number,
     navbar: _propTypes2.default.oneOf([-1, 0, false, 1, true]),
     navbarHeight: _propTypes2.default.number,
+    navbarMenu: function navbarMenu(props, propName, componentName) {
+        if (props[propName]) {
+            if (typeof props[propName] === 'string') {
+                if (!/toggleSidepanel/.test(props[propName])) {
+                    return new Error('Invalid prop `' + propName + '` supplied to' + ' `' + componentName + '`. Value must be `toggleSidepanel` string or array of React elements.');
+                } else {
+                    return null;
+                }
+            }
+
+            if (!Array.isArray(props[propName])) {
+                return new Error('Invalid prop `' + propName + '` supplied to' + ' `' + componentName + '`. Value must be `toggleSidepanel` string or array of React elements.');
+            }
+        }
+    },
     backButton: _propTypes2.default.bool,
     backButtonOnFirstView: _propTypes2.default.bool,
     handleBackButton: _propTypes2.default.func,
@@ -1144,4 +1167,13 @@ AirrScene.propTypes = {
     mayers: _propTypes2.default.arrayOf(_propTypes2.default.object),
     title: _propTypes2.default.string
 };
+
+var _initialiseProps = function _initialiseProps() {
+    this.viewsCompsRefs = {};
+    this.containerDOM = null;
+    this.navbarDOM = null;
+    this.mayersCompsRefs = {};
+    this.sidepanelComp = null;
+};
+
 exports.default = AirrScene;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AirrComponent from './AirrComponent';
-import {isMobileDevice, supportPassive} from './eventHelpers';
+import { isMobileDevice, supportPassive } from './eventHelpers';
 
 export default class AirrSidepanel extends AirrComponent {
 
@@ -28,11 +28,11 @@ export default class AirrSidepanel extends AirrComponent {
 
     lastTouch;
     enabled = false;
-    
+
     startEvent;
     moveEvent;
     endEvent;
-    
+
     constructor(props) {
         super(props);
 
@@ -40,10 +40,10 @@ export default class AirrSidepanel extends AirrComponent {
         this.handleTouchStart = this.handleTouchStart.bind(this);
         this.handleTouchEnd = this.handleTouchEnd.bind(this);
         this.handleHideTouchMove = this.handleHideTouchMove.bind(this);
-        
+
         this.startEvent = isMobileDevice ? 'touchstart' : 'mousedown';
         this.moveEvent = isMobileDevice ? 'touchmove' : 'mousemove';
-        this.endEvent = isMobileDevice ? 'touchend' : 'mouseup';        
+        this.endEvent = isMobileDevice ? 'touchend' : 'mouseup';
     }
 
     updateSide() {
@@ -82,13 +82,13 @@ export default class AirrSidepanel extends AirrComponent {
         if (this.props.isShown) {
             this.dragCtnStyle.WebkitTransform = this.transformScheme.replace('%v', this.shownVal);
             this.dragCtnStyle.transform = this.transformScheme.replace('%v', this.shownVal);
-            this.sidepanelStyle = {display: 'block'};
-            this.bgLayerStyle = {opacity: .7};
+            this.sidepanelStyle = { display: 'block' };
+            this.bgLayerStyle = { opacity: .7 };
         } else {
             this.dragCtnStyle.WebkitTransform = this.transformScheme.replace('%v', this.hiddenVal);
             this.dragCtnStyle.transform = this.transformScheme.replace('%v', this.hiddenVal);
-            this.sidepanelStyle = {display: 'none'};
-            this.bgLayerStyle = {opacity: 0};
+            this.sidepanelStyle = { display: 'none' };
+            this.bgLayerStyle = { opacity: 0 };
         }
     }
 
@@ -138,12 +138,12 @@ export default class AirrSidepanel extends AirrComponent {
             }
         }
     }
-    
+
     getPosition(e, axis) {
         return 'changedTouches' in e ? e.changedTouches[0]['client' + axis] : e['client' + axis];
     }
     getLastPosition(e) {
-        return 'changedTouches' in e ? e.changedTouches[0] : {clientX: e.clientX, clientY: e.clientY};
+        return 'changedTouches' in e ? e.changedTouches[0] : { clientX: e.clientX, clientY: e.clientY };
     }
     getEventX(e) {
         return 'changedTouches' in e ? e.changedTouches[0].clientX : e.clientX;
@@ -151,7 +151,7 @@ export default class AirrSidepanel extends AirrComponent {
     getEventY(e) {
         return 'changedTouches' in e ? e.changedTouches[0].clientY : e.clientY;
     }
-    
+
     handleTouchStart(e) {
         const pos = this.getPosition(e, this.axis);
         let dragCtnOnTouchPath = false;
@@ -169,7 +169,7 @@ export default class AirrSidepanel extends AirrComponent {
         }
 
         if (!dragCtnOnTouchPath && ((['left', 'top'].indexOf(this.side) !== -1 && pos < 20)
-                || (['right', 'bottom'].indexOf(this.side) !== -1 && pos > (this.hiddenVal - 20)))) { //corner touch, show moves
+            || (['right', 'bottom'].indexOf(this.side) !== -1 && pos > (this.hiddenVal - 20)))) { //corner touch, show moves
 
             this.sidepanelDOM.style.display = 'block';
             this.sceneDOM.addEventListener(this.moveEvent, this.handleShowTouchMove, supportPassive);
@@ -279,10 +279,10 @@ export default class AirrSidepanel extends AirrComponent {
         }
 
         if (moveAxis === this.axis
-                && (
-                        (['left', 'top'].indexOf(this.side) !== -1 && this.getPosition(e, moveAxis) < this.size)
-                        || (['right', 'bottom'].indexOf(this.side) !== -1 && this.getPosition(e, moveAxis) > (this.hiddenVal - this.size))
-                        )) {
+            && (
+                (['left', 'top'].indexOf(this.side) !== -1 && this.getPosition(e, moveAxis) < this.size)
+                || (['right', 'bottom'].indexOf(this.side) !== -1 && this.getPosition(e, moveAxis) > (this.hiddenVal - this.size))
+            )) {
             change = this.getPosition(e, this.axis) - this.lastTouch['client' + this.axis];
             newVal = this.currentVal + change;
 
@@ -415,13 +415,13 @@ export default class AirrSidepanel extends AirrComponent {
         this.updateSide();
         const className = "airr-sidepanel " + this.props.side;
         return (
-                <div className={className} ref={dom => this.sidepanelDOM = dom} style={this.sidepanelStyle}>
-                    <div ref={dom => this.bgLayerDOM = dom} style={this.bgLayerStyle} />
-                    <div ref={dom => this.dragCtnDOM = dom} style={this.dragCtnStyle}>
-                        {this.props.children}
-                    </div>
+            <div className={className} ref={dom => this.sidepanelDOM = dom} style={this.sidepanelStyle}>
+                <div ref={dom => this.bgLayerDOM = dom} style={this.bgLayerStyle} />
+                <div ref={dom => this.dragCtnDOM = dom} style={this.dragCtnStyle}>
+                    {this.props.children}
                 </div>
-                );
+            </div>
+        );
     }
 }
 AirrSidepanel.propTypes = {
@@ -438,7 +438,7 @@ AirrSidepanel.defaultProps = {
     dragCtnStyle: {}, //optional style properties for sidepanel
     isShown: false, //bool determining if sidepanel is shown or not
     enabled: true, //bool determining if sidepanel is enabled, another words, if its can be drag out
-    sizeFactor: 2/3, //number between 0 and 1 determining how much size of whole screen sidepanel will take
+    sizeFactor: 2 / 3, //number between 0 and 1 determining how much size of whole screen sidepanel will take
     sceneWidth: null, //number parent side width dimension
     sceneHeight: null //number parent side height dimension
 };

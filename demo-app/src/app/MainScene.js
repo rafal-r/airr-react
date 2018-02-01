@@ -288,6 +288,7 @@ class MainScene extends Component {
                     animationTime={this.props.animationTime}
                     active={this.props.active}
                     navbar={this.props.navbar}
+                    navbarMenu={this.props.navbarMenu}
                     backButton={this.props.backButton}
                     handleBackButton={this.handleBackButton}
                     backButtonOnFirstView={this.props.backButtonOnFirstView}

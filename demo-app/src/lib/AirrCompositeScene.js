@@ -12,6 +12,7 @@ export default class AirrCompositeScene extends AirrComponent {
             active: props.active,
             navbar: props.navbar,
             navbarHeight: props.navbarHeight,
+            navbarMenu: props.navbarMenu,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
             activeViewName: props.activeViewName,
@@ -66,6 +67,7 @@ export default class AirrCompositeScene extends AirrComponent {
                     sidepanel={this.state.sidepanel}
                     navbar={this.state.navbar}
                     navbarHeight={this.state.navbarHeight}
+                    navbarMenu={this.state.navbarMenu}
                     animation={this.state.animation}
                     backButton={this.state.backButton}
                     backButtonOnFirstView={this.state.backButtonOnFirstView}

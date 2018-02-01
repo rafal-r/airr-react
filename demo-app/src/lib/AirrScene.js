@@ -15,6 +15,7 @@ export default class AirrScene extends AirrComponent {
         animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
         navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
         navbarHeight: 48, //navbar height in px
+        navbarMenu: null, //string `toggleSidepanel` or array of React elements
         backButton: false, //bool
         backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
         handleBackButton: null, //parent function to handle back button tap
@@ -36,6 +37,28 @@ export default class AirrScene extends AirrComponent {
         animationTime: PropTypes.number,
         navbar: PropTypes.oneOf([-1, 0, false, 1, true]),
         navbarHeight: PropTypes.number,
+        navbarMenu: function (props, propName, componentName) {
+            if (props[propName]) {
+                if (typeof props[propName] === 'string') {
+                    if (!/toggleSidepanel/.test(props[propName])) {
+                        return new Error(
+                            'Invalid prop `' + propName + '` supplied to' +
+                            ' `' + componentName + '`. Value must be `toggleSidepanel` string or array of React elements.'
+                        );
+                    }
+                    else {
+                        return null
+                    }
+                }
+
+                if (!Array.isArray(props[propName])) {
+                    return new Error(
+                        'Invalid prop `' + propName + '` supplied to' +
+                        ' `' + componentName + '`. Value must be `toggleSidepanel` string or array of React elements.'
+                    );
+                }
+            }
+        },
         backButton: PropTypes.bool,
         backButtonOnFirstView: PropTypes.bool,
         handleBackButton: PropTypes.func,
@@ -132,6 +155,7 @@ export default class AirrScene extends AirrComponent {
             navbar: Number(props.navbar),
             mockTitle: false,
             navbarHeight: props.navbarHeight,
+            navbarMenu: props.navbarMenu,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
             activeViewName: props.activeViewName,
@@ -876,7 +900,7 @@ export default class AirrScene extends AirrComponent {
      * @param {object} e Event object
      * @returns {void}
      */
-    handleMenuButton(e) {
+    handleMenuButtonToggleSidepanel(e) {
         if (this.sidepanelComp) {
             this.sidepanelComp.isShown() ? this.sidepanelComp.hide() : this.sidepanelComp.show();
         }
@@ -941,7 +965,15 @@ export default class AirrScene extends AirrComponent {
                 back = (<div className={backClassName} onClick={(e) => this.handleBackButton(e)}><div /></div>)
             }
 
-            const menu = this.state.sidepanel ? <div className="menu" onClick={(e) => this.handleMenuButton(e)}><div /></div> : null
+            let menu
+            if (this.state.navbarMenu) {
+                if (this.state.navbarMenu === 'toggleSidepanel') {
+                    menu = this.state.sidepanel ? <div className="menu" onClick={(e) => this.handleMenuButtonToggleSidepanel(e)}><div /></div> : null
+                }
+                else if (Array.isArray(this.state.navbarMenu)) {
+                    menu = <div className="menu">{this.state.navbarMenu}</div>
+                }
+            }
 
             const navbarStyle = { height: this.state.navbarHeight + 'px' }
             if ([1, true].indexOf(this.state.navbar) === -1) {
