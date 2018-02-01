@@ -16,6 +16,7 @@ export default class AirrScene extends AirrComponent {
         navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
         navbarHeight: 48, //navbar height in px
         navbarMenu: null, //string `toggleSidepanel` or array of React elements
+        navbarClass: null,
         backButton: false, //bool
         backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
         handleBackButton: null, //parent function to handle back button tap
@@ -59,6 +60,7 @@ export default class AirrScene extends AirrComponent {
                 }
             }
         },
+        navbarClass: PropTypes.string,
         backButton: PropTypes.bool,
         backButtonOnFirstView: PropTypes.bool,
         handleBackButton: PropTypes.func,
@@ -388,6 +390,9 @@ export default class AirrScene extends AirrComponent {
         }
         if (this.state.navbarMenu !== nextProps.navbarMenu) {
             this.setState({ navbarMenu: nextProps.navbarMenu });
+        }
+        if (this.state.navbarClass !== nextProps.navbarClass) {
+            this.setState({ navbarClass: nextProps.navbarClass });
         }
     }
 
@@ -993,8 +998,10 @@ export default class AirrScene extends AirrComponent {
                 title = this.state.views[activeViewIndex] ? this.state.views[activeViewIndex].props.title : ''
             }
 
+            const navbarClass = "airr-navbar" + (this.state.navbarClass ? ` ${this.state.navbarClass}` : '')
+
             navbar = (
-                <div className="airr-navbar" ref={dom => this.navbarDOM = dom} style={navbarStyle}>
+                <div className={navbarClass} ref={dom => this.navbarDOM = dom} style={navbarStyle}>
                     {mockTitle}
                     {back}
                     <div className="title" style={{ opacity: this.state.mockTitle ? 0 : 1 }}><span>{title}</span></div>
