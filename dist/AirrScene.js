@@ -310,6 +310,9 @@ var AirrScene = function (_AirrComponent) {
             if (this.state.GUIDisabled !== nextProps.GUIDisabled) {
                 this.setState({ GUIDisabled: nextProps.GUIDisabled });
             }
+            if (this.state.navbarMenu !== nextProps.navbarMenu) {
+                this.setState({ navbarMenu: nextProps.navbarMenu });
+            }
         }
     }, {
         key: 'componentDidMount',
