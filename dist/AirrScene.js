@@ -992,7 +992,7 @@ var AirrScene = function (_AirrComponent) {
                     }
                 }
 
-                var navbarStyle = { height: this.state.navbarHeight + 'px' };
+                var navbarStyle = {};
                 if ([1, true].indexOf(this.state.navbar) === -1) {
                     navbarStyle.visibility = 'hidden';
                 }
@@ -1014,25 +1014,27 @@ var AirrScene = function (_AirrComponent) {
                     title = this.state.views[activeViewIndex] ? this.state.views[activeViewIndex].props.title : '';
                 }
 
-                var navbarClass = "airr-navbar" + (this.state.navbarClass ? ' ' + this.state.navbarClass : '');
-
                 navbar = _react2.default.createElement(
                     'div',
-                    { className: navbarClass, ref: function ref(dom) {
+                    { className: 'airr-navbar', ref: function ref(dom) {
                             return _this10.navbarDOM = dom;
                         }, style: navbarStyle },
-                    mockTitle,
-                    back,
                     _react2.default.createElement(
                         'div',
-                        { className: 'title', style: { opacity: this.state.mockTitle ? 0 : 1 } },
+                        { className: this.state.navbarClass, style: { height: this.state.navbarHeight + 'px' } },
+                        mockTitle,
+                        back,
                         _react2.default.createElement(
-                            'span',
-                            null,
-                            title
-                        )
-                    ),
-                    menu
+                            'div',
+                            { className: 'title', style: { opacity: this.state.mockTitle ? 0 : 1 } },
+                            _react2.default.createElement(
+                                'span',
+                                null,
+                                title
+                            )
+                        ),
+                        menu
+                    )
                 );
             }
 
@@ -1068,7 +1070,7 @@ AirrScene.defaultProps = {
     navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
     navbarHeight: 48, //navbar height in px
     navbarMenu: null, //string `toggleSidepanel` or array of React elements
-    navbarClass: null,
+    navbarClass: '', //string
     backButton: false, //bool
     backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
     handleBackButton: null, //parent function to handle back button tap

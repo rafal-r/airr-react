@@ -234,15 +234,14 @@ textarea:focus, input:focus {
     width: 50%;
 }
 
-.airr-navbar {
-    display: -webkit-flex;
+.airr-navbar {    
+    z-index: 10;
+}
+.airr-navbar > div {
     display: flex;
-    -webkit-align-items: center;
     align-items: center;
-    -webkit-justify-content: center;
     justify-content: center;    
     position: relative;
-    z-index: 10;
 }
 .airr-navbar .back {
     width: 3rem;
