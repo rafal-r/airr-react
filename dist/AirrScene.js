@@ -134,34 +134,33 @@ var AirrScene = function (_AirrComponent) {
         value: function componentWillReceiveProps(nextProps) {
             var _this3 = this;
 
-            if (!this.callingBeforeActivation && !this.callingBeforeDeactivation) {
+            if (!this.viewChangeInProgress) {
 
                 if (this.state.views.length !== nextProps.views.length) {
                     //Is views array different in length ?
 
-                    if (this.state.views.length > 0) {
-                        //we have some views to perfom animations between
-                        if (this.state.activeViewName !== nextProps.activeViewName) {
-                            if (this.state.views.length > nextProps.views.length) {
-                                //Views POP operation
-                                var oldActiveViewName = this.state.activeViewName;
-                                this.changeActiveView(nextProps.activeViewName, function () {
-                                    _this3.setState({ views: _this3.prepareViews(nextProps.views) });
-                                    delete _this3.viewsCompsRefs[oldActiveViewName];
-                                });
-                            } else {
-                                //Views PUSH operation
-                                this.setState({ views: this.prepareViews(nextProps.views) }, function () {
-                                    return _this3.changeActiveView(nextProps.activeViewName);
-                                });
-                            }
+                    // if (this.state.views.length > 0) { //we have some views to perfom animations between
+                    if (this.state.activeViewName !== nextProps.activeViewName) {
+                        if (this.state.views.length > nextProps.views.length) {
+                            //Views POP operation
+                            var oldActiveViewName = this.state.activeViewName;
+                            this.changeActiveView(nextProps.activeViewName, function () {
+                                _this3.setState({ views: _this3.prepareViews(nextProps.views) });
+                                delete _this3.viewsCompsRefs[oldActiveViewName];
+                            });
                         } else {
-                            this.setState({ views: this.prepareViews(nextProps.views) });
+                            //Views PUSH operation
+                            this.setState({ views: this.prepareViews(nextProps.views) }, function () {
+                                return _this3.changeActiveView(nextProps.activeViewName);
+                            });
                         }
                     } else {
-                        //first view is born out of nothing, do no animation
-                        this.setState({ views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName });
+                        this.setState({ views: this.prepareViews(nextProps.views) });
                     }
+                    // }
+                    // else { //first view is born out of nothing, do no animation
+                    //     this.setState({ views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName });
+                    // }
                 } else {
                     //else check if every view configuration is the same
                     var equal = true;
@@ -567,10 +566,14 @@ var AirrScene = function (_AirrComponent) {
                     }
 
                     if (_this8.getViewIndex(newViewName) !== -1) {
+                        _this8.viewChangeInProgress = true;
+
                         var oldViewName = _this8.state.activeViewName;
                         var newViewComp = _this8.viewsCompsRefs[newViewName];
                         var oldViewComp = _this8.viewsCompsRefs[oldViewName];
                         var animEndCallback = function animEndCallback() {
+                            _this8.viewChangeInProgress = false;
+
                             if (newViewComp && typeof newViewComp.viewAfterActivation === 'function') {
                                 newViewComp.viewAfterActivation();
                             }
@@ -584,19 +587,11 @@ var AirrScene = function (_AirrComponent) {
                         };
 
                         if (newViewComp && typeof newViewComp.viewBeforeActivation === 'function') {
-                            _this8.callingBeforeActivation = true;
-
-                            newViewComp.viewBeforeActivation(function () {
-                                _this8.callingBeforeActivation = false;
-                            });
+                            newViewComp.viewBeforeActivation();
                         }
 
                         if (oldViewComp && typeof oldViewComp.viewBeforeDeactivation === 'function') {
-                            _this8.callingBeforeDeactivation = true;
-
-                            oldViewComp.viewBeforeDeactivation(function () {
-                                _this8.callingBeforeDeactivation = false;
-                            });
+                            oldViewComp.viewBeforeDeactivation();
                         }
 
                         if (_this8.state.animation) {
@@ -705,7 +700,7 @@ var AirrScene = function (_AirrComponent) {
                 }
             }
 
-            if (this.state.animation === 'slide') {
+            if (this.state.animation === 'slide' && oldViewName) {
                 newViewDOM.style.display = 'block';
                 var startProps = {};
                 var endProps = {};
@@ -734,7 +729,7 @@ var AirrScene = function (_AirrComponent) {
                         callback();
                     }
                 });
-            } else if (this.state.animation === 'overlay') {
+            } else if (this.state.animation === 'overlay' && oldViewName) {
                 if (direction === 1) {
                     _AirrFX2.default.doTransitionAnimation(newViewDOM, {
                         webkitTransform: 'translate3d(' + (this.containerDOM.clientWidth + 'px') + ',0,0)',
@@ -778,7 +773,7 @@ var AirrScene = function (_AirrComponent) {
                         });
                     }
                 }
-            } else if (this.state.animation === 'fade') {
+            } else if (this.state.animation === 'fade' || !oldViewName) {
                 _AirrFX2.default.doTransitionAnimation(newViewDOM, {
                     opacity: 0
                 }, ['opacity ' + this.props.animationTime + 'ms ease-out'], {

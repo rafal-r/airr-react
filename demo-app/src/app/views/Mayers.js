@@ -36,14 +36,12 @@ class Mayers extends Component {
         console.log('Mayer viewAfterDeactivation');
     }
 
-    viewBeforeActivation(endCallback) {
+    viewBeforeActivation() {
         console.log('Mayer viewBeforeActivation');
-        endCallback();
     }
 
-    viewBeforeDeactivation(endCallback) {
+    viewBeforeDeactivation() {
         console.log('Mayer viewBeforeDeactivation');
-        endCallback();
     }
 
     componentWillMount() {

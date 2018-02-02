@@ -208,11 +208,11 @@ export default class AirrScene extends AirrComponent {
 
     componentWillReceiveProps(nextProps) {
 
-        if (!this.callingBeforeActivation && !this.callingBeforeDeactivation) {
+        if (!this.viewChangeInProgress) {
 
             if (this.state.views.length !== nextProps.views.length) { //Is views array different in length ?
 
-                if (this.state.views.length > 0) { //we have some views to perfom animations between
+                // if (this.state.views.length > 0) { //we have some views to perfom animations between
                     if (this.state.activeViewName !== nextProps.activeViewName) {
                         if (this.state.views.length > nextProps.views.length) { //Views POP operation
                             const oldActiveViewName = this.state.activeViewName;
@@ -226,10 +226,10 @@ export default class AirrScene extends AirrComponent {
                     } else {
                         this.setState({ views: this.prepareViews(nextProps.views) });
                     }
-                }
-                else { //first view is born out of nothing, do no animation
-                    this.setState({ views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName });
-                }
+                // }
+                // else { //first view is born out of nothing, do no animation
+                //     this.setState({ views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName });
+                // }
 
             } else { //else check if every view configuration is the same
                 let equal = true;
@@ -608,10 +608,14 @@ export default class AirrScene extends AirrComponent {
                 }
 
                 if (this.getViewIndex(newViewName) !== -1) {
+                    this.viewChangeInProgress = true;
+
                     const oldViewName = this.state.activeViewName;
                     const newViewComp = this.viewsCompsRefs[newViewName];
                     const oldViewComp = this.viewsCompsRefs[oldViewName];
                     const animEndCallback = () => {
+                        this.viewChangeInProgress = false
+
                         if (newViewComp && typeof newViewComp.viewAfterActivation === 'function') {
                             newViewComp.viewAfterActivation();
                         }
@@ -625,19 +629,11 @@ export default class AirrScene extends AirrComponent {
                     }
 
                     if (newViewComp && typeof newViewComp.viewBeforeActivation === 'function') {
-                        this.callingBeforeActivation = true;
-
-                        newViewComp.viewBeforeActivation(() => {
-                            this.callingBeforeActivation = false;
-                        });
+                        newViewComp.viewBeforeActivation();
                     }
 
                     if (oldViewComp && typeof oldViewComp.viewBeforeDeactivation === 'function') {
-                        this.callingBeforeDeactivation = true;
-
-                        oldViewComp.viewBeforeDeactivation(() => {
-                            this.callingBeforeDeactivation = false;
-                        });
+                        oldViewComp.viewBeforeDeactivation();
                     }
 
                     if (this.state.animation) {
@@ -740,7 +736,7 @@ export default class AirrScene extends AirrComponent {
             }
         }
 
-        if (this.state.animation === 'slide') {
+        if (this.state.animation === 'slide' && oldViewName) {
             newViewDOM.style.display = 'block'
             let startProps = {}
             let endProps = {}
@@ -769,7 +765,7 @@ export default class AirrScene extends AirrComponent {
                     callback();
                 }
             });
-        } else if (this.state.animation === 'overlay') {
+        } else if (this.state.animation === 'overlay' && oldViewName) {
             if (direction === 1) {
                 AirrFX.doTransitionAnimation(newViewDOM, {
                     webkitTransform: `translate3d(${this.containerDOM.clientWidth + 'px'},0,0)`,
@@ -810,7 +806,7 @@ export default class AirrScene extends AirrComponent {
                         });
                 }
             }
-        } else if (this.state.animation === 'fade') {
+        } else if (this.state.animation === 'fade' || !oldViewName) {
             AirrFX.doTransitionAnimation(newViewDOM, {
                 opacity: 0
             }, [`opacity ${this.props.animationTime}ms ease-out`], {
