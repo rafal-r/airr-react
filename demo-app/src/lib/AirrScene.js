@@ -157,6 +157,7 @@ export default class AirrScene extends AirrComponent {
             navbar: Number(props.navbar),
             mockTitle: false,
             navbarHeight: props.navbarHeight,
+            navbarClass: props.navbarClass,
             navbarMenu: props.navbarMenu,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
@@ -212,24 +213,19 @@ export default class AirrScene extends AirrComponent {
 
             if (this.state.views.length !== nextProps.views.length) { //Is views array different in length ?
 
-                // if (this.state.views.length > 0) { //we have some views to perfom animations between
-                    if (this.state.activeViewName !== nextProps.activeViewName) {
-                        if (this.state.views.length > nextProps.views.length) { //Views POP operation
-                            const oldActiveViewName = this.state.activeViewName;
-                            this.changeActiveView(nextProps.activeViewName, () => {
-                                this.setState({ views: this.prepareViews(nextProps.views) });
-                                delete this.viewsCompsRefs[oldActiveViewName];
-                            });
-                        } else { //Views PUSH operation
-                            this.setState({ views: this.prepareViews(nextProps.views) }, () => this.changeActiveView(nextProps.activeViewName));
-                        }
-                    } else {
-                        this.setState({ views: this.prepareViews(nextProps.views) });
+                if (this.state.activeViewName !== nextProps.activeViewName) {
+                    if (this.state.views.length > nextProps.views.length) { //Views POP operation
+                        const oldActiveViewName = this.state.activeViewName;
+                        this.changeActiveView(nextProps.activeViewName, () => {
+                            this.setState({ views: this.prepareViews(nextProps.views) });
+                            delete this.viewsCompsRefs[oldActiveViewName];
+                        });
+                    } else { //Views PUSH operation
+                        this.setState({ views: this.prepareViews(nextProps.views) }, () => this.changeActiveView(nextProps.activeViewName));
                     }
-                // }
-                // else { //first view is born out of nothing, do no animation
-                //     this.setState({ views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName });
-                // }
+                } else {
+                    this.setState({ views: this.prepareViews(nextProps.views) });
+                }
 
             } else { //else check if every view configuration is the same
                 let equal = true;
@@ -604,12 +600,12 @@ export default class AirrScene extends AirrComponent {
              * set here before any next setState call which might be executed after some batched state changes
              * (that will repeat activeViewName and viewChangeInProgress will not be set in componentWillReceiveProps)
              */
-            this.viewChangeInProgress = true; 
+            this.viewChangeInProgress = true;
             this.setState({ GUIDisabled: true, mockTitle: newViewName }, () => {
 
                 if (newViewName === this.state.activeViewName) {
                     console.warn('[Airr] This View is already active.');
-                    this.viewChangeInProgress = false; 
+                    this.viewChangeInProgress = false;
                     this.setState({ GUIDisabled: false });
                     return;
                 }
@@ -657,7 +653,7 @@ export default class AirrScene extends AirrComponent {
                         }, animEndCallback);
                     }
                 } else {
-                    this.viewChangeInProgress = false; 
+                    this.viewChangeInProgress = false;
                     console.warn('[Airr] View with name ' + newViewName + ' is not presence in this Scene.');
                 }
             });
@@ -985,7 +981,7 @@ export default class AirrScene extends AirrComponent {
                 }
             }
 
-            const navbarStyle = { }
+            const navbarStyle = {}
             if ([1, true].indexOf(this.state.navbar) === -1) {
                 navbarStyle.visibility = 'hidden';
             }
@@ -1002,7 +998,7 @@ export default class AirrScene extends AirrComponent {
 
             navbar = (
                 <div className='airr-navbar' ref={dom => this.navbarDOM = dom} style={navbarStyle}>
-                    <div className={this.state.navbarClass} style={{height: this.state.navbarHeight + 'px'}}>
+                    <div className={this.state.navbarClass} style={{ height: this.state.navbarHeight + 'px' }}>
                         {mockTitle}
                         {back}
                         <div className="title" style={{ opacity: this.state.mockTitle ? 0 : 1 }}><span>{title}</span></div>

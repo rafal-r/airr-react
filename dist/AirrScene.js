@@ -66,6 +66,7 @@ var AirrScene = function (_AirrComponent) {
             navbar: Number(props.navbar),
             mockTitle: false,
             navbarHeight: props.navbarHeight,
+            navbarClass: props.navbarClass,
             navbarMenu: props.navbarMenu,
             backButton: props.backButton,
             backButtonOnFirstView: props.backButtonOnFirstView,
@@ -139,7 +140,6 @@ var AirrScene = function (_AirrComponent) {
                 if (this.state.views.length !== nextProps.views.length) {
                     //Is views array different in length ?
 
-                    // if (this.state.views.length > 0) { //we have some views to perfom animations between
                     if (this.state.activeViewName !== nextProps.activeViewName) {
                         if (this.state.views.length > nextProps.views.length) {
                             //Views POP operation
@@ -157,10 +157,6 @@ var AirrScene = function (_AirrComponent) {
                     } else {
                         this.setState({ views: this.prepareViews(nextProps.views) });
                     }
-                    // }
-                    // else { //first view is born out of nothing, do no animation
-                    //     this.setState({ views: this.prepareViews(nextProps.views), activeViewName: nextProps.activeViewName });
-                    // }
                 } else {
                     //else check if every view configuration is the same
                     var equal = true;
