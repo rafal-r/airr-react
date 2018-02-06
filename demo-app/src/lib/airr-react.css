@@ -127,7 +127,7 @@ body {
 }
 
 .airr-mayer .btns button:active {
-    background-color: #fff !important;
+    background-color: #fff;
     color: #000;
 }
 

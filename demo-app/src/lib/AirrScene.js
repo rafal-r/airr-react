@@ -599,17 +599,22 @@ export default class AirrScene extends AirrComponent {
     changeActiveView(newViewName, callback) {
         if (typeof newViewName === 'string') {
 
+            /**
+             * viewChangeInProgress
+             * set here before any next setState call which might be executed after some batched state changes
+             * (that will repeat activeViewName and viewChangeInProgress will not be set in componentWillReceiveProps)
+             */
+            this.viewChangeInProgress = true; 
             this.setState({ GUIDisabled: true, mockTitle: newViewName }, () => {
 
                 if (newViewName === this.state.activeViewName) {
                     console.warn('[Airr] This View is already active.');
+                    this.viewChangeInProgress = false; 
                     this.setState({ GUIDisabled: false });
                     return;
                 }
 
                 if (this.getViewIndex(newViewName) !== -1) {
-                    this.viewChangeInProgress = true;
-
                     const oldViewName = this.state.activeViewName;
                     const newViewComp = this.viewsCompsRefs[newViewName];
                     const oldViewComp = this.viewsCompsRefs[oldViewName];
@@ -652,6 +657,7 @@ export default class AirrScene extends AirrComponent {
                         }, animEndCallback);
                     }
                 } else {
+                    this.viewChangeInProgress = false; 
                     console.warn('[Airr] View with name ' + newViewName + ' is not presence in this Scene.');
                 }
             });

@@ -60,7 +60,7 @@ AirrFX.doTransitionAnimation = function (element, startProps, transitionProps, e
     }
 
     if (typeof endCallback === 'function') {
-        setTimeout(function () {
+        setTimeout(function () {            
             endCallback();
         }, endAfter);
     }

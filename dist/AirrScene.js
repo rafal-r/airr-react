@@ -557,17 +557,22 @@ var AirrScene = function (_AirrComponent) {
 
             if (typeof newViewName === 'string') {
 
+                /**
+                 * viewChangeInProgress
+                 * set here before any next setState call which might be executed after some batched state changes
+                 * (that will repeat activeViewName and viewChangeInProgress will not be set in componentWillReceiveProps)
+                 */
+                this.viewChangeInProgress = true;
                 this.setState({ GUIDisabled: true, mockTitle: newViewName }, function () {
 
                     if (newViewName === _this8.state.activeViewName) {
                         console.warn('[Airr] This View is already active.');
+                        _this8.viewChangeInProgress = false;
                         _this8.setState({ GUIDisabled: false });
                         return;
                     }
 
                     if (_this8.getViewIndex(newViewName) !== -1) {
-                        _this8.viewChangeInProgress = true;
-
                         var oldViewName = _this8.state.activeViewName;
                         var newViewComp = _this8.viewsCompsRefs[newViewName];
                         var oldViewComp = _this8.viewsCompsRefs[oldViewName];
@@ -610,6 +615,7 @@ var AirrScene = function (_AirrComponent) {
                             }, animEndCallback);
                         }
                     } else {
+                        _this8.viewChangeInProgress = false;
                         console.warn('[Airr] View with name ' + newViewName + ' is not presence in this Scene.');
                     }
                 });
