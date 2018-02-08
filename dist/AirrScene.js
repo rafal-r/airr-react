@@ -318,6 +318,13 @@ var AirrScene = function (_AirrComponent) {
             if (this.state.navbar && this.state.navbarHeight && this.containerDOM) {
                 this.containerDOM.style.height = this.containerDOM.parentNode.clientHeight - this.state.navbarHeight + 'px';
             }
+
+            /**
+             * Call first active view life cycle method - viewAfterActivation
+             */
+            if (this.state.activeViewName && this.viewsCompsRefs[this.state.activeViewName] && typeof this.viewsCompsRefs[this.state.activeViewName].viewAfterActivation === 'function') {
+                this.viewsCompsRefs[this.state.activeViewName].viewAfterActivation();
+            }
         }
         /**
          * Returns view index in this.state.views array
@@ -916,8 +923,7 @@ var AirrScene = function (_AirrComponent) {
             var views = [];
             var isAnyViewActive = false;
             this.state.views.forEach(function (item) {
-                var viewProps = {};
-                Object.assign(viewProps, item.props);
+                var viewProps = Object.assign({}, item.props);
 
                 if (viewProps.name === _this10.state.activeViewName) {
                     viewProps.active = true;

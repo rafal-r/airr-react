@@ -396,6 +396,16 @@ export default class AirrScene extends AirrComponent {
         if (this.state.navbar && this.state.navbarHeight && this.containerDOM) {
             this.containerDOM.style.height = this.containerDOM.parentNode.clientHeight - this.state.navbarHeight + 'px';
         }
+
+        /**
+         * Call first active view life cycle method - viewAfterActivation
+         */
+        if (this.state.activeViewName 
+            && this.viewsCompsRefs[this.state.activeViewName]
+            && typeof this.viewsCompsRefs[this.state.activeViewName].viewAfterActivation === 'function'
+        ) {
+            this.viewsCompsRefs[this.state.activeViewName].viewAfterActivation()
+        }
     }
     /**
      * Returns view index in this.state.views array
@@ -924,8 +934,7 @@ export default class AirrScene extends AirrComponent {
         let views = [];
         let isAnyViewActive = false;
         this.state.views.forEach((item) => {
-            let viewProps = {};
-            Object.assign(viewProps, item.props);
+            let viewProps = Object.assign({}, item.props);
 
             if (viewProps.name === this.state.activeViewName) {
                 viewProps.active = true;
