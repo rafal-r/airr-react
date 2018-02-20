@@ -21,6 +21,7 @@ export default class AirrScene extends AirrComponent {
         backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
         handleBackButton: null, //parent function to handle back button tap
         handleBackBehaviourOnFirstView: null, //null or function e.g. if this scene is view in some parent scene, and you want to pop out of it - this function will come from parent scene and will handle this behaviour
+        viewsAnimationEndCallback: null, //called after views animation ends
         stackMode: true, //bool - if false Scene views will be assumed as tabs rather then stack order views. (view change vs. view pop/push)
         active: false, //bool is currently active in parent scene
         sidepanel: null, //{type: AirrSidepanel, props: {}}
@@ -65,6 +66,7 @@ export default class AirrScene extends AirrComponent {
         backButtonOnFirstView: PropTypes.bool,
         handleBackButton: PropTypes.func,
         handleBackBehaviourOnFirstView: PropTypes.func,
+        viewsAnimationEndCallback: PropTypes.func,
         stackMode: PropTypes.bool,
         active: PropTypes.bool,
         /**
@@ -635,8 +637,8 @@ export default class AirrScene extends AirrComponent {
                             oldViewComp.viewAfterDeactivation();
                         }
 
-                        if (typeof this.viewsAnimationEnd === 'function') {
-                            this.viewsAnimationEnd();
+                        if (typeof this.props.viewsAnimationEndCallback === 'function') {
+                            this.props.viewsAnimationEndCallback();
                         }
 
                         if (typeof callback === 'function') {

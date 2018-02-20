@@ -94,6 +94,7 @@ var AirrCompositeScene = function (_AirrComponent) {
                 name: this.props.name,
                 animationTime: this.props.animationTime,
                 handleBackBehaviourOnFirstView: this.props.handleBackBehaviourOnFirstView,
+                viewsAnimationEndCallback: this.props.viewsAnimationEndCallback,
                 stackMode: this.props.stackMode,
                 GUIDisabled: this.state.GUIDisabled,
                 active: this.state.active,
