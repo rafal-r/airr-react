@@ -585,8 +585,13 @@ var AirrScene = function (_AirrComponent) {
                             if (newViewComp && typeof newViewComp.viewAfterActivation === 'function') {
                                 newViewComp.viewAfterActivation();
                             }
+
                             if (oldViewComp && typeof oldViewComp.viewAfterDeactivation === 'function') {
                                 oldViewComp.viewAfterDeactivation();
+                            }
+
+                            if (typeof _this8.viewsAnimationEnd === 'function') {
+                                _this8.viewsAnimationEnd();
                             }
 
                             if (typeof callback === 'function') {

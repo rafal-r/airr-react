@@ -630,8 +630,13 @@ export default class AirrScene extends AirrComponent {
                         if (newViewComp && typeof newViewComp.viewAfterActivation === 'function') {
                             newViewComp.viewAfterActivation();
                         }
+
                         if (oldViewComp && typeof oldViewComp.viewAfterDeactivation === 'function') {
                             oldViewComp.viewAfterDeactivation();
+                        }
+
+                        if (typeof this.viewsAnimationEnd === 'function') {
+                            this.viewsAnimationEnd();
                         }
 
                         if (typeof callback === 'function') {
