@@ -6,14 +6,6 @@
     box-sizing: border-box;
 }
 
-*::-webkit-scrollbar {
-    width: 3px;
-    height: 5px;
-}
-*::-webkit-scrollbar-thumb {
-    background-color: #ddd;
-}
-
 :after, :before {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;

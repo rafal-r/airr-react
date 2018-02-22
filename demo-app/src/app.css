@@ -1,3 +1,10 @@
+*::-webkit-scrollbar {
+    width: 3px;
+    height: 5px;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+}
 /*FONTS*/
 @font-face {
     font-family: 'Anonymous Pro';
