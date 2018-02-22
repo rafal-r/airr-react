@@ -52,8 +52,17 @@ p {
     font-size: .75rem;
 }
 .airr-mayer .btns button {
+    padding: 0.5rem 1.5rem;
+    background-color: #000;
+    color: #fff;
+    height: auto;
+    margin-top: 0.3rem;
     border: 1px solid #000;
     border-radius: 5px;
+}
+.airr-mayer .btns button:active {
+    background-color: #fff;
+    color: #000;
 }
 input[type='radio'] {
     -webkit-appearance: radio;

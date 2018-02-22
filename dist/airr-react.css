@@ -117,19 +117,6 @@ body {
     overflow: auto;
 }
 
-.airr-mayer .btns button {
-    padding: 0.5rem 1.5rem;
-    background-color: #000;
-    color: #fff;
-    height: auto;
-    margin-top: 0.3rem;
-}
-
-.airr-mayer .btns button:active {
-    background-color: #fff;
-    color: #000;
-}
-
 .airr-mayer .btns button:last-child {
     float: right;
 }
