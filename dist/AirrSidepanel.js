@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -6,19 +6,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
+var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _AirrComponent2 = require('./AirrComponent');
+var _AirrComponent2 = require("./AirrComponent");
 
 var _AirrComponent3 = _interopRequireDefault(_AirrComponent2);
 
-var _eventHelpers = require('./eventHelpers');
+var _eventHelpers = require("./eventHelpers");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,99 +36,331 @@ var AirrSidepanel = function (_AirrComponent) {
 
         var _this = _possibleConstructorReturn(this, (AirrSidepanel.__proto__ || Object.getPrototypeOf(AirrSidepanel)).call(this, props));
 
-        _this.enabled = false;
+        _this.state = {
+            side: _this.props.side,
+            isShown: _this.props.isShown,
+            sizeFactor: _this.props.sizeFactor,
+            sceneWidth: _this.props.sceneWidth,
+            sceneHeight: _this.props.sceneHeight
+        };
+        _this.enabled = _this.props.enabled;
+        _this.startEvent = _eventHelpers.isMobileDevice ? "touchstart" : "mousedown";
+        _this.moveEvent = _eventHelpers.isMobileDevice ? "touchmove" : "mousemove";
+        _this.endEvent = _eventHelpers.isMobileDevice ? "touchend" : "mouseup";
 
+        _this.getPosition = function (e, axis) {
+            return "changedTouches" in e ? e.changedTouches[0]["client" + axis] : e["client" + axis];
+        };
 
-        _this.handleShowTouchMove = _this.handleShowTouchMove.bind(_this);
-        _this.handleTouchStart = _this.handleTouchStart.bind(_this);
-        _this.handleTouchEnd = _this.handleTouchEnd.bind(_this);
-        _this.handleHideTouchMove = _this.handleHideTouchMove.bind(_this);
+        _this.getLastPosition = function (e) {
+            return "changedTouches" in e ? e.changedTouches[0] : { clientX: e.clientX, clientY: e.clientY };
+        };
 
-        _this.startEvent = _eventHelpers.isMobileDevice ? 'touchstart' : 'mousedown';
-        _this.moveEvent = _eventHelpers.isMobileDevice ? 'touchmove' : 'mousemove';
-        _this.endEvent = _eventHelpers.isMobileDevice ? 'touchend' : 'mouseup';
+        _this.getEventX = function (e) {
+            return "changedTouches" in e ? e.changedTouches[0].clientX : e.clientX;
+        };
+
+        _this.getEventY = function (e) {
+            return "changedTouches" in e ? e.changedTouches[0].clientY : e.clientY;
+        };
+
+        _this.handleTouchStart = function (e) {
+            var pos = _this.getPosition(e, _this.axis);
+            var dragCtnOnTouchPath = false;
+
+            if (e.path) {
+                for (var i = 0; i < e.path.length; i++) {
+                    if (e.path[i] === _this.dragCtnDOM) {
+                        dragCtnOnTouchPath = true;
+                    }
+                }
+            } else {
+                if (e.target === _this.dragCtnDOM || _this.bubbleChildTillParent(e.target, _this.dragCtnDOM, [_this.dragCtnDOM.parentNode, document.body])) {
+                    dragCtnOnTouchPath = true;
+                }
+            }
+
+            if (!dragCtnOnTouchPath && (["left", "top"].indexOf(_this.state.side) !== -1 && pos < 20 || ["right", "bottom"].indexOf(_this.state.side) !== -1 && pos > _this.hiddenVal - 20)) {
+                //corner touch, show moves
+
+                _this.sidepanelDOM.style.display = "block";
+                _this.sceneDOM.addEventListener(_this.moveEvent, _this.handleShowTouchMove, _eventHelpers.supportPassive);
+                _this.sceneDOM.addEventListener(_this.endEvent, _this.handleTouchEnd, false);
+
+                _this.triggerCustom("showTouchStart");
+
+                var showmoveend = function showmoveend() {
+                    _this.sceneDOM.removeEventListener(_this.endEvent, showmoveend); //remove self to act like once listener
+                    _this.sceneDOM.removeEventListener(_this.moveEvent, _this.handleShowTouchMove);
+                    _this.triggerCustom("showTouchEnd");
+                };
+
+                _this.sceneDOM.addEventListener(_this.endEvent, showmoveend, false);
+            } else if (_this.currentVal === _this.shownVal) {
+                //fully visible, hide moves
+                _this.sceneDOM.addEventListener(_this.moveEvent, _this.handleHideTouchMove, _eventHelpers.supportPassive);
+                _this.sceneDOM.addEventListener(_this.endEvent, _this.handleTouchEnd, false);
+
+                _this.triggerCustom("hideTouchStart");
+
+                var hidemoveend = function hidemoveend() {
+                    _this.sceneDOM.removeEventListener(_this.endEvent, hidemoveend);
+                    _this.sceneDOM.removeEventListener(_this.moveEvent, _this.handleHideTouchMove);
+                    _this.triggerCustom("hideTouchEnd");
+                };
+
+                _this.sceneDOM.addEventListener(_this.endEvent, hidemoveend, false);
+            }
+
+            if (e.target === _this.bgLayerDOM) {
+                //tap to hide
+                if (["left", "top"].indexOf(_this.state.side) !== -1 && _this.currentVal === 0 || ["right", "bottom"].indexOf(_this.state.side) !== -1 && _this.currentVal) {
+                    var hidedragctn = function hidedragctn(e) {
+                        _this.sceneDOM.removeEventListener(_this.endEvent, hidedragctn);
+                        if (Math.abs(pos - _this.getPosition(e, _this.axis)) <= 2.5) {
+                            //little diff allowance
+                            _this.hide();
+                        }
+                    };
+
+                    _this.sceneDOM.addEventListener(_this.endEvent, hidedragctn, false);
+                }
+            }
+
+            _this.lastTouch = _this.getLastPosition(e);
+        };
+
+        _this.handleShowTouchMove = function (e) {
+            var pos = _this.getPosition(e, _this.axis);
+            var newVal = void 0,
+                progress = void 0;
+
+            if (["left", "top"].indexOf(_this.state.side) !== -1) {
+                if (pos <= -1 * _this.hiddenVal) {
+                    newVal = _this.hiddenVal + pos;
+                } else {
+                    newVal = _this.shownVal;
+                }
+                progress = pos / _this.size;
+            } else {
+                if (_this.hiddenVal - pos <= _this.size) {
+                    newVal = pos;
+                } else {
+                    newVal = _this.shownVal;
+                }
+                progress = (_this.sceneSize - pos) / _this.size;
+            }
+
+            if (newVal !== _this.currentVal) {
+                _this.currentVal = newVal;
+                progress = parseFloat(progress);
+                progress = progress > 1 ? 1 : progress < 0 ? 0 : progress;
+
+                _this.bgLayerDOM.style.opacity = progress * 0.7;
+
+                _this.dragCtnDOM.style.webkitTransform = _this.transformScheme.replace("%v", _this.currentVal);
+                _this.dragCtnDOM.style.transform = _this.transformScheme.replace("%v", _this.currentVal);
+            }
+
+            _this.lastTouch = _this.getLastPosition(e);
+
+            if (!_eventHelpers.supportPassive) {
+                e.preventDefault();
+            }
+        };
+
+        _this.handleHideTouchMove = function (e) {
+            var progress = void 0,
+                newVal = void 0,
+                change = void 0,
+                moveAxis = void 0;
+
+            if (_this.lastTouch) {
+                if (Math.abs(_this.lastTouch.clientX - _this.getEventX(e)) >= Math.abs(_this.lastTouch.clientY - _this.getEventY(e))) {
+                    if (_this.getEventX(e) - _this.lastTouch.clientX <= 0) {
+                        // move = 'left';
+                        moveAxis = "X";
+                    } else {
+                        // move = 'right';
+                        moveAxis = "X";
+                    }
+                } else {
+                    if (_this.getEventY(e) - _this.lastTouch.clientY <= 0) {
+                        // move = 'top';
+                        moveAxis = "Y";
+                    } else {
+                        // move = 'bottom';
+                        moveAxis = "Y";
+                    }
+                }
+            }
+
+            if (moveAxis === _this.axis && (["left", "top"].indexOf(_this.state.side) !== -1 && _this.getPosition(e, moveAxis) < _this.size || ["right", "bottom"].indexOf(_this.state.side) !== -1 && _this.getPosition(e, moveAxis) > _this.hiddenVal - _this.size)) {
+                change = _this.getPosition(e, _this.axis) - _this.lastTouch["client" + _this.axis];
+                newVal = _this.currentVal + change;
+
+                if (_this.state.side === "left" || _this.state.side === "top") {
+                    if (newVal < _this.hiddenVal) {
+                        newVal = _this.hiddenVal;
+                    } else if (newVal > _this.shownVal) {
+                        newVal = _this.shownVal;
+                    }
+
+                    progress = 1 - Math.abs(newVal / _this.size);
+                } else {
+                    if (newVal > _this.hiddenVal) {
+                        newVal = _this.hiddenVal;
+                    } else if (newVal < _this.shownVal) {
+                        newVal = _this.shownVal;
+                    }
+
+                    progress = (_this.sceneSize - newVal) / _this.size;
+                }
+
+                if (newVal !== _this.currentVal) {
+                    _this.currentVal = newVal;
+                    progress = parseFloat(progress);
+                    progress = progress > 1 ? 1 : progress < 0 ? 0 : progress;
+
+                    _this.bgLayerDOM.style.opacity = progress * 0.7;
+
+                    _this.dragCtnDOM.style.webkitTransform = _this.transformScheme.replace("%v", _this.currentVal);
+                    _this.dragCtnDOM.style.transform = _this.transformScheme.replace("%v", _this.currentVal);
+                }
+            }
+
+            _this.lastTouch = _this.getLastPosition(e);
+            if (!_eventHelpers.supportPassive) {
+                e.preventDefault();
+            }
+        };
+
+        _this.handleTouchEnd = function (e) {
+            var val = null;
+
+            if (_this.currentVal !== _this.shownVal && _this.currentVal !== _this.hiddenVal) {
+                if (["left", "top"].indexOf(_this.state.side) !== -1) {
+                    if (_this.currentVal >= _this.hiddenVal / 2) {
+                        val = _this.shownVal;
+                    } else {
+                        val = _this.hiddenVal;
+                    }
+                } else {
+                    if (_this.currentVal < _this.hiddenVal - _this.size / 2) {
+                        val = _this.shownVal;
+                    } else {
+                        val = _this.hiddenVal;
+                    }
+                }
+            } else if (_this.currentVal === _this.hiddenVal) {
+                _this.sidepanelDOM.style.display = "none";
+            }
+
+            if (val !== null) {
+                _this.translateTo(val, function () {
+                    _this.setState({
+                        isShown: _this.isShown()
+                    });
+                });
+            } else {
+                _this.setState({
+                    isShown: _this.isShown()
+                });
+            }
+
+            _this.sceneDOM.removeEventListener(_this.endEvent, _this.handleTouchEnd);
+        };
+
+        _this.hide = function () {
+            return _this.translateTo(_this.hiddenVal);
+        };
+
+        _this.show = function () {
+            return _this.translateTo(_this.shownVal);
+        };
+
+        _this.isShown = function () {
+            return _this.sidepanelDOM.offsetParent !== null;
+        };
+
+        _this.translateTo = function (finishVal) {
+            var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+
+            _this.bgLayerDOM.style.webkitTransition = "opacity .2s ease-in";
+            _this.bgLayerDOM.style.transition = "opacity .2s ease-in";
+            // eslint-disable-next-line
+            _this.bgLayerDOM.offsetHeight;
+
+            if (finishVal === _this.shownVal) {
+                if (!_this.isShown()) {
+                    _this.sidepanelDOM.style.display = "block";
+                }
+
+                _this.bgLayerDOM.style.opacity = 0.7;
+            } else if (finishVal === _this.hiddenVal) {
+                _this.bgLayerDOM.style.opacity = 0;
+            }
+            // eslint-disable-next-line
+            _this.sidepanelDOM.offsetHeight;
+            _this.sidepanelDOM.style.webkitTransition = "initial";
+            _this.sidepanelDOM.style.transition = "initial";
+
+            _this.dragCtnDOM.style.webkitTransition = "-webkit-transform 0.2s ease-out";
+            _this.dragCtnDOM.style.webkitTransition = "transform 0.2s ease-out";
+            _this.dragCtnDOM.style.transition = "transform 0.2s ease-out";
+
+            // eslint-disable-next-line
+            _this.dragCtnDOM.offsetHeight;
+            _this.dragCtnDOM.style.webkitTransform = _this.transformScheme.replace("%v", finishVal);
+            _this.dragCtnDOM.style.transform = _this.transformScheme.replace("%v", finishVal);
+
+            // eslint-disable-next-line
+            _this.dragCtnDOM.offsetHeight;
+
+            _this.dragCtnDOM.style.webkitTransition = "initial";
+            _this.dragCtnDOM.style.transition = "initial";
+
+            setTimeout(function () {
+                _this.bgLayerDOM.style.webkitTransition = "initial";
+                _this.bgLayerDOM.style.transition = "initial";
+
+                _this.currentVal = finishVal;
+                if (finishVal === _this.hiddenVal) {
+                    _this.sidepanelDOM.style.display = "none";
+                }
+
+                callback();
+            }, 205);
+        };
+
+        _this.updateSideProps(props.side);
         return _this;
     }
 
     _createClass(AirrSidepanel, [{
-        key: 'updateSide',
-        value: function updateSide() {
-            this.side = this.props.side;
-            this.sceneWidth = this.props.sceneWidth;
-            this.sceneHeight = this.props.sceneHeight;
-
-            this.dragCtnStyle = Object.assign({}, this.props.dragCtnStyle);
-
-            if (this.side === 'left' || this.side === 'right') {
-                this.size = this.sceneWidth * this.props.sizeFactor;
-                this.sceneSize = this.sceneWidth;
-                this.hiddenVal = this.side === 'left' ? -1 * this.size : this.sceneWidth;
-                this.transformScheme = 'translate3d(%vpx,0,0)';
-                this.axis = 'X';
-
-                this.dragCtnStyle.width = this.size + 'px';
-                this.dragCtnStyle.height = '100%';
-            } else {
-                //top,bottom
-                this.size = this.sceneHeight * this.props.sizeFactor;
-                this.sceneSize = this.sceneHeight;
-                this.hiddenVal = this.side === 'top' ? -1 * this.size : this.sceneHeight;
-                this.transformScheme = 'translate3d(0,%vpx,0)';
-                this.axis = 'Y';
-
-                this.dragCtnStyle.height = this.size + 'px';
-                this.dragCtnStyle.width = '100%';
-            }
-
-            if (this.side === 'top' || this.side === 'left') {
-                this.shownVal = 0;
-            } else {
-                this.shownVal = this.sceneSize - this.size;
-            }
-
-            if (this.props.isShown) {
-                this.dragCtnStyle.WebkitTransform = this.transformScheme.replace('%v', this.shownVal);
-                this.dragCtnStyle.transform = this.transformScheme.replace('%v', this.shownVal);
-                this.sidepanelStyle = { display: 'block' };
-                this.bgLayerStyle = { opacity: .7 };
-            } else {
-                this.dragCtnStyle.WebkitTransform = this.transformScheme.replace('%v', this.hiddenVal);
-                this.dragCtnStyle.transform = this.transformScheme.replace('%v', this.hiddenVal);
-                this.sidepanelStyle = { display: 'none' };
-                this.bgLayerStyle = { opacity: 0 };
-            }
-        }
-    }, {
-        key: 'isEnabled',
-        value: function isEnabled() {
-            return this.enabled;
-        }
-    }, {
-        key: 'enable',
+        key: "enable",
         value: function enable() {
-            if (!this.isEnabled()) {
-                this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, _eventHelpers.supportPassive);
-                this.enabled = true;
-            }
+            this.sceneDOM.removeEventListener(this.startEvent, this.handleTouchStart);
+            this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, _eventHelpers.supportPassive);
+            this.enabled = true;
         }
     }, {
-        key: 'disable',
+        key: "disable",
         value: function disable() {
-            if (this.isEnabled()) {
-                this.sceneDOM.removeEventListener(this.startEvent, this.handleTouchStart);
-                this.enabled = false;
-            }
+            this.sceneDOM.removeEventListener(this.startEvent, this.handleTouchStart);
+            this.enabled = false;
         }
     }, {
-        key: 'componentDidMount',
+        key: "componentDidMount",
         value: function componentDidMount() {
             this.sceneDOM = this.sidepanelDOM.parentNode;
-            if (this.props.enabled) {
+
+            if (this.enabled) {
                 this.enable();
             }
         }
     }, {
-        key: 'componentWillReceiveProps',
+        key: "componentWillReceiveProps",
         value: function componentWillReceiveProps(nextProps) {
             if (!nextProps.enabled && this.enabled) {
                 this.disable();
@@ -137,9 +369,29 @@ var AirrSidepanel = function (_AirrComponent) {
             if (nextProps.enabled && !this.enabled) {
                 this.enable();
             }
+
+            if (nextProps.dragCtnStyle !== this.state.dragCtnStyle) {
+                this.setState({ dragCtnStyle: nextProps.dragCtnStyle });
+            }
+            if (nextProps.side !== this.state.side) {
+                this.updateSideProps(nextProps.side);
+                this.setState({ side: nextProps.side });
+            }
+            if (nextProps.isShown !== this.state.isShown) {
+                this.setState({ isShown: nextProps.isShown });
+            }
+            if (nextProps.sizeFactor !== this.state.sizeFactor) {
+                this.setState({ sizeFactor: nextProps.sizeFactor });
+            }
+            if (nextProps.sceneWidth !== this.state.sceneWidth) {
+                this.setState({ sceneWidth: nextProps.sceneWidth });
+            }
+            if (nextProps.sceneHeight !== this.state.sceneHeight) {
+                this.setState({ sceneHeight: nextProps.sceneHeight });
+            }
         }
     }, {
-        key: 'bubbleChildTillParent',
+        key: "bubbleChildTillParent",
         value: function bubbleChildTillParent(child, parent, tillElements) {
             if (child.parentNode === parent) {
                 return true;
@@ -152,317 +404,86 @@ var AirrSidepanel = function (_AirrComponent) {
             }
         }
     }, {
-        key: 'getPosition',
-        value: function getPosition(e, axis) {
-            return 'changedTouches' in e ? e.changedTouches[0]['client' + axis] : e['client' + axis];
+        key: "updateSideProps",
+        value: function updateSideProps(side) {
+            if (side === "left" || side === "right") {
+                this.size = this.state.sceneWidth * this.state.sizeFactor;
+                this.sceneSize = this.state.sceneWidth;
+                this.hiddenVal = side === "left" ? -1 * this.size : this.state.sceneWidth;
+                this.transformScheme = "translate3d(%vpx,0,0)";
+                this.axis = "X";
+            } else {
+                //top,bottom
+                this.size = this.state.sceneHeight * this.state.sizeFactor;
+                this.sceneSize = this.state.sceneHeight;
+                this.hiddenVal = side === "top" ? -1 * this.size : this.state.sceneHeight;
+                this.transformScheme = "translate3d(0,%vpx,0)";
+                this.axis = "Y";
+            }
+
+            if (side === "top" || side === "left") {
+                this.shownVal = 0;
+            } else {
+                this.shownVal = this.sceneSize - this.size;
+            }
+
+            if (this.state.isShown) {
+                this.currentVal = this.shownVal;
+            } else {
+                this.currentVal = this.hiddenVal;
+            }
         }
     }, {
-        key: 'getLastPosition',
-        value: function getLastPosition(e) {
-            return 'changedTouches' in e ? e.changedTouches[0] : { clientX: e.clientX, clientY: e.clientY };
-        }
-    }, {
-        key: 'getEventX',
-        value: function getEventX(e) {
-            return 'changedTouches' in e ? e.changedTouches[0].clientX : e.clientX;
-        }
-    }, {
-        key: 'getEventY',
-        value: function getEventY(e) {
-            return 'changedTouches' in e ? e.changedTouches[0].clientY : e.clientY;
-        }
-    }, {
-        key: 'handleTouchStart',
-        value: function handleTouchStart(e) {
+        key: "render",
+        value: function render() {
             var _this2 = this;
 
-            var pos = this.getPosition(e, this.axis);
-            var dragCtnOnTouchPath = false;
+            var className = "airr-sidepanel " + this.state.side;
+            var dragCtnStyle = {};
+            var sidepanelStyle = void 0;
+            var bgLayerStyle = void 0;
 
-            if (e.path) {
-                for (var i = 0; i < e.path.length; i++) {
-                    if (e.path[i] === this.dragCtnDOM) {
-                        dragCtnOnTouchPath = true;
-                    }
-                }
+            if (this.state.side === "left" || this.state.side === "right") {
+                dragCtnStyle.width = this.size + "px";
+                dragCtnStyle.height = "100%";
             } else {
-                if (e.target === this.dragCtnDOM || this.bubbleChildTillParent(e.target, this.dragCtnDOM, [this.dragCtnDOM.parentNode, document.body])) {
-                    dragCtnOnTouchPath = true;
-                }
+                //top,bottom
+                dragCtnStyle.height = this.size + "px";
+                dragCtnStyle.width = "100%";
             }
 
-            if (!dragCtnOnTouchPath && (['left', 'top'].indexOf(this.side) !== -1 && pos < 20 || ['right', 'bottom'].indexOf(this.side) !== -1 && pos > this.hiddenVal - 20)) {
-                //corner touch, show moves
-
-                this.sidepanelDOM.style.display = 'block';
-                this.sceneDOM.addEventListener(this.moveEvent, this.handleShowTouchMove, _eventHelpers.supportPassive);
-                this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
-
-                this.triggerCustom('showTouchStart');
-
-                var showmoveend = function showmoveend() {
-                    _this2.sceneDOM.removeEventListener(_this2.endEvent, showmoveend); //remove self to act like once listener
-                    _this2.sceneDOM.removeEventListener(_this2.moveEvent, _this2.handleShowTouchMove);
-                    _this2.triggerCustom('showTouchEnd');
-                };
-
-                this.sceneDOM.addEventListener(this.endEvent, showmoveend, false);
-            } else if (this.currentVal === this.shownVal) {
-                //fully visible, hide moves
-                this.sceneDOM.addEventListener(this.moveEvent, this.handleHideTouchMove, _eventHelpers.supportPassive);
-                this.sceneDOM.addEventListener(this.endEvent, this.handleTouchEnd, false);
-
-                this.triggerCustom('hideTouchStart');
-
-                var hidemoveend = function hidemoveend() {
-                    _this2.sceneDOM.removeEventListener(_this2.endEvent, hidemoveend);
-                    _this2.sceneDOM.removeEventListener(_this2.moveEvent, _this2.handleHideTouchMove);
-                    _this2.triggerCustom('hideTouchEnd');
-                };
-
-                this.sceneDOM.addEventListener(this.endEvent, hidemoveend, false);
-            }
-
-            if (e.target === this.bgLayerDOM) {
-                //tap to hide
-                if (['left', 'top'].indexOf(this.side) !== -1 && this.currentVal === 0 || ['right', 'bottom'].indexOf(this.side) !== -1 && this.currentVal) {
-
-                    var hidedragctn = function hidedragctn(e) {
-                        _this2.sceneDOM.removeEventListener(_this2.endEvent, hidedragctn);
-                        if (Math.abs(pos - _this2.getPosition(e, _this2.axis)) <= 2.5) {
-                            //little diff allowance
-                            _this2.hide();
-                        }
-                    };
-
-                    this.sceneDOM.addEventListener(this.endEvent, hidedragctn, false);
-                }
-            }
-
-            this.lastTouch = this.getLastPosition(e);
-        }
-    }, {
-        key: 'handleShowTouchMove',
-        value: function handleShowTouchMove(e) {
-            var pos = this.getPosition(e, this.axis);
-            var newVal = void 0,
-                progress = void 0;
-
-            if (['left', 'top'].indexOf(this.side) !== -1) {
-                if (pos <= -1 * this.hiddenVal) {
-                    newVal = this.hiddenVal + pos;
-                } else {
-                    newVal = this.shownVal;
-                }
-                progress = pos / this.size;
+            if (this.state.isShown) {
+                dragCtnStyle.WebkitTransform = this.transformScheme.replace("%v", this.shownVal);
+                dragCtnStyle.transform = this.transformScheme.replace("%v", this.shownVal);
+                sidepanelStyle = { display: "block" };
+                bgLayerStyle = { opacity: 0.7 };
             } else {
-                if (this.hiddenVal - pos <= this.size) {
-                    newVal = pos;
-                } else {
-                    newVal = this.shownVal;
-                }
-                progress = (this.sceneSize - pos) / this.size;
+                dragCtnStyle.WebkitTransform = this.transformScheme.replace("%v", this.hiddenVal);
+                dragCtnStyle.transform = this.transformScheme.replace("%v", this.hiddenVal);
+                sidepanelStyle = { display: "none" };
+                bgLayerStyle = { opacity: 0 };
             }
 
-            if (newVal !== this.currentVal) {
-                this.currentVal = newVal;
-                progress = parseFloat(progress);
-                progress = progress > 1 ? 1 : progress < 0 ? 0 : progress;
-
-                this.bgLayerDOM.style.opacity = progress * 0.7;
-
-                this.dragCtnDOM.style.webkitTransform = this.transformScheme.replace('%v', this.currentVal);
-                this.dragCtnDOM.style.transform = this.transformScheme.replace('%v', this.currentVal);
-            }
-
-            this.lastTouch = this.getLastPosition(e);
-
-            if (!_eventHelpers.supportPassive) {
-                e.preventDefault();
-            }
-        }
-    }, {
-        key: 'handleHideTouchMove',
-        value: function handleHideTouchMove(e) {
-            var progress = void 0,
-                newVal = void 0,
-                change = void 0,
-                moveAxis = void 0;
-
-            if (this.lastTouch) {
-                if (Math.abs(this.lastTouch.clientX - this.getEventX(e)) >= Math.abs(this.lastTouch.clientY - this.getEventY(e))) {
-                    if (this.getEventX(e) - this.lastTouch.clientX <= 0) {
-                        // move = 'left';
-                        moveAxis = 'X';
-                    } else {
-                        // move = 'right';
-                        moveAxis = 'X';
-                    }
-                } else {
-                    if (this.getEventY(e) - this.lastTouch.clientY <= 0) {
-                        // move = 'top';
-                        moveAxis = 'Y';
-                    } else {
-                        // move = 'bottom';
-                        moveAxis = 'Y';
-                    }
-                }
-            }
-
-            if (moveAxis === this.axis && (['left', 'top'].indexOf(this.side) !== -1 && this.getPosition(e, moveAxis) < this.size || ['right', 'bottom'].indexOf(this.side) !== -1 && this.getPosition(e, moveAxis) > this.hiddenVal - this.size)) {
-                change = this.getPosition(e, this.axis) - this.lastTouch['client' + this.axis];
-                newVal = this.currentVal + change;
-
-                if (this.side === 'left' || this.side === 'top') {
-
-                    if (newVal < this.hiddenVal) {
-                        newVal = this.hiddenVal;
-                    } else if (newVal > this.shownVal) {
-                        newVal = this.shownVal;
-                    }
-
-                    progress = 1 - Math.abs(newVal / this.size);
-                } else {
-
-                    if (newVal > this.hiddenVal) {
-                        newVal = this.hiddenVal;
-                    } else if (newVal < this.shownVal) {
-                        newVal = this.shownVal;
-                    }
-
-                    progress = (this.sceneSize - newVal) / this.size;
-                }
-
-                if (newVal !== this.currentVal) {
-                    this.currentVal = newVal;
-                    progress = parseFloat(progress);
-                    progress = progress > 1 ? 1 : progress < 0 ? 0 : progress;
-
-                    this.bgLayerDOM.style.opacity = progress * 0.7;
-
-                    this.dragCtnDOM.style.webkitTransform = this.transformScheme.replace('%v', this.currentVal);
-                    this.dragCtnDOM.style.transform = this.transformScheme.replace('%v', this.currentVal);
-                }
-            }
-
-            this.lastTouch = this.getLastPosition(e);
-            if (!_eventHelpers.supportPassive) {
-                e.preventDefault();
-            }
-        }
-    }, {
-        key: 'handleTouchEnd',
-        value: function handleTouchEnd(e) {
-            var val = null;
-
-            if (this.currentVal !== this.shownVal && this.currentVal !== this.hiddenVal) {
-                if (['left', 'top'].indexOf(this.side) !== -1) {
-                    if (this.currentVal >= this.hiddenVal / 2) {
-                        val = this.shownVal;
-                    } else {
-                        val = this.hiddenVal;
-                    }
-                } else {
-                    if (this.currentVal < this.hiddenVal - this.size / 2) {
-                        val = this.shownVal;
-                    } else {
-                        val = this.hiddenVal;
-                    }
-                }
-            } else if (this.currentVal === this.hiddenVal) {
-                this.sidepanelDOM.style.display = 'none';
-            }
-
-            if (val !== null) {
-                this.translateTo(val);
-            }
-
-            this.sceneDOM.removeEventListener(this.endEvent, this.handleTouchEnd);
-        }
-    }, {
-        key: 'hide',
-        value: function hide() {
-            return this.translateTo(this.hiddenVal);
-        }
-    }, {
-        key: 'show',
-        value: function show() {
-            return this.translateTo(this.shownVal);
-        }
-    }, {
-        key: 'isShown',
-        value: function isShown() {
-            return this.sidepanelDOM.offsetParent !== null;
-        }
-    }, {
-        key: 'translateTo',
-        value: function translateTo(finishVal) {
-            var _this3 = this;
-
-            this.bgLayerDOM.style.webkitTransition = 'opacity .2s ease-in';
-            this.bgLayerDOM.style.transition = 'opacity .2s ease-in';
-            // eslint-disable-next-line
-            this.bgLayerDOM.offsetHeight;
-
-            if (finishVal === this.shownVal) {
-                if (!this.isShown()) {
-                    this.sidepanelDOM.style.display = 'block';
-                }
-
-                this.bgLayerDOM.style.opacity = 0.7;
-            } else if (finishVal === this.hiddenVal) {
-                this.bgLayerDOM.style.opacity = 0;
-            }
-            // eslint-disable-next-line
-            this.sidepanelDOM.offsetHeight;
-            this.sidepanelDOM.style.webkitTransition = 'initial';
-            this.sidepanelDOM.style.transition = 'initial';
-
-            this.dragCtnDOM.style.webkitTransition = '-webkit-transform 0.2s ease-out';
-            this.dragCtnDOM.style.webkitTransition = 'transform 0.2s ease-out';
-            this.dragCtnDOM.style.transition = 'transform 0.2s ease-out';
-
-            // eslint-disable-next-line
-            this.dragCtnDOM.offsetHeight;
-            this.dragCtnDOM.style.webkitTransform = this.transformScheme.replace('%v', finishVal);
-            this.dragCtnDOM.style.transform = this.transformScheme.replace('%v', finishVal);
-
-            // eslint-disable-next-line
-            this.dragCtnDOM.offsetHeight;
-
-            this.dragCtnDOM.style.webkitTransition = 'initial';
-            this.dragCtnDOM.style.transition = 'initial';
-
-            setTimeout(function () {
-                _this3.bgLayerDOM.style.webkitTransition = 'initial';
-                _this3.bgLayerDOM.style.transition = 'initial';
-
-                _this3.currentVal = finishVal;
-                if (finishVal === _this3.hiddenVal) {
-                    _this3.sidepanelDOM.style.display = 'none';
-                }
-            }, 200);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this4 = this;
-
-            this.updateSide();
-            var className = "airr-sidepanel " + this.props.side;
             return _react2.default.createElement(
-                'div',
-                { className: className, ref: function ref(dom) {
-                        return _this4.sidepanelDOM = dom;
-                    }, style: this.sidepanelStyle },
-                _react2.default.createElement('div', { ref: function ref(dom) {
-                        return _this4.bgLayerDOM = dom;
-                    }, style: this.bgLayerStyle }),
+                "div",
+                {
+                    className: className,
+                    ref: function ref(dom) {
+                        return _this2.sidepanelDOM = dom;
+                    },
+                    style: sidepanelStyle
+                },
+                _react2.default.createElement("div", {
+                    ref: function ref(dom) {
+                        return _this2.bgLayerDOM = dom;
+                    },
+                    style: bgLayerStyle
+                }),
                 _react2.default.createElement(
-                    'div',
+                    "div",
                     { ref: function ref(dom) {
-                            return _this4.dragCtnDOM = dom;
-                        }, style: this.dragCtnStyle },
+                            return _this2.dragCtnDOM = dom;
+                        }, style: dragCtnStyle },
                     this.props.children
                 )
             );
@@ -475,8 +496,7 @@ var AirrSidepanel = function (_AirrComponent) {
 exports.default = AirrSidepanel;
 
 AirrSidepanel.propTypes = {
-    side: _propTypes2.default.oneOf(['left', 'right', 'top', 'bottom']),
-    dragCtnStyle: _propTypes2.default.object,
+    side: _propTypes2.default.oneOf(["left", "right", "top", "bottom"]),
     isShown: _propTypes2.default.bool,
     enabled: _propTypes2.default.bool,
     sizeFactor: _propTypes2.default.number,
@@ -484,10 +504,9 @@ AirrSidepanel.propTypes = {
     sceneHeight: _propTypes2.default.number.isRequired
 };
 AirrSidepanel.defaultProps = {
-    side: 'left', //side to which sidepanel will be attached
-    dragCtnStyle: {}, //optional style properties for sidepanel
+    side: "left", //side to which sidepanel will be attached
     isShown: false, //bool determining if sidepanel is shown or not
-    enabled: true, //bool determining if sidepanel is enabled, another words, if its can be drag out
+    enabled: false, //bool determining if sidepanel is enabled, another words, if its can be drag out
     sizeFactor: 2 / 3, //number between 0 and 1 determining how much size of whole screen sidepanel will take
     sceneWidth: null, //number parent side width dimension
     sceneHeight: null //number parent side height dimension
