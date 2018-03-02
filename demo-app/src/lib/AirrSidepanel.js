@@ -84,7 +84,13 @@ export default class AirrSidepanel extends AirrComponent {
             this.setState({ side: nextProps.side });
         }
         if (nextProps.isShown !== this.state.isShown) {
-            this.setState({ isShown: nextProps.isShown });
+            if (nextProps.animateShown) {
+                this.translateTo(
+                    nextProps.isShown ? this.shownVal : this.hiddenVal
+                );
+            } else {
+                this.setState({ isShown: nextProps.isShown });
+            }
         }
         if (nextProps.sizeFactor !== this.state.sizeFactor) {
             this.setState({ sizeFactor: nextProps.sizeFactor });
@@ -396,11 +402,7 @@ export default class AirrSidepanel extends AirrComponent {
         }
 
         if (val !== null) {
-            this.translateTo(val, () => {
-                this.setState({
-                    isShown: this.isShown()
-                });
-            });
+            this.translateTo(val);
         } else {
             this.setState({
                 isShown: this.isShown()
@@ -473,7 +475,9 @@ export default class AirrSidepanel extends AirrComponent {
                 this.sidepanelDOM.style.display = "none";
             }
 
-            callback();
+            this.setState({
+                isShown: this.isShown()
+            });
         }, 205);
     };
 
@@ -570,7 +574,8 @@ AirrSidepanel.propTypes = {
     enabled: PropTypes.bool,
     sizeFactor: PropTypes.number,
     sceneWidth: PropTypes.number.isRequired,
-    sceneHeight: PropTypes.number.isRequired
+    sceneHeight: PropTypes.number.isRequired,
+    animateShown: PropTypes.bool
 };
 AirrSidepanel.defaultProps = {
     side: "left", //side to which sidepanel will be attached
@@ -578,5 +583,6 @@ AirrSidepanel.defaultProps = {
     enabled: false, //bool determining if sidepanel is enabled, another words, if its can be drag out
     sizeFactor: 2 / 3, //number between 0 and 1 determining how much size of whole screen sidepanel will take
     sceneWidth: null, //number parent side width dimension
-    sceneHeight: null //number parent side height dimension
+    sceneHeight: null, //number parent side height dimension
+    animateShown: false
 };
