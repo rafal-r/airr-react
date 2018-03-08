@@ -52,7 +52,12 @@ var AirrCompositeScene = function (_AirrComponent) {
             sidepanel: props.sidepanel,
             GUIDisabled: props.GUIDisabled,
             mayers: props.mayers,
-            children: props.children
+            children: props.children,
+            animationTime: props.animationTime,
+            handleBackBehaviourOnFirstView: props.handleBackBehaviourOnFirstView,
+            viewsAnimationEndCallback: props.viewsAnimationEndCallback,
+            stackMode: props.stackMode,
+            handleBackButton: props.handleBackButton
         };
         return _this;
     }
@@ -92,10 +97,11 @@ var AirrCompositeScene = function (_AirrComponent) {
             return _react2.default.createElement(_AirrScene2.default, {
                 ref: 'airrView',
                 name: this.props.name,
-                animationTime: this.props.animationTime,
-                handleBackBehaviourOnFirstView: this.props.handleBackBehaviourOnFirstView,
-                viewsAnimationEndCallback: this.props.viewsAnimationEndCallback,
-                stackMode: this.props.stackMode,
+                animationTime: this.state.animationTime,
+                handleBackBehaviourOnFirstView: this.state.handleBackBehaviourOnFirstView,
+                handleBackButton: this.state.handleBackButton,
+                viewsAnimationEndCallback: this.state.viewsAnimationEndCallback,
+                stackMode: this.state.stackMode,
                 GUIDisabled: this.state.GUIDisabled,
                 active: this.state.active,
                 views: this.state.views,
