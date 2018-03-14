@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -6,27 +6,27 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
+var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _AirrComponent2 = require('./AirrComponent');
+var _AirrComponent2 = require("./AirrComponent");
 
 var _AirrComponent3 = _interopRequireDefault(_AirrComponent2);
 
-var _AirrFX = require('./AirrFX');
+var _AirrFX = require("./AirrFX");
 
 var _AirrFX2 = _interopRequireDefault(_AirrFX);
 
-var _AirrMayer = require('./AirrMayer');
+var _AirrMayer = require("./AirrMayer");
 
 var _AirrMayer2 = _interopRequireDefault(_AirrMayer);
 
-var _immutabilityHelper = require('immutability-helper');
+var _immutabilityHelper = require("immutability-helper");
 
 var _immutabilityHelper2 = _interopRequireDefault(_immutabilityHelper);
 
@@ -56,7 +56,7 @@ var AirrScene = function (_AirrComponent) {
             props.sidepanel.props.ref = function (comp) {
                 return _this.sidepanelComp = comp;
             };
-            if (typeof props.sidepanel.props.enabled === 'undefined') {
+            if (typeof props.sidepanel.props.enabled === "undefined") {
                 props.sidepanel.props.enabled = true; //force explicit value, e.g needed when checking if panel is enabled in `openMayer` method
             }
         }
@@ -82,14 +82,14 @@ var AirrScene = function (_AirrComponent) {
 
     /**
      * Takes array of views and assign react specific properties (key and ref) to each view configuartion
-     * 
+     *
      * @param {array} views
      * @returns {void}
      */
 
 
     _createClass(AirrScene, [{
-        key: 'prepareViews',
+        key: "prepareViews",
         value: function prepareViews(views) {
             var _this2 = this;
 
@@ -103,26 +103,26 @@ var AirrScene = function (_AirrComponent) {
         }
 
         /**
-         * 
+         *
          * @param {string} animation
          * @returns {void}
          */
 
     }, {
-        key: 'updateAnimation',
+        key: "updateAnimation",
         value: function updateAnimation(animation) {
             this.setState({ animation: animation });
         }
 
         /**
          * Updates Scenes state by updating every view configurion using immutability-helper::update function
-         * 
-         * @param {object} updateDefinition Object specifing update operation that will be applied on every view configuraion 
+         *
+         * @param {object} updateDefinition Object specifing update operation that will be applied on every view configuraion
          * @returns {void}
          */
 
     }, {
-        key: 'updateViews',
+        key: "updateViews",
         value: function updateViews(updateDefinition) {
             var newviewsdefinition = this.state.views.map(function (item) {
                 return (0, _immutabilityHelper2.default)(item, updateDefinition);
@@ -131,12 +131,11 @@ var AirrScene = function (_AirrComponent) {
             this.setState({ views: newviewsdefinition });
         }
     }, {
-        key: 'componentWillReceiveProps',
+        key: "componentWillReceiveProps",
         value: function componentWillReceiveProps(nextProps) {
             var _this3 = this;
 
             if (!this.viewChangeInProgress) {
-
                 if (this.state.views.length !== nextProps.views.length) {
                     //Is views array different in length ?
 
@@ -145,7 +144,9 @@ var AirrScene = function (_AirrComponent) {
                             //Views POP operation
                             var oldActiveViewName = this.state.activeViewName;
                             this.changeActiveView(nextProps.activeViewName, function () {
-                                _this3.setState({ views: _this3.prepareViews(nextProps.views) });
+                                _this3.setState({
+                                    views: _this3.prepareViews(nextProps.views)
+                                });
                                 delete _this3.viewsCompsRefs[oldActiveViewName];
                             });
                         } else {
@@ -155,7 +156,9 @@ var AirrScene = function (_AirrComponent) {
                             });
                         }
                     } else {
-                        this.setState({ views: this.prepareViews(nextProps.views) });
+                        this.setState({
+                            views: this.prepareViews(nextProps.views)
+                        });
                     }
                 } else {
                     //else check if every view configuration is the same
@@ -182,7 +185,9 @@ var AirrScene = function (_AirrComponent) {
                             this.changeActiveView(nextProps.activeViewName);
                         } else {
                             //if prior or next activeViewName is null then do no animation, simply change state
-                            this.setState({ activeViewName: nextProps.activeViewName });
+                            this.setState({
+                                activeViewName: nextProps.activeViewName
+                            });
                         }
                     }
                 }
@@ -193,7 +198,7 @@ var AirrScene = function (_AirrComponent) {
                 if (this.state.mayers.length > nextProps.mayers.length) {
                     //close mayer
                     //find missing mayer name
-                    var missingMayerName = '';
+                    var missingMayerName = "";
                     this.state.mayers.forEach(function (mayer) {
                         var found = false;
                         nextProps.mayers.forEach(function (mayer2) {
@@ -232,14 +237,13 @@ var AirrScene = function (_AirrComponent) {
 
             if (this.state.navbar !== Number(nextProps.navbar)) {
                 if (this.state.animation) {
-
                     if (!nextProps.navbar) {
                         //disable
                         //possible previous state -1,1
 
                         if ([1, true].indexOf(this.state.navbar) !== -1) {
                             //currently enabled,visible
-                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 1 }, ['opacity ' + this.props.animationTime + 'ms linear'], { opacity: 0 }, null, this.props.animationTime, function () {
+                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 1 }, ["opacity " + this.props.animationTime + "ms linear"], { opacity: 0 }, null, this.props.animationTime, function () {
                                 return _this3.setState({ navbar: nextProps.navbar });
                             });
                         } else {
@@ -252,14 +256,14 @@ var AirrScene = function (_AirrComponent) {
 
                         if (this.state.navbar === -1) {
                             //currently hidden
-                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 0, visibility: 'visible' }, ['opacity ' + this.props.animationTime + 'ms linear'], { opacity: 1 }, null, this.props.animationTime, function () {
+                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 0, visibility: "visible" }, ["opacity " + this.props.animationTime + "ms linear"], { opacity: 1 }, null, this.props.animationTime, function () {
                                 return _this3.setState({ navbar: nextProps.navbar });
                             });
                         } else {
                             //currently disabled
                             //firstly add navbar to dom with hidden settings, then animate in
                             this.setState({ navbar: -1 }, function () {
-                                _AirrFX2.default.doTransitionAnimation(_this3.navbarDOM, { opacity: 0, visibility: 'visible' }, ['opacity ' + _this3.props.animationTime + 'ms linear'], { opacity: 1 }, null, _this3.props.animationTime, function () {
+                                _AirrFX2.default.doTransitionAnimation(_this3.navbarDOM, { opacity: 0, visibility: "visible" }, ["opacity " + _this3.props.animationTime + "ms linear"], { opacity: 1 }, null, _this3.props.animationTime, function () {
                                     return _this3.setState({ navbar: nextProps.navbar });
                                 });
                             });
@@ -270,7 +274,7 @@ var AirrScene = function (_AirrComponent) {
 
                         if ([1, true].indexOf(this.state.navbar) !== -1) {
                             //currently visible
-                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 1 }, ['opacity ' + this.props.animationTime + 'ms linear'], { opacity: 0 }, null, this.props.animationTime, function () {
+                            _AirrFX2.default.doTransitionAnimation(this.navbarDOM, { opacity: 1 }, ["opacity " + this.props.animationTime + "ms linear"], { opacity: 0 }, null, this.props.animationTime, function () {
                                 return _this3.setState({ navbar: nextProps.navbar });
                             });
                         } else {
@@ -300,7 +304,9 @@ var AirrScene = function (_AirrComponent) {
                 this.setState({ backButton: nextProps.backButton });
             }
             if (this.state.backButtonOnFirstView !== nextProps.backButtonOnFirstView) {
-                this.setState({ backButtonOnFirstView: nextProps.backButtonOnFirstView });
+                this.setState({
+                    backButtonOnFirstView: nextProps.backButtonOnFirstView
+                });
             }
             if (this.state.GUIDisabled !== nextProps.GUIDisabled) {
                 this.setState({ GUIDisabled: nextProps.GUIDisabled });
@@ -313,28 +319,28 @@ var AirrScene = function (_AirrComponent) {
             }
         }
     }, {
-        key: 'componentDidMount',
+        key: "componentDidMount",
         value: function componentDidMount() {
             if (this.state.navbar && this.state.navbarHeight && this.containerDOM) {
-                this.containerDOM.style.height = this.containerDOM.parentNode.clientHeight - this.state.navbarHeight + 'px';
+                this.containerDOM.style.height = this.containerDOM.parentNode.clientHeight - this.state.navbarHeight + "px";
             }
 
             /**
              * Call first active view life cycle method - viewAfterActivation
              */
-            if (this.state.activeViewName && this.viewsCompsRefs[this.state.activeViewName] && typeof this.viewsCompsRefs[this.state.activeViewName].viewAfterActivation === 'function') {
+            if (this.state.activeViewName && this.viewsCompsRefs[this.state.activeViewName] && typeof this.viewsCompsRefs[this.state.activeViewName].viewAfterActivation === "function") {
                 this.viewsCompsRefs[this.state.activeViewName].viewAfterActivation();
             }
         }
         /**
          * Returns view index in this.state.views array
-         * 
+         *
          * @param {string} viewName
          * @returns {Number}
          */
 
     }, {
-        key: 'getViewIndex',
+        key: "getViewIndex",
         value: function getViewIndex(viewName) {
             var index = -1;
 
@@ -349,12 +355,12 @@ var AirrScene = function (_AirrComponent) {
 
         /**
          * Pops view out of this.state.views array, firstly requesting views animation
-         * 
+         *
          * @returns {void}
          */
 
     }, {
-        key: 'popView',
+        key: "popView",
         value: function popView() {
             var _this4 = this;
 
@@ -364,7 +370,9 @@ var AirrScene = function (_AirrComponent) {
                 var prevIndex = index - 1;
                 var prevViewName = this.state.views[prevIndex].props.name;
                 var oldViewName = this.state.activeViewName;
-                var newviewdefinition = (0, _immutabilityHelper2.default)(this.state.views, { $splice: [[index, 1]] });
+                var newviewdefinition = (0, _immutabilityHelper2.default)(this.state.views, {
+                    $splice: [[index, 1]]
+                });
 
                 this.changeActiveView(prevViewName, function () {
                     if (oldViewName in _this4.viewsCompsRefs) {
@@ -375,19 +383,19 @@ var AirrScene = function (_AirrComponent) {
                     });
                 });
             } else {
-                console.warn('[Airr] Can`t pop view. Only one view in stack.');
+                console.warn("[Airr] Can`t pop view. Only one view in stack.");
             }
         }
 
         /**
          * Pushes new view config into this.state.views array. This operation will invoke views animation if one is specified
-         * 
+         *
          * @param {object} config new view configuration object
          * @returns {void}
          */
 
     }, {
-        key: 'pushView',
+        key: "pushView",
         value: function pushView(config) {
             var _this5 = this;
 
@@ -404,15 +412,15 @@ var AirrScene = function (_AirrComponent) {
         }
 
         /**
-         * If config has buttons that contains logical true `close` property, 
+         * If config has buttons that contains logical true `close` property,
          * this method will attach close mayer functionality to tap event on this button.
-         * 
+         *
          * @param {object} config mayer config object
          * @returns {void}
          */
 
     }, {
-        key: 'prepareMayerConfig',
+        key: "prepareMayerConfig",
         value: function prepareMayerConfig(config) {
             var _this6 = this;
 
@@ -437,18 +445,18 @@ var AirrScene = function (_AirrComponent) {
 
         /**
          * Add new mayer to this.state.mayers configurations array which will immediatelly open new mayer due to its nature
-         * 
+         *
          * @param {object} config
          * @returns {void}
          */
 
     }, {
-        key: 'openMayer',
+        key: "openMayer",
         value: function openMayer(config) {
             var cancel = false;
             this.state.mayers.forEach(function (item) {
                 if (item.name === config.name) {
-                    console.warn('[Airr] Scene allready has Mayer with this name: ' + item.name);
+                    console.warn("[Airr] Scene allready has Mayer with this name: " + item.name);
                     cancel = true;
                 }
             });
@@ -466,19 +474,21 @@ var AirrScene = function (_AirrComponent) {
             //add special functionality
             this.prepareMayerConfig(config);
 
-            var newMayersDefinition = (0, _immutabilityHelper2.default)(this.state.mayers, { $push: [config] });
+            var newMayersDefinition = (0, _immutabilityHelper2.default)(this.state.mayers, {
+                $push: [config]
+            });
             this.setState({ mayers: newMayersDefinition });
         }
 
         /**
          * Close mayer by name
-         * 
+         *
          * @param {string} name
          * @returns {void}
          */
 
     }, {
-        key: 'closeMayer',
+        key: "closeMayer",
         value: function closeMayer(name) {
             var _this7 = this;
 
@@ -503,14 +513,16 @@ var AirrScene = function (_AirrComponent) {
 
                     if (mayerConfigIndex >= 0 && _this7.mayersCompsRefs[name]) {
                         //last check if present
-                        var newMayerDefinition = (0, _immutabilityHelper2.default)(_this7.state.mayers, { $splice: [[mayerConfigIndex, 1]] });
+                        var newMayerDefinition = (0, _immutabilityHelper2.default)(_this7.state.mayers, {
+                            $splice: [[mayerConfigIndex, 1]]
+                        });
                         delete _this7.mayersCompsRefs[name];
                         _this7.setState({ mayers: newMayerDefinition }, function () {
                             if (_this7.state.sidepanel) {
                                 var hasMayerLeft = false;
                                 var children = [].concat(_toConsumableArray(_this7.refs.dom.children));
                                 children.forEach(function (item) {
-                                    if (item.classList.contains('airr-mayer')) {
+                                    if (item.classList.contains("airr-mayer")) {
                                         hasMayerLeft = true;
                                     }
                                 });
@@ -527,12 +539,12 @@ var AirrScene = function (_AirrComponent) {
 
         /**
          * Close every mayer by resetting this.state.mayers to empty array value
-         * 
+         *
          * @returns {void}
          */
 
     }, {
-        key: 'closeALlMayers',
+        key: "closeALlMayers",
         value: function closeALlMayers() {
             if (this.state.mayers.length) {
                 this.setState({ mayers: [] });
@@ -547,19 +559,18 @@ var AirrScene = function (_AirrComponent) {
 
         /**
          * Changes scenes active view
-         * 
+         *
          * @param {string} newViewName
          * @param {function} callback
          * @returns {void}
          */
 
     }, {
-        key: 'changeActiveView',
+        key: "changeActiveView",
         value: function changeActiveView(newViewName, callback) {
             var _this8 = this;
 
-            if (typeof newViewName === 'string') {
-
+            if (typeof newViewName === "string") {
                 /**
                  * viewChangeInProgress
                  * set here before any next setState call which might be executed after some batched state changes
@@ -567,9 +578,8 @@ var AirrScene = function (_AirrComponent) {
                  */
                 this.viewChangeInProgress = true;
                 this.setState({ GUIDisabled: true, mockTitle: newViewName }, function () {
-
                     if (newViewName === _this8.state.activeViewName) {
-                        console.warn('[Airr] This View is already active.');
+                        console.warn("[Airr] This View is already active.");
                         _this8.viewChangeInProgress = false;
                         _this8.setState({ GUIDisabled: false });
                         return;
@@ -582,28 +592,28 @@ var AirrScene = function (_AirrComponent) {
                         var animEndCallback = function animEndCallback() {
                             _this8.viewChangeInProgress = false;
 
-                            if (newViewComp && typeof newViewComp.viewAfterActivation === 'function') {
+                            if (newViewComp && typeof newViewComp.viewAfterActivation === "function") {
                                 newViewComp.viewAfterActivation();
                             }
 
-                            if (oldViewComp && typeof oldViewComp.viewAfterDeactivation === 'function') {
+                            if (oldViewComp && typeof oldViewComp.viewAfterDeactivation === "function") {
                                 oldViewComp.viewAfterDeactivation();
                             }
 
-                            if (typeof _this8.props.viewsAnimationEndCallback === 'function') {
+                            if (typeof _this8.props.viewsAnimationEndCallback === "function") {
                                 _this8.props.viewsAnimationEndCallback();
                             }
 
-                            if (typeof callback === 'function') {
+                            if (typeof callback === "function") {
                                 callback();
                             }
                         };
 
-                        if (newViewComp && typeof newViewComp.viewBeforeActivation === 'function') {
+                        if (newViewComp && typeof newViewComp.viewBeforeActivation === "function") {
                             newViewComp.viewBeforeActivation();
                         }
 
-                        if (oldViewComp && typeof oldViewComp.viewBeforeDeactivation === 'function') {
+                        if (oldViewComp && typeof oldViewComp.viewBeforeDeactivation === "function") {
                             oldViewComp.viewBeforeDeactivation();
                         }
 
@@ -624,17 +634,17 @@ var AirrScene = function (_AirrComponent) {
                         }
                     } else {
                         _this8.viewChangeInProgress = false;
-                        console.warn('[Airr] View with name ' + newViewName + ' is not presence in this Scene.');
+                        console.warn("[Airr] View with name " + newViewName + " is not presence in this Scene.");
                     }
                 });
             } else {
-                console.warn('[Airr] You must specify view name property as string value');
+                console.warn("[Airr] You must specify view name property as string value");
             }
         }
 
         /**
          * Perform animation between old and new active view
-         * 
+         *
          * @param {string} newViewName
          * @param {string} oldViewName
          * @param {function} callback
@@ -642,7 +652,7 @@ var AirrScene = function (_AirrComponent) {
          */
 
     }, {
-        key: 'doViewAnimation',
+        key: "doViewAnimation",
         value: function doViewAnimation(newViewName, oldViewName, callback) {
             var _this9 = this;
 
@@ -654,148 +664,146 @@ var AirrScene = function (_AirrComponent) {
 
             if (this.state.navbar) {
                 //perform navbar animations
-                var titleNode = this.navbarDOM.querySelector('.title');
-                var mockTitle = this.navbarDOM.querySelector('.mock-title');
+                var titleNode = this.navbarDOM.querySelector(".title");
+                var mockTitle = this.navbarDOM.querySelector(".mock-title");
                 var mockTextSpan = mockTitle && mockTitle.children[0];
                 var mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
 
                 if (titleNode) {
                     _AirrFX2.default.doTransitionAnimation(titleNode, {
-                        webkitTransform: 'translate3d(' + ((titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + 'px') + ',0,0)',
-                        transform: 'translate3d(' + ((titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + 'px') + ',0,0)',
+                        webkitTransform: "translate3d(" + ((titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + "px") + ",0,0)",
+                        transform: "translate3d(" + ((titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + "px") + ",0,0)",
                         opacity: 0
-                    }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                        webkitTransform: 'translate3d(0,0,0)',
-                        transform: 'translate3d(0,0,0)',
+                    }, ["opacity " + this.props.animationTime + "ms ease-out", "transform " + this.props.animationTime + "ms ease-out"], {
+                        webkitTransform: "translate3d(0,0,0)",
+                        transform: "translate3d(0,0,0)",
                         opacity: 1
                     }, null, this.props.animationTime);
                 }
 
                 if (mockTitle) {
                     _AirrFX2.default.doTransitionAnimation(mockTitle, {
-                        webkitTransform: 'translate3d(0,0,0)',
-                        transform: 'translate3d(0,0,0)',
+                        webkitTransform: "translate3d(0,0,0)",
+                        transform: "translate3d(0,0,0)",
                         opacity: 1
-                    }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                        webkitTransform: 'translate3d(' + (mockTextSpanWidth * direction * -1 + 'px') + ',0,0)',
-                        transform: 'translate3d(' + (mockTextSpanWidth * direction * -1 + 'px') + ',0,0)',
+                    }, ["opacity " + this.props.animationTime + "ms ease-out", "transform " + this.props.animationTime + "ms ease-out"], {
+                        webkitTransform: "translate3d(" + (mockTextSpanWidth * direction * -1 + "px") + ",0,0)",
+                        transform: "translate3d(" + (mockTextSpanWidth * direction * -1 + "px") + ",0,0)",
                         opacity: 0
                     }, null, this.props.animationTime);
                 }
 
                 if (this.state.backButton && this.props.stackMode) {
-                    var backDOM = this.navbarDOM.querySelector('.back');
+                    var backDOM = this.navbarDOM.querySelector(".back");
 
                     if (oldViewIndex === 0) {
-
                         _AirrFX2.default.doTransitionAnimation(backDOM, {
-                            webkitTransform: 'translate3d(100%,0,0)',
-                            transform: 'translate3d(100%,0,0)',
+                            webkitTransform: "translate3d(100%,0,0)",
+                            transform: "translate3d(100%,0,0)",
                             opacity: 0
-                        }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                            webkitTransform: 'translate3d(0,0,0)',
-                            transform: 'translate3d(0,0,0)',
+                        }, ["opacity " + this.props.animationTime + "ms ease-out", "transform " + this.props.animationTime + "ms ease-out"], {
+                            webkitTransform: "translate3d(0,0,0)",
+                            transform: "translate3d(0,0,0)",
                             opacity: 1
                         }, function () {
-                            return backDOM.classList.remove('hidden');
+                            return backDOM.classList.remove("hidden");
                         }, this.props.animationTime);
                     } else if (newViewIndex === 0) {
-
                         _AirrFX2.default.doTransitionAnimation(backDOM, {
-                            webkitTransform: 'translate3d(0,0,0)',
-                            transform: 'translate3d(0,0,0)',
+                            webkitTransform: "translate3d(0,0,0)",
+                            transform: "translate3d(0,0,0)",
                             opacity: 1
-                        }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                            webkitTransform: 'translate3d(-100%,0,0)',
-                            transform: 'translate3d(-100%,0,0)',
+                        }, ["opacity " + this.props.animationTime + "ms ease-out", "transform " + this.props.animationTime + "ms ease-out"], {
+                            webkitTransform: "translate3d(-100%,0,0)",
+                            transform: "translate3d(-100%,0,0)",
                             opacity: 0
                         }, null, this.props.animationTime);
                     }
                 }
             }
 
-            if (this.state.animation === 'slide' && oldViewName) {
-                newViewDOM.style.display = 'block';
+            if (this.state.animation === "slide" && oldViewName) {
+                newViewDOM.style.display = "block";
                 var startProps = {};
                 var endProps = {};
 
                 if (direction === -1) {
-                    startProps.webkitTransform = 'translate3d(' + -1 * this.refs.dom.clientWidth + 'px,0,0)';
-                    startProps.transform = 'translate3d(' + -1 * this.refs.dom.clientWidth + 'px,0,0)';
-                    endProps.webkitTransform = 'translate3d(0,0,0)';
-                    endProps.transform = 'translate3d(0,0,0)';
+                    startProps.webkitTransform = "translate3d(" + -1 * this.refs.dom.clientWidth + "px,0,0)";
+                    startProps.transform = "translate3d(" + -1 * this.refs.dom.clientWidth + "px,0,0)";
+                    endProps.webkitTransform = "translate3d(0,0,0)";
+                    endProps.transform = "translate3d(0,0,0)";
                 } else {
-                    endProps.webkitTransform = 'translate3d(' + -1 * this.refs.dom.clientWidth + 'px,0,0)';
-                    endProps.transform = 'translate3d(' + -1 * this.refs.dom.clientWidth + 'px,0,0)';
+                    endProps.webkitTransform = "translate3d(" + -1 * this.refs.dom.clientWidth + "px,0,0)";
+                    endProps.transform = "translate3d(" + -1 * this.refs.dom.clientWidth + "px,0,0)";
                 }
 
-                _AirrFX2.default.doTransitionAnimation(this.containerDOM, startProps, ['transform ' + this.props.animationTime + 'ms ease-out'], endProps, null, this.props.animationTime, function () {
-                    newViewDOM.style.display = '';
-                    _this9.containerDOM.style.webkitTransform = 'translate3d(0,0,0)';
-                    _this9.containerDOM.style.transform = 'translate3d(0,0,0)';
-                    _this9.containerDOM.style.webkitTransition = '';
-                    _this9.containerDOM.style.transition = '';
-                    _this9.containerDOM.style.transition = '';
-                    _this9.containerDOM.style.webkitBackfaceVisibility = '';
-                    _this9.containerDOM.style.backfaceVisibility = '';
+                _AirrFX2.default.doTransitionAnimation(this.containerDOM, startProps, ["transform " + this.props.animationTime + "ms ease-out"], endProps, null, this.props.animationTime, function () {
+                    newViewDOM.style.display = "";
+                    _this9.containerDOM.style.webkitTransform = "translate3d(0,0,0)";
+                    _this9.containerDOM.style.transform = "translate3d(0,0,0)";
+                    _this9.containerDOM.style.webkitTransition = "";
+                    _this9.containerDOM.style.transition = "";
+                    _this9.containerDOM.style.transition = "";
+                    _this9.containerDOM.style.webkitBackfaceVisibility = "";
+                    _this9.containerDOM.style.backfaceVisibility = "";
 
-                    if (typeof callback === 'function') {
+                    if (typeof callback === "function") {
                         callback();
                     }
                 });
-            } else if (this.state.animation === 'overlay' && oldViewName) {
+            } else if (this.state.animation === "overlay" && oldViewName) {
                 if (direction === 1) {
                     _AirrFX2.default.doTransitionAnimation(newViewDOM, {
-                        webkitTransform: 'translate3d(' + (this.containerDOM.clientWidth + 'px') + ',0,0)',
-                        transform: 'translate3d(' + (this.containerDOM.clientWidth + 'px') + ',0,0)',
+                        webkitTransform: "translate3d(" + (this.containerDOM.clientWidth + "px") + ",0,0)",
+                        transform: "translate3d(" + (this.containerDOM.clientWidth + "px") + ",0,0)",
                         opacity: 0
-                    }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                        webkitTransform: 'translate3d(0,0,0)',
-                        transform: 'translate3d(0,0,0)',
+                    }, ["opacity " + this.props.animationTime + "ms ease-out", "transform " + this.props.animationTime + "ms ease-out"], {
+                        webkitTransform: "translate3d(0,0,0)",
+                        transform: "translate3d(0,0,0)",
                         opacity: 1
                     }, function () {
                         return newViewDOM.style.zIndex = 102;
                     }, this.props.animationTime, function () {
-                        newViewDOM.style.zIndex = '';
+                        newViewDOM.style.zIndex = "";
                         callback();
                     });
                 } else {
                     if (this.props.stackMode) {
                         _AirrFX2.default.doTransitionAnimation(this.viewsCompsRefs[oldViewName].refs.airrView.refs.dom, {
-                            webkitTransform: 'translate3d(0,0,0)',
-                            transform: 'translate3d(0,0,0)',
+                            webkitTransform: "translate3d(0,0,0)",
+                            transform: "translate3d(0,0,0)",
                             opacity: 1
-                        }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                            webkitTransform: 'translate3d(0,' + (this.containerDOM.clientHeight / 4 + 'px') + ',0)',
-                            transform: 'translate3d(0,' + (this.containerDOM.clientHeight / 4 + 'px') + ',0)',
+                        }, ["opacity " + this.props.animationTime + "ms ease-out", "transform " + this.props.animationTime + "ms ease-out"], {
+                            webkitTransform: "translate3d(0," + (this.containerDOM.clientHeight / 4 + "px") + ",0)",
+                            transform: "translate3d(0," + (this.containerDOM.clientHeight / 4 + "px") + ",0)",
                             opacity: 0
                         }, null, this.props.animationTime, callback);
                     } else {
                         _AirrFX2.default.doTransitionAnimation(newViewDOM, {
-                            webkitTransform: 'translate3d(' + (-1 * this.containerDOM.clientWidth + 'px') + ',0,0)',
-                            transform: 'translate3d(' + (-1 * this.containerDOM.clientWidth + 'px') + ',0,0)',
+                            webkitTransform: "translate3d(" + (-1 * this.containerDOM.clientWidth + "px") + ",0,0)",
+                            transform: "translate3d(" + (-1 * this.containerDOM.clientWidth + "px") + ",0,0)",
                             opacity: 0
-                        }, ['opacity ' + this.props.animationTime + 'ms ease-out', 'transform ' + this.props.animationTime + 'ms ease-out'], {
-                            webkitTransform: 'translate3d(0,0,0)',
-                            transform: 'translate3d(0,0,0)',
+                        }, ["opacity " + this.props.animationTime + "ms ease-out", "transform " + this.props.animationTime + "ms ease-out"], {
+                            webkitTransform: "translate3d(0,0,0)",
+                            transform: "translate3d(0,0,0)",
                             opacity: 1
                         }, function () {
                             return newViewDOM.style.zIndex = 102;
                         }, this.props.animationTime, function () {
-                            newViewDOM.style.zIndex = '';
+                            newViewDOM.style.zIndex = "";
                             callback();
                         });
                     }
                 }
-            } else if (this.state.animation === 'fade' || !oldViewName) {
+            } else if (this.state.animation === "fade" || !oldViewName) {
                 _AirrFX2.default.doTransitionAnimation(newViewDOM, {
                     opacity: 0
-                }, ['opacity ' + this.props.animationTime + 'ms ease-out'], {
+                }, ["opacity " + this.props.animationTime + "ms ease-out"], {
                     opacity: 1
                 }, function () {
                     return newViewDOM.style.zIndex = 102;
                 }, this.props.animationTime, function () {
-                    newViewDOM.style.zIndex = '';
+                    newViewDOM.style.zIndex = "";
                     callback();
                 });
             }
@@ -803,67 +811,71 @@ var AirrScene = function (_AirrComponent) {
 
         /**
          * Enables scenes GUI by removing blank-mask class div element
-         * 
+         *
          * @returns {void}
          */
 
     }, {
-        key: 'enableGUI',
+        key: "enableGUI",
         value: function enableGUI() {
             this.setState({ GUIDisabled: false });
         }
 
         /**
          * Disables scenes GUI by adding blank-mask class div element
-         * 
+         *
          * @returns {undefined}
          */
 
     }, {
-        key: 'disableGUI',
+        key: "disableGUI",
         value: function disableGUI() {
             this.setState({ GUIDisabled: true });
         }
 
         /**
          * Makes sidepanel draggable
-         * 
+         *
          * @returns {void}
          */
 
     }, {
-        key: 'enableSidepanel',
+        key: "enableSidepanel",
         value: function enableSidepanel() {
             if (this.state.sidepanel) {
-                var newPanelDefinition = (0, _immutabilityHelper2.default)(this.state.sidepanel, { props: { enabled: { $set: true } } });
+                var newPanelDefinition = (0, _immutabilityHelper2.default)(this.state.sidepanel, {
+                    props: { enabled: { $set: true } }
+                });
                 this.setState({ sidepanel: newPanelDefinition });
             }
         }
 
         /**
          * Disables sidepanel from being dragged
-         * 
+         *
          * @returns {void}
          */
 
     }, {
-        key: 'disableSidepanel',
+        key: "disableSidepanel",
         value: function disableSidepanel() {
             if (this.state.sidepanel) {
-                var newPanelDefinition = (0, _immutabilityHelper2.default)(this.state.sidepanel, { props: { enabled: { $set: false } } });
+                var newPanelDefinition = (0, _immutabilityHelper2.default)(this.state.sidepanel, {
+                    props: { enabled: { $set: false } }
+                });
                 this.setState({ sidepanel: newPanelDefinition });
             }
         }
 
         /**
          * Updates sidepanels state configuration
-         * 
+         *
          * @param {object} sidepanel
          * @returns {void}
          */
 
     }, {
-        key: 'updateSidepanel',
+        key: "updateSidepanel",
         value: function updateSidepanel(sidepanel) {
             this.setState({
                 sidepanel: sidepanel
@@ -872,19 +884,19 @@ var AirrScene = function (_AirrComponent) {
 
         /**
          * Handles navbar backbutton tap events
-         * 
+         *
          * @param {object} e Event object
          * @returns {void}
          */
 
     }, {
-        key: 'handleBackButton',
+        key: "handleBackButton",
         value: function handleBackButton(e) {
             var backBtn = e.currentTarget;
-            backBtn.classList.add('clicked');
+            backBtn.classList.add("clicked");
 
             setTimeout(function () {
-                backBtn.classList.remove('clicked');
+                backBtn.classList.remove("clicked");
             }, 300);
 
             if (this.props.stackMode && this.state.views.length > 1) {
@@ -900,30 +912,30 @@ var AirrScene = function (_AirrComponent) {
 
         /**
          * Handles navbar menu button tap events
-         * 
+         *
          * @param {object} e Event object
          * @returns {void}
          */
 
     }, {
-        key: 'handleMenuButtonToggleSidepanel',
+        key: "handleMenuButtonToggleSidepanel",
         value: function handleMenuButtonToggleSidepanel(e) {
             if (this.sidepanelComp) {
                 this.sidepanelComp.isShown() ? this.sidepanelComp.hide() : this.sidepanelComp.show();
             }
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
             var _this10 = this;
 
-            var containerClassList = ['airr-container'];
+            var containerClassList = ["airr-container"];
             if (this.state.animation) {
-                containerClassList.push(this.state.animation + '-animation');
+                containerClassList.push(this.state.animation + "-animation");
             }
 
-            var className = 'airr-view airr-scene';
-            this.state.active && (className += ' active');
+            var className = "airr-view airr-scene";
+            this.state.active && (className += " active");
 
             var views = [];
             var isAnyViewActive = false;
@@ -939,7 +951,7 @@ var AirrScene = function (_AirrComponent) {
             });
 
             if (!isAnyViewActive) {
-                console.warn('[Airr] No view was set as active' + (this.props.name && ' in Scene named `' + this.props.name) + '`.');
+                console.warn("[Airr] No view was set as active" + (this.props.name && " in Scene named `" + this.props.name) + "`.");
             }
 
             var sidepanel = null;
@@ -949,7 +961,7 @@ var AirrScene = function (_AirrComponent) {
 
             var blankmask = null;
             if (this.state.GUIDisabled) {
-                blankmask = _react2.default.createElement('div', { className: 'airr-blank-mask' });
+                blankmask = _react2.default.createElement("div", { className: "airr-blank-mask" });
             }
 
             var mayers = [];
@@ -966,35 +978,41 @@ var AirrScene = function (_AirrComponent) {
             var navbar = null;
             if (this.state.navbar) {
                 var mockTitle = null;
-                var title = '';
+                var title = "";
                 var back = null;
                 var activeViewIndex = this.getViewIndex(this.state.activeViewName);
 
                 if (this.state.backButton) {
-                    var backClassName = 'back ' + (activeViewIndex < 1 && !this.state.backButtonOnFirstView ? 'hidden' : '');
+                    var backClassName = "back " + (activeViewIndex < 1 && !this.state.backButtonOnFirstView ? "hidden" : "");
                     back = _react2.default.createElement(
-                        'div',
-                        { className: backClassName, onClick: function onClick(e) {
+                        "div",
+                        {
+                            className: backClassName,
+                            onClick: function onClick(e) {
                                 return _this10.handleBackButton(e);
-                            } },
-                        _react2.default.createElement('div', null)
+                            }
+                        },
+                        _react2.default.createElement("div", null)
                     );
                 }
 
                 var menu = void 0;
                 if (this.state.navbarMenu) {
-                    if (this.state.navbarMenu === 'toggleSidepanel') {
+                    if (this.state.navbarMenu === "toggleSidepanel") {
                         menu = this.state.sidepanel ? _react2.default.createElement(
-                            'div',
-                            { className: 'menu', onClick: function onClick(e) {
+                            "div",
+                            {
+                                className: "menu",
+                                onClick: function onClick(e) {
                                     return _this10.handleMenuButtonToggleSidepanel(e);
-                                } },
-                            _react2.default.createElement('div', null)
+                                }
+                            },
+                            _react2.default.createElement("div", null)
                         ) : null;
                     } else if (Array.isArray(this.state.navbarMenu)) {
                         menu = _react2.default.createElement(
-                            'div',
-                            { className: 'menu' },
+                            "div",
+                            { className: "menu" },
                             this.state.navbarMenu
                         );
                     }
@@ -1002,41 +1020,51 @@ var AirrScene = function (_AirrComponent) {
 
                 var navbarStyle = {};
                 if ([1, true].indexOf(this.state.navbar) === -1) {
-                    navbarStyle.visibility = 'hidden';
+                    navbarStyle.visibility = "hidden";
                 }
 
                 if (this.state.mockTitle) {
                     var mockTitleContent = this.state.views[activeViewIndex] && this.state.views[activeViewIndex].props.title;
                     var mockTitleViewIndex = this.getViewIndex(this.state.mockTitle);
                     mockTitle = this.state.mockTitle ? _react2.default.createElement(
-                        'div',
-                        { className: 'mock-title' },
+                        "div",
+                        { className: "mock-title" },
                         _react2.default.createElement(
-                            'span',
+                            "span",
                             null,
                             mockTitleContent
                         )
                     ) : null;
-                    title = this.state.views[mockTitleViewIndex] ? this.state.views[mockTitleViewIndex].props.title : '';
+                    title = this.state.views[mockTitleViewIndex] ? this.state.views[mockTitleViewIndex].props.title : "";
                 } else {
-                    title = this.state.views[activeViewIndex] ? this.state.views[activeViewIndex].props.title : '';
+                    title = this.state.views[activeViewIndex] ? this.state.views[activeViewIndex].props.title : "";
                 }
 
                 navbar = _react2.default.createElement(
-                    'div',
-                    { className: 'airr-navbar', ref: function ref(dom) {
+                    "div",
+                    {
+                        className: "airr-navbar",
+                        ref: function ref(dom) {
                             return _this10.navbarDOM = dom;
-                        }, style: navbarStyle },
+                        },
+                        style: navbarStyle
+                    },
                     _react2.default.createElement(
-                        'div',
-                        { className: this.state.navbarClass, style: { height: this.state.navbarHeight + 'px' } },
+                        "div",
+                        {
+                            className: this.state.navbarClass,
+                            style: { height: this.state.navbarHeight + "px" }
+                        },
                         mockTitle,
                         back,
                         _react2.default.createElement(
-                            'div',
-                            { className: 'title', style: { opacity: this.state.mockTitle ? 0 : 1 } },
+                            "div",
+                            {
+                                className: "title",
+                                style: { opacity: this.state.mockTitle ? 0 : 1 }
+                            },
                             _react2.default.createElement(
-                                'span',
+                                "span",
                                 null,
                                 title
                             )
@@ -1047,14 +1075,17 @@ var AirrScene = function (_AirrComponent) {
             }
 
             return _react2.default.createElement(
-                'div',
-                { className: className, ref: 'dom' },
+                "div",
+                { className: className, ref: "dom" },
                 navbar,
                 _react2.default.createElement(
-                    'div',
-                    { className: containerClassList.join(' '), ref: function ref(div) {
+                    "div",
+                    {
+                        className: containerClassList.join(" "),
+                        ref: function ref(div) {
                             return _this10.containerDOM = div;
-                        } },
+                        }
+                    },
                     views
                 ),
                 this.props.children,
@@ -1069,16 +1100,16 @@ var AirrScene = function (_AirrComponent) {
 }(_AirrComponent3.default);
 
 AirrScene.defaultProps = {
-    name: '', //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
+    name: "", //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
 
-    activeViewName: null, //string 
+    activeViewName: null, //string
     GUIDisabled: false, //bool
-    animation: 'slide', //slide,overlay,fade or false if no animation
+    animation: "slide", //slide,overlay,fade or false if no animation
     animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
     navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
     navbarHeight: 48, //navbar height in px
     navbarMenu: null, //string `toggleSidepanel` or array of React elements
-    navbarClass: '', //string
+    navbarClass: "", //string
     backButton: false, //bool
     backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
     handleBackButton: null, //parent function to handle back button tap
@@ -1089,29 +1120,29 @@ AirrScene.defaultProps = {
     sidepanel: null, //{type: AirrSidepanel, props: {}}
     views: [], //array,
     mayers: [], //mayers conf list
-    title: '' //titlebar name
+    title: "" //titlebar name
 };
 AirrScene.propTypes = {
     name: _propTypes2.default.string.isRequired,
 
     activeViewName: _propTypes2.default.string,
     GUIDisabled: _propTypes2.default.bool,
-    animation: _propTypes2.default.oneOf(['slide', 'overlay', 'fade', false]),
+    animation: _propTypes2.default.oneOf(["slide", "overlay", "fade", false]),
     animationTime: _propTypes2.default.number,
     navbar: _propTypes2.default.oneOf([-1, 0, false, 1, true]),
     navbarHeight: _propTypes2.default.number,
     navbarMenu: function navbarMenu(props, propName, componentName) {
         if (props[propName]) {
-            if (typeof props[propName] === 'string') {
+            if (typeof props[propName] === "string") {
                 if (!/toggleSidepanel/.test(props[propName])) {
-                    return new Error('Invalid prop `' + propName + '` supplied to' + ' `' + componentName + '`. Value must be `toggleSidepanel` string or array of React elements.');
+                    return new Error("Invalid prop `" + propName + "` supplied to" + " `" + componentName + "`. Value must be `toggleSidepanel` string or array of React elements.");
                 } else {
                     return null;
                 }
             }
 
             if (!Array.isArray(props[propName])) {
-                return new Error('Invalid prop `' + propName + '` supplied to' + ' `' + componentName + '`. Value must be `toggleSidepanel` string or array of React elements.');
+                return new Error("Invalid prop `" + propName + "` supplied to" + " `" + componentName + "`. Value must be `toggleSidepanel` string or array of React elements.");
             }
         }
     },
@@ -1127,7 +1158,7 @@ AirrScene.propTypes = {
      * Sidepanels object must contain two properties.
      * 1. Type - being refference to class of which item will be instantiated
      * 2. Props - special properties of AirrSidepanel class. Go to class declaration for further properties documenation
-     * 
+     *
      * Example:
      * {
      *    type: AirrSidepanel,
@@ -1138,16 +1169,16 @@ AirrScene.propTypes = {
      *        side: 'left',
      *        sizeFactor: 0.66
      *    }
-     * }  
+     * }
      **/
     sidepanel: _propTypes2.default.object,
 
     /**
-     * Objects of `views` array MUST contains two properties. 
-     * 1. Type - being reffrence to class of which item will be instantiated. 
-     * 2. Props - object that acts like components properties. 
-     *    For special AirrView class properties go to its declaration to check out.             
-     * 
+     * Objects of `views` array MUST contains two properties.
+     * 1. Type - being reffrence to class of which item will be instantiated.
+     * 2. Props - object that acts like components properties.
+     *    For special AirrView class properties go to its declaration to check out.
+     *
      * Example:
      * this.state.views = [
      *      {
@@ -1157,7 +1188,7 @@ AirrScene.propTypes = {
      *              title: 'Foo is in the house',
      *              children: <div>This is Dave. Dave is div.</div>
      *              extraParam: bazHandler
-     *          }          
+     *          }
      *      }
      * ]
      */
@@ -1166,7 +1197,7 @@ AirrScene.propTypes = {
     /**
      * Objects of `mayers` array MUST contain special Mayer class properties.
      * For checkout of possible properties go to Mayer declaration.
-     * 
+     *
      * Example:
      * this.state.mayers. = [
      *   {

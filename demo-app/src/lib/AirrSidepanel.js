@@ -237,7 +237,6 @@ export default class AirrSidepanel extends AirrComponent {
                         hidedragctn
                     );
                     if (Math.abs(pos - this.getPosition(e, this.axis)) <= 2.5) {
-                        //little diff allowance
                         this.hide();
                     }
                 };
@@ -380,33 +379,37 @@ export default class AirrSidepanel extends AirrComponent {
     handleTouchEnd = e => {
         let val = null;
 
-        if (
-            this.currentVal !== this.shownVal &&
-            this.currentVal !== this.hiddenVal
-        ) {
-            if (["left", "top"].indexOf(this.state.side) !== -1) {
-                if (this.currentVal >= this.hiddenVal / 2) {
-                    val = this.shownVal;
+        if (!this.animating) {
+            if (
+                this.currentVal !== this.shownVal &&
+                this.currentVal !== this.hiddenVal
+            ) {
+                if (["left", "top"].indexOf(this.state.side) !== -1) {
+                    if (this.currentVal >= this.hiddenVal / 2) {
+                        val = this.shownVal;
+                    } else {
+                        val = this.hiddenVal;
+                    }
                 } else {
-                    val = this.hiddenVal;
+                    if (this.currentVal < this.hiddenVal - this.size / 2) {
+                        val = this.shownVal;
+                    } else {
+                        val = this.hiddenVal;
+                    }
                 }
+            } else if (this.currentVal === this.hiddenVal) {
+                this.sidepanelDOM.style.display = "none";
+            }
+
+            if (val !== null) {
+                this.translateTo(val);
             } else {
-                if (this.currentVal < this.hiddenVal - this.size / 2) {
-                    val = this.shownVal;
-                } else {
-                    val = this.hiddenVal;
+                if (this.state.isShown !== this.isShown()) {
+                    this.setState({ isShown: !this.state.isShown }, () =>
+                        this.props.visibilityCallback(this.state.isShown)
+                    );
                 }
             }
-        } else if (this.currentVal === this.hiddenVal) {
-            this.sidepanelDOM.style.display = "none";
-        }
-
-        if (val !== null) {
-            this.translateTo(val);
-        } else {
-            this.setState({
-                isShown: this.isShown()
-            });
         }
 
         this.sceneDOM.removeEventListener(this.endEvent, this.handleTouchEnd);
@@ -425,6 +428,8 @@ export default class AirrSidepanel extends AirrComponent {
     };
 
     translateTo = (finishVal, callback = () => {}) => {
+        this.animating = true;
+
         this.bgLayerDOM.style.webkitTransition = "opacity .2s ease-in";
         this.bgLayerDOM.style.transition = "opacity .2s ease-in";
         // eslint-disable-next-line
@@ -475,9 +480,13 @@ export default class AirrSidepanel extends AirrComponent {
                 this.sidepanelDOM.style.display = "none";
             }
 
-            this.setState({
-                isShown: this.isShown()
-            });
+            this.animating = false;
+
+            if (this.state.isShown !== this.isShown()) {
+                this.setState({ isShown: !this.state.isShown }, () =>
+                    this.props.visibilityCallback(this.state.isShown)
+                );
+            }
         }, 205);
     };
 
@@ -575,7 +584,8 @@ AirrSidepanel.propTypes = {
     sizeFactor: PropTypes.number,
     sceneWidth: PropTypes.number.isRequired,
     sceneHeight: PropTypes.number.isRequired,
-    animateShown: PropTypes.bool
+    animateShown: PropTypes.bool,
+    visibilityCallback: PropTypes.func
 };
 AirrSidepanel.defaultProps = {
     side: "left", //side to which sidepanel will be attached
@@ -584,5 +594,6 @@ AirrSidepanel.defaultProps = {
     sizeFactor: 2 / 3, //number between 0 and 1 determining how much size of whole screen sidepanel will take
     sceneWidth: null, //number parent side width dimension
     sceneHeight: null, //number parent side height dimension
-    animateShown: false
+    animateShown: false,
+    visibilityCallback: function() {}
 };

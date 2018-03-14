@@ -118,7 +118,6 @@ var AirrSidepanel = function (_AirrComponent) {
                     var hidedragctn = function hidedragctn(e) {
                         _this.sceneDOM.removeEventListener(_this.endEvent, hidedragctn);
                         if (Math.abs(pos - _this.getPosition(e, _this.axis)) <= 2.5) {
-                            //little diff allowance
                             _this.hide();
                         }
                     };
@@ -238,30 +237,34 @@ var AirrSidepanel = function (_AirrComponent) {
         _this.handleTouchEnd = function (e) {
             var val = null;
 
-            if (_this.currentVal !== _this.shownVal && _this.currentVal !== _this.hiddenVal) {
-                if (["left", "top"].indexOf(_this.state.side) !== -1) {
-                    if (_this.currentVal >= _this.hiddenVal / 2) {
-                        val = _this.shownVal;
+            if (!_this.animating) {
+                if (_this.currentVal !== _this.shownVal && _this.currentVal !== _this.hiddenVal) {
+                    if (["left", "top"].indexOf(_this.state.side) !== -1) {
+                        if (_this.currentVal >= _this.hiddenVal / 2) {
+                            val = _this.shownVal;
+                        } else {
+                            val = _this.hiddenVal;
+                        }
                     } else {
-                        val = _this.hiddenVal;
+                        if (_this.currentVal < _this.hiddenVal - _this.size / 2) {
+                            val = _this.shownVal;
+                        } else {
+                            val = _this.hiddenVal;
+                        }
                     }
+                } else if (_this.currentVal === _this.hiddenVal) {
+                    _this.sidepanelDOM.style.display = "none";
+                }
+
+                if (val !== null) {
+                    _this.translateTo(val);
                 } else {
-                    if (_this.currentVal < _this.hiddenVal - _this.size / 2) {
-                        val = _this.shownVal;
-                    } else {
-                        val = _this.hiddenVal;
+                    if (_this.state.isShown !== _this.isShown()) {
+                        _this.setState({ isShown: !_this.state.isShown }, function () {
+                            return _this.props.visibilityCallback(_this.state.isShown);
+                        });
                     }
                 }
-            } else if (_this.currentVal === _this.hiddenVal) {
-                _this.sidepanelDOM.style.display = "none";
-            }
-
-            if (val !== null) {
-                _this.translateTo(val);
-            } else {
-                _this.setState({
-                    isShown: _this.isShown()
-                });
             }
 
             _this.sceneDOM.removeEventListener(_this.endEvent, _this.handleTouchEnd);
@@ -281,6 +284,8 @@ var AirrSidepanel = function (_AirrComponent) {
 
         _this.translateTo = function (finishVal) {
             var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+
+            _this.animating = true;
 
             _this.bgLayerDOM.style.webkitTransition = "opacity .2s ease-in";
             _this.bgLayerDOM.style.transition = "opacity .2s ease-in";
@@ -325,9 +330,13 @@ var AirrSidepanel = function (_AirrComponent) {
                     _this.sidepanelDOM.style.display = "none";
                 }
 
-                _this.setState({
-                    isShown: _this.isShown()
-                });
+                _this.animating = false;
+
+                if (_this.state.isShown !== _this.isShown()) {
+                    _this.setState({ isShown: !_this.state.isShown }, function () {
+                        return _this.props.visibilityCallback(_this.state.isShown);
+                    });
+                }
             }, 205);
         };
 
@@ -504,7 +513,8 @@ AirrSidepanel.propTypes = {
     sizeFactor: _propTypes2.default.number,
     sceneWidth: _propTypes2.default.number.isRequired,
     sceneHeight: _propTypes2.default.number.isRequired,
-    animateShown: _propTypes2.default.bool
+    animateShown: _propTypes2.default.bool,
+    visibilityCallback: _propTypes2.default.func
 };
 AirrSidepanel.defaultProps = {
     side: "left", //side to which sidepanel will be attached
@@ -513,5 +523,6 @@ AirrSidepanel.defaultProps = {
     sizeFactor: 2 / 3, //number between 0 and 1 determining how much size of whole screen sidepanel will take
     sceneWidth: null, //number parent side width dimension
     sceneHeight: null, //number parent side height dimension
-    animateShown: false
+    animateShown: false,
+    visibilityCallback: function visibilityCallback() {}
 };
