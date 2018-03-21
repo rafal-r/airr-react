@@ -137,8 +137,6 @@ textarea:focus, input:focus {
     display: none;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    -webkit-perspective: 1000px;
-    perspective: 1000px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -176,10 +174,8 @@ textarea:focus, input:focus {
     background-color: #fff;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    -webkit-perspective: 1000px;
     overflow-y: scroll;
     overflow-x: hidden;
-    perspective: 1000px;
 }
 .airr-sidepanel.bottom > div:last-child,
 .airr-sidepanel.top > div:last-child {
@@ -207,8 +203,6 @@ textarea:focus, input:focus {
     float: left;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    -webkit-perspective: 1000px;
-    perspective: 1000px;
     width: 50%;
 }
 
