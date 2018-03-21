@@ -4,13 +4,13 @@ import AirrComponent from "./AirrComponent";
 
 export default class AirrView extends AirrComponent {
     render() {
-        const { name, title, active, style, ...rest } = this.props;
-        let className = "airr-view";
+        const { name, title, active, style, className, ...rest } = this.props;
+        let viewClass = "airr-view" + (className ? " " + className : "");
 
-        active && (className += " active");
+        active && (viewClass += " active");
 
         return (
-            <div className={className} style={style} ref="dom" {...rest}>
+            <div className={viewClass} style={style} ref="dom" {...rest}>
                 {this.props.children}
             </div>
         );

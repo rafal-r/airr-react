@@ -47,15 +47,16 @@ var AirrView = function (_AirrComponent) {
                 title = _props.title,
                 active = _props.active,
                 style = _props.style,
-                rest = _objectWithoutProperties(_props, ["name", "title", "active", "style"]);
+                className = _props.className,
+                rest = _objectWithoutProperties(_props, ["name", "title", "active", "style", "className"]);
 
-            var className = "airr-view";
+            var viewClass = "airr-view" + (className ? " " + className : "");
 
-            active && (className += " active");
+            active && (viewClass += " active");
 
             return _react2.default.createElement(
                 "div",
-                _extends({ className: className, style: style, ref: "dom" }, rest),
+                _extends({ className: viewClass, style: style, ref: "dom" }, rest),
                 this.props.children
             );
         }
