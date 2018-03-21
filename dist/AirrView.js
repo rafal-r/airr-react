@@ -1,26 +1,28 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
+var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _AirrComponent2 = require('./AirrComponent');
+var _AirrComponent2 = require("./AirrComponent");
 
 var _AirrComponent3 = _interopRequireDefault(_AirrComponent2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -38,16 +40,22 @@ var AirrView = function (_AirrComponent) {
     }
 
     _createClass(AirrView, [{
-        key: 'render',
+        key: "render",
         value: function render() {
-            var className = 'airr-view';
-            var style = _typeof(this.props.style) === 'object' ? Object.assign({}, this.props.style) : {};
+            var _props = this.props,
+                name = _props.name,
+                title = _props.title,
+                active = _props.active,
+                style = _props.style,
+                rest = _objectWithoutProperties(_props, ["name", "title", "active", "style"]);
 
-            this.props.active && (className += ' active');
+            var className = "airr-view";
+
+            active && (className += " active");
 
             return _react2.default.createElement(
-                'div',
-                { className: className, style: style, ref: 'dom' },
+                "div",
+                _extends({ className: className, style: style, ref: "dom" }, rest),
                 this.props.children
             );
         }
@@ -57,7 +65,7 @@ var AirrView = function (_AirrComponent) {
 }(_AirrComponent3.default);
 
 exports.default = AirrView;
-;
+
 
 AirrView.propTypes = {
     name: _propTypes2.default.string.isRequired,
@@ -65,7 +73,7 @@ AirrView.propTypes = {
     active: _propTypes2.default.bool
 };
 AirrView.defaultProps = {
-    name: '', //the name of the view. Must be unique among others views in scene. Will be used as identification string
-    title: '', //titlebar name. if parent scene navbar is enabled, this title will be showed there
+    name: "", //the name of the view. Must be unique among others views in scene. Will be used as identification string
+    title: "", //titlebar name. if parent scene navbar is enabled, this title will be showed there
     active: false
 };
