@@ -139,6 +139,8 @@ textarea:focus, input:focus {
     backface-visibility: hidden;
     overflow-y: scroll;
     overflow-x: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
 }
 
 .airr-container > .airr-view.airr-scene {
