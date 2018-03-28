@@ -1,6 +1,6 @@
 {
 	"name": "airr-react",
-	"version": "1.5.8",
+	"version": "1.5.9",
 	"description": "Reusable React components for building mobile hybrid apps",
 	"dependencies": {
 		"immutability-helper": "^2.5.0",
