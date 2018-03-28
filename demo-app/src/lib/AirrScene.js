@@ -441,6 +441,9 @@ export default class AirrScene extends AirrComponent {
         if (this.state.GUIDisabled !== nextProps.GUIDisabled) {
             this.setState({ GUIDisabled: nextProps.GUIDisabled });
         }
+        if (this.state.GUIDisableCover !== nextProps.GUIDisableCover) {
+            this.setState({ GUIDisableCover: nextProps.GUIDisableCover });
+        }
         if (this.state.navbarMenu !== nextProps.navbarMenu) {
             this.setState({ navbarMenu: nextProps.navbarMenu });
         }
