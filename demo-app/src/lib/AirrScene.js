@@ -11,6 +11,7 @@ export default class AirrScene extends AirrComponent {
 
         activeViewName: null, //string
         GUIDisabled: false, //bool
+        GUIDisableCover: null, //bool
         animation: "slide", //slide,overlay,fade or false if no animation
         animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
         navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
@@ -35,6 +36,7 @@ export default class AirrScene extends AirrComponent {
 
         activeViewName: PropTypes.string,
         GUIDisabled: PropTypes.bool,
+        GUIDisableCover: PropTypes.object,
         animation: PropTypes.oneOf(["slide", "overlay", "fade", false]),
         animationTime: PropTypes.number,
         navbar: PropTypes.oneOf([-1, 0, false, 1, true]),
@@ -175,6 +177,7 @@ export default class AirrScene extends AirrComponent {
             views: views,
             sidepanel: props.sidepanel,
             GUIDisabled: props.GUIDisabled,
+            GUIDisableCover: props.GUIDisableCover,
             mayers: props.mayers
         };
     }
@@ -1189,7 +1192,7 @@ export default class AirrScene extends AirrComponent {
 
         let blankmask = null;
         if (this.state.GUIDisabled) {
-            blankmask = <div className="airr-blank-mask" />;
+            blankmask = <div className="airr-blank-mask">{this.state.GUIDisableCover}</div>;
         }
 
         let mayers = [];

@@ -21,6 +21,7 @@ export default class AirrCompositeScene extends AirrComponent {
             views: props.views,
             sidepanel: props.sidepanel,
             GUIDisabled: props.GUIDisabled,
+            GUIDisableCover: props.GUIDisableCover,
             mayers: props.mayers,
             children: props.children,
             animationTime: props.animationTime,
@@ -68,6 +69,7 @@ export default class AirrCompositeScene extends AirrComponent {
                     viewsAnimationEndCallback={this.state.viewsAnimationEndCallback}
                     stackMode={this.state.stackMode}
                     GUIDisabled={this.state.GUIDisabled}
+                    GUIDisableCover={this.state.GUIDisableCover}
                     active={this.state.active}
                     views={this.state.views}
                     mayers={this.state.mayers}

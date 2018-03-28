@@ -75,6 +75,7 @@ var AirrScene = function (_AirrComponent) {
             views: views,
             sidepanel: props.sidepanel,
             GUIDisabled: props.GUIDisabled,
+            GUIDisableCover: props.GUIDisableCover,
             mayers: props.mayers
         };
         return _this;
@@ -961,7 +962,11 @@ var AirrScene = function (_AirrComponent) {
 
             var blankmask = null;
             if (this.state.GUIDisabled) {
-                blankmask = _react2.default.createElement("div", { className: "airr-blank-mask" });
+                blankmask = _react2.default.createElement(
+                    "div",
+                    { className: "airr-blank-mask" },
+                    this.state.GUIDisableCover
+                );
             }
 
             var mayers = [];
@@ -1104,6 +1109,7 @@ AirrScene.defaultProps = {
 
     activeViewName: null, //string
     GUIDisabled: false, //bool
+    GUIDisableCover: null, //bool
     animation: "slide", //slide,overlay,fade or false if no animation
     animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
     navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
@@ -1127,6 +1133,7 @@ AirrScene.propTypes = {
 
     activeViewName: _propTypes2.default.string,
     GUIDisabled: _propTypes2.default.bool,
+    GUIDisableCover: _propTypes2.default.object,
     animation: _propTypes2.default.oneOf(["slide", "overlay", "fade", false]),
     animationTime: _propTypes2.default.number,
     navbar: _propTypes2.default.oneOf([-1, 0, false, 1, true]),
