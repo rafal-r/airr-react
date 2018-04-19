@@ -1112,7 +1112,7 @@ AirrScene.defaultProps = {
 
     activeViewName: null, //string
     GUIDisabled: false, //bool
-    GUIDisableCover: null, //bool
+    GUIDisableCover: null, //react element
     animation: "slide", //slide,overlay,fade or false if no animation
     animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
     navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)

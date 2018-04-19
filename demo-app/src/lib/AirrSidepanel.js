@@ -594,6 +594,6 @@ AirrSidepanel.defaultProps = {
     sizeFactor: 2 / 3, //number between 0 and 1 determining how much size of whole screen sidepanel will take
     sceneWidth: null, //number parent side width dimension
     sceneHeight: null, //number parent side height dimension
-    animateShown: false,
-    visibilityCallback: function() {}
+    animateShown: false, //do you want to animate sidepanel showing in/out
+    visibilityCallback: function(isShown) {} //callback called when sidepanel changes its visibility with isShown argument
 };

@@ -131,6 +131,7 @@ textarea:focus, input:focus {
     width: 100%;
     overflow: hidden;
     position: relative;
+    background-color: #fff;
 }
 
 .airr-container > .airr-view {
