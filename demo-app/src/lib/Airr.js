@@ -1,11 +1,11 @@
-import Component from "./AirrComponent";
 import View from "./AirrView";
 import Scene from "./AirrScene";
 import Mayer from "./AirrMayer";
 import Sidepanel from "./AirrSidepanel";
 import CompositeScene from "./AirrCompositeScene";
+import SceneWrapper from "./AirrSceneWrapper";
 import FX from "./AirrFX";
 import { supportPassive, isMobileDevice } from "./eventHelpers";
 
 export const Helpers = { supportPassive, isMobileDevice };
-export { Component, View, Scene, Mayer, Sidepanel, CompositeScene, FX };
+export { View, Scene, Mayer, Sidepanel, CompositeScene, SceneWrapper, FX };

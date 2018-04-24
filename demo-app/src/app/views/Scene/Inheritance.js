@@ -1,45 +1,43 @@
-import Slide from './Slide';
-import {CompositeScene} from './../../../lib/Airr';
-import update from 'immutability-helper';
+import Slide from "./Slide";
+import { CompositeScene } from "./../../../lib/Airr";
+import update from "immutability-helper";
 
 class Inheritance extends CompositeScene {
-
     constructor(props) {
         super(props);
 
-        this.handleNextClick = this.handleNextClick.bind(this);
-        this.handlePrevClick = this.handlePrevClick.bind(this);
-        this.handleAnimationChange = this.handleAnimationChange.bind(this);
-
-        this.state.animation = 'slide';
-        this.state.activeViewName = props.activeViewName;
-        this.state.views = [
+        this.state = {
+            initialState: true, //to override this state over props getDerivedStateFromProps
+            animation: "slide",
+            activeViewName: props.activeViewName,
+            views: [
                 {
                     type: Slide,
                     props: {
                         name: props.activeViewName,
-                        title: '1',
+                        title: "1",
                         isFirst: true,
                         handleNextClick: this.handleNextClick,
                         handlePrevClick: this.handlePrevClick,
                         handleAnimationChange: this.handleAnimationChange,
-                        animation: 'slide'
+                        animation: "slide"
                     }
                 }
-        ];
+            ]
+        };
     }
 
-    handleAnimationChange(e) {
+    handleAnimationChange = e => {
         const val = e.target.dataset.value;
-        const views = this.state.views.map((item) => {
-            return update(item, {props: {animation: {$set: val}}});
+        const views = this.state.views.map(item => {
+            return update(item, { props: { animation: { $set: val } } });
         });
 
-        this.setState({animation: val, views: views});
-    }
+        this.setState({ animation: val, views: views });
+    };
 
-    handleNextClick(e) {
-        const viewName = 'v' + (this.state.views.length + 1);
+    handleNextClick = e => {
+        const viewName = "v" + (this.state.views.length + 1);
         const config = {
             type: Slide,
             props: {
@@ -54,11 +52,11 @@ class Inheritance extends CompositeScene {
         };
 
         this.pushView(config);
-    }
+    };
 
-    handlePrevClick(e) {
+    handlePrevClick = e => {
         this.popView();
-    }
+    };
 }
 
 export default Inheritance;

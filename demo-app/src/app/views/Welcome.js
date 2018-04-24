@@ -3,7 +3,9 @@ import { View } from './../../lib/Airr';
 import Menu from '../ui/Menu';
 import './css/Welcome.css';
 
-class Welcome extends Component {
+export const viewName = "welcome";
+
+export default class Welcome extends Component {
     menuOptions = [
         {
             name: 'mayers',
@@ -40,4 +42,3 @@ class Welcome extends Component {
 Welcome.defaultProps = {
     name: 'welcome'
 };
-export default Welcome;

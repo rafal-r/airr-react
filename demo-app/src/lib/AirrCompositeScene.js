@@ -1,89 +1,36 @@
-import React from 'react';
-import AirrScene from './AirrScene';
-import AirrComponent from './AirrComponent';
-import update from 'immutability-helper';
+import React, { Component } from "react";
+import AirrScene from "./AirrScene";
 
-export default class AirrCompositeScene extends AirrComponent {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            active: props.active,
-            navbar: props.navbar,
-            navbarHeight: props.navbarHeight,
-            navbarMenu: props.navbarMenu,
-            navbarClass: props.navbarClass,
-            backButton: props.backButton,
-            backButtonOnFirstView: props.backButtonOnFirstView,
-            activeViewName: props.activeViewName,
-            animation: props.animation,
-            views: props.views,
-            sidepanel: props.sidepanel,
-            GUIDisabled: props.GUIDisabled,
-            GUIDisableCover: props.GUIDisableCover,
-            mayers: props.mayers,
-            children: props.children,
-            animationTime: props.animationTime,
-            handleBackBehaviourOnFirstView: props.handleBackBehaviourOnFirstView,
-            viewsAnimationEndCallback: props.viewsAnimationEndCallback,
-            stackMode: props.stackMode,
-            handleBackButton: props.handleBackButton
-        };
-    }
-
-    pushView(config) {
-        const newviewdefinition = update(this.state.views, {$push: [config]});
-        this.setState({
-            views: newviewdefinition,
-            activeViewName: config.props.name
-        });
-    }
-
-    popView() {
-        if (this.state.views.length > 1) {
-
-            const newviewdefinition = update(this.state.views, {$splice: [[this.state.views.length - 1, 1]]});
-
-            this.setState({
-                activeViewName: this.state.views[this.state.views.length - 2].props.name,
-                views: newviewdefinition
-            });
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (!this.state.active && nextProps.active) {
-            this.setState({active: true});
-        }
-    }
-
+export default class AirrCompositeScene extends Component {
     render() {
         return (
-                <AirrScene 
-                    ref="airrView"
-                    name={this.props.name}
-                    animationTime={this.state.animationTime}
-                    handleBackBehaviourOnFirstView={this.state.handleBackBehaviourOnFirstView}
-                    handleBackButton={this.state.handleBackButton}
-                    viewsAnimationEndCallback={this.state.viewsAnimationEndCallback}
-                    stackMode={this.state.stackMode}
-                    GUIDisabled={this.state.GUIDisabled}
-                    GUIDisableCover={this.state.GUIDisableCover}
-                    active={this.state.active}
-                    views={this.state.views}
-                    mayers={this.state.mayers}
-                    activeViewName={this.state.activeViewName}
-                    sidepanel={this.state.sidepanel}
-                    navbar={this.state.navbar}
-                    navbarHeight={this.state.navbarHeight}
-                    navbarMenu={this.state.navbarMenu}
-                    navbarClass={this.state.navbarClass}
-                    animation={this.state.animation}
-                    backButton={this.state.backButton}
-                    backButtonOnFirstView={this.state.backButtonOnFirstView}
-                    children={this.state.children}/>
-                );
+            <AirrScene
+                ref="airrView"
+                name={this.props.name}
+                animationTime={this.props.animationTime}
+                handleBackBehaviourOnFirstView={
+                    this.props.handleBackBehaviourOnFirstView
+                }
+                handleBackButton={this.props.handleBackButton}
+                viewsAnimationEndCallback={this.props.viewsAnimationEndCallback}
+                stackMode={this.props.stackMode}
+                GUIDisabled={this.props.GUIDisabled}
+                GUIDisableCover={this.props.GUIDisableCover}
+                active={this.props.active}
+                views={this.props.views}
+                mayers={this.props.mayers}
+                activeViewName={this.props.activeViewName}
+                sidepanel={this.props.sidepanel}
+                navbar={this.props.navbar}
+                navbarHeight={this.props.navbarHeight}
+                navbarMenu={this.props.navbarMenu}
+                navbarClass={this.props.navbarClass}
+                animation={this.props.animation}
+                backButton={this.props.backButton}
+                backButtonOnFirstView={this.props.backButtonOnFirstView}
+                children={this.props.children}
+            />
+        );
     }
 }
 AirrCompositeScene.propTypes = AirrScene.propTypes;

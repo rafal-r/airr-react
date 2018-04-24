@@ -5,7 +5,9 @@ import Inheritance from './Tabs/Inheritance';
 import Menu from '../ui/Menu';
 import './css/Scene.css';
 
-class Tabs extends Component {
+export const viewName = "tabs";
+
+export default class Tabs extends Component {
     
     constructor(props) {
         super(props);
@@ -78,4 +80,3 @@ class Tabs extends Component {
         );
     }
 }
-export default Tabs;

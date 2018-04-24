@@ -1,8 +1,7 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import AirrComponent from "./AirrComponent";
 
-export default class AirrView extends AirrComponent {
+export default class AirrView extends Component {
     render() {
         const { name, title, active, style, className, ...rest } = this.props;
         let viewClass = "airr-view" + (className ? " " + className : "");

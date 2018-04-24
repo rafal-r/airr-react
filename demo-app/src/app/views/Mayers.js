@@ -1,23 +1,24 @@
-import React, {Component} from 'react';
-import {View} from './../../lib/Airr';
+import React, { Component } from "react";
+import { View } from "./../../lib/Airr";
 
-class Mayers extends Component {
-    
+export const viewName = "mayers";
+
+export default class Mayers extends Component {
     constructor() {
         super();
         this.handleRadioChange = this.handleRadioChange.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
         this.handleOpen = this.handleOpen.bind(this);
-        
+
         this.state = {
-            content: 'This is the content of mayer',
-            appearFrom: 'top',
-            leaveTo: 'top'
+            content: "This is the content of mayer",
+            appearFrom: "top",
+            leaveTo: "top"
         };
     }
 
     handleTextChange(e) {
-        this.setState({content: e.target.value});
+        this.setState({ content: e.target.value });
     }
 
     handleOpen(e) {
@@ -29,71 +30,95 @@ class Mayers extends Component {
     }
 
     viewAfterActivation() {
-        console.log('Mayer viewAfterActivation');
+        console.log("Mayer viewAfterActivation");
     }
 
     viewAfterDeactivation() {
-        console.log('Mayer viewAfterDeactivation');
+        console.log("Mayer viewAfterDeactivation");
     }
 
     viewBeforeActivation() {
-        console.log('Mayer viewBeforeActivation');
+        console.log("Mayer viewBeforeActivation");
     }
 
     viewBeforeDeactivation() {
-        console.log('Mayer viewBeforeDeactivation');
+        console.log("Mayer viewBeforeDeactivation");
     }
 
     componentWillMount() {
-        console.log('Mayers component will mount');
+        console.log("Mayers component will mount");
     }
 
     componentDidMount() {
-        console.log('Mayers component did mount');
+        console.log("Mayers component did mount");
     }
 
     componentWillUnmount() {
-        console.log('Mayers component unmounted');
+        console.log("Mayers component unmounted");
     }
 
     handleRadioChange(e) {
-        if (e.target.classList.contains('appearFrom')) {
-            this.setState({appearFrom: e.target.dataset.value});
+        if (e.target.classList.contains("appearFrom")) {
+            this.setState({ appearFrom: e.target.dataset.value });
         }
-        
-        if (e.target.classList.contains('leaveTo')) {
-            this.setState({leaveTo: e.target.dataset.value});
+
+        if (e.target.classList.contains("leaveTo")) {
+            this.setState({ leaveTo: e.target.dataset.value });
         }
     }
 
     render() {
         return (
-            <View name={this.props.name} active={this.props.active} ref="airrView">
+            <View
+                name={this.props.name}
+                active={this.props.active}
+                ref="airrView"
+            >
                 <div className="wrap col mayers-view">
                     {this.props.description}
                     <div className="btn-ctn">
                         <button onClick={this.handleOpen}>Open mayer</button>
-                    </div>                    
+                    </div>
                     <p className="info">
-                        Below You can specify from which direction on the screen Mayer will appear and leave.
+                        Below You can specify from which direction on the screen
+                        Mayer will appear and leave.
                     </p>
 
                     <div className="anim-ctn">
                         <div className="col-6">
                             <div className="header">
-                            Appear moving<br/>from
+                                Appear moving<br />from
                             </div>
 
                             <div className="radio-group">
                                 <div className="row">
                                     <div className="col-6">
-                                        <span className={'radio appearFrom ' + (this.state.appearFrom === 'top' ? 'checked':'')} data-value="top" onClick={this.handleRadioChange} >
+                                        <span
+                                            className={
+                                                "radio appearFrom " +
+                                                (this.state.appearFrom === "top"
+                                                    ? "checked"
+                                                    : "")
+                                            }
+                                            data-value="top"
+                                            onClick={this.handleRadioChange}
+                                        >
                                             <span />
                                         </span>
                                         <label>Top</label>
                                     </div>
                                     <div className="col-6">
-                                        <span className={'radio appearFrom ' + (this.state.appearFrom === 'bottom' ? 'checked':'')} data-value="bottom" onClick={this.handleRadioChange} >
+                                        <span
+                                            className={
+                                                "radio appearFrom " +
+                                                (this.state.appearFrom ===
+                                                "bottom"
+                                                    ? "checked"
+                                                    : "")
+                                            }
+                                            data-value="bottom"
+                                            onClick={this.handleRadioChange}
+                                        >
                                             <span />
                                         </span>
                                         <label>Bottom</label>
@@ -101,13 +126,33 @@ class Mayers extends Component {
                                 </div>
                                 <div className="row">
                                     <div className="col-6">
-                                        <span className={'radio appearFrom ' + (this.state.appearFrom === 'left' ? 'checked':'')} data-value="left" onClick={this.handleRadioChange} >
+                                        <span
+                                            className={
+                                                "radio appearFrom " +
+                                                (this.state.appearFrom ===
+                                                "left"
+                                                    ? "checked"
+                                                    : "")
+                                            }
+                                            data-value="left"
+                                            onClick={this.handleRadioChange}
+                                        >
                                             <span />
                                         </span>
                                         <label>Left</label>
                                     </div>
                                     <div className="col-6">
-                                        <span className={'radio appearFrom ' + (this.state.appearFrom === 'right' ? 'checked':'')} data-value="right" onClick={this.handleRadioChange} >
+                                        <span
+                                            className={
+                                                "radio appearFrom " +
+                                                (this.state.appearFrom ===
+                                                "right"
+                                                    ? "checked"
+                                                    : "")
+                                            }
+                                            data-value="right"
+                                            onClick={this.handleRadioChange}
+                                        >
                                             <span />
                                         </span>
                                         <label>Right</label>
@@ -118,19 +163,37 @@ class Mayers extends Component {
 
                         <div className="col-6">
                             <div className="header">
-                                Leave moving<br/>to
+                                Leave moving<br />to
                             </div>
 
                             <div className="radio-group">
                                 <div className="row">
                                     <div className="col-6">
-                                        <span className={'radio leaveTo ' + (this.state.leaveTo === 'top' ? 'checked':'')} data-value="top" onClick={this.handleRadioChange} >
+                                        <span
+                                            className={
+                                                "radio leaveTo " +
+                                                (this.state.leaveTo === "top"
+                                                    ? "checked"
+                                                    : "")
+                                            }
+                                            data-value="top"
+                                            onClick={this.handleRadioChange}
+                                        >
                                             <span />
                                         </span>
                                         <label>Top</label>
                                     </div>
                                     <div className="col-6">
-                                        <span className={'radio leaveTo ' + (this.state.leaveTo === 'bottom' ? 'checked':'')} data-value="bottom" onClick={this.handleRadioChange} >
+                                        <span
+                                            className={
+                                                "radio leaveTo " +
+                                                (this.state.leaveTo === "bottom"
+                                                    ? "checked"
+                                                    : "")
+                                            }
+                                            data-value="bottom"
+                                            onClick={this.handleRadioChange}
+                                        >
                                             <span />
                                         </span>
                                         <label>Bottom</label>
@@ -138,13 +201,31 @@ class Mayers extends Component {
                                 </div>
                                 <div className="row">
                                     <div className="col-6">
-                                        <span className={'radio leaveTo ' + (this.state.leaveTo === 'left' ? 'checked':'')} data-value="left" onClick={this.handleRadioChange} >
+                                        <span
+                                            className={
+                                                "radio leaveTo " +
+                                                (this.state.leaveTo === "left"
+                                                    ? "checked"
+                                                    : "")
+                                            }
+                                            data-value="left"
+                                            onClick={this.handleRadioChange}
+                                        >
                                             <span />
                                         </span>
                                         <label>Left</label>
                                     </div>
                                     <div className="col-6">
-                                        <span className={'radio leaveTo ' + (this.state.leaveTo === 'right' ? 'checked':'')} data-value="right" onClick={this.handleRadioChange} >
+                                        <span
+                                            className={
+                                                "radio leaveTo " +
+                                                (this.state.leaveTo === "right"
+                                                    ? "checked"
+                                                    : "")
+                                            }
+                                            data-value="right"
+                                            onClick={this.handleRadioChange}
+                                        >
                                             <span />
                                         </span>
                                         <label>Right</label>
@@ -152,15 +233,16 @@ class Mayers extends Component {
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <div>
-                        <textarea onChange={this.handleTextChange} rows="5" value={this.state.content} />
+                        <textarea
+                            onChange={this.handleTextChange}
+                            rows="5"
+                            value={this.state.content}
+                        />
                     </div>
                 </div>
-            </View>);
+            </View>
+        );
     }
-    
 }
-
-export default Mayers;

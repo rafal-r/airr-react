@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import {View} from './../../lib/Airr';
 
-class Sidepanel extends Component {
+export const viewName = "sidepanel";
+
+export default class Sidepanel extends Component {
     render() {
         return (
         <View name={this.props.name} active={this.props.active} ref="airrView">
@@ -75,5 +77,3 @@ class Sidepanel extends Component {
                 );
     }
 }
-
-export default Sidepanel;

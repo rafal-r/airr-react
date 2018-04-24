@@ -6,7 +6,9 @@ import Menu from '../ui/Menu';
 
 import './css/Scene.css';
 
-class Scene extends Component {
+export const viewName = "scene";
+
+export default class Scene extends Component {
     sceneOptions = [
         {
             name: 'composition',
@@ -67,4 +69,3 @@ class Scene extends Component {
                 );
     }
 }
-export default Scene;
