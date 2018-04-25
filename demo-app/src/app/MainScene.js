@@ -18,11 +18,8 @@ export default class MainScene extends SceneWrapper {
     constructor(props) {
         super(props);
 
-        console.log(this.state);
         this.state = {
             ...this.state,
-            // name: "main-scene",
-            initialState: true, //to override this state over props getDerivedStateFromProps
             navbar: true,
             backButton: true,
             navbarMenu: "toggleSidepanel",
@@ -130,29 +127,16 @@ export default class MainScene extends SceneWrapper {
             buttons: [
                 {
                     content: "Ok",
-                    handler: e => {
-                        this.setState({ mayers: [] });
-                    }
+                    handler: () => this.closeMayer("demo-mayer")
                 }
             ]
         };
 
-        const newmayersdefinition = update(this.state.mayers, {
-            $push: [config]
-        });
-        this.setState({
-            mayers: newmayersdefinition
-        });
+        this.openMayer(config);
     };
 
-    handleSceneViewMenuClick = (viewConfig, e) => {
-        const newviewsdefinition = update(this.state.views, {
-            $push: [viewConfig]
-        });
-        this.setState({
-            activeViewName: viewConfig.props.name,
-            views: newviewsdefinition
-        });
+    handleSceneViewMenuClick = (viewConfig) => {
+        return this.changeView(viewConfig);
     };
 
     handleWelcomeViewMenuClick = e => {
@@ -163,7 +147,7 @@ export default class MainScene extends SceneWrapper {
                 props: { children: { $set: sidepanelContent } }
             });
 
-            return this.animateViewChange(
+            return this.changeView(
                 viewName,
                 {},
                 { sidepanel: sidepaneldefinition }
@@ -182,11 +166,9 @@ export default class MainScene extends SceneWrapper {
                     props: { children: { $set: sidepanelContent } }
                 });
 
-                return this.animateViewChange(
-                    viewName,
-                    {},
-                    { sidepanel: sidepaneldefinition }
-                );
+                return this.popView({
+                    sidepanel: sidepaneldefinition
+                });
             }
         }
     };
@@ -201,19 +183,12 @@ export default class MainScene extends SceneWrapper {
             buttons: [
                 {
                     content: "Ok",
-                    handler: e => {
-                        this.setState({ mayers: [] });
-                    }
+                    handler: () => this.closeMayer("scene-view-mayer")
                 }
             ]
         };
 
-        const newmayersdefinition = update(this.state.mayers, {
-            $push: [config]
-        });
-        this.setState({
-            mayers: newmayersdefinition
-        });
+        this.openMayer(config);
     };
 
     viewsConfig = {

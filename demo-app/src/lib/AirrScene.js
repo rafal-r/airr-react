@@ -1,4 +1,4 @@
-import React,{Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import AirrMayer from "./AirrMayer";
 
@@ -168,7 +168,7 @@ export default class AirrScene extends Component {
      * @param {object} e Event object
      * @returns {void}
      */
-    handleBackButton(e) {
+    handleBackButton = e => {
         const backBtn = e.currentTarget;
         backBtn.classList.add("clicked");
 
@@ -179,11 +179,11 @@ export default class AirrScene extends Component {
         if (this.props.stackMode && this.props.views.length > 1) {
             if (this.props.handleBackButton) {
                 this.props.handleBackButton(e);
-            } 
+            }
         } else if (this.props.handleBackBehaviourOnFirstView) {
             this.props.handleBackBehaviourOnFirstView();
         }
-    }
+    };
 
     /**
      * Handles navbar menu button tap events
@@ -191,13 +191,16 @@ export default class AirrScene extends Component {
      * @param {object} e Event object
      * @returns {void}
      */
-    handleMenuButtonToggleSidepanel(e) {
-        if (this.sidepanelComp) {
-            this.sidepanelComp.isShown()
-                ? this.sidepanelComp.hide()
-                : this.sidepanelComp.show();
+    handleMenuButtonToggleSidepanel = e => {
+        if (
+            this.props.refCOMPSidepanel &&
+            this.props.refCOMPSidepanel.current
+        ) {
+            this.props.refCOMPSidepanel.current.isShown()
+                ? this.props.refCOMPSidepanel.current.hide()
+                : this.props.refCOMPSidepanel.current.show();
         }
-    }
+    };
 
     render() {
         const containerClassList = ["airr-container"];
@@ -250,8 +253,6 @@ export default class AirrScene extends Component {
         if (this.props.mayers.length) {
             mayers = this.props.mayers.map(mayerProps => {
                 mayerProps.key = mayerProps.name;
-                mayerProps.ref = component =>
-                    (this.mayersCompsRefs[mayerProps.name] = component);
                 return React.createElement(AirrMayer, mayerProps);
             });
         }
@@ -274,7 +275,7 @@ export default class AirrScene extends Component {
                 back = (
                     <div
                         className={backClassName}
-                        onClick={e => this.handleBackButton(e)}
+                        onClick={this.handleBackButton}
                     >
                         <div />
                     </div>
@@ -287,9 +288,7 @@ export default class AirrScene extends Component {
                     menu = this.props.sidepanel ? (
                         <div
                             className="menu"
-                            onClick={e =>
-                                this.handleMenuButtonToggleSidepanel(e)
-                            }
+                            onClick={this.handleMenuButtonToggleSidepanel}
                         >
                             <div />
                         </div>
@@ -349,8 +348,13 @@ export default class AirrScene extends Component {
             );
         }
 
+        const children =
+            typeof this.props.children === "function"
+                ? this.props.children()
+                : this.props.children;
+
         return (
-            <div className={className} ref={this.props.refDOMScene}>
+            <div className={className} ref={this.props.refDOM}>
                 {navbar}
                 <div
                     className={containerClassList.join(" ")}
@@ -358,7 +362,7 @@ export default class AirrScene extends Component {
                 >
                     {views}
                 </div>
-                {this.props.children}
+                {children}
                 {sidepanel}
                 {mayers}
                 {blankmask}

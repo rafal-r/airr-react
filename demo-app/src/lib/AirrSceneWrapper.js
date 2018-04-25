@@ -1,16 +1,17 @@
-import React, { Component } from "react";
+import React from "react";
 import AirrFX from "./AirrFX";
 import AirrScene from "./AirrScene";
+import AirrViewWrapper from "./AirrViewWrapper";
 import update from "immutability-helper";
 
-export default class AirrSceneWrapper extends Component {
+export default class AirrSceneWrapper extends AirrViewWrapper {
     viewsConfig = {};
 
     refsCOMPViews = {};
+    refsCOMPMayers = {};
     refCOMPSidepanel = React.createRef();
     refDOMContainer = React.createRef();
     refDOMNavbar = React.createRef();
-    refDOMScene = React.createRef();
 
     constructor(props) {
         super(props);
@@ -78,13 +79,13 @@ export default class AirrSceneWrapper extends Component {
             this.viewsNamesToStayList.length
         ) {
             this.viewsNamesToStayList.push(this.state.activeViewName);
-            this.filterViews(this.viewsNamesToStayList).then(() => {
+            this.__filterViews(this.viewsNamesToStayList).then(() => {
                 this.viewsNamesToStayList = [];
             });
         }
     };
 
-    filterViews(viewsNameList = []) {
+    __filterViews(viewsNameList = []) {
         return new Promise(resolve => {
             this.setState(
                 {
@@ -115,94 +116,409 @@ export default class AirrSceneWrapper extends Component {
         );
     };
 
-    popView = () => {
-        if (this.state.views.length > 1) {
-            const viewName = this.state.views[this.state.views.length - 2].props
-                .name;
-            const newviewdefinition = update(this.state.views, {
-                $splice: [[this.state.views.length - 1, 1]]
-            });
-            const stateChange = Object.assign(
-                {
-                    activeViewName: viewName,
-                    views: newviewdefinition
-                },
-                Object.assign(
-                    {},
-                    this.viewsConfig[viewName] &&
-                        this.viewsConfig[viewName].sceneProps
-                )
-            );
+    getViewIndex = viewName =>
+        this.state.views.findIndex(view => view.props.name === viewName);
 
-            return new Promise(resolve =>
-                this.setState(stateChange, () => {
-                    setTimeout(resolve, this.viewAnimationTime + 10);
-                })
-            );
-        } else {
-            return Promise.reject();
-        }
-    };
-
-    pushView(config, sceneProps = {}) {
+    __pushView(config, sceneProps = {}) {
         const newviewdefinition = update(this.state.views, { $push: [config] });
         const stateChange = Object.assign(
             {
                 views: newviewdefinition
             },
-            typeof config.sceneProps === "object"
-                ? { ...config.sceneProps }
-                : {},
-            ...Object.assign({}, sceneProps)
+            Object.assign({}, config.sceneProps || {}),
+            Object.assign({}, sceneProps)
         );
 
-        return new Promise(resolve => this.setState(stateChange, resolve));
+        return new Promise(resolve =>
+            this.setState(stateChange, () => resolve(config.props.name))
+        );
     }
 
-    getViewIndex = viewName =>
-        this.state.views.findIndex(view => view.props.name === viewName);
+    popView = (sceneProps = {}) => {
+        if (this.state.views.length > 1) {
+            const viewName = this.state.views[this.state.views.length - 2].props
+                .name;
 
-    animateViewChange(name, viewProps = {}, sceneProps = {}) {
-        return this.changeView(name, viewProps, sceneProps).then(() => {
-            return this.__performViewsAnimation(name);
+            return this.changeView(viewName, {}, sceneProps).then(() => {
+                const newviewdefinition = update(this.state.views, {
+                    $splice: [[this.state.views.length - 1, 1]]
+                });
+
+                delete this.refsCOMPViews[
+                    this.state.views[this.state.views.length - 1].props.name
+                ];
+
+                return new Promise(resolve =>
+                    this.setState({ views: newviewdefinition }, resolve)
+                );
+            });
+        } else {
+            return Promise.reject();
+        }
+    };
+
+    isValidViewConfig(object) {
+        return (
+            typeof object === "object" &&
+            "type" in object &&
+            typeof object.props === "object" &&
+            "name" in object.props
+        );
+    }
+
+    changeView(view, viewProps = {}, sceneProps = {}) {
+        return this.__changeView(view, viewProps, sceneProps).then(viewName => {
+            return this.__performViewsAnimation(viewName);
         });
     }
 
-    changeView(name, viewProps = {}, sceneProps = {}) {
-        if (this.hasViewInState(name)) {
-            return new Promise(resolve => {
-                const viewIndex = this.getViewIndex(name);
-                const currentViewConfig = Object.assign(
-                    { sceneProps: {} }, //for a default props which will be latter used
-                    this.state.views[viewIndex]
-                );
-                const newViewConfig = update(currentViewConfig, {
-                    props: {
-                        $set: {
-                            ...currentViewConfig.props,
-                            ...viewProps
+    __changeView(view, viewProps = {}, sceneProps = {}) {
+        if (typeof view === "string") {
+            if (this.hasViewInState(view)) {
+                //if already in state then update its props
+                return new Promise(resolve => {
+                    const viewIndex = this.getViewIndex(view);
+                    const currentViewConfig = Object.assign(
+                        { sceneProps: {} }, //for a default props which will be latter used
+                        this.state.views[viewIndex]
+                    );
+                    const newViewConfig = update(currentViewConfig, {
+                        props: {
+                            $set: {
+                                ...currentViewConfig.props,
+                                ...viewProps
+                            }
                         }
-                    }
+                    });
+
+                    let stateChange = {
+                        views: update(this.state.views, {
+                            [viewIndex]: {
+                                $set: newViewConfig
+                            }
+                        }),
+                        ...currentViewConfig.sceneProps,
+                        ...Object.assign({}, sceneProps)
+                    };
+
+                    this.setState(stateChange, () => resolve(view));
                 });
-
-                let stateChange = {
-                    views: update(this.state.views, {
-                        [viewIndex]: {
-                            $set: newViewConfig
-                        }
-                    }),
-                    ...currentViewConfig.sceneProps,
-                    ...Object.assign({}, sceneProps)
-                };
-
-                this.setState(stateChange, resolve);
-            });
-        } else if (this.hasViewInConfig(name)) {
-            return this.pushView(
-                this.getFreshViewConfig(name, viewProps),
+            } else if (this.hasViewInConfig(view)) {
+                //push fresh config
+                return this.__pushView(
+                    this.getFreshViewConfig(view, viewProps),
+                    sceneProps
+                );
+            } else return Promise.reject();
+        } else if (this.isValidViewConfig(view)) {
+            //push allready prepared config
+            return this.__pushView(
+                Object.assign({}, view, {
+                    props: { ...view.props, ...viewProps }
+                }),
                 sceneProps
             );
-        } else return Promise.reject();
+        } else {
+            return Promise.reject();
+        }
+    }
+
+    hasViewInConfig = name => name in this.viewsConfig;
+
+    hasViewInState = name =>
+        this.state.views.findIndex(view => view.props.name === name) !== -1
+            ? true
+            : false;
+
+    handleBackButton = () => {
+        if (this.state.views.length > 1) {
+            const viewName = this.state.views[this.state.views.length - 2].props
+                .name;
+
+            return this.changeView(viewName);
+        }
+
+        return Promise.reject();
+    };
+
+    disableSidepanel = () => {
+        if (this.state.sidepanel.props.enabled) {
+            return new Promise(resolve =>
+                this.setState(
+                    {
+                        sidepanel: update(this.state.sidepanel, {
+                            props: { enabled: { $set: false } }
+                        })
+                    },
+                    resolve
+                )
+            );
+        }
+
+        return Promise.resolve();
+    };
+
+    enableSidepanel = () => {
+        return new Promise(resolve =>
+            this.setState(
+                {
+                    sidepanel: update(this.state.sidepanel, {
+                        props: {
+                            enabled: { $set: true }
+                        }
+                    })
+                },
+                resolve
+            )
+        );
+    };
+
+    openSidepanel = () => {
+        return new Promise(resolve =>
+            this.setState(
+                {
+                    sidepanel: update(this.state.sidepanel, {
+                        props: {
+                            isShown: { $set: true },
+                            animateShown: { $set: true }
+                        }
+                    })
+                },
+                resolve
+            )
+        );
+    };
+
+    /**
+     * Add new mayer to this.state.mayers configurations array which will immediatelly open new mayer due to its nature
+     *
+     * @param {object} config
+     * @returns {void}
+     */
+    openMayer(config) {
+        if (
+            this.state.mayers.findIndex(item => item.name === config.name) !==
+            -1
+        ) {
+            console.warn(
+                "[Airr] Scene allready has Mayer with this name: " + config.name
+            );
+            return;
+        }
+
+        //if scene has sidepanel - disable it
+        if (this.state.sidepanel && this.state.sidepanel.props.enabled) {
+            this.disableSidepanel();
+        }
+
+        //add special functionality
+        const preparedConfig = this.__prepareMayerConfig(config);
+
+        return this.__addMayer(preparedConfig);
+    }
+
+    /**
+     * Close mayer by name
+     *
+     * @param {string} name
+     * @returns {void}
+     */
+    closeMayer(name) {
+        let mayerConfigIndex = this.state.mayers.findIndex(
+            item => item.name === name
+        );
+
+        if (
+            mayerConfigIndex !== -1 &&
+            (this.refsCOMPMayers[name] && this.refsCOMPMayers[name].current)
+        ) {
+            this.refsCOMPMayers[name].current.animateOut(() => {
+                //renew index because after animation
+                //things might have changed
+                mayerConfigIndex = this.state.mayers.findIndex(
+                    item => item.name === name
+                );
+
+                //last check if stil present
+                if (
+                    mayerConfigIndex !== -1 &&
+                    (this.refsCOMPMayers[name] &&
+                        this.refsCOMPMayers[name].current)
+                ) {
+                    return this.__removeMayer(name).then(() => {
+                        delete this.refsCOMPMayers[name];
+
+                        if (this.state.sidepanel) {
+                            let hasMayerLeft = false;
+                            const children = [...this.refDOM.current.children];
+                            children.forEach(item => {
+                                if (item.classList.contains("airr-mayer")) {
+                                    hasMayerLeft = true;
+                                }
+                            });
+
+                            if (!hasMayerLeft) {
+                                this.enableSidepanel();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    /**
+     * If config has buttons that contains logical true `close` property,
+     * this method will attach close mayer functionality to tap event on this button.
+     *
+     * @param {object} config mayer config object
+     * @returns {void}
+     */
+    __prepareMayerConfig(mayerConfig) {
+        const config = Object.assign({}, mayerConfig);
+
+        const ref = React.createRef();
+        config.ref = ref;
+        this.refsCOMPMayers[config.name] = ref;
+
+        if (config.buttons && config.buttons.length) {
+            config.buttons.forEach(item => {
+                if (item.close) {
+                    if (item.handler) {
+                        const oldHandler = item.handler;
+                        item.handler = e => {
+                            oldHandler(e);
+                            this.closeMayer(config.name);
+                        };
+                    } else {
+                        item.handler = e => {
+                            this.closeMayer(config.name);
+                        };
+                    }
+                }
+            });
+        }
+
+        return config;
+    }
+
+    __addMayer = config => {
+        const newMayersDef = update(this.state.mayers, { $push: [config] });
+
+        return new Promise(resolve =>
+            this.setState(
+                {
+                    mayers: newMayersDef
+                },
+                resolve
+            )
+        );
+    };
+
+    __removeMayer = name => {
+        const newMayersDef = this.state.mayers.filter(item => {
+            return item.name !== name;
+        });
+
+        return new Promise(resolve =>
+            this.setState(
+                {
+                    mayers: newMayersDef
+                },
+                resolve
+            )
+        );
+    };
+
+    disableBackButton = () => {
+        return new Promise(resolve =>
+            this.setState({ backButton: false }, resolve)
+        );
+    };
+
+    enableBackButton = () => {
+        return new Promise(resolve =>
+            this.setState({ backButton: true }, resolve)
+        );
+    };
+
+    goToView = (name, viewsNamesToStayList = []) => {
+        return (params = {}, sceneProps = {}) => {
+            this.viewsNamesToStayList = viewsNamesToStayList;
+            return this.changeView(name, params, sceneProps);
+        };
+    };
+
+    componentDidMount() {
+        if (
+            this.state.navbar &&
+            this.state.navbarHeight &&
+            this.refDOMContainer.current
+        ) {
+            this.refDOMContainer.current.style.height =
+                this.refDOMContainer.current.parentNode.clientHeight -
+                this.state.navbarHeight +
+                "px";
+        }
+
+        /**
+         * Call first active view life cycle method - viewAfterActivation
+         */
+        if (
+            this.state.activeViewName &&
+            this.refsCOMPViews[this.state.activeViewName] &&
+            typeof this.refsCOMPViews[this.state.activeViewName].current
+                .viewAfterActivation === "function"
+        ) {
+            this.refsCOMPViews[
+                this.state.activeViewName
+            ].current.viewAfterActivation();
+        }
+    }
+
+    __prepareSidepanel(sidepanel) {
+        sidepanel.props.ref = this.refCOMPSidepanel;
+        if (typeof sidepanel.props.enabled === "undefined") {
+            sidepanel.props.enabled = true; //force explicit value, e.g needed when checking if panel is enabled in `openMayer` method
+        }
+        return Object.assign({}, sidepanel);
+    }
+
+    /**
+     * Takes array of views and assign react specific properties (key and ref) to each view configuartion
+     *
+     * @param {array} views
+     * @returns {void}
+     */
+    __prepareViews(views) {
+        return views.map(item => {
+            item.props.key = item.props.name;
+
+            const ref = React.createRef();
+            item.props.ref = ref;
+            this.refsCOMPViews[item.props.name] = ref;
+
+            return item;
+        });
+    }
+
+    render() {
+        const { views, sidepanel, ...stateRest } = this.state;
+
+        return (
+            <AirrScene
+                {...{
+                    ...stateRest,
+                    views: this.__prepareViews(views),
+                    sidepanel: sidepanel && this.__prepareSidepanel(sidepanel),
+                    refDOM: this.refDOM,
+                    refDOMContainer: this.refDOMContainer,
+                    refDOMNavbar: this.refDOMNavbar,
+                    refCOMPSidepanel: this.refCOMPSidepanel
+                }}
+                {...this.getViewProps()}
+            />
+        );
     }
 
     viewChangeInProgress = false;
@@ -210,7 +526,7 @@ export default class AirrSceneWrapper extends Component {
      * Changes scenes active view
      *
      * @param {string} newViewName
-     * @returns {void}
+     * @returns {Promise}
      */
     __performViewsAnimation(newViewName) {
         if (typeof newViewName === "string") {
@@ -333,18 +649,23 @@ export default class AirrSceneWrapper extends Component {
      *
      * @param {string} newViewName
      * @param {string} oldViewName
-     * @returns {void}
+     * @returns {Promise}
      */
     __doViewsAnimation(newViewName, oldViewName) {
         return new Promise((resolve, reject) => {
             const newViewDOM =
                 this.refsCOMPViews[newViewName] &&
                 this.refsCOMPViews[newViewName].current &&
-                this.refsCOMPViews[newViewName].current.refs.airrView.refs.dom;
+                this.refsCOMPViews[newViewName].current.refDOM &&
+                this.refsCOMPViews[newViewName].current.refDOM.current;
             const oldViewIndex = this.getViewIndex(oldViewName);
             const newViewIndex = this.getViewIndex(newViewName);
 
             const direction = newViewIndex > oldViewIndex ? 1 : -1;
+
+            if (!newViewDOM) {
+                throw new Error("new view DOM refference was not found");
+            }
 
             if (this.state.navbar) {
                 //perform navbar animations
@@ -417,7 +738,7 @@ export default class AirrSceneWrapper extends Component {
                     );
                 }
 
-                if (this.state.backButton && this.props.stackMode) {
+                if (this.state.backButton && this.state.stackMode) {
                     const backDOM = this.refDOMNavbar.current.querySelector(
                         ".back"
                     );
@@ -482,22 +803,22 @@ export default class AirrSceneWrapper extends Component {
                 if (direction === -1) {
                     startProps.webkitTransform =
                         "translate3d(" +
-                        -1 * this.refDOMScene.current.clientWidth +
+                        -1 * this.refDOM.current.clientWidth +
                         "px,0,0)";
                     startProps.transform =
                         "translate3d(" +
-                        -1 * this.refDOMScene.current.clientWidth +
+                        -1 * this.refDOM.current.clientWidth +
                         "px,0,0)";
                     endProps.webkitTransform = "translate3d(0,0,0)";
                     endProps.transform = "translate3d(0,0,0)";
                 } else {
                     endProps.webkitTransform =
                         "translate3d(" +
-                        -1 * this.refDOMScene.current.clientWidth +
+                        -1 * this.refDOM.current.clientWidth +
                         "px,0,0)";
                     endProps.transform =
                         "translate3d(" +
-                        -1 * this.refDOMScene.current.clientWidth +
+                        -1 * this.refDOM.current.clientWidth +
                         "px,0,0)";
                 }
 
@@ -514,11 +835,14 @@ export default class AirrSceneWrapper extends Component {
                             "translate3d(0,0,0)";
                         this.refDOMContainer.current.style.transform =
                             "translate3d(0,0,0)";
-                        this.refDOMContainer.current.style.webkitTransition = "";
+                        this.refDOMContainer.current.style.webkitTransition =
+                            "";
                         this.refDOMContainer.current.style.transition = "";
                         this.refDOMContainer.current.style.transition = "";
-                        this.refDOMContainer.current.style.webkitBackfaceVisibility = "";
-                        this.refDOMContainer.current.style.backfaceVisibility = "";
+                        this.refDOMContainer.current.style.webkitBackfaceVisibility =
+                            "";
+                        this.refDOMContainer.current.style.backfaceVisibility =
+                            "";
 
                         resolve();
                     }
@@ -528,10 +852,10 @@ export default class AirrSceneWrapper extends Component {
                     AirrFX.doTransitionAnimation(
                         newViewDOM,
                         {
-                            webkitTransform: `translate3d(${this.refDOMContainer.current
-                                .clientWidth + "px"},0,0)`,
-                            transform: `translate3d(${this.refDOMContainer.current
-                                .clientWidth + "px"},0,0)`,
+                            webkitTransform: `translate3d(${this.refDOMContainer
+                                .current.clientWidth + "px"},0,0)`,
+                            transform: `translate3d(${this.refDOMContainer
+                                .current.clientWidth + "px"},0,0)`,
                             opacity: 0
                         },
                         [
@@ -551,10 +875,10 @@ export default class AirrSceneWrapper extends Component {
                         }
                     );
                 } else {
-                    if (this.props.stackMode) {
+                    if (this.state.stackMode) {
                         AirrFX.doTransitionAnimation(
-                            this.refsCOMPViews[oldViewName].refs.airrView.refs
-                                .dom,
+                            this.refsCOMPViews[oldViewName].current.refDOM
+                                .current,
                             {
                                 webkitTransform: `translate3d(0,0,0)`,
                                 transform: `translate3d(0,0,0)`,
@@ -573,8 +897,8 @@ export default class AirrSceneWrapper extends Component {
                                     .refDOMContainer.current.clientHeight /
                                     4 +
                                     "px"},0)`,
-                                transform: `translate3d(0,${this.refDOMContainer.current
-                                    .clientHeight /
+                                transform: `translate3d(0,${this.refDOMContainer
+                                    .current.clientHeight /
                                     4 +
                                     "px"},0)`,
                                 opacity: 0
@@ -636,195 +960,6 @@ export default class AirrSceneWrapper extends Component {
                 );
             }
         });
-    }
-
-    hasViewInConfig = name => name in this.viewsConfig;
-
-    hasViewInState = name =>
-        this.state.views.findIndex(view => view.props.name === name) !== -1
-            ? true
-            : false;
-
-    handleBackButton = () => {
-        if (this.state.views.length > 1) {
-            return this.popView();
-        }
-
-        return Promise.reject();
-    };
-
-    disableSidepanel = () => {
-        if (this.state.sidepanel.props.enabled) {
-            return new Promise(resolve =>
-                this.setState(
-                    {
-                        sidepanel: update(this.state.sidepanel, {
-                            props: { enabled: { $set: false } }
-                        })
-                    },
-                    resolve
-                )
-            );
-        }
-
-        return Promise.reject();
-    };
-
-    enableSidepanel = (content = null) => {
-        return new Promise(resolve =>
-            this.setState(
-                {
-                    sidepanel: update(this.state.sidepanel, {
-                        props: {
-                            enabled: { $set: true },
-                            children: { $set: content }
-                        }
-                    })
-                },
-                resolve
-            )
-        );
-    };
-
-    openSidepanel = () => {
-        return new Promise(resolve =>
-            this.setState(
-                {
-                    sidepanel: update(this.state.sidepanel, {
-                        props: {
-                            isShown: { $set: true },
-                            animateShown: { $set: true }
-                        }
-                    })
-                },
-                resolve
-            )
-        );
-    };
-
-    addMayer = config => {
-        const newMayersDef = update(this.state.mayers, { $push: [config] });
-
-        return new Promise(resolve =>
-            this.setState(
-                {
-                    mayers: newMayersDef
-                },
-                () => {
-                    setTimeout(resolve, this.mayerAnimationTime);
-                }
-            )
-        );
-    };
-
-    removeMayer = name => {
-        const newMayersDef = this.state.mayers.filter(item => {
-            return item.name !== name;
-        });
-
-        return new Promise(resolve =>
-            this.setState(
-                {
-                    mayers: newMayersDef
-                },
-                () => {
-                    setTimeout(resolve, this.mayerAnimationTime);
-                }
-            )
-        );
-    };
-
-    disableBackButton = () => {
-        return new Promise(resolve =>
-            this.setState({ backButton: false }, resolve)
-        );
-    };
-
-    enableBackButton = () => {
-        return new Promise(resolve =>
-            this.setState({ backButton: true }, resolve)
-        );
-    };
-
-    goToView = (name, viewsNamesToStayList = []) => {
-        return (params = {}) => {
-            this.viewsNamesToStayList = viewsNamesToStayList;
-            return this.changeView(name, params);
-        };
-    };
-
-    componentDidMount() {
-        if (
-            this.state.navbar &&
-            this.state.navbarHeight &&
-            this.refDOMContainer.current
-        ) {
-            this.refDOMContainer.current.style.height =
-                this.refDOMContainer.current.parentNode.clientHeight -
-                this.state.navbarHeight +
-                "px";
-        }
-
-        /**
-         * Call first active view life cycle method - viewAfterActivation
-         */
-        if (
-            this.state.activeViewName &&
-            this.refsCOMPViews[this.state.activeViewName] &&
-            typeof this.refsCOMPViews[this.state.activeViewName].current
-                .viewAfterActivation === "function"
-        ) {
-            this.refsCOMPViews[
-                this.state.activeViewName
-            ].current.viewAfterActivation();
-        }
-    }
-
-    prepareSidepanel(sidepanel) {
-        sidepanel.props.ref = this.refCOMPSidepanel;
-        if (typeof sidepanel.props.enabled === "undefined") {
-            sidepanel.props.enabled = true; //force explicit value, e.g needed when checking if panel is enabled in `openMayer` method
-        }
-        return sidepanel;
-    }
-
-    /**
-     * Takes array of views and assign react specific properties (key and ref) to each view configuartion
-     *
-     * @param {array} views
-     * @returns {void}
-     */
-    prepareViews(views) {
-        return views.map(item => {
-            item.props.key = item.props.name;
-
-            if (!this.refsCOMPViews[item.props.name]) {
-                const ref = React.createRef();
-                item.props.ref = ref;
-                this.refsCOMPViews[item.props.name] = ref;
-            }
-
-            return item;
-        });
-    }
-
-    render() {
-        console.log("airr scene wrapper render");
-
-        return (
-            <AirrScene
-                {...{
-                    ...this.state,
-                    views: this.prepareViews(this.state.views),
-                    sidepanel:
-                        this.state.sidepanel &&
-                        this.prepareSidepanel(this.state.sidepanel),
-                    refDOMScene: this.refDOMScene,
-                    refDOMContainer: this.refDOMContainer,
-                    refDOMNavbar: this.refDOMNavbar
-                }}
-            />
-        );
     }
 }
 AirrSceneWrapper.propTypes = AirrScene.propTypes;

@@ -7,7 +7,6 @@ export default class Viewport extends SceneWrapper {
 
         this.state = {
             ...this.state,
-            initialState: true, //to override this state over props on initial getDerivedStateFromProps
             activeViewName: MainSceneViewName,
             name: "viewport",
             animation: "overlay",
@@ -32,6 +31,6 @@ export default class Viewport extends SceneWrapper {
     };
 
     handleViewportScenePush = sceneConfig => {
-        this.pushView(sceneConfig);
+        this.changeView(sceneConfig);
     };
 }

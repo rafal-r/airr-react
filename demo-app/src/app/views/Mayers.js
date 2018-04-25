@@ -1,14 +1,11 @@
-import React, { Component } from "react";
-import { View } from "./../../lib/Airr";
+import React from "react";
+import { View, ViewWrapper } from "./../../lib/Airr";
 
 export const viewName = "mayers";
 
-export default class Mayers extends Component {
-    constructor() {
-        super();
-        this.handleRadioChange = this.handleRadioChange.bind(this);
-        this.handleTextChange = this.handleTextChange.bind(this);
-        this.handleOpen = this.handleOpen.bind(this);
+export default class Mayers extends ViewWrapper {
+    constructor(props) {
+        super(props);
 
         this.state = {
             content: "This is the content of mayer",
@@ -17,17 +14,17 @@ export default class Mayers extends Component {
         };
     }
 
-    handleTextChange(e) {
+    handleTextChange = e => {
         this.setState({ content: e.target.value });
-    }
+    };
 
-    handleOpen(e) {
+    handleOpen = e => {
         this.props.handleMayerOpen(e, {
             appearFrom: this.state.appearFrom,
             leaveTo: this.state.leaveTo,
             content: this.state.content
         });
-    }
+    };
 
     viewAfterActivation() {
         console.log("Mayer viewAfterActivation");
@@ -69,11 +66,7 @@ export default class Mayers extends Component {
 
     render() {
         return (
-            <View
-                name={this.props.name}
-                active={this.props.active}
-                ref="airrView"
-            >
+            <View {...this.getViewProps()}>
                 <div className="wrap col mayers-view">
                     {this.props.description}
                     <div className="btn-ctn">

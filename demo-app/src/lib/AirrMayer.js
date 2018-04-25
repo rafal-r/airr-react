@@ -6,8 +6,8 @@ export default class AirrMayer extends Component {
     // <button class="btn text alert">YES</button>
     // <button class="btn text success">CANCEL</button>
 
-    mayerDOM;
-    ctnDOM;
+    refDOMMayer = React.createRef();
+    refDOMCtn = React.createRef();
 
     constructor(props) {
         super(props);
@@ -41,9 +41,9 @@ export default class AirrMayer extends Component {
     }
 
     componentDidMount() {
-        if (this.ctnDOM.clientHeight >= this.props.avaibleHeight) {
-            this.ctnDOM.style.height = this.props.avaibleHeight + "px";
-            this.mayerDOM.classList.add("full");
+        if (this.refDOMCtn.current.clientHeight >= this.props.avaibleHeight) {
+            this.refDOMCtn.current.style.height = this.props.avaibleHeight + "px";
+            this.refDOMMayer.current.classList.add("full");
         }
 
         this.animateIn();
@@ -52,15 +52,15 @@ export default class AirrMayer extends Component {
     animateIn() {
         //        (element, startProps, transitionProps, endProps, preAnimationCallback, endAfter, endCallback) {
         AirrFX.doTransitionAnimation(
-            this.mayerDOM.querySelector(".bg"),
+            this.refDOMMayer.current.querySelector(".bg"),
             { opacity: 0 },
             ["opacity " + this.props.animationTime + "ms ease-out"],
             { opacity: 1 }
         );
         AirrFX.doOverlayInAnimation(
-            this.ctnDOM,
-            this.mayerDOM.clientWidth,
-            this.mayerDOM.clientHeight,
+            this.refDOMCtn.current,
+            this.refDOMMayer.current.clientWidth,
+            this.refDOMMayer.current.clientHeight,
             this.props.animationTime,
             this.props.appearFrom
         );
@@ -68,15 +68,15 @@ export default class AirrMayer extends Component {
 
     animateOut(callback) {
         AirrFX.doTransitionAnimation(
-            this.mayerDOM.querySelector(".bg"),
+            this.refDOMMayer.current.querySelector(".bg"),
             { opacity: 1 },
             ["opacity " + this.props.animationTime + "ms ease-out"],
             { opacity: 0 }
         );
         AirrFX.doOverlayOutAnimation(
-            this.ctnDOM,
-            this.mayerDOM.clientHeight,
-            this.mayerDOM.clientWidth,
+            this.refDOMCtn.current,
+            this.refDOMMayer.current.clientHeight,
+            this.refDOMMayer.current.clientWidth,
             this.props.animationTime,
             this.props.leaveTo,
             callback
@@ -92,9 +92,9 @@ export default class AirrMayer extends Component {
         }
 
         return (
-            <div className="airr-mayer" ref={dom => (this.mayerDOM = dom)}>
+            <div className="airr-mayer" ref={this.refDOMMayer}>
                 <div className="bg" />
-                <div className="ctn" ref={dom => (this.ctnDOM = dom)}>
+                <div className="ctn" ref={this.refDOMCtn}>
                     <div className="text">
                         {this.props.children}
                         {this.props.content}
