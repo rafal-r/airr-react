@@ -62,7 +62,7 @@ If you are having custom react configuration feel free to investigate airr-react
 Airr library provides easy to implement app views life-cycles methods.
 When you are dealing with mobile app development you have to deal with many tasks before or after certain view is activated and animated into the screen.
 
-Like Reacts `componentDidMount` method, Airr provides self explanatory methods that can be used by Components that are or act like (use composition) of `AirrView` and `AirrScene` components. These methods are:
+Like Reacts `componentDidMount` method, Airr provides self explanatory methods that can be used by Components that extends `ViewWrapper` and `SceneWrapper` components. These methods are:
 
 *   `viewBeforeActivation`
 *   `viewAfterActivation`
