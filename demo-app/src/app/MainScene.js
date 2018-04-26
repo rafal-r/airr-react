@@ -135,7 +135,7 @@ export default class MainScene extends SceneWrapper {
         this.openMayer(config);
     };
 
-    handleSceneViewMenuClick = (viewConfig) => {
+    handleSceneViewMenuClick = viewConfig => {
         return this.changeView(viewConfig);
     };
 
@@ -240,7 +240,6 @@ export default class MainScene extends SceneWrapper {
             props: {
                 name: ScenesViewName,
                 title: "Scene",
-                handleInfoBtnClick: this.handleInfoBtnClick,
                 handleMenuClick: this.handleSceneViewMenuClick,
                 description: (
                     <div>
@@ -262,7 +261,6 @@ export default class MainScene extends SceneWrapper {
             type: TabsView,
             props: {
                 name: "tabs",
-                handleInfoBtnClick: this.handleInfoBtnClick,
                 handleViewportScenePush: this.props.handleViewportScenePush,
                 handleBackBehaviourOnFirstView: this.props
                     .handleBackBehaviourOnFirstView,
@@ -272,8 +270,8 @@ export default class MainScene extends SceneWrapper {
                         <p>
                             Tabs are just Scenes components that use custom
                             navigation element visible for user and specific
-                            Scene configuration like stackMode=false. This stops
-                            views from being destroyed after it's deactivation.
+                            Scene configuration like stackMode=false which
+                            signals little change in navbar elements animations.
                         </p>
                     </div>
                 )
