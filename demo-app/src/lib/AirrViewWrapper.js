@@ -10,6 +10,17 @@ export default class AirrViewWrapper extends Component {
         active: this.props.active,
         title: this.props.title
     });
+
+    /*
+    *render method to be overwritten in desendent class
+    */
+    content() {}
+
+    render() {
+        return (
+            <AirrView {...this.getViewProps()}>{() => this.content()}</AirrView>
+        );
+    }
 }
 
 AirrViewWrapper.propTypes = AirrView.propTypes;

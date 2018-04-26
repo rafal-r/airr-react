@@ -18,7 +18,9 @@ export default class AirrView extends Component {
 
         return (
             <div className={viewClass} style={style} ref={refDOM} {...rest}>
-                {this.props.children}
+                {typeof this.props.children === "function"
+                    ? this.props.children()
+                    : this.props.children}
             </div>
         );
     }
