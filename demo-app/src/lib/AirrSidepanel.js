@@ -1,9 +1,8 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import AirrComponent from "./AirrComponent";
 import { isMobileDevice, supportPassive } from "./eventHelpers";
 
-export default class AirrSidepanel extends AirrComponent {
+export default class AirrSidepanel extends Component {
     size;
     sceneSize;
     currentVal;
@@ -79,9 +78,17 @@ export default class AirrSidepanel extends AirrComponent {
         if (nextProps.dragCtnStyle !== this.state.dragCtnStyle) {
             this.setState({ dragCtnStyle: nextProps.dragCtnStyle });
         }
+        if (
+            nextProps.side !== this.state.side ||
+            nextProps.sizeFactor !== this.state.sizeFactor
+        ) {
+            this.updateSideProps(nextProps.side, nextProps.sizeFactor);
+        }
         if (nextProps.side !== this.state.side) {
-            this.updateSideProps(nextProps.side);
             this.setState({ side: nextProps.side });
+        }
+        if (nextProps.sizeFactor !== this.state.sizeFactor) {
+            this.setState({ sizeFactor: nextProps.sizeFactor });
         }
         if (nextProps.isShown !== this.state.isShown) {
             if (nextProps.animateShown) {
@@ -91,9 +98,6 @@ export default class AirrSidepanel extends AirrComponent {
             } else {
                 this.setState({ isShown: nextProps.isShown });
             }
-        }
-        if (nextProps.sizeFactor !== this.state.sizeFactor) {
-            this.setState({ sizeFactor: nextProps.sizeFactor });
         }
         if (nextProps.sceneWidth !== this.state.sceneWidth) {
             this.setState({ sceneWidth: nextProps.sceneWidth });
@@ -184,7 +188,7 @@ export default class AirrSidepanel extends AirrComponent {
                 false
             );
 
-            this.triggerCustom("showTouchStart");
+            // this.triggerCustom("showTouchStart");
 
             const showmoveend = () => {
                 this.sceneDOM.removeEventListener(this.endEvent, showmoveend); //remove self to act like once listener
@@ -192,7 +196,7 @@ export default class AirrSidepanel extends AirrComponent {
                     this.moveEvent,
                     this.handleShowTouchMove
                 );
-                this.triggerCustom("showTouchEnd");
+                // this.triggerCustom("showTouchEnd");
             };
 
             this.sceneDOM.addEventListener(this.endEvent, showmoveend, false);
@@ -209,7 +213,7 @@ export default class AirrSidepanel extends AirrComponent {
                 false
             );
 
-            this.triggerCustom("hideTouchStart");
+            // this.triggerCustom("hideTouchStart");
 
             const hidemoveend = () => {
                 this.sceneDOM.removeEventListener(this.endEvent, hidemoveend);
@@ -217,7 +221,7 @@ export default class AirrSidepanel extends AirrComponent {
                     this.moveEvent,
                     this.handleHideTouchMove
                 );
-                this.triggerCustom("hideTouchEnd");
+                // this.triggerCustom("hideTouchEnd");
             };
 
             this.sceneDOM.addEventListener(this.endEvent, hidemoveend, false);
@@ -490,9 +494,12 @@ export default class AirrSidepanel extends AirrComponent {
         }, 205);
     };
 
-    updateSideProps(side) {
+    updateSideProps(
+        side = this.state.side,
+        sizeFactor = this.state.sizeFactor
+    ) {
         if (side === "left" || side === "right") {
-            this.size = this.state.sceneWidth * this.state.sizeFactor;
+            this.size = this.state.sceneWidth * sizeFactor;
             this.sceneSize = this.state.sceneWidth;
             this.hiddenVal =
                 side === "left" ? -1 * this.size : this.state.sceneWidth;
@@ -500,7 +507,7 @@ export default class AirrSidepanel extends AirrComponent {
             this.axis = "X";
         } else {
             //top,bottom
-            this.size = this.state.sceneHeight * this.state.sizeFactor;
+            this.size = this.state.sceneHeight * sizeFactor;
             this.sceneSize = this.state.sceneHeight;
             this.hiddenVal =
                 side === "top" ? -1 * this.size : this.state.sceneHeight;
@@ -560,6 +567,11 @@ export default class AirrSidepanel extends AirrComponent {
             bgLayerStyle = { opacity: 0 };
         }
 
+        const children =
+            typeof this.props.children === "function"
+                ? this.props.children()
+                : this.props.children;
+
         return (
             <div
                 className={className}
@@ -571,7 +583,7 @@ export default class AirrSidepanel extends AirrComponent {
                     style={bgLayerStyle}
                 />
                 <div ref={dom => (this.dragCtnDOM = dom)} style={dragCtnStyle}>
-                    {this.props.children}
+                    {children}
                 </div>
             </div>
         );

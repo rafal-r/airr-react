@@ -14,10 +14,6 @@ var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _AirrComponent2 = require("./AirrComponent");
-
-var _AirrComponent3 = _interopRequireDefault(_AirrComponent2);
-
 var _eventHelpers = require("./eventHelpers");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -28,8 +24,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var AirrSidepanel = function (_AirrComponent) {
-    _inherits(AirrSidepanel, _AirrComponent);
+var AirrSidepanel = function (_Component) {
+    _inherits(AirrSidepanel, _Component);
 
     function AirrSidepanel(props) {
         _classCallCheck(this, AirrSidepanel);
@@ -87,12 +83,12 @@ var AirrSidepanel = function (_AirrComponent) {
                 _this.sceneDOM.addEventListener(_this.moveEvent, _this.handleShowTouchMove, _eventHelpers.supportPassive);
                 _this.sceneDOM.addEventListener(_this.endEvent, _this.handleTouchEnd, false);
 
-                _this.triggerCustom("showTouchStart");
+                // this.triggerCustom("showTouchStart");
 
                 var showmoveend = function showmoveend() {
                     _this.sceneDOM.removeEventListener(_this.endEvent, showmoveend); //remove self to act like once listener
                     _this.sceneDOM.removeEventListener(_this.moveEvent, _this.handleShowTouchMove);
-                    _this.triggerCustom("showTouchEnd");
+                    // this.triggerCustom("showTouchEnd");
                 };
 
                 _this.sceneDOM.addEventListener(_this.endEvent, showmoveend, false);
@@ -101,12 +97,12 @@ var AirrSidepanel = function (_AirrComponent) {
                 _this.sceneDOM.addEventListener(_this.moveEvent, _this.handleHideTouchMove, _eventHelpers.supportPassive);
                 _this.sceneDOM.addEventListener(_this.endEvent, _this.handleTouchEnd, false);
 
-                _this.triggerCustom("hideTouchStart");
+                // this.triggerCustom("hideTouchStart");
 
                 var hidemoveend = function hidemoveend() {
                     _this.sceneDOM.removeEventListener(_this.endEvent, hidemoveend);
                     _this.sceneDOM.removeEventListener(_this.moveEvent, _this.handleHideTouchMove);
-                    _this.triggerCustom("hideTouchEnd");
+                    // this.triggerCustom("hideTouchEnd");
                 };
 
                 _this.sceneDOM.addEventListener(_this.endEvent, hidemoveend, false);
@@ -380,9 +376,14 @@ var AirrSidepanel = function (_AirrComponent) {
             if (nextProps.dragCtnStyle !== this.state.dragCtnStyle) {
                 this.setState({ dragCtnStyle: nextProps.dragCtnStyle });
             }
+            if (nextProps.side !== this.state.side || nextProps.sizeFactor !== this.state.sizeFactor) {
+                this.updateSideProps(nextProps.side, nextProps.sizeFactor);
+            }
             if (nextProps.side !== this.state.side) {
-                this.updateSideProps(nextProps.side);
                 this.setState({ side: nextProps.side });
+            }
+            if (nextProps.sizeFactor !== this.state.sizeFactor) {
+                this.setState({ sizeFactor: nextProps.sizeFactor });
             }
             if (nextProps.isShown !== this.state.isShown) {
                 if (nextProps.animateShown) {
@@ -390,9 +391,6 @@ var AirrSidepanel = function (_AirrComponent) {
                 } else {
                     this.setState({ isShown: nextProps.isShown });
                 }
-            }
-            if (nextProps.sizeFactor !== this.state.sizeFactor) {
-                this.setState({ sizeFactor: nextProps.sizeFactor });
             }
             if (nextProps.sceneWidth !== this.state.sceneWidth) {
                 this.setState({ sceneWidth: nextProps.sceneWidth });
@@ -416,16 +414,19 @@ var AirrSidepanel = function (_AirrComponent) {
         }
     }, {
         key: "updateSideProps",
-        value: function updateSideProps(side) {
+        value: function updateSideProps() {
+            var side = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.state.side;
+            var sizeFactor = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.state.sizeFactor;
+
             if (side === "left" || side === "right") {
-                this.size = this.state.sceneWidth * this.state.sizeFactor;
+                this.size = this.state.sceneWidth * sizeFactor;
                 this.sceneSize = this.state.sceneWidth;
                 this.hiddenVal = side === "left" ? -1 * this.size : this.state.sceneWidth;
                 this.transformScheme = "translate3d(%vpx,0,0)";
                 this.axis = "X";
             } else {
                 //top,bottom
-                this.size = this.state.sceneHeight * this.state.sizeFactor;
+                this.size = this.state.sceneHeight * sizeFactor;
                 this.sceneSize = this.state.sceneHeight;
                 this.hiddenVal = side === "top" ? -1 * this.size : this.state.sceneHeight;
                 this.transformScheme = "translate3d(0,%vpx,0)";
@@ -475,6 +476,8 @@ var AirrSidepanel = function (_AirrComponent) {
                 bgLayerStyle = { opacity: 0 };
             }
 
+            var children = typeof this.props.children === "function" ? this.props.children() : this.props.children;
+
             return _react2.default.createElement(
                 "div",
                 {
@@ -495,14 +498,14 @@ var AirrSidepanel = function (_AirrComponent) {
                     { ref: function ref(dom) {
                             return _this2.dragCtnDOM = dom;
                         }, style: dragCtnStyle },
-                    this.props.children
+                    children
                 )
             );
         }
     }]);
 
     return AirrSidepanel;
-}(_AirrComponent3.default);
+}(_react.Component);
 
 exports.default = AirrSidepanel;
 

@@ -1,35 +1,36 @@
-import {CompositeScene} from './../lib/Airr';
-import MainScene from './MainScene';
+import { SceneWrapper } from "./../lib/Airr";
+import MainScene, { viewName as MainSceneViewName } from "./MainScene.js";
 
-export default class Viewport extends CompositeScene {
-    
+export default class Viewport extends SceneWrapper {
     constructor(props) {
         super(props);
 
-        this.handleViewportScenePush = this.handleViewportScenePush.bind(this);
-        this.handleBackBehaviourOnFirstView = this.handleBackBehaviourOnFirstView.bind(this);
-        
-        this.state.views = [
-            {
-                type: MainScene,
-                props: {
-                    name: 'main-scene',
-                    navbar: true,
-                    backButton: true,
-                    navbarMenu: 'toggleSidepanel',
-                    handleViewportScenePush: this.handleViewportScenePush,
-                    handleBackBehaviourOnFirstView: this.handleBackBehaviourOnFirstView,
-                    avaibleHeight: window.innerHeight
+        this.state = {
+            ...this.state,
+            activeViewName: MainSceneViewName,
+            name: "viewport",
+            animation: "overlay",
+            active: true,
+            views: [
+                {
+                    type: MainScene,
+                    props: {
+                        name: MainSceneViewName,
+                        handleViewportScenePush: this.handleViewportScenePush,
+                        handleBackBehaviourOnFirstView: this
+                            .handleBackBehaviourOnFirstView,
+                        avaibleHeight: window.innerHeight
+                    }
                 }
-            }
-        ];
+            ]
+        };
     }
-    
-    handleBackBehaviourOnFirstView() {
+
+    handleBackBehaviourOnFirstView = () => {
         this.popView();
-    }
-    
-    handleViewportScenePush(sceneConfig) {
-        this.pushView(sceneConfig);
-    }
+    };
+
+    handleViewportScenePush = sceneConfig => {
+        this.changeView(sceneConfig);
+    };
 }
