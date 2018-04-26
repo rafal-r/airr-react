@@ -2,7 +2,6 @@ import View from "./AirrView";
 import Scene from "./AirrScene";
 import Mayer from "./AirrMayer";
 import Sidepanel from "./AirrSidepanel";
-import CompositeScene from "./AirrCompositeScene";
 import SceneWrapper from "./AirrSceneWrapper";
 import ViewWrapper from "./AirrViewWrapper";
 import FX from "./AirrFX";
@@ -14,7 +13,6 @@ export {
     Scene,
     Mayer,
     Sidepanel,
-    CompositeScene,
     SceneWrapper,
     ViewWrapper,
     FX
