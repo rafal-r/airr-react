@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -8,21 +8,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
+var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _AirrFX = require('./AirrFX');
+var _AirrFX = require("./AirrFX");
 
 var _AirrFX2 = _interopRequireDefault(_AirrFX);
-
-var _AirrComponent2 = require('./AirrComponent');
-
-var _AirrComponent3 = _interopRequireDefault(_AirrComponent2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32,8 +28,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var AirrMayer = function (_AirrComponent) {
-    _inherits(AirrMayer, _AirrComponent);
+var AirrMayer = function (_Component) {
+    _inherits(AirrMayer, _Component);
 
     // <button class="btn text alert">YES</button>
     // <button class="btn text success">CANCEL</button>
@@ -43,14 +39,17 @@ var AirrMayer = function (_AirrComponent) {
 
         var _this = _possibleConstructorReturn(this, (AirrMayer.__proto__ || Object.getPrototypeOf(AirrMayer)).call(this, props));
 
+        _this.refDOMMayer = _react2.default.createRef();
+        _this.refDOMCtn = _react2.default.createRef();
+
         if (!props.name) {
-            throw new Error('Every Mayer must has its `name` property set');
+            throw new Error("Every Mayer must has its `name` property set");
         }
         return _this;
     }
 
     _createClass(AirrMayer, [{
-        key: 'renderButton',
+        key: "renderButton",
         value: function renderButton(config, index) {
             var className = "btn text";
             if (config.className) {
@@ -63,36 +62,41 @@ var AirrMayer = function (_AirrComponent) {
             }
 
             return _react2.default.createElement(
-                'button',
-                _extends({ key: 'btn' + index, className: className, style: config.style || null, onClick: config.handler || null }, spareAttribs),
+                "button",
+                _extends({
+                    key: "btn" + index,
+                    className: className,
+                    style: config.style || null,
+                    onClick: config.handler || null
+                }, spareAttribs),
                 config.content
             );
         }
     }, {
-        key: 'componentDidMount',
+        key: "componentDidMount",
         value: function componentDidMount() {
-            if (this.ctnDOM.clientHeight >= this.props.avaibleHeight) {
-                this.ctnDOM.style.height = this.props.avaibleHeight + 'px';
-                this.mayerDOM.classList.add('full');
+            if (this.refDOMCtn.current.clientHeight >= this.props.avaibleHeight) {
+                this.refDOMCtn.current.style.height = this.props.avaibleHeight + "px";
+                this.refDOMMayer.current.classList.add("full");
             }
 
             this.animateIn();
         }
     }, {
-        key: 'animateIn',
+        key: "animateIn",
         value: function animateIn() {
             //        (element, startProps, transitionProps, endProps, preAnimationCallback, endAfter, endCallback) {
-            _AirrFX2.default.doTransitionAnimation(this.mayerDOM.querySelector('.bg'), { opacity: 0 }, ['opacity ' + this.props.animationTime + 'ms ease-out'], { opacity: 1 });
-            _AirrFX2.default.doOverlayInAnimation(this.ctnDOM, this.mayerDOM.clientWidth, this.mayerDOM.clientHeight, this.props.animationTime, this.props.appearFrom);
+            _AirrFX2.default.doTransitionAnimation(this.refDOMMayer.current.querySelector(".bg"), { opacity: 0 }, ["opacity " + this.props.animationTime + "ms ease-out"], { opacity: 1 });
+            _AirrFX2.default.doOverlayInAnimation(this.refDOMCtn.current, this.refDOMMayer.current.clientWidth, this.refDOMMayer.current.clientHeight, this.props.animationTime, this.props.appearFrom);
         }
     }, {
-        key: 'animateOut',
+        key: "animateOut",
         value: function animateOut(callback) {
-            _AirrFX2.default.doTransitionAnimation(this.mayerDOM.querySelector('.bg'), { opacity: 1 }, ['opacity ' + this.props.animationTime + 'ms ease-out'], { opacity: 0 });
-            _AirrFX2.default.doOverlayOutAnimation(this.ctnDOM, this.mayerDOM.clientHeight, this.mayerDOM.clientWidth, this.props.animationTime, this.props.leaveTo, callback);
+            _AirrFX2.default.doTransitionAnimation(this.refDOMMayer.current.querySelector(".bg"), { opacity: 1 }, ["opacity " + this.props.animationTime + "ms ease-out"], { opacity: 0 });
+            _AirrFX2.default.doOverlayOutAnimation(this.refDOMCtn.current, this.refDOMMayer.current.clientHeight, this.refDOMMayer.current.clientWidth, this.props.animationTime, this.props.leaveTo, callback);
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
             var _this2 = this;
 
@@ -104,25 +108,21 @@ var AirrMayer = function (_AirrComponent) {
             }
 
             return _react2.default.createElement(
-                'div',
-                { className: 'airr-mayer', ref: function ref(dom) {
-                        return _this2.mayerDOM = dom;
-                    } },
-                _react2.default.createElement('div', { className: 'bg' }),
+                "div",
+                { className: "airr-mayer", ref: this.refDOMMayer },
+                _react2.default.createElement("div", { className: "bg" }),
                 _react2.default.createElement(
-                    'div',
-                    { className: 'ctn', ref: function ref(dom) {
-                            return _this2.ctnDOM = dom;
-                        } },
+                    "div",
+                    { className: "ctn", ref: this.refDOMCtn },
                     _react2.default.createElement(
-                        'div',
-                        { className: 'text' },
+                        "div",
+                        { className: "text" },
                         this.props.children,
                         this.props.content
                     ),
                     _react2.default.createElement(
-                        'div',
-                        { className: 'btns' },
+                        "div",
+                        { className: "btns" },
                         buttons
                     )
                 )
@@ -131,7 +131,7 @@ var AirrMayer = function (_AirrComponent) {
     }]);
 
     return AirrMayer;
-}(_AirrComponent3.default);
+}(_react.Component);
 
 exports.default = AirrMayer;
 
@@ -139,17 +139,17 @@ exports.default = AirrMayer;
 AirrMayer.propTypes = {
     name: _propTypes2.default.string.isRequired,
     avaibleHeight: _propTypes2.default.number.isRequired,
-    appearFrom: _propTypes2.default.oneOf(['top', 'bottom', 'left', 'right']),
-    leaveTo: _propTypes2.default.oneOf(['top', 'bottom', 'left', 'right']),
+    appearFrom: _propTypes2.default.oneOf(["top", "bottom", "left", "right"]),
+    leaveTo: _propTypes2.default.oneOf(["top", "bottom", "left", "right"]),
     content: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
     buttons: _propTypes2.default.arrayOf(_propTypes2.default.object),
     animationTime: _propTypes2.default.number
 };
 AirrMayer.defaultProps = {
-    name: '', //the name of the mayer. Must be unique among others views in scene. Will be used as identification string
+    name: "", //the name of the mayer. Must be unique among others views in scene. Will be used as identification string
     avaibleHeight: null, //parent scene height
-    appearFrom: 'bottom', //side from which mayer content box will enter
-    leaveTo: 'bottom', //side to which mayer content box will leave
+    appearFrom: "bottom", //side from which mayer content box will enter
+    leaveTo: "bottom", //side to which mayer content box will leave
     content: null, //content of mayer
     buttons: [], //array with buttons configuration
     animationTime: 300 //number time in miliseconds of mayer appear/disappear animation
