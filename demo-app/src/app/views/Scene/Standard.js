@@ -22,6 +22,30 @@ class Standard extends SceneWrapper {
         };
     }
 
+    viewAfterActivation() {
+        console.log("Scene viewAfterActivation");
+    }
+
+    viewAfterDeactivation() {
+        console.log("Scene viewAfterDeactivation");
+    }
+
+    viewBeforeActivation() {
+        console.log("Scene viewBeforeActivation");
+    }
+
+    viewBeforeDeactivation() {
+        console.log("Scene viewBeforeDeactivation");
+    }
+
+    componentDidMount() {
+        console.log("Scene component did mount");
+    }
+
+    componentWillUnmount() {
+        console.log("Scene component unmounted");
+    }
+
     handleAnimationChange(e) {
         const val = e.target.dataset.value;
         this.setState({ animation: val });

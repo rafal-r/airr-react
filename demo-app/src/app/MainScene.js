@@ -36,18 +36,7 @@ export default class MainScene extends SceneWrapper {
                     sizeFactor: sidepanelSizeFactor,
                     isShown: false,
                     animateShown: true,
-                    children: this.getSidepanelContent(WelcomeViewName),
-                    visibilityCallback: isShown => {
-                        this.setState({
-                            sidepanel: update(this.state.sidepanel, {
-                                props: {
-                                    isShown: {
-                                        $set: isShown
-                                    }
-                                }
-                            })
-                        });
-                    }
+                    children: this.getSidepanelContent(WelcomeViewName)
                 }
             }
         };

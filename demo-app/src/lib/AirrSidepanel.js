@@ -10,32 +10,27 @@ export default class AirrSidepanel extends Component {
     shownVal;
     transformScheme;
     axis;
+    lastSide;
+    lastSizeFactor;
 
-    dragCtnDOM;
-    bgLayerDOM;
-    sidepanelDOM;
+    refDOMDragCtn = React.createRef();
+    refDOMBgLayer = React.createRef();
+    refDOM = React.createRef();
     sceneDOM;
 
     lastTouch;
 
-    state = {
-        side: this.props.side,
-        isShown: this.props.isShown,
-        sizeFactor: this.props.sizeFactor,
-        sceneWidth: this.props.sceneWidth,
-        sceneHeight: this.props.sceneHeight
-    };
-
-    enabled = this.props.enabled;
+    // state = {
+    //     side: this.props.side,
+    //     isShown: this.props.isShown,
+    //     sizeFactor: this.props.sizeFactor,
+    //     sceneWidth: this.props.sceneWidth,
+    //     sceneHeight: this.props.sceneHeight
+    // };
 
     startEvent = isMobileDevice ? "touchstart" : "mousedown";
     moveEvent = isMobileDevice ? "touchmove" : "mousemove";
     endEvent = isMobileDevice ? "touchend" : "mouseup";
-
-    constructor(props) {
-        super(props);
-        this.updateSideProps(props.side);
-    }
 
     enable() {
         this.sceneDOM.removeEventListener(
@@ -47,7 +42,6 @@ export default class AirrSidepanel extends Component {
             this.handleTouchStart,
             supportPassive
         );
-        this.enabled = true;
     }
 
     disable() {
@@ -55,55 +49,13 @@ export default class AirrSidepanel extends Component {
             this.startEvent,
             this.handleTouchStart
         );
-        this.enabled = false;
     }
 
     componentDidMount() {
-        this.sceneDOM = this.sidepanelDOM.parentNode;
+        this.sceneDOM = this.refDOM.current.parentNode;
 
-        if (this.enabled) {
+        if (this.props.enabled) {
             this.enable();
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (!nextProps.enabled && this.enabled) {
-            this.disable();
-        }
-
-        if (nextProps.enabled && !this.enabled) {
-            this.enable();
-        }
-
-        if (nextProps.dragCtnStyle !== this.state.dragCtnStyle) {
-            this.setState({ dragCtnStyle: nextProps.dragCtnStyle });
-        }
-        if (
-            nextProps.side !== this.state.side ||
-            nextProps.sizeFactor !== this.state.sizeFactor
-        ) {
-            this.updateSideProps(nextProps.side, nextProps.sizeFactor);
-        }
-        if (nextProps.side !== this.state.side) {
-            this.setState({ side: nextProps.side });
-        }
-        if (nextProps.sizeFactor !== this.state.sizeFactor) {
-            this.setState({ sizeFactor: nextProps.sizeFactor });
-        }
-        if (nextProps.isShown !== this.state.isShown) {
-            if (nextProps.animateShown) {
-                this.translateTo(
-                    nextProps.isShown ? this.shownVal : this.hiddenVal
-                );
-            } else {
-                this.setState({ isShown: nextProps.isShown });
-            }
-        }
-        if (nextProps.sceneWidth !== this.state.sceneWidth) {
-            this.setState({ sceneWidth: nextProps.sceneWidth });
-        }
-        if (nextProps.sceneHeight !== this.state.sceneHeight) {
-            this.setState({ sceneHeight: nextProps.sceneHeight });
         }
     }
 
@@ -152,17 +104,18 @@ export default class AirrSidepanel extends Component {
 
         if (e.path) {
             for (let i = 0; i < e.path.length; i++) {
-                if (e.path[i] === this.dragCtnDOM) {
+                if (e.path[i] === this.refDOMDragCtn.current) {
                     dragCtnOnTouchPath = true;
                 }
             }
         } else {
             if (
-                e.target === this.dragCtnDOM ||
-                this.bubbleChildTillParent(e.target, this.dragCtnDOM, [
-                    this.dragCtnDOM.parentNode,
-                    document.body
-                ])
+                e.target === this.refDOMDragCtn.current ||
+                this.bubbleChildTillParent(
+                    e.target,
+                    this.refDOMDragCtn.current,
+                    [this.refDOMDragCtn.current.parentNode, document.body]
+                )
             ) {
                 dragCtnOnTouchPath = true;
             }
@@ -170,13 +123,13 @@ export default class AirrSidepanel extends Component {
 
         if (
             !dragCtnOnTouchPath &&
-            ((["left", "top"].indexOf(this.state.side) !== -1 && pos < 20) ||
-                (["right", "bottom"].indexOf(this.state.side) !== -1 &&
+            ((["left", "top"].indexOf(this.props.side) !== -1 && pos < 20) ||
+                (["right", "bottom"].indexOf(this.props.side) !== -1 &&
                     pos > this.hiddenVal - 20))
         ) {
             //corner touch, show moves
 
-            this.sidepanelDOM.style.display = "block";
+            this.refDOM.current.style.display = "block";
             this.sceneDOM.addEventListener(
                 this.moveEvent,
                 this.handleShowTouchMove,
@@ -227,12 +180,12 @@ export default class AirrSidepanel extends Component {
             this.sceneDOM.addEventListener(this.endEvent, hidemoveend, false);
         }
 
-        if (e.target === this.bgLayerDOM) {
+        if (e.target === this.refDOMBgLayer.current) {
             //tap to hide
             if (
-                (["left", "top"].indexOf(this.state.side) !== -1 &&
+                (["left", "top"].indexOf(this.props.side) !== -1 &&
                     this.currentVal === 0) ||
-                (["right", "bottom"].indexOf(this.state.side) !== -1 &&
+                (["right", "bottom"].indexOf(this.props.side) !== -1 &&
                     this.currentVal)
             ) {
                 const hidedragctn = e => {
@@ -260,7 +213,7 @@ export default class AirrSidepanel extends Component {
         const pos = this.getPosition(e, this.axis);
         let newVal, progress;
 
-        if (["left", "top"].indexOf(this.state.side) !== -1) {
+        if (["left", "top"].indexOf(this.props.side) !== -1) {
             if (pos <= -1 * this.hiddenVal) {
                 newVal = this.hiddenVal + pos;
             } else {
@@ -281,13 +234,14 @@ export default class AirrSidepanel extends Component {
             progress = parseFloat(progress);
             progress = progress > 1 ? 1 : progress < 0 ? 0 : progress;
 
-            this.bgLayerDOM.style.opacity = progress * 0.7;
+            this.refDOMBgLayer.current.style.opacity =
+                progress * this.props.bgLayerOpacity;
 
-            this.dragCtnDOM.style.webkitTransform = this.transformScheme.replace(
+            this.refDOMDragCtn.current.style.webkitTransform = this.transformScheme.replace(
                 "%v",
                 this.currentVal
             );
-            this.dragCtnDOM.style.transform = this.transformScheme.replace(
+            this.refDOMDragCtn.current.style.transform = this.transformScheme.replace(
                 "%v",
                 this.currentVal
             );
@@ -328,9 +282,9 @@ export default class AirrSidepanel extends Component {
 
         if (
             moveAxis === this.axis &&
-            ((["left", "top"].indexOf(this.state.side) !== -1 &&
+            ((["left", "top"].indexOf(this.props.side) !== -1 &&
                 this.getPosition(e, moveAxis) < this.size) ||
-                (["right", "bottom"].indexOf(this.state.side) !== -1 &&
+                (["right", "bottom"].indexOf(this.props.side) !== -1 &&
                     this.getPosition(e, moveAxis) > this.hiddenVal - this.size))
         ) {
             change =
@@ -338,7 +292,7 @@ export default class AirrSidepanel extends Component {
                 this.lastTouch["client" + this.axis];
             newVal = this.currentVal + change;
 
-            if (this.state.side === "left" || this.state.side === "top") {
+            if (this.props.side === "left" || this.props.side === "top") {
                 if (newVal < this.hiddenVal) {
                     newVal = this.hiddenVal;
                 } else if (newVal > this.shownVal) {
@@ -361,13 +315,14 @@ export default class AirrSidepanel extends Component {
                 progress = parseFloat(progress);
                 progress = progress > 1 ? 1 : progress < 0 ? 0 : progress;
 
-                this.bgLayerDOM.style.opacity = progress * 0.7;
+                this.refDOMBgLayer.current.style.opacity =
+                    progress * this.props.bgLayerOpacity;
 
-                this.dragCtnDOM.style.webkitTransform = this.transformScheme.replace(
+                this.refDOMDragCtn.current.style.webkitTransform = this.transformScheme.replace(
                     "%v",
                     this.currentVal
                 );
-                this.dragCtnDOM.style.transform = this.transformScheme.replace(
+                this.refDOMDragCtn.current.style.transform = this.transformScheme.replace(
                     "%v",
                     this.currentVal
                 );
@@ -388,7 +343,7 @@ export default class AirrSidepanel extends Component {
                 this.currentVal !== this.shownVal &&
                 this.currentVal !== this.hiddenVal
             ) {
-                if (["left", "top"].indexOf(this.state.side) !== -1) {
+                if (["left", "top"].indexOf(this.props.side) !== -1) {
                     if (this.currentVal >= this.hiddenVal / 2) {
                         val = this.shownVal;
                     } else {
@@ -402,16 +357,14 @@ export default class AirrSidepanel extends Component {
                     }
                 }
             } else if (this.currentVal === this.hiddenVal) {
-                this.sidepanelDOM.style.display = "none";
+                this.refDOM.current.style.display = "none";
             }
 
             if (val !== null) {
                 this.translateTo(val);
             } else {
-                if (this.state.isShown !== this.isShown()) {
-                    this.setState({ isShown: !this.state.isShown }, () =>
-                        this.props.visibilityCallback(this.state.isShown)
-                    );
+                if (this.props.isShown !== this.isShown()) {
+                    this.props.visibilityCallback(this.props.isShown);
                 }
             }
         }
@@ -428,89 +381,98 @@ export default class AirrSidepanel extends Component {
     };
 
     isShown = () => {
-        return this.sidepanelDOM.offsetParent !== null;
+        return this.refDOM.current.offsetParent !== null;
     };
 
-    translateTo = (finishVal, callback = () => {}) => {
-        this.animating = true;
+    translateTo = finishVal => {
+        return new Promise(resolve => {
+            this.animating = true;
 
-        this.bgLayerDOM.style.webkitTransition = "opacity .2s ease-in";
-        this.bgLayerDOM.style.transition = "opacity .2s ease-in";
-        // eslint-disable-next-line
-        this.bgLayerDOM.offsetHeight;
+            this.refDOMBgLayer.current.style.webkitTransition = `opacity ${
+                this.props.animationTime
+            }ms ease-in`;
+            this.refDOMBgLayer.current.style.transition = `opacity ${
+                this.props.animationTime
+            }ms ease-in`;
+            // eslint-disable-next-line
+            this.refDOMBgLayer.current.offsetHeight;
 
-        if (finishVal === this.shownVal) {
-            if (!this.isShown()) {
-                this.sidepanelDOM.style.display = "block";
+            if (finishVal === this.shownVal) {
+                if (!this.isShown()) {
+                    this.refDOM.current.style.display = "block";
+                }
+
+                this.refDOMBgLayer.current.style.opacity = this.props.bgLayerOpacity;
+            } else if (finishVal === this.hiddenVal) {
+                this.refDOMBgLayer.current.style.opacity = 0;
             }
+            // eslint-disable-next-line
+            this.refDOM.current.offsetHeight;
+            this.refDOM.current.style.webkitTransition = "initial";
+            this.refDOM.current.style.transition = "initial";
 
-            this.bgLayerDOM.style.opacity = 0.7;
-        } else if (finishVal === this.hiddenVal) {
-            this.bgLayerDOM.style.opacity = 0;
-        }
-        // eslint-disable-next-line
-        this.sidepanelDOM.offsetHeight;
-        this.sidepanelDOM.style.webkitTransition = "initial";
-        this.sidepanelDOM.style.transition = "initial";
+            this.refDOMDragCtn.current.style.webkitTransition = `-webkit-transform ${
+                this.props.animationTime
+            }ms ease-out`;
+            this.refDOMDragCtn.current.style.webkitTransition = `transform ${
+                this.props.animationTime
+            }ms ease-out`;
+            this.refDOMDragCtn.current.style.transition = `transform ${
+                this.props.animationTime
+            }ms ease-out`;
 
-        this.dragCtnDOM.style.webkitTransition =
-            "-webkit-transform 0.2s ease-out";
-        this.dragCtnDOM.style.webkitTransition = "transform 0.2s ease-out";
-        this.dragCtnDOM.style.transition = "transform 0.2s ease-out";
+            // eslint-disable-next-line
+            this.refDOMDragCtn.current.offsetHeight;
+            this.refDOMDragCtn.current.style.webkitTransform = this.transformScheme.replace(
+                "%v",
+                finishVal
+            );
+            this.refDOMDragCtn.current.style.transform = this.transformScheme.replace(
+                "%v",
+                finishVal
+            );
 
-        // eslint-disable-next-line
-        this.dragCtnDOM.offsetHeight;
-        this.dragCtnDOM.style.webkitTransform = this.transformScheme.replace(
-            "%v",
-            finishVal
-        );
-        this.dragCtnDOM.style.transform = this.transformScheme.replace(
-            "%v",
-            finishVal
-        );
+            // eslint-disable-next-line
+            this.refDOMDragCtn.current.offsetHeight;
 
-        // eslint-disable-next-line
-        this.dragCtnDOM.offsetHeight;
+            this.refDOMDragCtn.current.style.webkitTransition = "initial";
+            this.refDOMDragCtn.current.style.transition = "initial";
 
-        this.dragCtnDOM.style.webkitTransition = "initial";
-        this.dragCtnDOM.style.transition = "initial";
+            setTimeout(() => {
+                this.refDOMBgLayer.current.style.webkitTransition = "initial";
+                this.refDOMBgLayer.current.style.transition = "initial";
 
-        setTimeout(() => {
-            this.bgLayerDOM.style.webkitTransition = "initial";
-            this.bgLayerDOM.style.transition = "initial";
+                this.currentVal = finishVal;
 
-            this.currentVal = finishVal;
-            if (finishVal === this.hiddenVal) {
-                this.sidepanelDOM.style.display = "none";
-            }
+                if (finishVal === this.hiddenVal) {
+                    this.refDOM.current.style.display = "none";
+                }
 
-            this.animating = false;
+                this.animating = false;
 
-            if (this.state.isShown !== this.isShown()) {
-                this.setState({ isShown: !this.state.isShown }, () =>
-                    this.props.visibilityCallback(this.state.isShown)
-                );
-            }
-        }, 205);
+                if (this.props.isShown !== this.isShown()) {
+                    this.props.visibilityCallback(this.isShown());
+                }
+
+                resolve(this.isShown());
+            }, this.props.animationTime + 5);
+        });
     };
 
-    updateSideProps(
-        side = this.state.side,
-        sizeFactor = this.state.sizeFactor
-    ) {
+    updateSideProps(side, sizeFactor) {
         if (side === "left" || side === "right") {
-            this.size = this.state.sceneWidth * sizeFactor;
-            this.sceneSize = this.state.sceneWidth;
+            this.size = this.props.sceneWidth * sizeFactor;
+            this.sceneSize = this.props.sceneWidth;
             this.hiddenVal =
-                side === "left" ? -1 * this.size : this.state.sceneWidth;
+                side === "left" ? -1 * this.size : this.props.sceneWidth;
             this.transformScheme = "translate3d(%vpx,0,0)";
             this.axis = "X";
         } else {
             //top,bottom
-            this.size = this.state.sceneHeight * sizeFactor;
-            this.sceneSize = this.state.sceneHeight;
+            this.size = this.props.sceneHeight * sizeFactor;
+            this.sceneSize = this.props.sceneHeight;
             this.hiddenVal =
-                side === "top" ? -1 * this.size : this.state.sceneHeight;
+                side === "top" ? -1 * this.size : this.props.sceneHeight;
             this.transformScheme = "translate3d(0,%vpx,0)";
             this.axis = "Y";
         }
@@ -521,20 +483,37 @@ export default class AirrSidepanel extends Component {
             this.shownVal = this.sceneSize - this.size;
         }
 
-        if (this.state.isShown) {
+        if (this.props.isShown) {
             this.currentVal = this.shownVal;
         } else {
             this.currentVal = this.hiddenVal;
         }
+
+        this.lastSide = side;
+        this.lastSizeFactor = sizeFactor;
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.enabled !== this.props.enabled) {
+            return this[this.props.enabled ? "enable" : "disable"]();
+        }
     }
 
     render() {
-        const className = "airr-sidepanel " + this.state.side;
+        const className =
+            "airr-sidepanel " + this.props.side + " " + (this.props.enabled ? "enabled" : "disabled");            
         const dragCtnStyle = {};
         let sidepanelStyle;
         let bgLayerStyle;
 
-        if (this.state.side === "left" || this.state.side === "right") {
+        if (
+            this.props.side !== this.lastSide ||
+            this.props.sizeFactor !== this.lastSizeFactor
+        ) {
+            this.updateSideProps(this.props.side, this.props.sizeFactor);
+        }
+
+        if (this.props.side === "left" || this.props.side === "right") {
             dragCtnStyle.width = this.size + "px";
             dragCtnStyle.height = "100%";
         } else {
@@ -543,7 +522,7 @@ export default class AirrSidepanel extends Component {
             dragCtnStyle.width = "100%";
         }
 
-        if (this.state.isShown) {
+        if (this.props.isShown) {
             dragCtnStyle.WebkitTransform = this.transformScheme.replace(
                 "%v",
                 this.shownVal
@@ -553,7 +532,7 @@ export default class AirrSidepanel extends Component {
                 this.shownVal
             );
             sidepanelStyle = { display: "block" };
-            bgLayerStyle = { opacity: 0.7 };
+            bgLayerStyle = { opacity: this.props.bgLayerOpacity };
         } else {
             dragCtnStyle.WebkitTransform = this.transformScheme.replace(
                 "%v",
@@ -573,16 +552,9 @@ export default class AirrSidepanel extends Component {
                 : this.props.children;
 
         return (
-            <div
-                className={className}
-                ref={dom => (this.sidepanelDOM = dom)}
-                style={sidepanelStyle}
-            >
-                <div
-                    ref={dom => (this.bgLayerDOM = dom)}
-                    style={bgLayerStyle}
-                />
-                <div ref={dom => (this.dragCtnDOM = dom)} style={dragCtnStyle}>
+            <div className={className} ref={this.refDOM} style={sidepanelStyle}>
+                <div ref={this.refDOMBgLayer} style={bgLayerStyle} />
+                <div ref={this.refDOMDragCtn} style={dragCtnStyle}>
                     {children}
                 </div>
             </div>
@@ -597,7 +569,9 @@ AirrSidepanel.propTypes = {
     sceneWidth: PropTypes.number.isRequired,
     sceneHeight: PropTypes.number.isRequired,
     animateShown: PropTypes.bool,
-    visibilityCallback: PropTypes.func
+    visibilityCallback: PropTypes.func,
+    animationTime: PropTypes.number,
+    bgLayerOpacity: PropTypes.number
 };
 AirrSidepanel.defaultProps = {
     side: "left", //side to which sidepanel will be attached
@@ -606,6 +580,8 @@ AirrSidepanel.defaultProps = {
     sizeFactor: 2 / 3, //number between 0 and 1 determining how much size of whole screen sidepanel will take
     sceneWidth: null, //number parent side width dimension
     sceneHeight: null, //number parent side height dimension
-    animateShown: false, //do you want to animate sidepanel showing in/out
-    visibilityCallback: function(isShown) {} //callback called when sidepanel changes its visibility with isShown argument
+    animateShown: true, //do you want to animate sidepanel showing in/out
+    visibilityCallback: function(isShown) {}, //callback called when sidepanel changes its visibility during touch events
+    animationTime: 200, //animation time in miliseconds
+    bgLayerOpacity: 0.7 //opacity between 0 and 1
 };

@@ -242,12 +242,15 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     };
 
     disableSidepanel = () => {
-        if (this.state.sidepanel.props.enabled) {
+        if (this.state.sidepanel && this.refCOMPSidepanel.current) {
+            this.refCOMPSidepanel.current.disable();
             return new Promise(resolve =>
                 this.setState(
                     {
                         sidepanel: update(this.state.sidepanel, {
-                            props: { enabled: { $set: false } }
+                            props: {
+                                enabled: { $set: false }
+                            }
                         })
                     },
                     resolve
@@ -255,38 +258,43 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             );
         }
 
-        return Promise.resolve();
+        return Promise.reject();
     };
 
     enableSidepanel = () => {
-        return new Promise(resolve =>
-            this.setState(
-                {
-                    sidepanel: update(this.state.sidepanel, {
-                        props: {
-                            enabled: { $set: true }
-                        }
-                    })
-                },
-                resolve
-            )
-        );
+        if (this.state.sidepanel && this.refCOMPSidepanel.current) {
+            this.refCOMPSidepanel.current.enable();
+            return new Promise(resolve =>
+                this.setState(
+                    {
+                        sidepanel: update(this.state.sidepanel, {
+                            props: {
+                                enabled: { $set: true }
+                            }
+                        })
+                    },
+                    resolve
+                )
+            );
+        }
+
+        return Promise.reject();
     };
 
     openSidepanel = () => {
-        return new Promise(resolve =>
-            this.setState(
-                {
-                    sidepanel: update(this.state.sidepanel, {
-                        props: {
-                            isShown: { $set: true },
-                            animateShown: { $set: true }
-                        }
-                    })
-                },
-                resolve
-            )
-        );
+        if (this.state.sidepanel && this.refCOMPSidepanel.current) {
+            return this.refCOMPSidepanel.current.show();
+        }
+
+        return Promise.reject();
+    };
+
+    hideSidepanel = () => {
+        if (this.state.sidepanel && this.refCOMPSidepanel.current) {
+            return this.refCOMPSidepanel.current.hide();
+        }
+
+        return Promise.reject();
     };
 
     /**
@@ -478,9 +486,22 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
 
     __prepareSidepanel(sidepanel) {
         sidepanel.props.ref = this.refCOMPSidepanel;
+        sidepanel.props.visibilityCallback = isShown => {
+            this.setState({
+                sidepanel: update(this.state.sidepanel, {
+                    props: {
+                        isShown: {
+                            $set: isShown
+                        }
+                    }
+                })
+            });
+        };
+
         if (typeof sidepanel.props.enabled === "undefined") {
             sidepanel.props.enabled = true; //force explicit value, e.g needed when checking if panel is enabled in `openMayer` method
         }
+
         return Object.assign({}, sidepanel);
     }
 
@@ -530,11 +551,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      */
     __performViewsAnimation(newViewName) {
         if (typeof newViewName === "string") {
-            /**
-             * viewChangeInProgress
-             * set here before any next setState call which might be executed after some batched state changes
-             * (that will repeat activeViewName and viewChangeInProgress will not be set in componentWillReceiveProps)
-             */
+
             this.viewChangeInProgress = true;
             return new Promise((resolve, reject) => {
                 this.setState(

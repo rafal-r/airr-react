@@ -42,10 +42,6 @@ export default class Mayers extends ViewWrapper {
         console.log("Mayer viewBeforeDeactivation");
     }
 
-    componentWillMount() {
-        console.log("Mayers component will mount");
-    }
-
     componentDidMount() {
         console.log("Mayers component did mount");
     }
