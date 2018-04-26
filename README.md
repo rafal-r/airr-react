@@ -91,4 +91,4 @@ When building your production code using `npm run build` with `react-scripts` re
 ## License
 
 Licensed under the MIT License.
-Copyright (c) 2017 Rafal Rajtar
+Copyright (c) 2018 Rafal Rajtar
