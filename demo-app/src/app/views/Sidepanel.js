@@ -1,12 +1,11 @@
 import React from "react";
-import { View, ViewWrapper } from "./../../lib/Airr";
+import { ViewWrapper } from "./../../lib/Airr";
 
 export const viewName = "sidepanel";
 
 export default class Sidepanel extends ViewWrapper {
-    render() {
+    content() {
         return (
-            <View {...this.getViewProps()}>
                 <div className="wrap col sidepanel-view">
                     {this.props.description}
                     <p className="info">
@@ -139,7 +138,6 @@ export default class Sidepanel extends ViewWrapper {
                         </div>
                     </div>
                 </div>
-            </View>
         );
     }
 }

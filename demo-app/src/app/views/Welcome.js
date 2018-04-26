@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewWrapper } from "./../../lib/Airr";
+import { ViewWrapper } from "./../../lib/Airr";
 import Menu from "../ui/Menu";
 import "./css/Welcome.css";
 
@@ -25,22 +25,20 @@ export default class Welcome extends ViewWrapper {
         }
     ];
 
-    render() {
+    content() {
         return (
-            <View {...this.getViewProps()}>
-                <div className="wrap">
-                    <div className="col">
-                        Welcome to airr-react demo.<br />
-                        Here you can test all main features of this small but
-                        functional library.
-                    </div>
-                    <Menu
-                        items={this.menuOptions}
-                        handleClick={e => this.props.menuHandler(e)}
-                        title="Components:"
-                    />
+            <div className="wrap">
+                <div className="col">
+                    Welcome to airr-react demo.<br />
+                    Here you can test all main features of this small but
+                    functional library.
                 </div>
-            </View>
+                <Menu
+                    items={this.menuOptions}
+                    handleClick={e => this.props.menuHandler(e)}
+                    title="Components:"
+                />
+            </div>
         );
     }
 }
