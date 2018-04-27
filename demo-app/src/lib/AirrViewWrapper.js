@@ -8,7 +8,9 @@ export default class AirrViewWrapper extends Component {
         refDOM: this.refDOM,
         name: this.props.name,
         active: this.props.active,
-        title: this.props.title
+        title: this.props.title,
+        className: this.props.className,
+        style: this.props.style
     });
 
     /*
