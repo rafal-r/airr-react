@@ -42,10 +42,10 @@ var AirrView = function (_Component) {
                 name = _props.name,
                 title = _props.title,
                 active = _props.active,
-                style = _props.style,
-                className = _props.className,
                 refDOM = _props.refDOM,
-                rest = _objectWithoutProperties(_props, ["name", "title", "active", "style", "className", "refDOM"]);
+                className = _props.className,
+                style = _props.style,
+                rest = _objectWithoutProperties(_props, ["name", "title", "active", "refDOM", "className", "style"]);
 
             var viewClass = "airr-view" + (className ? " " + className : "");
 
@@ -69,11 +69,15 @@ AirrView.propTypes = {
     name: _propTypes2.default.string.isRequired,
     title: _propTypes2.default.string,
     active: _propTypes2.default.bool,
-    refDOM: _propTypes2.default.object
+    refDOM: _propTypes2.default.object,
+    className: _propTypes2.default.string,
+    style: _propTypes2.default.object
 };
 AirrView.defaultProps = {
     name: "", //the name of the view. Must be unique among others views in scene. Will be used as identification string
     title: "", //titlebar name. if parent scene navbar is enabled, this title will be showed there
     active: false,
-    refDOM: null
+    refDOM: null,
+    className: "", //extra classes to use
+    style: {}
 };

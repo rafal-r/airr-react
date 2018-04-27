@@ -41,7 +41,9 @@ var AirrViewWrapper = function (_Component) {
                 refDOM: _this.refDOM,
                 name: _this.props.name,
                 active: _this.props.active,
-                title: _this.props.title
+                title: _this.props.title,
+                className: _this.props.className,
+                style: _this.props.style
             };
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
