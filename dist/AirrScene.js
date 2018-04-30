@@ -126,7 +126,7 @@ var AirrScene = function (_Component) {
             });
 
             if (!isAnyViewActive) {
-                console.warn("[Airr] No view was set as active" + (this.props.name && " in Scene named `" + this.props.name) + "`.");
+                console.warn("[Airr] No view was set as active" + (this.props.name && " in Scene named `" + this.props.name) + ".");
             }
 
             var sidepanel = null;

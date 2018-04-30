@@ -228,7 +228,7 @@ export default class AirrScene extends Component {
             console.warn(
                 "[Airr] No view was set as active" +
                     (this.props.name && " in Scene named `" + this.props.name) +
-                    "`."
+                    "."
             );
         }
 

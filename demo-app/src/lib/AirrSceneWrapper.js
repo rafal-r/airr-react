@@ -551,7 +551,6 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      */
     __performViewsAnimation(newViewName) {
         if (typeof newViewName === "string") {
-
             this.viewChangeInProgress = true;
             return new Promise((resolve, reject) => {
                 this.setState(
@@ -561,6 +560,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             console.warn("[Airr] This View is already active.");
                             this.viewChangeInProgress = false;
                             this.setState({ GUIDisabled: false });
+                            resolve();
                             return;
                         }
 
@@ -649,6 +649,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                     newViewName +
                                     " is not presence in this Scene."
                             );
+                            reject();
                         }
                     }
                 );
@@ -714,8 +715,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             opacity: 0
                         },
                         [
-                            `opacity ${this.props.animationTime}ms ease-out`,
-                            `transform ${this.props.animationTime}ms ease-out`
+                            `opacity ${this.state.animationTime}ms ease-out`,
+                            `transform ${this.state.animationTime}ms ease-out`
                         ],
                         {
                             webkitTransform: `translate3d(0,0,0)`,
@@ -723,7 +724,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             opacity: 1
                         },
                         null,
-                        this.props.animationTime
+                        this.state.animationTime
                     );
                 }
 
@@ -736,8 +737,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             opacity: 1
                         },
                         [
-                            `opacity ${this.props.animationTime}ms ease-out`,
-                            `transform ${this.props.animationTime}ms ease-out`
+                            `opacity ${this.state.animationTime}ms ease-out`,
+                            `transform ${this.state.animationTime}ms ease-out`
                         ],
                         {
                             webkitTransform: `translate3d(${mockTextSpanWidth *
@@ -751,7 +752,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             opacity: 0
                         },
                         null,
-                        this.props.animationTime
+                        this.state.animationTime
                     );
                 }
 
@@ -770,10 +771,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             },
                             [
                                 `opacity ${
-                                    this.props.animationTime
+                                    this.state.animationTime
                                 }ms ease-out`,
                                 `transform ${
-                                    this.props.animationTime
+                                    this.state.animationTime
                                 }ms ease-out`
                             ],
                             {
@@ -782,7 +783,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                 opacity: 1
                             },
                             () => backDOM.classList.remove("hidden"),
-                            this.props.animationTime
+                            this.state.animationTime
                         );
                     } else if (newViewIndex === 0) {
                         AirrFX.doTransitionAnimation(
@@ -794,10 +795,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             },
                             [
                                 `opacity ${
-                                    this.props.animationTime
+                                    this.state.animationTime
                                 }ms ease-out`,
                                 `transform ${
-                                    this.props.animationTime
+                                    this.state.animationTime
                                 }ms ease-out`
                             ],
                             {
@@ -806,7 +807,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                 opacity: 0
                             },
                             null,
-                            this.props.animationTime
+                            this.state.animationTime
                         );
                     }
                 }
@@ -842,10 +843,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 AirrFX.doTransitionAnimation(
                     this.refDOMContainer.current,
                     startProps,
-                    [`transform ${this.props.animationTime}ms ease-out`],
+                    [`transform ${this.state.animationTime}ms ease-out`],
                     endProps,
                     null,
-                    this.props.animationTime,
+                    this.state.animationTime,
                     () => {
                         newViewDOM.style.display = "";
                         this.refDOMContainer.current.style.webkitTransform =
@@ -876,8 +877,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             opacity: 0
                         },
                         [
-                            `opacity ${this.props.animationTime}ms ease-out`,
-                            `transform ${this.props.animationTime}ms ease-out`
+                            `opacity ${this.state.animationTime}ms ease-out`,
+                            `transform ${this.state.animationTime}ms ease-out`
                         ],
                         {
                             webkitTransform: `translate3d(0,0,0)`,
@@ -885,7 +886,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             opacity: 1
                         },
                         () => (newViewDOM.style.zIndex = 102),
-                        this.props.animationTime,
+                        this.state.animationTime,
                         () => {
                             newViewDOM.style.zIndex = "";
                             resolve();
@@ -903,10 +904,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             },
                             [
                                 `opacity ${
-                                    this.props.animationTime
+                                    this.state.animationTime
                                 }ms ease-out`,
                                 `transform ${
-                                    this.props.animationTime
+                                    this.state.animationTime
                                 }ms ease-out`
                             ],
                             {
@@ -921,7 +922,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                 opacity: 0
                             },
                             null,
-                            this.props.animationTime,
+                            this.state.animationTime,
                             resolve
                         );
                     } else {
@@ -938,10 +939,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             },
                             [
                                 `opacity ${
-                                    this.props.animationTime
+                                    this.state.animationTime
                                 }ms ease-out`,
                                 `transform ${
-                                    this.props.animationTime
+                                    this.state.animationTime
                                 }ms ease-out`
                             ],
                             {
@@ -950,7 +951,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                 opacity: 1
                             },
                             () => (newViewDOM.style.zIndex = 102),
-                            this.props.animationTime,
+                            this.state.animationTime,
                             () => {
                                 newViewDOM.style.zIndex = "";
                                 resolve();
@@ -964,12 +965,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                     {
                         opacity: 0
                     },
-                    [`opacity ${this.props.animationTime}ms ease-out`],
+                    [`opacity ${this.state.animationTime}ms ease-out`],
                     {
                         opacity: 1
                     },
                     () => (newViewDOM.style.zIndex = 102),
-                    this.props.animationTime,
+                    this.state.animationTime,
                     () => {
                         newViewDOM.style.zIndex = "";
                         resolve();
