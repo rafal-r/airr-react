@@ -350,7 +350,7 @@ export default class AirrScene extends Component {
 
         const children =
             typeof this.props.children === "function"
-                ? this.props.children()
+                ? this.props.children(this.props)
                 : this.props.children;
 
         return (

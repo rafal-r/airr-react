@@ -244,7 +244,7 @@ var AirrScene = function (_Component) {
                 );
             }
 
-            var children = typeof this.props.children === "function" ? this.props.children() : this.props.children;
+            var children = typeof this.props.children === "function" ? this.props.children(this.props) : this.props.children;
 
             return _react2.default.createElement(
                 "div",
