@@ -105,7 +105,7 @@ export default class Standard extends SceneWrapper {
         this.state = {
             ...this.state,
             activeViewName,
-            animation: "slide",
+            animation: "overlay",
             stackMode: false,
             backButtonOnFirstView: true,
             backButton: true,

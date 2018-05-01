@@ -187,7 +187,6 @@ textarea:focus, input:focus {
 }
 .airr-container.fade-animation > .airr-view,
 .airr-container.overlay-animation > .airr-view {
-    display: block;
     position: absolute;
     top: 0;
     left: 0;

@@ -48,12 +48,14 @@ var AirrScene = function (_Component) {
                 backBtn.classList.remove("clicked");
             }, 300);
 
-            if (_this.props.stackMode && _this.props.views.length > 1) {
-                if (_this.props.handleBackButton) {
-                    _this.props.handleBackButton(e);
-                }
-            } else if (_this.props.handleBackBehaviourOnFirstView) {
-                _this.props.handleBackBehaviourOnFirstView();
+            if (_this.getViewIndex(_this.props.activeViewName) === 0 && _this.props.handleBackBehaviourOnFirstView) {
+                return _this.props.handleBackBehaviourOnFirstView();
+            }
+
+            if (_this.props.handleBackButton) {
+                _this.props.handleBackButton(e);
+            } else {
+                console.warn("[Airr] Back button handler was not specified.");
             }
         }, _this.handleMenuButtonToggleSidepanel = function (e) {
             if (_this.props.refCOMPSidepanel && _this.props.refCOMPSidepanel.current) {
@@ -286,7 +288,7 @@ AirrScene.defaultProps = {
     handleBackButton: null, //parent function to handle back button tap
     handleBackBehaviourOnFirstView: null, //null or function e.g. if this scene is view in some parent scene, and you want to pop out of it - this function will come from parent scene and will handle this behaviour
     viewsAnimationEndCallback: null, //called after views animation ends
-    stackMode: true, //bool - if false Scene views will be assumed as tabs rather then stack order views. (view change vs. view pop/push)
+    stackMode: true, //bool - if false Scene views will be assumed as tabs rather then stack order views. This propety changes animation behaviour of views (overlay anim) and backbutton.
     active: false, //bool is currently active in parent scene
     sidepanel: null, //{type: AirrSidepanel, props: {}}
     views: [], //array,

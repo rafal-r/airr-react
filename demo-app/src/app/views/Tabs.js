@@ -18,8 +18,8 @@ export default class Tabs extends ViewWrapper {
                     props: {
                         name: "Standard",
                         title: "Tabs",
-                        handleBackBehaviourOnFirstView:
-                            props.handleBackBehaviourOnFirstView
+                        handleBackButton:
+                            props.handleViewportViewPop
                     }
                 }
             }

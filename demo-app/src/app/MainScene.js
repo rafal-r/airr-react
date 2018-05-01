@@ -251,8 +251,8 @@ export default class MainScene extends SceneWrapper {
             props: {
                 name: "tabs",
                 handleViewportScenePush: this.props.handleViewportScenePush,
-                handleBackBehaviourOnFirstView: this.props
-                    .handleBackBehaviourOnFirstView,
+                handleViewportViewPop: this.props
+                    .handleViewportViewPop,
                 title: "Tabs",
                 description: (
                     <div>

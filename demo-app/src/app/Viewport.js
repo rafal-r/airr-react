@@ -17,8 +17,8 @@ export default class Viewport extends SceneWrapper {
                     props: {
                         name: MainSceneViewName,
                         handleViewportScenePush: this.handleViewportScenePush,
-                        handleBackBehaviourOnFirstView: this
-                            .handleBackBehaviourOnFirstView,
+                        handleViewportViewPop: this
+                            .handleViewportViewPop,
                         avaibleHeight: window.innerHeight
                     }
                 }
@@ -26,7 +26,7 @@ export default class Viewport extends SceneWrapper {
         };
     }
 
-    handleBackBehaviourOnFirstView = () => {
+    handleViewportViewPop = () => {
         this.popView();
     };
 

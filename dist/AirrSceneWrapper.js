@@ -706,10 +706,11 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                         }, null, _this11.state.animationTime);
                     }
 
-                    if (_this11.state.backButton && _this11.state.stackMode) {
+                    if (_this11.state.backButton && !_this11.state.backButtonOnFirstView) {
                         var backDOM = _this11.refDOMNavbar.current.querySelector(".back");
 
                         if (oldViewIndex === 0) {
+                            //show back button with animation
                             _AirrFX2.default.doTransitionAnimation(backDOM, {
                                 webkitTransform: "translate3d(100%,0,0)",
                                 transform: "translate3d(100%,0,0)",
@@ -722,6 +723,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                                 return backDOM.classList.remove("hidden");
                             }, _this11.state.animationTime);
                         } else if (newViewIndex === 0) {
+                            //hide backbutton with animation
                             _AirrFX2.default.doTransitionAnimation(backDOM, {
                                 webkitTransform: "translate3d(0,0,0)",
                                 transform: "translate3d(0,0,0)",
@@ -767,7 +769,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                         _AirrFX2.default.doTransitionAnimation(newViewDOM, {
                             webkitTransform: "translate3d(" + (_this11.refDOMContainer.current.clientWidth + "px") + ",0,0)",
                             transform: "translate3d(" + (_this11.refDOMContainer.current.clientWidth + "px") + ",0,0)",
-                            opacity: 0
+                            opacity: 0,
+                            display: "block"
                         }, ["opacity " + _this11.state.animationTime + "ms ease-out", "transform " + _this11.state.animationTime + "ms ease-out"], {
                             webkitTransform: "translate3d(0,0,0)",
                             transform: "translate3d(0,0,0)",
@@ -776,11 +779,16 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                             return newViewDOM.style.zIndex = 102;
                         }, _this11.state.animationTime, function () {
                             newViewDOM.style.zIndex = "";
+                            newViewDOM.style.display = "";
                             resolve();
                         });
                     } else {
                         if (_this11.state.stackMode) {
-                            _AirrFX2.default.doTransitionAnimation(_this11.refsCOMPViews[oldViewName].current.refDOM.current, {
+                            var oldViewDOM = _this11.refsCOMPViews[oldViewName].current.refDOM.current;
+                            newViewDOM.style.display = "block";
+                            newViewDOM.style.opacity = 1;
+
+                            _AirrFX2.default.doTransitionAnimation(oldViewDOM, {
                                 webkitTransform: "translate3d(0,0,0)",
                                 transform: "translate3d(0,0,0)",
                                 opacity: 1
@@ -788,8 +796,17 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                                 webkitTransform: "translate3d(0," + (_this11.refDOMContainer.current.clientHeight / 4 + "px") + ",0)",
                                 transform: "translate3d(0," + (_this11.refDOMContainer.current.clientHeight / 4 + "px") + ",0)",
                                 opacity: 0
-                            }, null, _this11.state.animationTime, resolve);
+                            }, null, _this11.state.animationTime, function () {
+                                oldViewDOM.style.webkitTransform = "";
+                                oldViewDOM.style.transform = "";
+                                newViewDOM.style.display = "";
+                                newViewDOM.style.opacity = "";
+
+                                resolve();
+                            });
                         } else {
+                            newViewDOM.style.display = "block";
+
                             _AirrFX2.default.doTransitionAnimation(newViewDOM, {
                                 webkitTransform: "translate3d(" + (-1 * _this11.refDOMContainer.current.clientWidth + "px") + ",0,0)",
                                 transform: "translate3d(" + (-1 * _this11.refDOMContainer.current.clientWidth + "px") + ",0,0)",
@@ -801,6 +818,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                             }, function () {
                                 return newViewDOM.style.zIndex = 102;
                             }, _this11.state.animationTime, function () {
+                                newViewDOM.style.display = "";
                                 newViewDOM.style.zIndex = "";
                                 resolve();
                             });

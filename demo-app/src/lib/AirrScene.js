@@ -20,7 +20,6 @@ export default class AirrScene extends Component {
         handleBackButton: null, //parent function to handle back button tap
         handleBackBehaviourOnFirstView: null, //null or function e.g. if this scene is view in some parent scene, and you want to pop out of it - this function will come from parent scene and will handle this behaviour
         viewsAnimationEndCallback: null, //called after views animation ends
-        stackMode: true, //bool - if false Scene views will be assumed as tabs rather then stack order views. (view change vs. view pop/push)
         active: false, //bool is currently active in parent scene
         sidepanel: null, //{type: AirrSidepanel, props: {}}
         views: [], //array,
@@ -73,7 +72,6 @@ export default class AirrScene extends Component {
         handleBackButton: PropTypes.func,
         handleBackBehaviourOnFirstView: PropTypes.func,
         viewsAnimationEndCallback: PropTypes.func,
-        stackMode: PropTypes.bool,
         active: PropTypes.bool,
         /**
          * Sidepanels object must contain two properties.
@@ -176,12 +174,15 @@ export default class AirrScene extends Component {
             backBtn.classList.remove("clicked");
         }, 300);
 
-        if (this.props.stackMode && this.props.views.length > 1) {
-            if (this.props.handleBackButton) {
-                this.props.handleBackButton(e);
-            }
-        } else if (this.props.handleBackBehaviourOnFirstView) {
-            this.props.handleBackBehaviourOnFirstView();
+        if (this.getViewIndex(this.props.activeViewName) === 0 && this.props.handleBackBehaviourOnFirstView) {
+            return this.props.handleBackBehaviourOnFirstView();
+        }
+        
+        if (this.props.handleBackButton) {
+            this.props.handleBackButton(e);
+        }
+        else {
+            console.warn("[Airr] Back button handler was not specified.")
         }
     };
 

@@ -37,8 +37,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             handleBackBehaviourOnFirstView:
                 props.handleBackBehaviourOnFirstView,
             viewsAnimationEndCallback: props.viewsAnimationEndCallback,
-            stackMode: props.stackMode,
-            handleBackButton: props.handleBackButton
+            handleBackButton: props.handleBackButton,
+            stackMode: props.stackMode //bool - This propety changes animation behaviour of views animation when overlay animation
         };
     }
 
@@ -756,12 +756,16 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                     );
                 }
 
-                if (this.state.backButton && this.state.stackMode) {
+                if (
+                    this.state.backButton &&
+                    !this.state.backButtonOnFirstView
+                ) {
                     const backDOM = this.refDOMNavbar.current.querySelector(
                         ".back"
                     );
 
                     if (oldViewIndex === 0) {
+                        //show back button with animation
                         AirrFX.doTransitionAnimation(
                             backDOM,
                             {
@@ -786,6 +790,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             this.state.animationTime
                         );
                     } else if (newViewIndex === 0) {
+                        //hide backbutton with animation
                         AirrFX.doTransitionAnimation(
                             backDOM,
                             {
@@ -874,7 +879,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                 .current.clientWidth + "px"},0,0)`,
                             transform: `translate3d(${this.refDOMContainer
                                 .current.clientWidth + "px"},0,0)`,
-                            opacity: 0
+                            opacity: 0,
+                            display: "block"
                         },
                         [
                             `opacity ${this.state.animationTime}ms ease-out`,
@@ -889,14 +895,19 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                         this.state.animationTime,
                         () => {
                             newViewDOM.style.zIndex = "";
+                            newViewDOM.style.display = "";
                             resolve();
                         }
                     );
                 } else {
                     if (this.state.stackMode) {
+                        const oldViewDOM = this.refsCOMPViews[oldViewName]
+                            .current.refDOM.current;
+                        newViewDOM.style.display = "block";
+                        newViewDOM.style.opacity = 1;
+
                         AirrFX.doTransitionAnimation(
-                            this.refsCOMPViews[oldViewName].current.refDOM
-                                .current,
+                            oldViewDOM,
                             {
                                 webkitTransform: `translate3d(0,0,0)`,
                                 transform: `translate3d(0,0,0)`,
@@ -923,9 +934,18 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             },
                             null,
                             this.state.animationTime,
-                            resolve
+                            () => {
+                                oldViewDOM.style.webkitTransform = "";
+                                oldViewDOM.style.transform = "";
+                                newViewDOM.style.display = "";
+                                newViewDOM.style.opacity = "";
+
+                                resolve();
+                            }
                         );
                     } else {
+                        newViewDOM.style.display = "block";
+
                         AirrFX.doTransitionAnimation(
                             newViewDOM,
                             {
@@ -953,6 +973,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             () => (newViewDOM.style.zIndex = 102),
                             this.state.animationTime,
                             () => {
+                                newViewDOM.style.display = "";
                                 newViewDOM.style.zIndex = "";
                                 resolve();
                             }
