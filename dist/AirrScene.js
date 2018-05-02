@@ -288,7 +288,6 @@ AirrScene.defaultProps = {
     handleBackButton: null, //parent function to handle back button tap
     handleBackBehaviourOnFirstView: null, //null or function e.g. if this scene is view in some parent scene, and you want to pop out of it - this function will come from parent scene and will handle this behaviour
     viewsAnimationEndCallback: null, //called after views animation ends
-    stackMode: true, //bool - if false Scene views will be assumed as tabs rather then stack order views. This propety changes animation behaviour of views (overlay anim) and backbutton.
     active: false, //bool is currently active in parent scene
     sidepanel: null, //{type: AirrSidepanel, props: {}}
     views: [], //array,
@@ -326,7 +325,6 @@ AirrScene.propTypes = {
     handleBackButton: _propTypes2.default.func,
     handleBackBehaviourOnFirstView: _propTypes2.default.func,
     viewsAnimationEndCallback: _propTypes2.default.func,
-    stackMode: _propTypes2.default.bool,
     active: _propTypes2.default.bool,
     /**
      * Sidepanels object must contain two properties.
