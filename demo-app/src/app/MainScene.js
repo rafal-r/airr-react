@@ -155,7 +155,7 @@ export default class MainScene extends SceneWrapper {
                     props: { children: { $set: sidepanelContent } }
                 });
 
-                return this.popView({
+                return this.popView(null, {
                     sidepanel: sidepaneldefinition
                 });
             }

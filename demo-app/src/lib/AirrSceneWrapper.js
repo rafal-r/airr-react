@@ -134,12 +134,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         );
     }
 
-    popView = (sceneProps = {}) => {
+    popView = (viewProps = {}, sceneProps = {}) => {
         if (this.state.views.length > 1) {
             const viewName = this.state.views[this.state.views.length - 2].props
                 .name;
 
-            return this.changeView(viewName, {}, sceneProps).then(() => {
+            return this.changeView(viewName, viewProps, sceneProps).then(() => {
                 const newviewdefinition = update(this.state.views, {
                     $splice: [[this.state.views.length - 1, 1]]
                 });
@@ -230,12 +230,9 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             ? true
             : false;
 
-    handleBackButton = () => {
+    handleBackButton = (viewProps, sceneProps) => {
         if (this.state.views.length > 1) {
-            const viewName = this.state.views[this.state.views.length - 2].props
-                .name;
-
-            return this.changeView(viewName);
+            return this.popView(viewProps, sceneProps);
         }
 
         return Promise.reject();

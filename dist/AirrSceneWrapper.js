@@ -95,12 +95,13 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
         };
 
         _this.popView = function () {
-            var sceneProps = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+            var viewProps = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+            var sceneProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
             if (_this.state.views.length > 1) {
                 var viewName = _this.state.views[_this.state.views.length - 2].props.name;
 
-                return _this.changeView(viewName, {}, sceneProps).then(function () {
+                return _this.changeView(viewName, viewProps, sceneProps).then(function () {
                     var newviewdefinition = (0, _immutabilityHelper2.default)(_this.state.views, {
                         $splice: [[_this.state.views.length - 1, 1]]
                     });
@@ -126,11 +127,9 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             }) !== -1 ? true : false;
         };
 
-        _this.handleBackButton = function () {
+        _this.handleBackButton = function (viewProps, sceneProps) {
             if (_this.state.views.length > 1) {
-                var viewName = _this.state.views[_this.state.views.length - 2].props.name;
-
-                return _this.changeView(viewName);
+                return _this.popView(viewProps, sceneProps);
             }
 
             return Promise.reject();
@@ -255,8 +254,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             animationTime: props.animationTime,
             handleBackBehaviourOnFirstView: props.handleBackBehaviourOnFirstView,
             viewsAnimationEndCallback: props.viewsAnimationEndCallback,
-            stackMode: props.stackMode,
-            handleBackButton: props.handleBackButton
+            handleBackButton: props.handleBackButton,
+            stackMode: props.stackMode //bool - This propety changes animation behaviour of views animation when overlay animation
         };
         return _this;
     }
