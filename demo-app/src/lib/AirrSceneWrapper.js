@@ -809,7 +809,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                 opacity: 0
                             },
                             null,
-                            this.state.animationTime
+                            this.state.animationTime,
+                            () => {
+                                backDOM.style.webkitTransform = "";
+                                backDOM.style.transform = "";
+                                backDOM.style.opacity = "";
+                            }                            
                         );
                     }
                 }

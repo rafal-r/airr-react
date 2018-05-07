@@ -24,7 +24,8 @@ export default class AirrScene extends Component {
         sidepanel: null, //{type: AirrSidepanel, props: {}}
         views: [], //array,
         mayers: [], //mayers conf list
-        title: "" //titlebar name
+        title: "", //titlebar name
+        className: "" //extra classes to use
     };
 
     static propTypes = {
@@ -137,7 +138,8 @@ export default class AirrScene extends Component {
          * ]
          */
         mayers: PropTypes.arrayOf(PropTypes.object),
-        title: PropTypes.string
+        title: PropTypes.string,
+        className: PropTypes.string
     };
 
     mayersCompsRefs = {};
@@ -174,15 +176,17 @@ export default class AirrScene extends Component {
             backBtn.classList.remove("clicked");
         }, 300);
 
-        if (this.getViewIndex(this.props.activeViewName) === 0 && this.props.handleBackBehaviourOnFirstView) {
+        if (
+            this.getViewIndex(this.props.activeViewName) === 0 &&
+            this.props.handleBackBehaviourOnFirstView
+        ) {
             return this.props.handleBackBehaviourOnFirstView();
         }
-        
+
         if (this.props.handleBackButton) {
             this.props.handleBackButton(e);
-        }
-        else {
-            console.warn("[Airr] Back button handler was not specified.")
+        } else {
+            console.warn("[Airr] Back button handler was not specified.");
         }
     };
 
@@ -211,6 +215,7 @@ export default class AirrScene extends Component {
 
         let className = "airr-view airr-scene";
         this.props.active && (className += " active");
+        this.props.className && (className += " " + this.props.className);
 
         let views = [];
         let isAnyViewActive = false;

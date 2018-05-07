@@ -113,6 +113,7 @@ var AirrScene = function (_Component) {
 
             var className = "airr-view airr-scene";
             this.props.active && (className += " active");
+            this.props.className && (className += " " + this.props.className);
 
             var views = [];
             var isAnyViewActive = false;
@@ -292,7 +293,8 @@ AirrScene.defaultProps = {
     sidepanel: null, //{type: AirrSidepanel, props: {}}
     views: [], //array,
     mayers: [], //mayers conf list
-    title: "" //titlebar name
+    title: "", //titlebar name
+    className: "" //extra classes to use
 };
 AirrScene.propTypes = {
     name: _propTypes2.default.string.isRequired,
@@ -390,6 +392,7 @@ AirrScene.propTypes = {
      * ]
      */
     mayers: _propTypes2.default.arrayOf(_propTypes2.default.object),
-    title: _propTypes2.default.string
+    title: _propTypes2.default.string,
+    className: _propTypes2.default.string
 };
 exports.default = AirrScene;

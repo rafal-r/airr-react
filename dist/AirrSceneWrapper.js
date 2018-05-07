@@ -731,7 +731,11 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                                 webkitTransform: "translate3d(-100%,0,0)",
                                 transform: "translate3d(-100%,0,0)",
                                 opacity: 0
-                            }, null, _this11.state.animationTime);
+                            }, null, _this11.state.animationTime, function () {
+                                backDOM.style.webkitTransform = "";
+                                backDOM.style.transform = "";
+                                backDOM.style.opacity = "";
+                            });
                         }
                     }
                 }
