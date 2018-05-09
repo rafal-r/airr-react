@@ -172,6 +172,32 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         });
     }
 
+    /**
+     * Removes view from views array
+     *
+     * @param {string} name
+     */
+    destroyView(name) {
+        return new Promise((resolve, reject) => {
+            const index = this.state.views.findIndex(
+                view => view.props.name === name
+            );
+
+            if (index !== -1) {
+                this.setState(
+                    {
+                        views: update(this.state.views, {
+                            $splice: [[index, 1]]
+                        })
+                    },
+                    resolve
+                );
+            } else {
+                reject(`View with name: ${name} was not found in this scene.`);
+            }
+        });
+    }
+
     __changeView(view, viewProps = {}, sceneProps = {}) {
         if (typeof view === "string") {
             if (this.hasViewInState(view)) {
@@ -230,6 +256,9 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             ? true
             : false;
 
+    /**
+     * Ready utility function to handle poping views on back button click
+     */
     handleBackButton = (viewProps, sceneProps) => {
         if (this.state.views.length > 1) {
             return this.popView(viewProps, sceneProps);
@@ -814,7 +843,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                 backDOM.style.webkitTransform = "";
                                 backDOM.style.transform = "";
                                 backDOM.style.opacity = "";
-                            }                            
+                            }
                         );
                     }
                 }
@@ -898,6 +927,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                         () => {
                             newViewDOM.style.zIndex = "";
                             newViewDOM.style.display = "";
+                            newViewDOM.style.transform = "";
+                            newViewDOM.style.webkitTransform = "";
+                            newViewDOM.style.transition = "";
+                            newViewDOM.style.webkitTransition = "";
+                            newViewDOM.style.opacity = "";
+
                             resolve();
                         }
                     );
@@ -937,8 +972,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             null,
                             this.state.animationTime,
                             () => {
-                                oldViewDOM.style.webkitTransform = "";
+                                oldViewDOM.style.transition = "";
+                                oldViewDOM.style.webkitTransition = "";
                                 oldViewDOM.style.transform = "";
+                                oldViewDOM.style.webkitTransform = "";
+                                oldViewDOM.style.opacity = "";
+
                                 newViewDOM.style.display = "";
                                 newViewDOM.style.opacity = "";
 
@@ -977,6 +1016,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             () => {
                                 newViewDOM.style.display = "";
                                 newViewDOM.style.zIndex = "";
+                                newViewDOM.style.transform = "";
+                                newViewDOM.style.webkitTransform = "";
+                                newViewDOM.style.transition = "";
+                                newViewDOM.style.webkitTransition = "";
+                                newViewDOM.style.opacity = "";
+
                                 resolve();
                             }
                         );
