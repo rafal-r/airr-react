@@ -14,7 +14,7 @@ export default class AirrViewWrapper extends Component {
     });
 
     /*
-    *render method to be overwritten in desendent class
+    *render method to be overwritten in descendant class
     */
     content() {}
 
