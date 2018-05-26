@@ -1,0 +1,60 @@
+#root {
+    height: 100%;
+}
+/* #root > div {
+    height: 100%;
+} */
+.infinite-viewport-nav {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    color: #000;
+    z-index: 109;
+    display: flex;
+    justify-content: space-between;
+}
+.infinite-viewport-nav .views-links {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+.infinite-viewport-nav .views-links span {
+    border: 2px solid #000;
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 5px;
+}
+.infinite-viewport-nav button.add-new {
+    background-color: #000;
+    color: #fff;
+    padding: 15px;
+}
+.airr-navbar > div {
+    border-bottom: 1px solid #000;
+}
+.grey-bg {
+    background-color: #ddd;
+}
+.yellow-bg {
+    background-color: yellow;
+}
+.gui-mask-cover {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.airr-navbar .back div {
+    background: url(../img/back.svg) no-repeat center center;
+    background-size: 50% auto;
+}
+.airr-navbar .menu {
+    width: auto;
+    padding: 4px;
+}
+.airr-navbar .menu div {
+    background: url(../img/menu.svg) no-repeat center center;
+    background-size: 50% auto;
+}
