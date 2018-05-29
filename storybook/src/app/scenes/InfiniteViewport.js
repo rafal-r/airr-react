@@ -1,5 +1,5 @@
 import React from "react";
-import { SceneWrapper } from "../../../airr-react/Airr";
+import { SceneWrapper, Scene } from "../../../airr-react/Airr";
 import HelloWorld, {
     viewName as HelloWorldViewName
 } from "../views/HelloWorld";
@@ -66,6 +66,7 @@ export default class InfiniteViewport extends SceneWrapper {
         );
     };
 
+    
     viewsConfig = {
         [HelloWorldViewName]: {
             type: HelloWorld,

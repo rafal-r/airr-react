@@ -257,7 +257,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             : false;
 
     /**
-     * Ready utility function to handle poping views on back button click
+     * Utility function to handle poping views on back button click
      */
     handleBackButton = (viewProps, sceneProps) => {
         if (this.state.views.length > 1) {
@@ -578,18 +578,17 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     __performViewsAnimation(newViewName) {
         if (typeof newViewName === "string") {
             this.viewChangeInProgress = true;
+
             return new Promise((resolve, reject) => {
+                if (newViewName === this.state.activeViewName) {
+                    console.warn("[Airr] This View is already active.");
+                    this.viewChangeInProgress = false;
+                    return resolve();
+                }
+
                 this.setState(
                     { GUIDisabled: true, mockTitle: newViewName },
                     () => {
-                        if (newViewName === this.state.activeViewName) {
-                            console.warn("[Airr] This View is already active.");
-                            this.viewChangeInProgress = false;
-                            this.setState({ GUIDisabled: false });
-                            resolve();
-                            return;
-                        }
-
                         if (this.getViewIndex(newViewName) !== -1) {
                             const oldViewName = this.state.activeViewName;
                             const newViewComp =

@@ -1,9 +1,8 @@
-#root {
+#root,
+#root > div,
+#root > div > div {
     height: 100%;
 }
-/* #root > div {
-    height: 100%;
-} */
 .infinite-viewport-nav {
     position: absolute;
     bottom: 0;

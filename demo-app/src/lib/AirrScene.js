@@ -1,147 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import AirrMayer from "./AirrMayer";
+import AirrView from "./AirrView";
 
 export default class AirrScene extends Component {
-    static defaultProps = {
-        name: "", //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
-
-        activeViewName: null, //string
-        GUIDisabled: false, //bool
-        GUIDisableCover: null, //react element
-        animation: "slide", //slide,overlay,fade or false if no animation
-        animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
-        navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
-        navbarHeight: 48, //navbar height in px
-        navbarMenu: null, //string `toggleSidepanel` or array of React elements
-        navbarClass: "", //string
-        backButton: false, //bool
-        backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
-        handleBackButton: null, //parent function to handle back button tap
-        handleBackBehaviourOnFirstView: null, //null or function e.g. if this scene is view in some parent scene, and you want to pop out of it - this function will come from parent scene and will handle this behaviour
-        viewsAnimationEndCallback: null, //called after views animation ends
-        active: false, //bool is currently active in parent scene
-        sidepanel: null, //{type: AirrSidepanel, props: {}}
-        views: [], //array,
-        mayers: [], //mayers conf list
-        title: "", //titlebar name
-        className: "" //extra classes to use
-    };
-
-    static propTypes = {
-        name: PropTypes.string.isRequired,
-
-        activeViewName: PropTypes.string,
-        GUIDisabled: PropTypes.bool,
-        GUIDisableCover: PropTypes.object,
-        animation: PropTypes.oneOf(["slide", "overlay", "fade", false]),
-        animationTime: PropTypes.number,
-        navbar: PropTypes.oneOf([-1, 0, false, 1, true]),
-        navbarHeight: PropTypes.number,
-        navbarMenu: function(props, propName, componentName) {
-            if (props[propName]) {
-                if (typeof props[propName] === "string") {
-                    if (!/toggleSidepanel/.test(props[propName])) {
-                        return new Error(
-                            "Invalid prop `" +
-                                propName +
-                                "` supplied to" +
-                                " `" +
-                                componentName +
-                                "`. Value must be `toggleSidepanel` string or array of React elements."
-                        );
-                    } else {
-                        return null;
-                    }
-                }
-
-                if (!Array.isArray(props[propName])) {
-                    return new Error(
-                        "Invalid prop `" +
-                            propName +
-                            "` supplied to" +
-                            " `" +
-                            componentName +
-                            "`. Value must be `toggleSidepanel` string or array of React elements."
-                    );
-                }
-            }
-        },
-        navbarClass: PropTypes.string,
-        backButton: PropTypes.bool,
-        backButtonOnFirstView: PropTypes.bool,
-        handleBackButton: PropTypes.func,
-        handleBackBehaviourOnFirstView: PropTypes.func,
-        viewsAnimationEndCallback: PropTypes.func,
-        active: PropTypes.bool,
-        /**
-         * Sidepanels object must contain two properties.
-         * 1. Type - being refference to class of which item will be instantiated
-         * 2. Props - special properties of AirrSidepanel class. Go to class declaration for further properties documenation
-         *
-         * Example:
-         * {
-         *    type: AirrSidepanel,
-         *    props: {
-         *        children: <div>sidepanel html content</div>,
-         *        sceneWidth: window.innerWidth,
-         *        sceneHeight: window.innerHeight,
-         *        side: 'left',
-         *        sizeFactor: 0.66
-         *    }
-         * }
-         **/
-        sidepanel: PropTypes.object,
-
-        /**
-         * Objects of `views` array MUST contains two properties.
-         * 1. Type - being reffrence to class of which item will be instantiated.
-         * 2. Props - object that acts like components properties.
-         *    For special AirrView class properties go to its declaration to check out.
-         *
-         * Example:
-         * this.props.views = [
-         *      {
-         *          type: AirrView,
-         *          props: {
-         *              name: 'Foobar',
-         *              title: 'Foo is in the house',
-         *              children: <div>This is Dave. Dave is div.</div>
-         *              extraParam: bazHandler
-         *          }
-         *      }
-         * ]
-         */
-        views: PropTypes.arrayOf(PropTypes.object),
-
-        /**
-         * Objects of `mayers` array MUST contain special Mayer class properties.
-         * For checkout of possible properties go to Mayer declaration.
-         *
-         * Example:
-         * this.props.mayers. = [
-         *   {
-         *       name: 'demo-mayer',
-         *       content: <div>Hello cruel world!</div>,
-         *       appearFrom: 'left',
-         *       leaveTo: 'right',
-         *       avaibleHeight: this.props.height, //read from scenes properties
-         *       buttons: [
-         *           {
-         *               content: 'Ok',
-         *               handler: (e) => {
-         *                   this.setState({mayers: []});
-         *               }
-         *           }
-         *       ]
-         *   }
-         * ]
-         */
-        mayers: PropTypes.arrayOf(PropTypes.object),
-        title: PropTypes.string,
-        className: PropTypes.string
-    };
-
     mayersCompsRefs = {};
 
     /**
@@ -376,3 +238,185 @@ export default class AirrScene extends Component {
         );
     }
 }
+
+AirrScene.defaultProps = {
+    name: "",
+
+    activeViewName: null,
+    GUIDisabled: false,
+    GUIDisableCover: null,
+    animation: "slide",
+    animationTime: 300,
+    navbar: false,
+    navbarHeight: 48,
+    navbarMenu: null,
+    navbarClass: "",
+    backButton: false,
+    backButtonOnFirstView: false,
+    handleBackButton: null,
+    handleBackBehaviourOnFirstView: null,
+    viewsAnimationEndCallback: null,
+    active: false,
+    sidepanel: null,
+    views: [],
+    mayers: [],
+    title: "",
+    className: ""
+};
+
+AirrScene.propTypes = {
+    /**
+     * Rhe name of the scene. Must be unique among others views in parent scene. Will be used as identification string
+     */
+    name: PropTypes.string.isRequired,
+    /**
+     * Name of the active view.
+     */
+    activeViewName: PropTypes.string,
+    /**
+     * Boolean telling if GUI should be disabled meaning no user actions, events are allowed.
+     * GUI is disabled via absolute positioned, not visible div that has the biggest z-Index
+     */
+    GUIDisabled: PropTypes.bool,
+    /**
+     * React element to be placed in GUI disabling div
+     */
+    GUIDisableCover: PropTypes.object,
+    /**
+     * Type of animation to perform when switching views
+     */
+    animation: PropTypes.oneOf(["slide", "overlay", "fade", false]),
+    /**
+     * Time of views changing animatio
+     */
+    animationTime: PropTypes.number,
+    /**
+     * Specify if navbar is present (1,true) or not (0,false). Or maybe hidden (-1)
+     */
+    navbar: PropTypes.oneOf([-1, 0, false, 1, true]),
+    /**
+     * Height of the navbar in pixels
+     */
+    navbarHeight: PropTypes.number,
+    /**
+     * Navbar menu is placed on the right most side. Might contain "toggleSidepanel" button or any custom buttons list.
+     */
+    navbarMenu: function(props, propName, componentName) {
+        if (props[propName]) {
+            if (typeof props[propName] === "string") {
+                if (!/toggleSidepanel/.test(props[propName])) {
+                    return new Error(
+                        "Invalid prop `" +
+                            propName +
+                            "` supplied to" +
+                            " `" +
+                            componentName +
+                            "`. Value must be `toggleSidepanel` string or array of React elements."
+                    );
+                } else {
+                    return null;
+                }
+            }
+
+            if (!Array.isArray(props[propName])) {
+                return new Error(
+                    "Invalid prop `" +
+                        propName +
+                        "` supplied to" +
+                        " `" +
+                        componentName +
+                        "`. Value must be `toggleSidepanel` string or array of React elements."
+                );
+            }
+        }
+    },
+    /**
+     * Extra, space separated, navbar's class names list
+     */
+    navbarClass: PropTypes.string,
+    /**
+     * Boolean specifing if navbar renders BackButton. Placed by default on the left side of navbar.
+     */
+    backButton: PropTypes.bool,
+    /**
+     * Do you need to still show backButton even if scene is rendering first view from stack?
+     */
+    backButtonOnFirstView: PropTypes.bool,
+    /**
+     * Function that will handle back button click events
+     */
+    handleBackButton: PropTypes.func,
+    /**
+     * Function that will handle back button clicks events on when first view in stack is active
+     */
+    handleBackBehaviourOnFirstView: PropTypes.func,
+    /**
+     * Callback that will be invoked when views animation finishes
+     */
+    viewsAnimationEndCallback: PropTypes.func,
+    /**
+     * Is this view active in parent scene
+     */
+    active: PropTypes.bool,
+    /**
+     * Sidepanels object must contain two properties.
+     * 1. Type - being refference to class of which item will be instantiated
+     * 2. Props - special properties of AirrSidepanel class. Go to class declaration for further properties documenation
+     *
+     * Example:
+     * {
+     *    type: AirrSidepanel,
+     *    props: {
+     *        children: <div>sidepanel html content</div>,
+     *        sceneWidth: window.innerWidth,
+     *        sceneHeight: window.innerHeight,
+     *        side: 'left',
+     *        sizeFactor: 0.66
+     *    }
+     * }
+     **/
+    sidepanel: PropTypes.object,
+    /**
+     * Objects of `views` array MUST contains two properties.
+     * 1. Type - being reffrence to class of which item will be instantiated.
+     * 2. Props - object that acts like components properties.
+     *    For special AirrView class properties go to its declaration to check out.
+     *
+     * Example:
+     * this.props.views = [
+     *      {
+     *          type: AirrView,
+     *          props: {
+     *              name: 'Foobar',
+     *              title: 'Foo is in the house',
+     *              children: <div>This is Dave. Dave is div.</div>
+     *              extraParam: bazHandler
+     *          }
+     *      }
+     * ]
+     */
+    views: PropTypes.arrayOf(
+        PropTypes.shape({
+            type: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+                .isRequired,
+            props: PropTypes.shape(AirrView.propTypes)
+        })
+    ),
+    // views: PropTypes.array,
+
+    /**
+     * Array of `mayers` objects. Must contain special Mayer class properties.
+     * To check the possible values of properties go to Mayer declaration.
+     *
+     */
+
+    mayers: PropTypes.arrayOf(PropTypes.shape(AirrMayer.propTypes)),
+    /**
+     * Title that will be use in parent Scene navbar title section
+     */
+    title: PropTypes.string,
+    /**
+     * Extra, space separated classes names to use.
+     */
+    className: PropTypes.string
+};

@@ -15,7 +15,12 @@ export default class AirrMayer extends Component {
             throw new Error("Every Mayer must has its `name` property set");
         }
     }
-
+    /**
+     * Creates button upon passed config 
+     * @param {object} config 
+     * @param {int} index 
+     * @returns {ReactElement}
+     */
     renderButton(config, index) {
         let className = "btn text";
         if (config.className) {
@@ -48,7 +53,9 @@ export default class AirrMayer extends Component {
 
         this.animateIn();
     }
-
+    /**
+     * Animates Mayers html dom element into the screen
+     */
     animateIn() {
         //        (element, startProps, transitionProps, endProps, preAnimationCallback, endAfter, endCallback) {
         AirrFX.doTransitionAnimation(
@@ -66,6 +73,10 @@ export default class AirrMayer extends Component {
         );
     }
 
+    /**
+     * Animates Mayers html dom element out of the screen 
+     * @param {function} callback Called after animation end
+     */
     animateOut(callback) {
         AirrFX.doTransitionAnimation(
             this.refDOMMayer.current.querySelector(".bg"),
@@ -116,11 +127,32 @@ AirrMayer.propTypes = {
     animationTime: PropTypes.number
 };
 AirrMayer.defaultProps = {
-    name: "", //the name of the mayer. Must be unique among others views in scene. Will be used as identification string
-    avaibleHeight: null, //parent scene height
-    appearFrom: "bottom", //side from which mayer content box will enter
-    leaveTo: "bottom", //side to which mayer content box will leave
-    content: null, //content of mayer
-    buttons: [], //array with buttons configuration
-    animationTime: 300 //number time in miliseconds of mayer appear/disappear animation
+    /**
+     * The name of the mayer. Must be unique among others mayers in scene. Will be used as identification.
+     */
+    name: "",
+    /**
+     * Parent scene height
+     */
+    avaibleHeight: null,
+    /**
+     * Side from which mayer content box will enter
+     */
+    appearFrom: "bottom",
+    /**
+     * Side to which mayer content box will leave
+     */
+    leaveTo: "bottom",
+    /**
+     * Content of mayer
+     */    
+    content: null,
+    /**
+     * Array with buttons configuration
+     */
+    buttons: [],
+    /**
+     * Time in miliseconds of mayer's appear/disappear animation
+     */
+    animationTime: 300
 };

@@ -14,18 +14,14 @@ import {
     object,
     files
 } from "@storybook/addon-knobs/react";
-import "airr-react/dist/airr-react.css";
-import InfiniteViewport from "../../app/scenes/InfiniteViewport";
+import "../../../airr-react/airr-react.css";
+import {SceneWrapper} from "../../../airr-react/Airr";
 
 export default () => {
 
     const properties = {
-        active: true,
-        name: "sidepanel-showcase",
-        navbar: 1,
-        navbarMenu: "toggleSidepanel",
-        sidepanel: {}
+        
     };
 
-    return <InfiniteViewport {...properties} />;
+    return <SceneWrapper {...properties} />;
 };
