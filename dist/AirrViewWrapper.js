@@ -53,7 +53,7 @@ var AirrViewWrapper = function (_Component) {
 
 
         /*
-        *render method to be overwritten in desendent class
+        *render method to be overwritten in descendant class
         */
         value: function content() {}
     }, {

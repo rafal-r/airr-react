@@ -1,29 +1,50 @@
 /************* AIRR STRUCTURE STYLES ***************/
 * {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+    -webkit-tap-highlight-color: rgba(
+        0,
+        0,
+        0,
+        0
+    ); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
 
-:after, :before {
+:after,
+:before {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
 
-html, body, p, h1, h2, h3, h4, h5, h6, div, span, ul, li, a, input, textarea, button {
+html,
+body,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+div,
+span,
+ul,
+li,
+a,
+input,
+textarea,
+button {
     margin: 0;
     padding: 0;
-    font-size: 100%;
 }
 
-html, body {
+html,
+body {
     background: #fff;
     overflow: hidden;
     width: 100%;
     height: 100%;
-    font-size: 100%;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -96,7 +117,7 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: .3rem;
+    padding: 0.3rem;
     background: rgba(255, 255, 255, 0.5);
 }
 
@@ -113,7 +134,8 @@ body {
     float: right;
 }
 
-textarea:focus, input:focus {
+textarea:focus,
+input:focus {
     outline: none;
 }
 
@@ -159,7 +181,7 @@ textarea:focus, input:focus {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.0);
+    background-color: rgba(0, 0, 0, 0);
     display: none;
 }
 
@@ -208,13 +230,13 @@ textarea:focus, input:focus {
     width: 50%;
 }
 
-.airr-navbar {    
+.airr-navbar {
     z-index: 10;
 }
 .airr-navbar > div {
     display: flex;
     align-items: center;
-    justify-content: center;    
+    justify-content: center;
     position: relative;
 }
 .airr-navbar .back {
@@ -249,10 +271,10 @@ textarea:focus, input:focus {
     -webkit-align-items: center;
     align-items: center;
     -webkit-justify-content: center;
-    justify-content: center;        
+    justify-content: center;
 }
 .airr-navbar .title,
 .airr-navbar .mock-title {
     -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;    
+    backface-visibility: hidden;
 }

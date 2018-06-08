@@ -266,7 +266,7 @@ AirrScene.defaultProps = {
 
 AirrScene.propTypes = {
     /**
-     * Rhe name of the scene. Must be unique among others views in parent scene. Will be used as identification string
+     * The name of the scene. Must be unique among others views in parent scene. Will be used as identification string
      */
     name: PropTypes.string.isRequired,
     /**
@@ -359,64 +359,46 @@ AirrScene.propTypes = {
      */
     active: PropTypes.bool,
     /**
-     * Sidepanels object must contain two properties.
-     * 1. Type - being refference to class of which item will be instantiated
-     * 2. Props - special properties of AirrSidepanel class. Go to class declaration for further properties documenation
-     *
-     * Example:
-     * {
-     *    type: AirrSidepanel,
-     *    props: {
-     *        children: <div>sidepanel html content</div>,
-     *        sceneWidth: window.innerWidth,
-     *        sceneHeight: window.innerHeight,
-     *        side: 'left',
-     *        sizeFactor: 0.66
-     *    }
-     * }
+     * Sidepanels declaration. Must contain two properties: `type` and `props`
      **/
-    sidepanel: PropTypes.object,
+    sidepanel: PropTypes.shape({
+        /**
+         * Refference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself.
+         */
+        type: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+            .isRequired,
+        /**
+         * Special properties of AirrSidepanel class. Go to class declaration for further properties documenation.
+         */
+        props: PropTypes.shape(AirrView.propTypes)
+    }),
     /**
-     * Objects of `views` array MUST contains two properties.
-     * 1. Type - being reffrence to class of which item will be instantiated.
-     * 2. Props - object that acts like components properties.
-     *    For special AirrView class properties go to its declaration to check out.
-     *
-     * Example:
-     * this.props.views = [
-     *      {
-     *          type: AirrView,
-     *          props: {
-     *              name: 'Foobar',
-     *              title: 'Foo is in the house',
-     *              children: <div>This is Dave. Dave is div.</div>
-     *              extraParam: bazHandler
-     *          }
-     *      }
-     * ]
+     * Array of `views`. Every view object declaration must contain two properties: `type` and `props`.
      */
     views: PropTypes.arrayOf(
         PropTypes.shape({
+            /**
+             * Refference to class or function that will render AirrView. The most common and adviced approach is to use AirrViewWrapper.
+             */
             type: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
                 .isRequired,
+            /**
+             * Special properties of AirrView class. Go to class declaration for further properties documenation.
+             */
             props: PropTypes.shape(AirrView.propTypes)
         })
     ),
-    // views: PropTypes.array,
-
     /**
-     * Array of `mayers` objects. Must contain special Mayer class properties.
-     * To check the possible values of properties go to Mayer declaration.
-     *
+     * Array of `mayers` objects that will be render into this Scene. Must contain special AirrMayer class properties.
+     * To check the possible values of properties go to AirrMayer declaration.
      */
-
     mayers: PropTypes.arrayOf(PropTypes.shape(AirrMayer.propTypes)),
     /**
      * Title that will be use in parent Scene navbar title section
      */
     title: PropTypes.string,
     /**
-     * Extra, space separated classes names to use.
+     * Extra, space separated classes names to use upon first div element.
      */
     className: PropTypes.string
 };

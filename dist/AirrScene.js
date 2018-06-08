@@ -18,6 +18,10 @@ var _AirrMayer = require("./AirrMayer");
 
 var _AirrMayer2 = _interopRequireDefault(_AirrMayer);
 
+var _AirrView = require("./AirrView");
+
+var _AirrView2 = _interopRequireDefault(_AirrView);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -272,40 +276,71 @@ var AirrScene = function (_Component) {
     return AirrScene;
 }(_react.Component);
 
+exports.default = AirrScene;
+
+
 AirrScene.defaultProps = {
-    name: "", //the name of the scene. Must be unique among others views in parent scene. Will be used as identification string
+    name: "",
 
-    activeViewName: null, //string
-    GUIDisabled: false, //bool
-    GUIDisableCover: null, //react element
-    animation: "slide", //slide,overlay,fade or false if no animation
-    animationTime: 300, //number time in miliseconds of views change animation, used also in navbar animations
-    navbar: false, // possible values: boolean or one of integers -1 (hidden), 0 (no navbar), 1 (visible)
-    navbarHeight: 48, //navbar height in px
-    navbarMenu: null, //string `toggleSidepanel` or array of React elements
-    navbarClass: "", //string
-    backButton: false, //bool
-    backButtonOnFirstView: false, //bool To show backButton in navbar if currently showing first view in stack.
-    handleBackButton: null, //parent function to handle back button tap
-    handleBackBehaviourOnFirstView: null, //null or function e.g. if this scene is view in some parent scene, and you want to pop out of it - this function will come from parent scene and will handle this behaviour
-    viewsAnimationEndCallback: null, //called after views animation ends
-    active: false, //bool is currently active in parent scene
-    sidepanel: null, //{type: AirrSidepanel, props: {}}
-    views: [], //array,
-    mayers: [], //mayers conf list
-    title: "", //titlebar name
-    className: "" //extra classes to use
+    activeViewName: null,
+    GUIDisabled: false,
+    GUIDisableCover: null,
+    animation: "slide",
+    animationTime: 300,
+    navbar: false,
+    navbarHeight: 48,
+    navbarMenu: null,
+    navbarClass: "",
+    backButton: false,
+    backButtonOnFirstView: false,
+    handleBackButton: null,
+    handleBackBehaviourOnFirstView: null,
+    viewsAnimationEndCallback: null,
+    active: false,
+    sidepanel: null,
+    views: [],
+    mayers: [],
+    title: "",
+    className: ""
 };
-AirrScene.propTypes = {
-    name: _propTypes2.default.string.isRequired,
 
+AirrScene.propTypes = {
+    /**
+     * The name of the scene. Must be unique among others views in parent scene. Will be used as identification string
+     */
+    name: _propTypes2.default.string.isRequired,
+    /**
+     * Name of the active view.
+     */
     activeViewName: _propTypes2.default.string,
+    /**
+     * Boolean telling if GUI should be disabled meaning no user actions, events are allowed.
+     * GUI is disabled via absolute positioned, not visible div that has the biggest z-Index
+     */
     GUIDisabled: _propTypes2.default.bool,
+    /**
+     * React element to be placed in GUI disabling div
+     */
     GUIDisableCover: _propTypes2.default.object,
+    /**
+     * Type of animation to perform when switching views
+     */
     animation: _propTypes2.default.oneOf(["slide", "overlay", "fade", false]),
+    /**
+     * Time of views changing animatio
+     */
     animationTime: _propTypes2.default.number,
+    /**
+     * Specify if navbar is present (1,true) or not (0,false). Or maybe hidden (-1)
+     */
     navbar: _propTypes2.default.oneOf([-1, 0, false, 1, true]),
+    /**
+     * Height of the navbar in pixels
+     */
     navbarHeight: _propTypes2.default.number,
+    /**
+     * Navbar menu is placed on the right most side. Might contain "toggleSidepanel" button or any custom buttons list.
+     */
     navbarMenu: function navbarMenu(props, propName, componentName) {
         if (props[propName]) {
             if (typeof props[propName] === "string") {
@@ -321,78 +356,71 @@ AirrScene.propTypes = {
             }
         }
     },
+    /**
+     * Extra, space separated, navbar's class names list
+     */
     navbarClass: _propTypes2.default.string,
+    /**
+     * Boolean specifing if navbar renders BackButton. Placed by default on the left side of navbar.
+     */
     backButton: _propTypes2.default.bool,
+    /**
+     * Do you need to still show backButton even if scene is rendering first view from stack?
+     */
     backButtonOnFirstView: _propTypes2.default.bool,
+    /**
+     * Function that will handle back button click events
+     */
     handleBackButton: _propTypes2.default.func,
+    /**
+     * Function that will handle back button clicks events on when first view in stack is active
+     */
     handleBackBehaviourOnFirstView: _propTypes2.default.func,
+    /**
+     * Callback that will be invoked when views animation finishes
+     */
     viewsAnimationEndCallback: _propTypes2.default.func,
+    /**
+     * Is this view active in parent scene
+     */
     active: _propTypes2.default.bool,
     /**
-     * Sidepanels object must contain two properties.
-     * 1. Type - being refference to class of which item will be instantiated
-     * 2. Props - special properties of AirrSidepanel class. Go to class declaration for further properties documenation
-     *
-     * Example:
-     * {
-     *    type: AirrSidepanel,
-     *    props: {
-     *        children: <div>sidepanel html content</div>,
-     *        sceneWidth: window.innerWidth,
-     *        sceneHeight: window.innerHeight,
-     *        side: 'left',
-     *        sizeFactor: 0.66
-     *    }
-     * }
+     * Sidepanels declaration. Must contain two properties: `type` and `props`
      **/
-    sidepanel: _propTypes2.default.object,
-
+    sidepanel: _propTypes2.default.shape({
+        /**
+         * Refference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself.
+         */
+        type: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.object]).isRequired,
+        /**
+         * Special properties of AirrSidepanel class. Go to class declaration for further properties documenation.
+         */
+        props: _propTypes2.default.shape(_AirrView2.default.propTypes)
+    }),
     /**
-     * Objects of `views` array MUST contains two properties.
-     * 1. Type - being reffrence to class of which item will be instantiated.
-     * 2. Props - object that acts like components properties.
-     *    For special AirrView class properties go to its declaration to check out.
-     *
-     * Example:
-     * this.props.views = [
-     *      {
-     *          type: AirrView,
-     *          props: {
-     *              name: 'Foobar',
-     *              title: 'Foo is in the house',
-     *              children: <div>This is Dave. Dave is div.</div>
-     *              extraParam: bazHandler
-     *          }
-     *      }
-     * ]
+     * Array of `views`. Every view object declaration must contain two properties: `type` and `props`.
      */
-    views: _propTypes2.default.arrayOf(_propTypes2.default.object),
-
+    views: _propTypes2.default.arrayOf(_propTypes2.default.shape({
+        /**
+         * Refference to class or function that will render AirrView. The most common and adviced approach is to use AirrViewWrapper.
+         */
+        type: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.object]).isRequired,
+        /**
+         * Special properties of AirrView class. Go to class declaration for further properties documenation.
+         */
+        props: _propTypes2.default.shape(_AirrView2.default.propTypes)
+    })),
     /**
-     * Objects of `mayers` array MUST contain special Mayer class properties.
-     * For checkout of possible properties go to Mayer declaration.
-     *
-     * Example:
-     * this.props.mayers. = [
-     *   {
-     *       name: 'demo-mayer',
-     *       content: <div>Hello cruel world!</div>,
-     *       appearFrom: 'left',
-     *       leaveTo: 'right',
-     *       avaibleHeight: this.props.height, //read from scenes properties
-     *       buttons: [
-     *           {
-     *               content: 'Ok',
-     *               handler: (e) => {
-     *                   this.setState({mayers: []});
-     *               }
-     *           }
-     *       ]
-     *   }
-     * ]
+     * Array of `mayers` objects that will be render into this Scene. Must contain special AirrMayer class properties.
+     * To check the possible values of properties go to AirrMayer declaration.
      */
-    mayers: _propTypes2.default.arrayOf(_propTypes2.default.object),
+    mayers: _propTypes2.default.arrayOf(_propTypes2.default.shape(_AirrMayer2.default.propTypes)),
+    /**
+     * Title that will be use in parent Scene navbar title section
+     */
     title: _propTypes2.default.string,
+    /**
+     * Extra, space separated classes names to use upon first div element.
+     */
     className: _propTypes2.default.string
 };
-exports.default = AirrScene;

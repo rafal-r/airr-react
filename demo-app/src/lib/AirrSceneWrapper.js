@@ -3,14 +3,33 @@ import AirrFX from "./AirrFX";
 import AirrScene from "./AirrScene";
 import AirrViewWrapper from "./AirrViewWrapper";
 import update from "immutability-helper";
+import PropTypes from "prop-types";
 
 export default class AirrSceneWrapper extends AirrViewWrapper {
+    /**
+     *
+     */
     viewsConfig = {};
 
+    /**
+     * Instantiated views Components refferences
+     */
     refsCOMPViews = {};
+    /**
+     * Instantiated mayers Components refferences
+     */
     refsCOMPMayers = {};
+    /**
+     * Instantiated sidepanel Component refference
+     */
     refCOMPSidepanel = React.createRef();
+    /**
+     * Refference to DOM element of container's div (first child of most outer element)
+     */
     refDOMContainer = React.createRef();
+    /**
+     * Refference to DOM element of navbar's div
+     */
     refDOMNavbar = React.createRef();
 
     constructor(props) {
@@ -38,10 +57,18 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 props.handleBackBehaviourOnFirstView,
             viewsAnimationEndCallback: props.viewsAnimationEndCallback,
             handleBackButton: props.handleBackButton,
-            stackMode: props.stackMode //bool - This propety changes animation behaviour of views animation when overlay animation
+            stackMode: props.stackMode
         };
     }
 
+    /**
+     * Creates new view config base on configuration in `viewsConfig` variable.
+     * When `viewNameGenerator` in present base configuration it will use to create new view name property.
+     * This feature is handy when you want to easly create next views based upon generic view configuration.
+     *
+     * @param {string} viewName Name of the configuraion key in `this.viewsConfig` object
+     * @param {object} props Additional prop to be merged with base config
+     */
     getFreshViewConfig(viewName, props = {}) {
         if (viewName in this.viewsConfig) {
             const config = Object.assign({}, this.viewsConfig[viewName]);
@@ -67,6 +94,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         }
     }
 
+    /**
+     * Array of views names to stay in `this.state.views` array when animation of views finishes.
+     * Used in `::viewsAnimationEndCallback` default method to filter views when needed.
+     * If you populate names in this array the filter feature will be active by default
+     * unless you overwrite `::viewsAnimationEndCallback` method in descendant class.
+     */
     viewsNamesToStayList = [];
     viewsAnimationEndCallback = () => {
         /**
@@ -85,6 +118,11 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         }
     };
 
+    /**
+     * Removes views that are not contained by name in array
+     * @param {array} viewsNameList List of views names that will stay in state
+     * @returns {Promise} Will be resolved on succesful state update
+     */
     __filterViews(viewsNameList = []) {
         return new Promise(resolve => {
             this.setState(
@@ -98,6 +136,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         });
     }
 
+    /**
+     * Disables scene's GUI by provinding extra layer on top of everything else.
+     * This layer can be customize by `cover` argument.
+     * @param {object} cover React element to be placed in covering layer
+     * @returns {Promise}  Will be resolved on succesful state update
+     */
     disableGUI = (cover = null) => {
         return new Promise(resolve =>
             this.setState(
@@ -107,6 +151,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         );
     };
 
+    /**
+     * Disables layer covering scene and enable user interactions.
+     * @returns {Promise} Will be resolved on succesful state update
+     */
     enableGUI = () => {
         return new Promise(resolve =>
             this.setState(
@@ -116,9 +164,20 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         );
     };
 
+    /**
+     * Get view index in views array
+     * @param {string} viewName
+     * @returns {integer}
+     */
     getViewIndex = viewName =>
         this.state.views.findIndex(view => view.props.name === viewName);
 
+    /**
+     * Private method for pushing new view config into this.state.views array
+     * @param {object} config
+     * @param {object} sceneProps
+     * @returns {Promise}  Will be resolved on succesful state update
+     */
     __pushView(config, sceneProps = {}) {
         const newviewdefinition = update(this.state.views, { $push: [config] });
         const stateChange = Object.assign(
@@ -134,6 +193,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         );
     }
 
+    /**
+     * Pops out with animation currently active view from view's array
+     * @param {object} viewProps props to modify the view just before popping
+     * @param {object} sceneProps props to modify the scene while popping
+     * @returns {Promise}  Will be resolved on succesful state update or rejected when no view to pop
+     */
     popView = (viewProps = {}, sceneProps = {}) => {
         if (this.state.views.length > 1) {
             const viewName = this.state.views[this.state.views.length - 2].props
@@ -157,6 +222,11 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         }
     };
 
+    /**
+     * Check wheter object is valid view config and can be added to view's array
+     * @param {object} object
+     * @returns {bool}
+     */
     isValidViewConfig(object) {
         return (
             typeof object === "object" &&
@@ -166,6 +236,20 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         );
     }
 
+    /**
+     * Crucial method of the scene component for manipalutaing views and scene properties and performing animations.
+     * Can change active view with animation or just update view and scene properties.
+     *
+     * Change view by:
+     * - string name kept in state views array which will lead to view change (with animation) or just update if currently active
+     * - string name kept in `this.viewsConfig` which will lead to view push (with animation)
+     * - new view config wich will lead to view change
+     *
+     * @param {string|object} view View name to change or view config to be added
+     * @param {object} viewProps Extra props to be added to changing view
+     * @param {object} sceneProps Extra props to manipulate this scene while changing view
+     * @returns {Promise} Resolved on state succesful change and animation end. Or reject on failure.
+     */
     changeView(view, viewProps = {}, sceneProps = {}) {
         return this.__changeView(view, viewProps, sceneProps).then(viewName => {
             return this.__performViewsAnimation(viewName);
@@ -174,7 +258,6 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
 
     /**
      * Removes view from views array
-     *
      * @param {string} name
      */
     destroyView(name) {
@@ -198,6 +281,14 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         });
     }
 
+    /**
+     * Make modification to scene's views by pushing new, updating current or changing between added views
+     *
+     * @param {string|object} view View name to change or view config to be added
+     * @param {object} viewProps Extra props to be added to changing view
+     * @param {object} sceneProps Extra props to manipulate this scene while changing view
+     * @returns {Promise} Resolved on state succesful change and animation end. Or reject on failure.
+     */
     __changeView(view, viewProps = {}, sceneProps = {}) {
         if (typeof view === "string") {
             if (this.hasViewInState(view)) {
@@ -249,15 +340,32 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         }
     }
 
+    /**
+     * Check if view's name is described by some config in `this.viewsConfig`
+     * @param {string} name
+     * @returns {bool}
+     */
     hasViewInConfig = name => name in this.viewsConfig;
-
+    
+    
+    /**
+     * Check if view recognize by name argument is present in state
+     * @param {string} name
+     * @returns {bool}
+     */
     hasViewInState = name =>
         this.state.views.findIndex(view => view.props.name === name) !== -1
             ? true
             : false;
 
     /**
-     * Utility function to handle poping views on back button click
+     * Utility function to handle back button clicks.
+     * Can be overwritten by class extending this wrapper.
+     * By default it pops currently active view.
+     * To use it, assign it's value to state like this:
+     * this.state.handleBackButton = this.handleBackButton
+     * 
+     * @returns {Promise} Resolved on state succesful change or reject on failure.
      */
     handleBackButton = (viewProps, sceneProps) => {
         if (this.state.views.length > 1) {
@@ -267,6 +375,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         return Promise.reject();
     };
 
+    /**
+     * Disables scene's sidepanel by setting it prop enabled = false. 
+     * @returns {Promise} Resolved on state succesful change or reject on failure.
+     */
     disableSidepanel = () => {
         if (this.state.sidepanel && this.refCOMPSidepanel.current) {
             this.refCOMPSidepanel.current.disable();
@@ -287,6 +399,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         return Promise.reject();
     };
 
+    /**
+     * Enables scene's sidepanel by setting it prop enabled = true. 
+     * @returns {Promise} Resolved on state succesful change or reject on failure.
+     */    
     enableSidepanel = () => {
         if (this.state.sidepanel && this.refCOMPSidepanel.current) {
             this.refCOMPSidepanel.current.enable();
@@ -307,14 +423,22 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         return Promise.reject();
     };
 
+    /**
+     * Shows sidepanel
+     * @returns {Promise}
+     */
     openSidepanel = () => {
         if (this.state.sidepanel && this.refCOMPSidepanel.current) {
             return this.refCOMPSidepanel.current.show();
         }
-
+        
         return Promise.reject();
     };
-
+    
+    /**
+     * Hides sidepanel
+     * @returns {Promise}
+     */
     hideSidepanel = () => {
         if (this.state.sidepanel && this.refCOMPSidepanel.current) {
             return this.refCOMPSidepanel.current.hide();
@@ -324,10 +448,11 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     };
 
     /**
-     * Add new mayer to this.state.mayers configurations array which will immediatelly open new mayer due to its nature
+     * Add new mayer to this.state.mayers configurations array.
+     * This will immediatelly open new mayer due to `componentDidMount` lifecycle implementation.
      *
-     * @param {object} config
-     * @returns {void}
+     * @param {object} config Mayer config object.
+     * @returns {Promise}
      */
     openMayer(config) {
         if (
@@ -354,8 +479,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     /**
      * Close mayer by name
      *
-     * @param {string} name
-     * @returns {void}
+     * @param {string} name Unique mayer name
+     * @returns {Promise}
      */
     closeMayer(name) {
         let mayerConfigIndex = this.state.mayers.findIndex(
@@ -405,8 +530,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * If config has buttons that contains logical true `close` property,
      * this method will attach close mayer functionality to tap event on this button.
      *
-     * @param {object} config mayer config object
-     * @returns {void}
+     * @param {object} mayerConfig mayer config object
+     * @returns {object}
      */
     __prepareMayerConfig(mayerConfig) {
         const config = Object.assign({}, mayerConfig);
@@ -436,6 +561,11 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         return config;
     }
 
+    /**
+     * Private utility for adding mayers
+     * @param {objec} config
+     * @returns {Promise}
+     */
     __addMayer = config => {
         const newMayersDef = update(this.state.mayers, { $push: [config] });
 
@@ -449,6 +579,11 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         );
     };
 
+    /**
+     * Private utility for removing mayers
+     * @param {string} name Mayer name
+     * @returns {Promise}
+     */    
     __removeMayer = name => {
         const newMayersDef = this.state.mayers.filter(item => {
             return item.name !== name;
@@ -464,18 +599,32 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         );
     };
 
+    /**
+     * Disables back button meaning it will not be visible in navbar anymore.
+     * @returns {Promise}
+     */
     disableBackButton = () => {
         return new Promise(resolve =>
             this.setState({ backButton: false }, resolve)
         );
     };
 
+    /**
+     * Enables back button meaning it will be visible in navbar.
+     * @returns {Promise}
+     */
     enableBackButton = () => {
         return new Promise(resolve =>
             this.setState({ backButton: true }, resolve)
         );
     };
 
+    /**
+     * Action dispatcher method. Will return a function ready to fire view change.
+     * @param {string} name
+     * @param {array} viewsNamesToStayList
+     * @returns {function} Function that will resolve view change on invoke.
+     */
     goToView = (name, viewsNamesToStayList = []) => {
         return (params = {}, sceneProps = {}) => {
             this.viewsNamesToStayList = viewsNamesToStayList;
@@ -489,6 +638,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             this.state.navbarHeight &&
             this.refDOMContainer.current
         ) {
+            //subsctract navbar height from scene's container
             this.refDOMContainer.current.style.height =
                 this.refDOMContainer.current.parentNode.clientHeight -
                 this.state.navbarHeight +
@@ -510,6 +660,11 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         }
     }
 
+    /**
+     * Private utility function for preparing sidepanel configuration objects 
+     * @param {object} sidepanel 
+     * @returns {object}
+     */
     __prepareSidepanel(sidepanel) {
         sidepanel.props.ref = this.refCOMPSidepanel;
         sidepanel.props.visibilityCallback = isShown => {
@@ -535,7 +690,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * Takes array of views and assign react specific properties (key and ref) to each view configuartion
      *
      * @param {array} views
-     * @returns {void}
+     * @returns {array}
      */
     __prepareViews(views) {
         return views.map(item => {
@@ -568,9 +723,13 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         );
     }
 
-    viewChangeInProgress = false;
     /**
-     * Changes scenes active view
+     * Describes if views animation is taking place
+     */
+    viewChangeInProgress = false;
+    
+    /**
+     * Private utility function that changes views with animation
      *
      * @param {string} newViewName
      * @returns {Promise}
@@ -688,7 +847,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     }
 
     /**
-     * Perform animation between old and new active view
+     * Private utility function. This one actually makes animations.
      *
      * @param {string} newViewName
      * @param {string} oldViewName
@@ -1047,5 +1206,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         });
     }
 }
-AirrSceneWrapper.propTypes = AirrScene.propTypes;
-AirrSceneWrapper.defaultProps = AirrScene.defaultProps;
+
+AirrSceneWrapper.defaultProps = { ...AirrScene.defaultProps, stackMode: false };
+AirrSceneWrapper.propTypes = {
+    ...AirrScene.propTypes,
+    /**
+     * This propety changes behaviour of views animation when overlay animation is set
+     */
+    stackMode: PropTypes.bool
+};
