@@ -214,7 +214,9 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 ];
 
                 return new Promise(resolve =>
-                    this.setState({ views: newviewdefinition }, resolve)
+                    this.setState({ views: newviewdefinition }, () =>
+                        resolve(viewName)
+                    )
                 );
             });
         } else {
@@ -346,8 +348,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @returns {bool}
      */
     hasViewInConfig = name => name in this.viewsConfig;
-    
-    
+
     /**
      * Check if view recognize by name argument is present in state
      * @param {string} name
@@ -364,7 +365,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * By default it pops currently active view.
      * To use it, assign it's value to state like this:
      * this.state.handleBackButton = this.handleBackButton
-     * 
+     *
      * @returns {Promise} Resolved on state succesful change or reject on failure.
      */
     handleBackButton = (viewProps, sceneProps) => {
@@ -376,7 +377,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     };
 
     /**
-     * Disables scene's sidepanel by setting it prop enabled = false. 
+     * Disables scene's sidepanel by setting it prop enabled = false.
      * @returns {Promise} Resolved on state succesful change or reject on failure.
      */
     disableSidepanel = () => {
@@ -400,9 +401,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     };
 
     /**
-     * Enables scene's sidepanel by setting it prop enabled = true. 
+     * Enables scene's sidepanel by setting it prop enabled = true.
      * @returns {Promise} Resolved on state succesful change or reject on failure.
-     */    
+     */
+
     enableSidepanel = () => {
         if (this.state.sidepanel && this.refCOMPSidepanel.current) {
             this.refCOMPSidepanel.current.enable();
@@ -431,10 +433,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         if (this.state.sidepanel && this.refCOMPSidepanel.current) {
             return this.refCOMPSidepanel.current.show();
         }
-        
+
         return Promise.reject();
     };
-    
+
     /**
      * Hides sidepanel
      * @returns {Promise}
@@ -583,7 +585,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * Private utility for removing mayers
      * @param {string} name Mayer name
      * @returns {Promise}
-     */    
+     */
+
     __removeMayer = name => {
         const newMayersDef = this.state.mayers.filter(item => {
             return item.name !== name;
@@ -661,8 +664,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     }
 
     /**
-     * Private utility function for preparing sidepanel configuration objects 
-     * @param {object} sidepanel 
+     * Private utility function for preparing sidepanel configuration objects
+     * @param {object} sidepanel
      * @returns {object}
      */
     __prepareSidepanel(sidepanel) {
@@ -727,7 +730,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * Describes if views animation is taking place
      */
     viewChangeInProgress = false;
-    
+
     /**
      * Private utility function that changes views with animation
      *

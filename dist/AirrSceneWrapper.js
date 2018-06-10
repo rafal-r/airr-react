@@ -124,7 +124,9 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                     delete _this.refsCOMPViews[_this.state.views[_this.state.views.length - 1].props.name];
 
                     return new Promise(function (resolve) {
-                        return _this.setState({ views: newviewdefinition }, resolve);
+                        return _this.setState({ views: newviewdefinition }, function () {
+                            return resolve(viewName);
+                        });
                     });
                 });
             } else {
@@ -545,22 +547,21 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
          * By default it pops currently active view.
          * To use it, assign it's value to state like this:
          * this.state.handleBackButton = this.handleBackButton
-         * 
+         *
          * @returns {Promise} Resolved on state succesful change or reject on failure.
          */
 
 
         /**
-         * Disables scene's sidepanel by setting it prop enabled = false. 
+         * Disables scene's sidepanel by setting it prop enabled = false.
          * @returns {Promise} Resolved on state succesful change or reject on failure.
          */
 
 
         /**
-         * Enables scene's sidepanel by setting it prop enabled = true. 
+         * Enables scene's sidepanel by setting it prop enabled = true.
          * @returns {Promise} Resolved on state succesful change or reject on failure.
          */
-
 
         /**
          * Shows sidepanel
@@ -704,7 +705,6 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
          * @returns {Promise}
          */
 
-
         /**
          * Disables back button meaning it will not be visible in navbar anymore.
          * @returns {Promise}
@@ -741,8 +741,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
         }
 
         /**
-         * Private utility function for preparing sidepanel configuration objects 
-         * @param {object} sidepanel 
+         * Private utility function for preparing sidepanel configuration objects
+         * @param {object} sidepanel
          * @returns {object}
          */
 
