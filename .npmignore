@@ -5,5 +5,7 @@ nbproject
 lib
 demo-app
 CONTRIBUTING.md
-LICENSE
+.esdoc.json
+storybook
+docs
 .gitignore
