@@ -9,7 +9,7 @@
 	},
 	"main": "airr-react.js",
 	"scripts": {
-		"build": "babel lib -d dist --copy-files"
+		"build": "babel lib -d dist --copy-files --ignore '*.mkd'"
 	},
 	"keywords": [
 		"react",
@@ -34,6 +34,8 @@
 		"babel-preset-react": "^6.24.1",
 		"babel-preset-stage-2": "^6.24.1",
 		"esdoc": "^1.1.0",
+		"esdoc-ecmascript-proposal-plugin": "^1.0.0",
+		"esdoc-jsx-plugin": "^1.0.0",
 		"esdoc-standard-plugin": "^1.0.0"
 	}
 }

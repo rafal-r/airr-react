@@ -1,5 +1,5 @@
 import React from "react";
-import { SceneWrapper, Scene } from "../../../airr-react/Airr";
+import { SceneWrapper } from "../../../airr-react/Airr";
 import HelloWorld, {
     viewName as HelloWorldViewName
 } from "../views/HelloWorld";
@@ -22,12 +22,28 @@ export default class InfiniteViewport extends SceneWrapper {
         };
     }
 
+    componentDidMount() {
+        //these rules are only added to sustain proper render in storybooks
+        const root = document.getElementById("root");
+        root.style.height = "100%";
+        root.children[0].style.height = "100%";
+        root.children[0].children[0].style.height = "100%";
+    }
+
+    componentWillUnmount() {
+        //these rules are only added to sustain proper render in storybooks
+        const root = document.getElementById("root");
+        root.style.height = "";
+        root.children[0].style.height = "";
+        root.children[0].children[0].style.height = "";
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         return Object.assign(prevState, nextProps, {
             views: prevState.views,
             activeViewName: prevState.activeViewName
         });
-    }  
+    }
 
     handleNextClick = () => {
         const color = colors[Math.floor(Math.random() * colors.length)];
@@ -66,7 +82,6 @@ export default class InfiniteViewport extends SceneWrapper {
         );
     };
 
-    
     viewsConfig = {
         [HelloWorldViewName]: {
             type: HelloWorld,

@@ -59,7 +59,7 @@ export default class AirrSidepanel extends Component {
         }
     }
 
-    bubbleChildTillParent(child, parent, tillElements) {
+    __bubbleChildTillParent(child, parent, tillElements) {
         if (child.parentNode === parent) {
             return true;
         } else {
@@ -69,7 +69,7 @@ export default class AirrSidepanel extends Component {
             ) {
                 return false;
             } else {
-                return this.bubbleChildTillParent(
+                return this.__bubbleChildTillParent(
                     child.parentNode,
                     parent,
                     tillElements
@@ -111,7 +111,7 @@ export default class AirrSidepanel extends Component {
         } else {
             if (
                 e.target === this.refDOMDragCtn.current ||
-                this.bubbleChildTillParent(
+                this.__bubbleChildTillParent(
                     e.target,
                     this.refDOMDragCtn.current,
                     [this.refDOMDragCtn.current.parentNode, document.body]
@@ -562,26 +562,56 @@ export default class AirrSidepanel extends Component {
     }
 }
 AirrSidepanel.propTypes = {
+    /**
+     * Side to which sidepanel will be attached
+     */
     side: PropTypes.oneOf(["left", "right", "top", "bottom"]),
+    /**
+     * Bool determining if sidepanel is shown or not
+     */
     isShown: PropTypes.bool,
+    /**
+     * Bool determining if sidepanel is enabled, another words, if its can be drag out
+     */
     enabled: PropTypes.bool,
+    /**
+     * Number between 0 and 1 determining how much size of whole screen sidepanel will take
+     */
     sizeFactor: PropTypes.number,
+    /**
+     * Parent scene width dimension. Set by parent scene. Do not overwrite!.
+     */
     sceneWidth: PropTypes.number.isRequired,
+    /**
+     * Parent scene height dimension. Set by parent scene. Do not overwrite!.
+     */
     sceneHeight: PropTypes.number.isRequired,
+    /**
+     * Do you want to animate sidepanel showing in/out
+     */
     animateShown: PropTypes.bool,
+    /**
+     * Callback called when sidepanel changes its visibility during touch events. Set by parent scene. Do not overwrite!.
+     */
     visibilityCallback: PropTypes.func,
+    /**
+     * Animation time in miliseconds
+     */
     animationTime: PropTypes.number,
+    /**
+     * Opacity between 0 and 1
+     */
     bgLayerOpacity: PropTypes.number
 };
 AirrSidepanel.defaultProps = {
-    side: "left", //side to which sidepanel will be attached
-    isShown: false, //bool determining if sidepanel is shown or not
-    enabled: false, //bool determining if sidepanel is enabled, another words, if its can be drag out
-    sizeFactor: 2 / 3, //number between 0 and 1 determining how much size of whole screen sidepanel will take
-    sceneWidth: null, //number parent side width dimension
-    sceneHeight: null, //number parent side height dimension
-    animateShown: true, //do you want to animate sidepanel showing in/out
-    visibilityCallback: function(isShown) {}, //callback called when sidepanel changes its visibility during touch events
-    animationTime: 200, //animation time in miliseconds
-    bgLayerOpacity: 0.7 //opacity between 0 and 1
+    side: "left",
+    isShown: false,
+    enabled: false,
+    sizeFactor: 2 / 3,
+    sceneWidth: null,
+    sceneHeight: null,
+    animateShown: true,
+    visibilityCallback: function(isShown) {},
+    animationTime: 200,
+    bgLayerOpacity: 0.7
 };

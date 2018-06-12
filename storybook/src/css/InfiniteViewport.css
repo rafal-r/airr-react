@@ -1,7 +1,5 @@
-#root,
-#root > div,
-#root > div > div {
-    height: 100%;
+.infinite-viewport {
+    min-height: 500px;
 }
 .infinite-viewport-nav {
     position: absolute;

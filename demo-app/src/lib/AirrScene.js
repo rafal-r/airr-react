@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import AirrMayer from "./AirrMayer";
-import AirrView from "./AirrView";
 
 export default class AirrScene extends Component {
+    /**
+     * Mayers Components refferencies
+     */
     mayersCompsRefs = {};
 
     /**
-     * Returns view index in this.props.views array
+     * Returns view index from this.props.views array
      *
      * @param {string} viewName
      * @returns {Number}
@@ -370,7 +372,48 @@ AirrScene.propTypes = {
         /**
          * Special properties of AirrSidepanel class. Go to class declaration for further properties documenation.
          */
-        props: PropTypes.shape(AirrView.propTypes)
+        props: PropTypes.shape({
+            /**
+             * Side to which sidepanel will be attached
+             */
+            side: PropTypes.oneOf(["left", "right", "top", "bottom"]),
+            /**
+             * Bool determining if sidepanel is shown or not
+             */
+            isShown: PropTypes.bool,
+            /**
+             * Bool determining if sidepanel is enabled, another words, if its can be drag out
+             */
+            enabled: PropTypes.bool,
+            /**
+             * Number between 0 and 1 determining how much size of whole screen sidepanel will take
+             */
+            sizeFactor: PropTypes.number,
+            /**
+             * Parent scene width dimension. Passed by scene itself.
+             */
+            sceneWidth: PropTypes.number.isRequired,
+            /**
+             * Parent scene height dimension. Passed by scene itself.
+             */
+            sceneHeight: PropTypes.number.isRequired,
+            /**
+             * Do you want to animate sidepanel showing in/out
+             */
+            animateShown: PropTypes.bool,
+            /**
+             * Callback called when sidepanel changes its visibility during touch events. Passed by scene itself.
+             */
+            visibilityCallback: PropTypes.func,
+            /**
+             * Animation time in miliseconds
+             */
+            animationTime: PropTypes.number,
+            /**
+             * Opacity between 0 and 1
+             */
+            bgLayerOpacity: PropTypes.number
+        })
     }),
     /**
      * Array of `views`. Every view object declaration must contain two properties: `type` and `props`.
@@ -385,14 +428,102 @@ AirrScene.propTypes = {
             /**
              * Special properties of AirrView class. Go to class declaration for further properties documenation.
              */
-            props: PropTypes.shape(AirrView.propTypes)
+            props: PropTypes.shape({
+                /**
+                 * The name of the view. Must be unique among others views in scene. Will be used as identification string
+                 */
+                name: PropTypes.string.isRequired,
+                /**
+                 * Titlebar name. if parent scene navbar is enabled, this title will be showed there
+                 */
+                title: PropTypes.string,
+                /**
+                 * Determine if this view is active. Set by parent scene.
+                 */
+
+                active: PropTypes.bool,
+                /**
+                 * Refference to view's root DOM element.
+                 */
+                refDOM: PropTypes.object,
+                /**
+                 * Extra classes to use. Space separetad string list.
+                 */
+                className: PropTypes.string,
+                /**
+                 * Extra styles to use upon root DOM element of view.
+                 */
+                style: PropTypes.object
+            })
         })
     ),
     /**
      * Array of `mayers` objects that will be render into this Scene. Must contain special AirrMayer class properties.
      * To check the possible values of properties go to AirrMayer declaration.
      */
-    mayers: PropTypes.arrayOf(PropTypes.shape(AirrMayer.propTypes)),
+    mayers: PropTypes.arrayOf(
+        PropTypes.shape({
+            /**
+             * The name of the mayer. Must be unique among others mayers in scene. Will be used as identification.
+             */
+            name: PropTypes.string.isRequired,
+            /**
+             * Extra styles to apply on Mayer's DOM element
+             */
+            style: PropTypes.object,
+            /**
+             * Parent scene height
+             */
+            avaibleHeight: PropTypes.number.isRequired,
+            /**
+             * Side from which mayer content box will enter
+             */
+            appearFrom: PropTypes.oneOf(["top", "bottom", "left", "right"]),
+            /**
+             * Side to which mayer content box will leave
+             */
+            leaveTo: PropTypes.oneOf(["top", "bottom", "left", "right"]),
+            /**
+             * Content of mayer
+             */
+
+            content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+            /**
+             * Array with buttons configuration
+             */
+            buttons: PropTypes.arrayOf(
+                PropTypes.shape({
+                    /**
+                     * Extra class names to use upon button
+                     */
+                    className: PropTypes.string,
+                    /**
+                     * Extra attributes to apply on HTML element
+                     */
+                    attrs: PropTypes.object,
+                    /**
+                     * Additional inline styles
+                     */
+                    style: PropTypes.object,
+                    /**
+                     * OnClick function handler
+                     */
+                    handler: PropTypes.func,
+                    /**
+                     * Content to render inside Mayer. Might be string or ReactElement.
+                     */
+                    content: PropTypes.oneOfType([
+                        PropTypes.string,
+                        PropTypes.object
+                    ])
+                })
+            ),
+            /**
+             * Time in miliseconds of mayer's appear/disappear animation
+             */
+            animationTime: PropTypes.number
+        })
+    ),
     /**
      * Title that will be use in parent Scene navbar title section
      */

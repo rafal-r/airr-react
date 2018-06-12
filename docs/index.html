@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">Home | airr-react</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Reusable React components for building Single Page Apps."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="airr-react"><meta property="twitter:description" content="Reusable React components for building Single Page Apps."></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/rafal-r/airr-react"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AirrMayer.js~AirrMayer.html">AirrMayer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AirrScene.js~AirrScene.html">AirrScene</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AirrSceneWrapper.js~AirrSceneWrapper.html">AirrSceneWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AirrSidepanel.js~AirrSidepanel.html">AirrSidepanel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AirrView.js~AirrView.html">AirrView</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AirrViewWrapper.js~AirrViewWrapper.html">AirrViewWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-AirrFX">AirrFX</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Helpers">Helpers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-isMobileDevice">isMobileDevice</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-supportPassive">supportPassive</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="airr-react">airr-react</h1><p>This library is set of several React components that allows building Single Page Apps for desktop and mobile using React.js itself.
+Airr-react defines few basic UI classes and features that every app needs.
+It can be your starting point for creating unique apps.</p>
+<p>It can be used for:</p>
+<ul>
+<li>creating custom looking and behaving apps,</li>
+<li>rapidly designing prototypes showing your ideas,</li>
+<li>creating responsive apps that will handle mobile and desktop rendering.</li>
+</ul>
+<p>Create unique apps with minimal or none overwrites upon choosen library styles and structures and keep your DOM tree simple.
+Core elements are allready defined and working and the rest is up to you.</p>
+<p>To check all main features go and see demonstration app:</p>
+<p><strong><a href="http://react.airr.pl">airr-react mobile demo app</a></strong></p>
+<p>browse in Chrome for best experience.</p>
+<p>Libary code was designed to handle WebViews runtimes from Android 4.4+ and iOS8+.</p>
+<h2 id="prerequisites">Prerequisites</h2><p>Before you continue with project installation make sure you have installed:</p>
+<ul>
+<li><a href="https://nodejs.org/en/">node.js</a></li>
+</ul>
+<h2 id="installation">Installation</h2><h3 id="the-simplest">The simplest</h3><p>The most easy way to start using airr-react components in your React app is to add it to your allready created project with npm</p>
+<pre><code><code class="source-code prettyprint">npm install airr-react</code>
+</code></pre><h3 id="the-demo">The demo</h3><p>If you want to explore demo app as a code refference just download <code>demo-app</code> directory content, open your system console and execute standard installation command on this directory:</p>
+<pre><code><code class="source-code prettyprint">npm install</code>
+</code></pre><p>after that you can perform another known line:</p>
+<pre><code><code class="source-code prettyprint">npm start</code>
+</code></pre><p>to activate react scripts and your local version of demo-app.</p>
+<h3 id="other">Other</h3><p>If you are having custom react configuration feel free to investigate airr-react usage on your own. Just install it with npm like in &quot;The simplest&quot; section.</p>
+<h2 id="airr-components-life-cycles">Airr Components life-cycles</h2><p>Airr library provides easy to implement app views life-cycles methods.
+When you are dealing with mobile app development you have to deal with many tasks before or after certain view is activated and animated into the screen.</p>
+<p>Like Reacts <code>componentDidMount</code> method, Airr provides self explanatory methods that can be used by Components that extends <code>ViewWrapper</code> and <code>SceneWrapper</code> components. These methods are:</p>
+<ul>
+<li><code>viewBeforeActivation</code></li>
+<li><code>viewAfterActivation</code></li>
+<li><code>viewBeforeDeactivation</code></li>
+<li><code>viewAfterDeactivation</code></li>
+</ul>
+<p>You can search for these methods in demo-app code to find out how they are used.</p>
+<h2 id="usage">Usage</h2><p>For components usage please reffer at the moment to the demo app code.</p>
+<h2 id="documentation">Documentation</h2><p>Real docs are planned to be written in the future.
+Methods and properties descriptions aswell as properties specification can be found in library files at <code>airr-react/lib</code>.
+For Airr Components descriptions check <a href="http://react.airr.pl">the demo app</a>.</p>
+<h3 id="building-project-for-cordova">Building project for Cordova</h3><p>When building your production code using <code>npm run build</code> with <code>react-scripts</code> remember about proper configuration for specific platforms:</p>
+<ul>
+<li>Android - add <code>&quot;homepage&quot;: &quot;file:///android_asset/www&quot;</code> entry to your package.json</li>
+<li>iOS - snippet will be added soon</li>
+</ul>
+<h2 id="license">License</h2><p>Licensed under the MIT License.
+Copyright (c) 2018 Rafal Rajtar</p>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

@@ -1,6 +1,10 @@
 {
     "source": "./lib",
     "destination": "./docs",
-    "plugins": [{"name": "esdoc-standard-plugin"}]
+    "plugins": [
+      {"name": "esdoc-standard-plugin"},
+      {"name": "esdoc-jsx-plugin", "option": {"enable": true}},
+      {"name": "esdoc-ecmascript-proposal-plugin", "option": {"all": true}}
+    ]
   }
   

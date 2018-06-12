@@ -19,45 +19,14 @@
 }
 
 html,
-body,
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-div,
-span,
-ul,
-li,
-a,
-input,
-textarea,
-button {
-    margin: 0;
-    padding: 0;
-}
-
-html,
 body {
     background: #fff;
     overflow: hidden;
     width: 100%;
     height: 100%;
     -webkit-font-smoothing: antialiased;
-}
-
-canvas {
-    touch-action-delay: none;
-    touch-action: none;
-    -ms-touch-action: none;
-}
-
-body {
-    -webkit-touch-callout: none; /* prevent callout to copy image, etc when tap to hold */
-    -webkit-text-size-adjust: none; /* prevent webkit from resizing text to fit */
-    -webkit-user-select: none; /* prevent copy paste, to allow, change 'none' to 'text' */
+    margin: 0;
+    padding: 0;
 }
 
 .airr-blank-mask {

@@ -100,7 +100,7 @@ export default function() {
         "",
         GROUP_IDS.NAVBAR
     );
-    const backButton = boolean("backButton", false, GROUP_IDS.NAVBAR);
+    const backButton = boolean("backButton", true, GROUP_IDS.NAVBAR);
     const backButtonOnFirstView = boolean(
         "backButtonOnFirstView",
         false,
@@ -259,19 +259,4 @@ function getHandleBackBahaviourOnFirstView(selected, viewportRef) {
         default:
             return null;
     }
-}
-
-function getSidepanelValue(isOn, side, size, enabled, isShown) {
-    if (isOn === "no") {
-        return null;
-    }
-
-    return {
-        type: Sidepanel,
-        size,
-        side,
-        enabled,
-        isShown,
-        children: <div>child</div>
-    };
 }

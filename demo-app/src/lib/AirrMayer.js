@@ -3,10 +3,13 @@ import PropTypes from "prop-types";
 import AirrFX from "./AirrFX";
 
 export default class AirrMayer extends Component {
-    // <button class="btn text alert">YES</button>
-    // <button class="btn text success">CANCEL</button>
-
+    /**
+     * Mayer's HTML DOM Element refferency
+     */
     refDOMMayer = React.createRef();
+    /**
+     * Mayer's container's HTML DOM Element refferency
+     */
     refDOMCtn = React.createRef();
 
     constructor(props) {
@@ -16,12 +19,12 @@ export default class AirrMayer extends Component {
         }
     }
     /**
-     * Creates button upon passed config 
-     * @param {object} config 
-     * @param {int} index 
+     * Private utility method for rendering buttons based upon passed config object
+     * @param {object} config
+     * @param {int} index
      * @returns {ReactElement}
      */
-    renderButton(config, index) {
+    __renderButton(config, index) {
         let className = "btn text";
         if (config.className) {
             className += " " + config.className;
@@ -47,17 +50,18 @@ export default class AirrMayer extends Component {
 
     componentDidMount() {
         if (this.refDOMCtn.current.clientHeight >= this.props.avaibleHeight) {
-            this.refDOMCtn.current.style.height = this.props.avaibleHeight + "px";
+            this.refDOMCtn.current.style.height =
+                this.props.avaibleHeight + "px";
             this.refDOMMayer.current.classList.add("full");
         }
 
         this.animateIn();
     }
+
     /**
      * Animates Mayers html dom element into the screen
      */
     animateIn() {
-        //        (element, startProps, transitionProps, endProps, preAnimationCallback, endAfter, endCallback) {
         AirrFX.doTransitionAnimation(
             this.refDOMMayer.current.querySelector(".bg"),
             { opacity: 0 },
@@ -74,7 +78,7 @@ export default class AirrMayer extends Component {
     }
 
     /**
-     * Animates Mayers html dom element out of the screen 
+     * Animates Mayers html dom element out of the screen
      * @param {function} callback Called after animation end
      */
     animateOut(callback) {
@@ -98,12 +102,16 @@ export default class AirrMayer extends Component {
         let buttons = [];
         if (this.props.buttons) {
             this.props.buttons.forEach((config, index) => {
-                buttons.push(this.renderButton(config, index));
+                buttons.push(this.__renderButton(config, index));
             });
         }
 
         return (
-            <div className="airr-mayer" ref={this.refDOMMayer}>
+            <div
+                className="airr-mayer"
+                ref={this.refDOMMayer}
+                style={this.props.style}
+            >
                 <div className="bg" />
                 <div className="ctn" ref={this.refDOMCtn}>
                     <div className="text">
@@ -118,41 +126,70 @@ export default class AirrMayer extends Component {
 }
 
 AirrMayer.propTypes = {
-    name: PropTypes.string.isRequired,
-    avaibleHeight: PropTypes.number.isRequired,
-    appearFrom: PropTypes.oneOf(["top", "bottom", "left", "right"]),
-    leaveTo: PropTypes.oneOf(["top", "bottom", "left", "right"]),
-    content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    buttons: PropTypes.arrayOf(PropTypes.object),
-    animationTime: PropTypes.number
-};
-AirrMayer.defaultProps = {
     /**
      * The name of the mayer. Must be unique among others mayers in scene. Will be used as identification.
      */
-    name: "",
+    name: PropTypes.string.isRequired,
     /**
-     * Parent scene height
+     * Extra styles to apply on Mayer's DOM element
      */
-    avaibleHeight: null,
+    style: PropTypes.object,
+    /**
+     * Parent scene height. Set by parent scene itseld. Do not overwrite!
+     */
+    avaibleHeight: PropTypes.number.isRequired,
     /**
      * Side from which mayer content box will enter
      */
-    appearFrom: "bottom",
+    appearFrom: PropTypes.oneOf(["top", "bottom", "left", "right"]),
     /**
      * Side to which mayer content box will leave
      */
-    leaveTo: "bottom",
+    leaveTo: PropTypes.oneOf(["top", "bottom", "left", "right"]),
     /**
      * Content of mayer
-     */    
-    content: null,
+     */
+
+    content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     /**
      * Array with buttons configuration
      */
-    buttons: [],
+    buttons: PropTypes.arrayOf(
+        PropTypes.shape({
+            /**
+             * Extra class names to use upon button
+             */
+            className: PropTypes.string,
+            /**
+             * Extra attributes to apply on HTML element
+             */
+            attrs: PropTypes.object,
+            /**
+             * Additional inline styles
+             */
+            style: PropTypes.object,
+            /**
+             * OnClick function handler
+             */
+            handler: PropTypes.func,
+            /**
+             * Content to render inside Mayer. Might be string or ReactElement.
+             */
+            content: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+        })
+    ),
     /**
      * Time in miliseconds of mayer's appear/disappear animation
      */
+    animationTime: PropTypes.number
+};
+AirrMayer.defaultProps = {
+    name: "",
+    style: null,
+    avaibleHeight: null,
+    appearFrom: "bottom",
+    leaveTo: "bottom",
+    content: null,
+    buttons: [],
     animationTime: 300
 };

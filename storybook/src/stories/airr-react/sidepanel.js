@@ -25,3 +25,19 @@ export default () => {
 
     return <SceneWrapper {...properties} />;
 };
+
+
+function getSidepanelValue(isOn, side, size, enabled, isShown) {
+    if (isOn === "no") {
+        return null;
+    }
+
+    return {
+        type: Sidepanel,
+        size,
+        side,
+        enabled,
+        isShown,
+        children: <div>child</div>
+    };
+}

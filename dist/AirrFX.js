@@ -4,27 +4,12 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = AirrFX;
-/**
- * Animation utiliy class. Performs css based transition animations
- */
 function AirrFX() {}
 
-/**
- * Animate passed HTML element with power of css transitions
- * 
- * @param {HTMLElement} element
- * @param {object} startProps css properties that will be set prior the animation
- * @param {array} transitionProps array of css transition definitions, e.g. ['opacity 700ms ease-in', 'transform .4s ease-out']. Compatibility props like `-webkit-transform` are not needed as they will be added automatically
- * @param {object} endProps target css properties values that animation will go to
- * @param {function} preAnimationCallback callback to call before animation begins
- * @param {integer} endAfter time in miliseconds after which `endCallback` will be invoke
- * @param {function} endCallback function to call after endAfter time parameter is gone
- * @returns {void}
- */
 AirrFX.doTransitionAnimation = function (element, startProps, transitionProps, endProps, preAnimationCallback, endAfter, endCallback) {
     element.style.webkitTransition = "none";
     element.style.transition = "none";
-    // eslint-disable-next-line
+
     element.offsetHeight;
 
     element.style.webkitBackfaceVisibility = "hidden";
@@ -46,7 +31,6 @@ AirrFX.doTransitionAnimation = function (element, startProps, transitionProps, e
         preAnimationCallback();
     }
 
-    // eslint-disable-next-line
     element.offsetHeight;
 
     if (compatibilityString) {
@@ -58,7 +42,6 @@ AirrFX.doTransitionAnimation = function (element, startProps, transitionProps, e
     }
     element.style.transition = transitionString;
 
-    // eslint-disable-next-line
     element.offsetHeight;
 
     for (var _prop in endProps) {
@@ -75,17 +58,6 @@ AirrFX.doTransitionAnimation = function (element, startProps, transitionProps, e
     }
 };
 
-/**
- * Used by Mayers for leaving animation
- * 
- * @param {HTMLElement} dom
- * @param {int} width
- * @param {int} height
- * @param {int} t time in miliseconds
- * @param {string} headTo top,bottom,left,right
- * @param {function} callback
- * @returns {void}
- */
 AirrFX.doOverlayOutAnimation = function (dom, width, height, t, headTo, callback) {
     var startProps = { opacity: 1 };
     var endProps = { zIndex: 102, opacity: 0 };
@@ -117,17 +89,6 @@ AirrFX.doOverlayOutAnimation = function (dom, width, height, t, headTo, callback
     });
 };
 
-/**
- * Used by Mayers for entering animation
- * 
- * @param {HTMLElement} dom
- * @param {int} width
- * @param {int} height
- * @param {int} t time in miliseconds
- * @param {string} appearFrom top,bottom,left,right direction from which element will appear on the screen
- * @param {function} callback
- * @returns {void}
- */
 AirrFX.doOverlayInAnimation = function (dom, width, height, t, appearFrom, callback) {
     var startProps = { opacity: 0 };
 
@@ -163,14 +124,6 @@ AirrFX.doOverlayInAnimation = function (dom, width, height, t, appearFrom, callb
     });
 };
 
-/**
- * Used for animating scroll in vertical axis
- * 
- * @param {HTMLElement} element
- * @param {int} scrollDuration time in miliseconds
- * @param {string} direction top or bottom
- * @returns {void}
- */
 AirrFX.doVerticalScrollAnimation = function (element, scrollDuration, direction) {
     if (["top", "bottom"].indexOf(direction) === -1) {
         throw new Error("Invalid direction parameter speciefied");

@@ -8,6 +8,10 @@ module.exports = (storybookBaseConfig, configType, defaultConfig) => {
     // Return the altered config
 
     defaultConfig.resolve.symlinks = false;
+    defaultConfig.module.rules.push({
+        test: /\.mkd$/,
+        use: "raw-loader"
+    });
 
     return defaultConfig;
 };

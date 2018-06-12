@@ -31,9 +31,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var AirrMayer = function (_Component) {
     _inherits(AirrMayer, _Component);
 
-    // <button class="btn text alert">YES</button>
-    // <button class="btn text success">CANCEL</button>
-
     function AirrMayer(props) {
         _classCallCheck(this, AirrMayer);
 
@@ -47,17 +44,10 @@ var AirrMayer = function (_Component) {
         }
         return _this;
     }
-    /**
-     * Creates button upon passed config 
-     * @param {object} config 
-     * @param {int} index 
-     * @returns {ReactElement}
-     */
-
 
     _createClass(AirrMayer, [{
-        key: "renderButton",
-        value: function renderButton(config, index) {
+        key: "__renderButton",
+        value: function __renderButton(config, index) {
             var className = "btn text";
             if (config.className) {
                 className += " " + config.className;
@@ -89,23 +79,12 @@ var AirrMayer = function (_Component) {
 
             this.animateIn();
         }
-        /**
-         * Animates Mayers html dom element into the screen
-         */
-
     }, {
         key: "animateIn",
         value: function animateIn() {
-            //        (element, startProps, transitionProps, endProps, preAnimationCallback, endAfter, endCallback) {
             _AirrFX2.default.doTransitionAnimation(this.refDOMMayer.current.querySelector(".bg"), { opacity: 0 }, ["opacity " + this.props.animationTime + "ms ease-out"], { opacity: 1 });
             _AirrFX2.default.doOverlayInAnimation(this.refDOMCtn.current, this.refDOMMayer.current.clientWidth, this.refDOMMayer.current.clientHeight, this.props.animationTime, this.props.appearFrom);
         }
-
-        /**
-         * Animates Mayers html dom element out of the screen 
-         * @param {function} callback Called after animation end
-         */
-
     }, {
         key: "animateOut",
         value: function animateOut(callback) {
@@ -120,13 +99,17 @@ var AirrMayer = function (_Component) {
             var buttons = [];
             if (this.props.buttons) {
                 this.props.buttons.forEach(function (config, index) {
-                    buttons.push(_this2.renderButton(config, index));
+                    buttons.push(_this2.__renderButton(config, index));
                 });
             }
 
             return _react2.default.createElement(
                 "div",
-                { className: "airr-mayer", ref: this.refDOMMayer },
+                {
+                    className: "airr-mayer",
+                    ref: this.refDOMMayer,
+                    style: this.props.style
+                },
                 _react2.default.createElement("div", { className: "bg" }),
                 _react2.default.createElement(
                     "div",
@@ -155,40 +138,39 @@ exports.default = AirrMayer;
 
 AirrMayer.propTypes = {
     name: _propTypes2.default.string.isRequired,
+
+    style: _propTypes2.default.object,
+
     avaibleHeight: _propTypes2.default.number.isRequired,
+
     appearFrom: _propTypes2.default.oneOf(["top", "bottom", "left", "right"]),
+
     leaveTo: _propTypes2.default.oneOf(["top", "bottom", "left", "right"]),
+
+
     content: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
-    buttons: _propTypes2.default.arrayOf(_propTypes2.default.object),
+
+    buttons: _propTypes2.default.arrayOf(_propTypes2.default.shape({
+        className: _propTypes2.default.string,
+
+        attrs: _propTypes2.default.object,
+
+        style: _propTypes2.default.object,
+
+        handler: _propTypes2.default.func,
+
+        content: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object])
+    })),
+
     animationTime: _propTypes2.default.number
 };
 AirrMayer.defaultProps = {
-    /**
-     * The name of the mayer. Must be unique among others mayers in scene. Will be used as identification.
-     */
     name: "",
-    /**
-     * Parent scene height
-     */
+    style: null,
     avaibleHeight: null,
-    /**
-     * Side from which mayer content box will enter
-     */
     appearFrom: "bottom",
-    /**
-     * Side to which mayer content box will leave
-     */
     leaveTo: "bottom",
-    /**
-     * Content of mayer
-     */
     content: null,
-    /**
-     * Array with buttons configuration
-     */
     buttons: [],
-    /**
-     * Time in miliseconds of mayer's appear/disappear animation
-     */
     animationTime: 300
 };
