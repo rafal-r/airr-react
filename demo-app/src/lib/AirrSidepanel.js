@@ -20,14 +20,6 @@ export default class AirrSidepanel extends Component {
 
     lastTouch;
 
-    // state = {
-    //     side: this.props.side,
-    //     isShown: this.props.isShown,
-    //     sizeFactor: this.props.sizeFactor,
-    //     sceneWidth: this.props.sceneWidth,
-    //     sceneHeight: this.props.sceneHeight
-    // };
-
     startEvent = isMobileDevice ? "touchstart" : "mousedown";
     moveEvent = isMobileDevice ? "touchmove" : "mousemove";
     endEvent = isMobileDevice ? "touchend" : "mouseup";
@@ -491,6 +483,8 @@ export default class AirrSidepanel extends Component {
 
         this.lastSide = side;
         this.lastSizeFactor = sizeFactor;
+        this.lastSceneWidth = this.props.sceneWidth;
+        this.lastSceneHeight = this.props.sceneHeight;
     }
 
     componentDidUpdate(prevProps) {
@@ -501,14 +495,19 @@ export default class AirrSidepanel extends Component {
 
     render() {
         const className =
-            "airr-sidepanel " + this.props.side + " " + (this.props.enabled ? "enabled" : "disabled");            
+            "airr-sidepanel " +
+            this.props.side +
+            " " +
+            (this.props.enabled ? "enabled" : "disabled");
         const dragCtnStyle = {};
         let sidepanelStyle;
         let bgLayerStyle;
 
         if (
             this.props.side !== this.lastSide ||
-            this.props.sizeFactor !== this.lastSizeFactor
+            this.props.sizeFactor !== this.lastSizeFactor ||
+            this.props.sceneWidth !== this.lastSceneWidth ||
+            this.props.sceneHeight !== this.lastSceneHeight
         ) {
             this.updateSideProps(this.props.side, this.props.sizeFactor);
         }
@@ -581,11 +580,11 @@ AirrSidepanel.propTypes = {
     /**
      * Parent scene width dimension. Set by parent scene. Do not overwrite!.
      */
-    sceneWidth: PropTypes.number.isRequired,
+    sceneWidth: PropTypes.number,
     /**
      * Parent scene height dimension. Set by parent scene. Do not overwrite!.
      */
-    sceneHeight: PropTypes.number.isRequired,
+    sceneHeight: PropTypes.number,
     /**
      * Do you want to animate sidepanel showing in/out
      */

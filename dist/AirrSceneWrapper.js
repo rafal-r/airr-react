@@ -508,6 +508,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                 });
             }
 
+            config.avaibleHeight = this.refDOM.current.clientHeight || window.innerHeight;
+
             return config;
         }
     }, {
@@ -517,9 +519,25 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                 this.refDOMContainer.current.style.height = this.refDOMContainer.current.parentNode.clientHeight - this.state.navbarHeight + "px";
             }
 
+            if (this.state.sidepanel) {
+                this.__updateSidepanelSizeProps(this.refDOM.current.clientWidth, this.refDOM.current.clientHeight);
+            }
+
             if (this.state.activeViewName && this.refsCOMPViews[this.state.activeViewName] && typeof this.refsCOMPViews[this.state.activeViewName].current.viewAfterActivation === "function") {
                 this.refsCOMPViews[this.state.activeViewName].current.viewAfterActivation();
             }
+        }
+    }, {
+        key: "__updateSidepanelSizeProps",
+        value: function __updateSidepanelSizeProps(width, height) {
+            this.setState({
+                sidepanel: (0, _immutabilityHelper2.default)(this.state.sidepanel, {
+                    props: {
+                        sceneWidth: { $set: width },
+                        sceneHeight: { $set: height }
+                    }
+                })
+            });
         }
     }, {
         key: "__prepareSidepanel",
@@ -939,9 +957,9 @@ AirrSceneWrapper.propTypes = {
 
             sizeFactor: _propTypes2.default.number,
 
-            sceneWidth: _propTypes2.default.number.isRequired,
+            sceneWidth: _propTypes2.default.number,
 
-            sceneHeight: _propTypes2.default.number.isRequired,
+            sceneHeight: _propTypes2.default.number,
 
             animateShown: _propTypes2.default.bool,
 

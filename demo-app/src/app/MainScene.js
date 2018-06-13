@@ -30,8 +30,6 @@ export default class MainScene extends SceneWrapper {
             sidepanel: {
                 type: Sidepanel,
                 props: {
-                    sceneWidth: window.innerWidth,
-                    sceneHeight: window.innerHeight,
                     side: sidepanelSide,
                     sizeFactor: sidepanelSizeFactor,
                     isShown: false,
@@ -112,7 +110,6 @@ export default class MainScene extends SceneWrapper {
             content: cfg.content,
             appearFrom: cfg.appearFrom,
             leaveTo: cfg.leaveTo,
-            avaibleHeight: this.props.avaibleHeight,
             buttons: [
                 {
                     content: "Ok",

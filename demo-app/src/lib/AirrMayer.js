@@ -135,7 +135,7 @@ AirrMayer.propTypes = {
      */
     style: PropTypes.object,
     /**
-     * Parent scene height. Set by parent scene itseld. Do not overwrite!
+     * Parent scene height. Set by parent Scene. Do not overwrite!
      */
     avaibleHeight: PropTypes.number.isRequired,
     /**

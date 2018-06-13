@@ -390,13 +390,13 @@ AirrScene.propTypes = {
              */
             sizeFactor: PropTypes.number,
             /**
-             * Parent scene width dimension. Passed by scene itself.
+             * Parent scene width dimension. Set by parent scene. Do not overwrite!.
              */
-            sceneWidth: PropTypes.number.isRequired,
+            sceneWidth: PropTypes.number,
             /**
-             * Parent scene height dimension. Passed by scene itself.
+             * Parent scene height dimension. Set by parent scene. Do not overwrite!.
              */
-            sceneHeight: PropTypes.number.isRequired,
+            sceneHeight: PropTypes.number,
             /**
              * Do you want to animate sidepanel showing in/out
              */
@@ -472,7 +472,7 @@ AirrScene.propTypes = {
              */
             style: PropTypes.object,
             /**
-             * Parent scene height
+             * Parent scene height. Set by parent Scene. Do not overwrite!
              */
             avaibleHeight: PropTypes.number.isRequired,
             /**

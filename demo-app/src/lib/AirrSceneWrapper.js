@@ -619,6 +619,9 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             });
         }
 
+        config.avaibleHeight =
+            this.refDOM.current.clientHeight || window.innerHeight;
+
         return config;
     }
 
@@ -707,6 +710,13 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 "px";
         }
 
+        if (this.state.sidepanel) {
+            this.__updateSidepanelSizeProps(
+                this.refDOM.current.clientWidth,
+                this.refDOM.current.clientHeight
+            );
+        }
+
         /**
          * Call first active view life cycle method - viewAfterActivation
          */
@@ -722,6 +732,22 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         }
     }
 
+    /**
+     * Private utility function for updating sidepanel's sceneWidth,sceneHeight properties
+     * @param {number} width
+     * @param {number} height
+     * @returns {void}
+     */
+    __updateSidepanelSizeProps(width, height) {
+        this.setState({
+            sidepanel: update(this.state.sidepanel, {
+                props: {
+                    sceneWidth: { $set: width },
+                    sceneHeight: { $set: height }
+                }
+            })
+        });
+    }
     /**
      * Private utility function for preparing sidepanel configuration objects
      * @param {object} sidepanel
@@ -1419,13 +1445,13 @@ AirrSceneWrapper.propTypes = {
              */
             sizeFactor: PropTypes.number,
             /**
-             * Parent scene width dimension. Passed by scene itself.
+             * Parent scene width dimension. Set by parent scene. Do not overwrite!.
              */
-            sceneWidth: PropTypes.number.isRequired,
+            sceneWidth: PropTypes.number,
             /**
-             * Parent scene height dimension. Passed by scene itself.
+             * Parent scene height dimension. Set by parent scene. Do not overwrite!.
              */
-            sceneHeight: PropTypes.number.isRequired,
+            sceneHeight: PropTypes.number,
             /**
              * Do you want to animate sidepanel showing in/out
              */
@@ -1501,7 +1527,7 @@ AirrSceneWrapper.propTypes = {
              */
             style: PropTypes.object,
             /**
-             * Parent scene height
+             * Parent scene height. Set by parent Scene. Do not overwrite!
              */
             avaibleHeight: PropTypes.number.isRequired,
             /**

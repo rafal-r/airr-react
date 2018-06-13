@@ -335,9 +335,9 @@ AirrScene.propTypes = {
 
             sizeFactor: _propTypes2.default.number,
 
-            sceneWidth: _propTypes2.default.number.isRequired,
+            sceneWidth: _propTypes2.default.number,
 
-            sceneHeight: _propTypes2.default.number.isRequired,
+            sceneHeight: _propTypes2.default.number,
 
             animateShown: _propTypes2.default.bool,
 

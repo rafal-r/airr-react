@@ -357,6 +357,8 @@ var AirrSidepanel = function (_Component) {
 
             this.lastSide = side;
             this.lastSizeFactor = sizeFactor;
+            this.lastSceneWidth = this.props.sceneWidth;
+            this.lastSceneHeight = this.props.sceneHeight;
         }
     }, {
         key: "componentDidUpdate",
@@ -373,7 +375,7 @@ var AirrSidepanel = function (_Component) {
             var sidepanelStyle = void 0;
             var bgLayerStyle = void 0;
 
-            if (this.props.side !== this.lastSide || this.props.sizeFactor !== this.lastSizeFactor) {
+            if (this.props.side !== this.lastSide || this.props.sizeFactor !== this.lastSizeFactor || this.props.sceneWidth !== this.lastSceneWidth || this.props.sceneHeight !== this.lastSceneHeight) {
                 this.updateSideProps(this.props.side, this.props.sizeFactor);
             }
 
@@ -426,9 +428,9 @@ AirrSidepanel.propTypes = {
 
     sizeFactor: _propTypes2.default.number,
 
-    sceneWidth: _propTypes2.default.number.isRequired,
+    sceneWidth: _propTypes2.default.number,
 
-    sceneHeight: _propTypes2.default.number.isRequired,
+    sceneHeight: _propTypes2.default.number,
 
     animateShown: _propTypes2.default.bool,
 
