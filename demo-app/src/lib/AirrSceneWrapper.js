@@ -523,7 +523,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             console.warn(
                 "[Airr] Scene allready has Mayer with this name: " + config.name
             );
-            return Promise.reject();;
+            return Promise.reject();
         }
 
         //if scene has sidepanel - disable it
@@ -552,41 +552,47 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             mayerConfigIndex !== -1 &&
             (this.refsCOMPMayers[name] && this.refsCOMPMayers[name].current)
         ) {
-            this.refsCOMPMayers[name].current.animateOut(() => {
-                //renew index because after animation
-                //things might have changed
-                mayerConfigIndex = this.state.mayers.findIndex(
-                    item => item.name === name
-                );
+            return new Promise(resolve => {
+                this.refsCOMPMayers[name].current.animateOut(() => {
+                    //renew index because after animation
+                    //things might have changed
+                    mayerConfigIndex = this.state.mayers.findIndex(
+                        item => item.name === name
+                    );
 
-                //last check if stil present
-                if (
-                    mayerConfigIndex !== -1 &&
-                    (this.refsCOMPMayers[name] &&
-                        this.refsCOMPMayers[name].current)
-                ) {
-                    return this.__removeMayer(name).then(() => {
-                        delete this.refsCOMPMayers[name];
+                    //last check if stil present
+                    if (
+                        mayerConfigIndex !== -1 &&
+                        (this.refsCOMPMayers[name] &&
+                            this.refsCOMPMayers[name].current)
+                    ) {
+                        this.__removeMayer(name).then(() => {
+                            delete this.refsCOMPMayers[name];
 
-                        if (this.state.sidepanel) {
-                            let hasMayerLeft = false;
-                            const children = [...this.refDOM.current.children];
-                            children.forEach(item => {
-                                if (item.classList.contains("airr-mayer")) {
-                                    hasMayerLeft = true;
+                            if (this.state.sidepanel) {
+                                let hasMayerLeft = false;
+                                const children = [
+                                    ...this.refDOM.current.children
+                                ];
+                                children.forEach(item => {
+                                    if (item.classList.contains("airr-mayer")) {
+                                        hasMayerLeft = true;
+                                    }
+                                });
+
+                                if (!hasMayerLeft) {
+                                    this.enableSidepanel();
                                 }
-                            });
-
-                            if (!hasMayerLeft) {
-                                this.enableSidepanel();
                             }
-                        }
-                    });
-                }
+
+                            resolve();
+                        });
+                    }
+                });
             });
-        } else {
-            return Promise.resolve();
         }
+
+        return Promise.resolve();
     }
 
     /**

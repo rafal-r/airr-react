@@ -431,7 +431,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                 return item.name === config.name;
             }) !== -1) {
                 console.warn("[Airr] Scene allready has Mayer with this name: " + config.name);
-                return Promise.reject();;
+                return Promise.reject();
             }
 
             if (this.state.sidepanel && this.state.sidepanel.props.enabled) {
@@ -452,34 +452,38 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             });
 
             if (mayerConfigIndex !== -1 && this.refsCOMPMayers[name] && this.refsCOMPMayers[name].current) {
-                this.refsCOMPMayers[name].current.animateOut(function () {
-                    mayerConfigIndex = _this7.state.mayers.findIndex(function (item) {
-                        return item.name === name;
-                    });
-
-                    if (mayerConfigIndex !== -1 && _this7.refsCOMPMayers[name] && _this7.refsCOMPMayers[name].current) {
-                        return _this7.__removeMayer(name).then(function () {
-                            delete _this7.refsCOMPMayers[name];
-
-                            if (_this7.state.sidepanel) {
-                                var hasMayerLeft = false;
-                                var children = [].concat(_toConsumableArray(_this7.refDOM.current.children));
-                                children.forEach(function (item) {
-                                    if (item.classList.contains("airr-mayer")) {
-                                        hasMayerLeft = true;
-                                    }
-                                });
-
-                                if (!hasMayerLeft) {
-                                    _this7.enableSidepanel();
-                                }
-                            }
+                return new Promise(function (resolve) {
+                    _this7.refsCOMPMayers[name].current.animateOut(function () {
+                        mayerConfigIndex = _this7.state.mayers.findIndex(function (item) {
+                            return item.name === name;
                         });
-                    }
+
+                        if (mayerConfigIndex !== -1 && _this7.refsCOMPMayers[name] && _this7.refsCOMPMayers[name].current) {
+                            _this7.__removeMayer(name).then(function () {
+                                delete _this7.refsCOMPMayers[name];
+
+                                if (_this7.state.sidepanel) {
+                                    var hasMayerLeft = false;
+                                    var children = [].concat(_toConsumableArray(_this7.refDOM.current.children));
+                                    children.forEach(function (item) {
+                                        if (item.classList.contains("airr-mayer")) {
+                                            hasMayerLeft = true;
+                                        }
+                                    });
+
+                                    if (!hasMayerLeft) {
+                                        _this7.enableSidepanel();
+                                    }
+                                }
+
+                                resolve();
+                            });
+                        }
+                    });
                 });
-            } else {
-                return Promise.resolve();
             }
+
+            return Promise.resolve();
         }
     }, {
         key: "__prepareMayerConfig",
