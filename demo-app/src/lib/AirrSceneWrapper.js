@@ -397,7 +397,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 sceneProps
             );
         } else {
-            return Promise.reject();
+            return Promise.reject("Invalid `view` argument specify");
         }
     }
 
@@ -1497,9 +1497,9 @@ AirrSceneWrapper.propTypes = {
                  */
                 name: PropTypes.string.isRequired,
                 /**
-                 * Titlebar name. if parent scene navbar is enabled, this title will be showed there
+                 * Titlebar name. if parent scene navbar is enabled, this title will be showed there. Might be string or React element.
                  */
-                title: PropTypes.string,
+                title: PropTypes.oneOfType(PropTypes.string, PropTypes.object),
                 /**
                  * Determine if this view is active. Set by parent scene.
                  */
