@@ -1,6 +1,6 @@
 {
 	"name": "airr-react",
-	"version": "2.0.12",
+	"version": "2.0.13",
 	"description": "Reusable React components for building Single Page Apps.",
 	"dependencies": {
 		"immutability-helper": "^2.5.0",
