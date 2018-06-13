@@ -523,7 +523,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             console.warn(
                 "[Airr] Scene allready has Mayer with this name: " + config.name
             );
-            return;
+            return Promise.reject();;
         }
 
         //if scene has sidepanel - disable it
@@ -531,7 +531,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             this.disableSidepanel();
         }
 
-        //add special functionality
+        //add special functionality,props
         const preparedConfig = this.__prepareMayerConfig(config);
 
         return this.__addMayer(preparedConfig);
@@ -584,6 +584,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                     });
                 }
             });
+        } else {
+            return Promise.resolve();
         }
     }
 

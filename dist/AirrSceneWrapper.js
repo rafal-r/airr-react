@@ -431,7 +431,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                 return item.name === config.name;
             }) !== -1) {
                 console.warn("[Airr] Scene allready has Mayer with this name: " + config.name);
-                return;
+                return Promise.reject();;
             }
 
             if (this.state.sidepanel && this.state.sidepanel.props.enabled) {
@@ -477,6 +477,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                         });
                     }
                 });
+            } else {
+                return Promise.resolve();
             }
         }
     }, {
