@@ -9,6 +9,10 @@ export const getNextCommonViewName = views => {
     return viewNameTpl.replace("*", views[views.length - 1].props.number + 1);
 };
 
+export const getNextCommonViewName2 = views => {
+    return viewNameTpl.replace("*", views.length + 1);
+};
+
 export const countCommonViews = views => {
     return views.reduce((prev, curr) => {
         if (curr.type === CommonView) {

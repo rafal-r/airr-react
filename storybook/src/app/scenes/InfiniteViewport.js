@@ -28,6 +28,7 @@ export default class InfiniteViewport extends SceneWrapper {
         root.style.height = "100%";
         root.children[0].style.height = "100%";
         root.children[0].children[0].style.height = "100%";
+        super.componentDidMount();
     }
 
     componentWillUnmount() {

@@ -1,8 +1,8 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { withKnobs } from "@storybook/addon-knobs/react";
-import SidepanelStory from "./airr-react/sidepanel";
-import KitchenSinkStory from "./airr-react/kitchensink";
+import SidepanelExample from "./interactive-examples/sidepanel";
+import SceneWrapperExample from "./interactive-examples/scene-wrapper";
 import { withInfo } from "@storybook/addon-info";
 import {
     SceneWrapper,
@@ -12,6 +12,7 @@ import {
     Sidepanel,
     Mayer
 } from "../../airr-react/Airr";
+import SimpleScene from "../app/scenes/SimpleScene";
 import SceneMd from "../../airr-react/Scene.mkd";
 import MayerMd from "../../airr-react/Mayer.mkd";
 import SceneWrapperMd from "../../airr-react/SceneWrapper.mkd";
@@ -20,18 +21,54 @@ import ViewMd from "../../airr-react/View.mkd";
 import ViewWrapperMd from "../../airr-react/ViewWrapper.mkd";
 import "../css/styles.css";
 
-storiesOf("Examples", module)
+storiesOf("Interactive examples", module)
     .addDecorator(withKnobs)
     .add(
-        "Kitchensink",
-        withInfo("Scene component's kitchensink story")(KitchenSinkStory)
+        "SceneWrapper",
+        withInfo(
+            "This example provides overview of most vital features of SceneWrapper Component - the heart of the library."
+        )(SceneWrapperExample)
+    )
+    .add(
+        "Sidepanel",
+        withInfo(
+            "The addon component to the SceneWrapper. Provides helpful panel hidden in one of the screen corners. Can be shown with a swipe gesture."
+        )(SidepanelExample)
     );
 
 //show with examples how to use certain Components method
 //example: ::changeView (can have at least 3 examples)
 //::openSidepanel, addMayer etc.
 //mostly SceneWrapper API
-storiesOf("Component's API", module);
+//view lifecycle methods
+
+storiesOf("Component's API/SceneWrapper/::changeView", module)
+    .add(
+        "Push new view from viewsConfig",
+        withInfo("Check SimpleScene::pushNewViewFromViewsConfig method for implementation details.")(() => (
+            <SimpleScene handleMethod="pushNewViewFromViewsConfig" />
+        ))
+    )
+    .add(
+        "Push new view via raw config",
+        withInfo("Check SimpleScene::pushNewViewFromRawConfigDefinition method for implementation details.")(() => (
+            <SimpleScene handleMethod="pushNewViewFromRawConfigDefinition" />
+        ))
+    )
+    .add(
+        "Go to another view",
+        withInfo("Check SimpleScene::goToAnotherView method for implementation details.")(() => (
+            <SimpleScene handleMethod="goToAnotherView" />
+        ))
+    )
+    .add(
+        "Update current view",
+        withInfo("Check SimpleScene::updateCurrentView method for implementation details.")(() => <SimpleScene handleMethod="updateCurrentView" />)
+    )
+    .add(
+        "Update scene",
+        withInfo("Check SimpleScene::updateScene method for implementation details.")(() => <SimpleScene handleMethod="updateScene" />)
+    );
 
 storiesOf("Docs", module)
     .add(

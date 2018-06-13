@@ -1,23 +1,13 @@
 import React from "react";
 import {
-    withKnobs,
-    withKnobsOptions,
     text,
     number,
     boolean,
-    color,
     select,
-    selectV2,
-    array,
-    date,
-    button,
-    object,
-    files
+    selectV2
 } from "@storybook/addon-knobs/react";
 import { action } from "@storybook/addon-actions";
 import "../../../airr-react/airr-react.css";
-
-import { viewName as HelloWorldViewName } from "../../app/views/HelloWorld";
 import InfiniteViewport from "../../app/scenes/InfiniteViewport";
 
 export default function() {
