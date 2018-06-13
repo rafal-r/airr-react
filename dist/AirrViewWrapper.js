@@ -81,7 +81,7 @@ exports.default = AirrViewWrapper;
 AirrViewWrapper.propTypes = {
   name: _propTypes2.default.string.isRequired,
 
-  title: _propTypes2.default.string,
+  title: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
 
   active: _propTypes2.default.bool,
 

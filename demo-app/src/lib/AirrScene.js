@@ -436,7 +436,7 @@ AirrScene.propTypes = {
                 /**
                  * Titlebar name. if parent scene navbar is enabled, this title will be showed there. Might be string or React element.
                  */
-                title: PropTypes.oneOfType(PropTypes.string, PropTypes.object),
+                title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
                 /**
                  * Determine if this view is active. Set by parent scene.
                  */
@@ -485,7 +485,6 @@ AirrScene.propTypes = {
             /**
              * Content of mayer
              */
-
             content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
             /**
              * Array with buttons configuration
@@ -526,7 +525,7 @@ AirrScene.propTypes = {
     /**
      * Title that will be use in parent Scene navbar title section
      */
-    title: PropTypes.string,
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     /**
      * Extra, space separated classes names to use upon first div element.
      */

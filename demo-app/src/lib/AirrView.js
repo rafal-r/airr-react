@@ -34,11 +34,10 @@ AirrView.propTypes = {
     /**
      * Titlebar name. if parent scene navbar is enabled, this title will be showed there. Might be string or React element.
      */
-    title: PropTypes.oneOfType(PropTypes.string, PropTypes.object),
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     /**
      * Determine if this view is active. Set by parent scene.
      */
-
     active: PropTypes.bool,
     /**
      * Refference to view's root DOM element.

@@ -355,7 +355,7 @@ AirrScene.propTypes = {
         props: _propTypes2.default.shape({
             name: _propTypes2.default.string.isRequired,
 
-            title: _propTypes2.default.oneOfType(_propTypes2.default.string, _propTypes2.default.object),
+            title: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
 
             active: _propTypes2.default.bool,
 
@@ -378,7 +378,6 @@ AirrScene.propTypes = {
 
         leaveTo: _propTypes2.default.oneOf(["top", "bottom", "left", "right"]),
 
-
         content: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
 
         buttons: _propTypes2.default.arrayOf(_propTypes2.default.shape({
@@ -396,7 +395,7 @@ AirrScene.propTypes = {
         animationTime: _propTypes2.default.number
     })),
 
-    title: _propTypes2.default.string,
+    title: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
 
     className: _propTypes2.default.string
 };
