@@ -107,6 +107,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             animation: props.animation,
             views: props.views,
             sidepanel: props.sidepanel,
+            sidepanelVisibilityCallback: props.sidepanelVisibilityCallback,
             GUIDisabled: props.GUIDisabled,
             GUIDisableCover: props.GUIDisableCover,
             mayers: props.mayers,
@@ -764,15 +765,20 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     __prepareSidepanel(sidepanel) {
         sidepanel.props.ref = this.refCOMPSidepanel;
         sidepanel.props.visibilityCallback = isShown => {
-            this.setState({
-                sidepanel: update(this.state.sidepanel, {
-                    props: {
-                        isShown: {
-                            $set: isShown
+            this.setState(
+                {
+                    sidepanel: update(this.state.sidepanel, {
+                        props: {
+                            isShown: {
+                                $set: isShown
+                            }
                         }
-                    }
-                })
-            });
+                    })
+                },
+                () =>
+                    this.state.sidepanelVisibilityCallback &&
+                    this.state.sidepanelVisibilityCallback(isShown)
+            );
         };
 
         if (typeof sidepanel.props.enabled === "undefined") {
@@ -1322,6 +1328,7 @@ AirrSceneWrapper.defaultProps = {
     viewsAnimationEndCallback: null,
     active: false,
     sidepanel: null,
+    sidepanelVisibilityCallback: null,
     views: [],
     mayers: [],
     title: "",
@@ -1479,6 +1486,11 @@ AirrSceneWrapper.propTypes = {
         })
     }),
     /**
+     * This function will be called when sidepanel changes it's visibility.
+     * It's argument will be isShown bool.
+     */
+    sidepanelVisibilityCallback: PropTypes.func,
+    /**
      * Array of `views`. Every view object declaration must contain two properties: `type` and `props`.
      */
     views: PropTypes.arrayOf(
@@ -1499,7 +1511,10 @@ AirrSceneWrapper.propTypes = {
                 /**
                  * Titlebar name. if parent scene navbar is enabled, this title will be showed there. Might be string or React element.
                  */
-                title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+                title: PropTypes.oneOfType([
+                    PropTypes.string,
+                    PropTypes.object
+                ]),
                 /**
                  * Determine if this view is active. Set by parent scene.
                  */

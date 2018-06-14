@@ -356,7 +356,7 @@ export default class AirrSidepanel extends Component {
                 this.translateTo(val);
             } else {
                 if (this.props.isShown !== this.isShown()) {
-                    this.props.visibilityCallback(this.props.isShown);
+                    this.props.visibilityCallback(this.isShown());
                 }
             }
         }
