@@ -204,6 +204,11 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
 
         _this.openSidepanel = function () {
             if (_this.state.sidepanel && _this.refCOMPSidepanel.current) {
+                _this.setState({
+                    sidepanel: (0, _immutabilityHelper2.default)(_this.state.sidepanel, {
+                        props: { enabled: { $set: true } }
+                    })
+                });
                 return _this.refCOMPSidepanel.current.show();
             }
 
@@ -280,6 +285,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             animation: props.animation,
             views: props.views,
             sidepanel: props.sidepanel,
+            sidepanelVisibilityCallback: props.sidepanelVisibilityCallback,
             GUIDisabled: props.GUIDisabled,
             GUIDisableCover: props.GUIDisableCover,
             mayers: props.mayers,
@@ -560,6 +566,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                             }
                         }
                     })
+                }, function () {
+                    return _this9.state.sidepanelVisibilityCallback && _this9.state.sidepanelVisibilityCallback(isShown);
                 });
             };
 
@@ -897,6 +905,7 @@ AirrSceneWrapper.defaultProps = {
     viewsAnimationEndCallback: null,
     active: false,
     sidepanel: null,
+    sidepanelVisibilityCallback: null,
     views: [],
     mayers: [],
     title: "",
@@ -967,8 +976,6 @@ AirrSceneWrapper.propTypes = {
 
             sceneHeight: _propTypes2.default.number,
 
-            animateShown: _propTypes2.default.bool,
-
             visibilityCallback: _propTypes2.default.func,
 
             animationTime: _propTypes2.default.number,
@@ -976,6 +983,8 @@ AirrSceneWrapper.propTypes = {
             bgLayerOpacity: _propTypes2.default.number
         })
     }),
+
+    sidepanelVisibilityCallback: _propTypes2.default.func,
 
     views: _propTypes2.default.arrayOf(_propTypes2.default.shape({
         type: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.object]).isRequired,

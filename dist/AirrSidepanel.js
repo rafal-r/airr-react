@@ -223,7 +223,7 @@ var AirrSidepanel = function (_Component) {
                     _this.translateTo(val);
                 } else {
                     if (_this.props.isShown !== _this.isShown()) {
-                        _this.props.visibilityCallback(_this.props.isShown);
+                        _this.props.visibilityCallback(_this.isShown());
                     }
                 }
             }
@@ -232,6 +232,7 @@ var AirrSidepanel = function (_Component) {
         }, _this.hide = function () {
             return _this.translateTo(_this.hiddenVal);
         }, _this.show = function () {
+            _this.enable();
             return _this.translateTo(_this.shownVal);
         }, _this.isShown = function () {
             return _this.refDOM.current.offsetParent !== null;
@@ -432,8 +433,6 @@ AirrSidepanel.propTypes = {
 
     sceneHeight: _propTypes2.default.number,
 
-    animateShown: _propTypes2.default.bool,
-
     visibilityCallback: _propTypes2.default.func,
 
     animationTime: _propTypes2.default.number,
@@ -447,7 +446,6 @@ AirrSidepanel.defaultProps = {
     sizeFactor: 2 / 3,
     sceneWidth: null,
     sceneHeight: null,
-    animateShown: true,
     visibilityCallback: function visibilityCallback(isShown) {},
     animationTime: 200,
     bgLayerOpacity: 0.7

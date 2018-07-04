@@ -339,8 +339,6 @@ AirrScene.propTypes = {
 
             sceneHeight: _propTypes2.default.number,
 
-            animateShown: _propTypes2.default.bool,
-
             visibilityCallback: _propTypes2.default.func,
 
             animationTime: _propTypes2.default.number,
