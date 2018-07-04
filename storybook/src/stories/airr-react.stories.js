@@ -33,7 +33,7 @@ storiesOf("Interactive examples", module)
         "Sidepanel",
         withInfo(
             "The addon component to the SceneWrapper. Provides helpful panel hidden in one of the screen corners. Can be shown with a swipe gesture."
-        )(SidepanelExample)
+        )(() => <SidepanelExample />)
     );
 
 //show with examples how to use certain Components method
@@ -45,30 +45,43 @@ storiesOf("Interactive examples", module)
 storiesOf("Component's API/SceneWrapper/::changeView", module)
     .add(
         "Push new view from viewsConfig",
-        withInfo("Check SimpleScene::pushNewViewFromViewsConfig method for implementation details.")(() => (
-            <SimpleScene handleMethod="pushNewViewFromViewsConfig" />
-        ))
+        withInfo(
+            "Check SimpleScene::pushNewViewFromViewsConfig method for implementation details."
+        )(() => <SimpleScene handleMethod="pushNewViewFromViewsConfig" />)
     )
     .add(
         "Push new view via raw config",
-        withInfo("Check SimpleScene::pushNewViewFromRawConfigDefinition method for implementation details.")(() => (
+        withInfo(
+            "Check SimpleScene::pushNewViewFromRawConfigDefinition method for implementation details."
+        )(() => (
             <SimpleScene handleMethod="pushNewViewFromRawConfigDefinition" />
         ))
     )
     .add(
         "Go to another view",
-        withInfo("Check SimpleScene::goToAnotherView method for implementation details.")(() => (
-            <SimpleScene handleMethod="goToAnotherView" />
-        ))
+        withInfo(
+            "Check SimpleScene::goToAnotherView method for implementation details."
+        )(() => <SimpleScene handleMethod="goToAnotherView" />)
     )
     .add(
         "Update current view",
-        withInfo("Check SimpleScene::updateCurrentView method for implementation details.")(() => <SimpleScene handleMethod="updateCurrentView" />)
+        withInfo(
+            "Check SimpleScene::updateCurrentView method for implementation details."
+        )(() => <SimpleScene handleMethod="updateCurrentView" />)
     )
     .add(
         "Update scene",
-        withInfo("Check SimpleScene::updateScene method for implementation details.")(() => <SimpleScene handleMethod="updateScene" />)
+        withInfo(
+            "Check SimpleScene::updateScene method for implementation details."
+        )(() => <SimpleScene handleMethod="updateScene" />)
     );
+
+storiesOf("Component's API/SceneWrapper", module).add(
+    "::openSidepanel",
+    withInfo(
+        "Check SimpleScene::openSidepanelExample method for implementation details."
+    )(() => <SimpleScene handleMethod="openSidepanelExample" />)
+);
 
 storiesOf("Docs", module)
     .add(

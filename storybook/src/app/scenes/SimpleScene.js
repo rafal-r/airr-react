@@ -1,5 +1,5 @@
 import React from "react";
-import { SceneWrapper } from "../../../airr-react/Airr";
+import { SceneWrapper, Sidepanel } from "../../../airr-react/Airr";
 import HelloWorld, {
     viewName as HelloWorldViewName
 } from "../views/HelloWorld";
@@ -15,6 +15,39 @@ export default class SimpleScene extends SceneWrapper {
         this.state = {
             ...this.state,
             activeViewName: HelloWorldViewName,
+            sidepanel: {
+                type: Sidepanel,
+                props: {
+                    side: "top",
+                    children: (
+                        <div
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                textAlign: "center",
+                                paddingTop: "2rem",
+                                color: "white",
+                                backgroundColor: "purple"
+                            }}
+                        >
+                            I am the Sidepanel<br />
+                            {this.props.handleSidepanelMethod && (
+                                <button
+                                    style={{ fontSize: "2rem" }}
+                                    onClick={
+                                        this[this.props.handleSidepanelMethod]
+                                    }
+                                >
+                                    Click me
+                                </button>
+                            )}
+                        </div>
+                    ),
+                    enabled: false,
+                    sizeFactor: 1 / 3,
+                    animationTime: 200
+                }
+            },
             views: this.props.views && [
                 this.getFreshViewConfig(CommonViewNameTpl),
                 this.getFreshViewConfig(HelloWorldViewName)
@@ -106,6 +139,14 @@ export default class SimpleScene extends SceneWrapper {
                 style: { backgroundColor: "green" }
             }
         );
+    };
+
+    openSidepanelExample = () => {
+        return this.openSidepanel();
+    };
+
+    hideSidepanelExample = () => {
+        return this.hideSidepanel();
     };
 
     viewsConfig = {

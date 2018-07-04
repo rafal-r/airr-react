@@ -1,6 +1,7 @@
 import { SceneWrapper } from "../../../airr-react/Airr";
 
 export default class JustScene extends SceneWrapper {
+    
     componentDidMount() {
         //these rules are only added to sustain proper render in storybooks
         const root = document.getElementById("root");
