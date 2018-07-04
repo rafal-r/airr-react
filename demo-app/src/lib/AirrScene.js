@@ -398,10 +398,6 @@ AirrScene.propTypes = {
              */
             sceneHeight: PropTypes.number,
             /**
-             * Do you want to animate sidepanel showing in/out
-             */
-            animateShown: PropTypes.bool,
-            /**
              * Callback called when sidepanel changes its visibility during touch events. Passed by scene itself.
              */
             visibilityCallback: PropTypes.func,

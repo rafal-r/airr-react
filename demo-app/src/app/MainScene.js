@@ -33,7 +33,6 @@ export default class MainScene extends SceneWrapper {
                     side: sidepanelSide,
                     sizeFactor: sidepanelSizeFactor,
                     isShown: false,
-                    animateShown: true,
                     children: this.getSidepanelContent(WelcomeViewName)
                 }
             }

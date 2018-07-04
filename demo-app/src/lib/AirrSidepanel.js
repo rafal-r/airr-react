@@ -369,6 +369,7 @@ export default class AirrSidepanel extends Component {
     };
 
     show = () => {
+        this.enable();        
         return this.translateTo(this.shownVal);
     };
 
@@ -586,10 +587,6 @@ AirrSidepanel.propTypes = {
      */
     sceneHeight: PropTypes.number,
     /**
-     * Do you want to animate sidepanel showing in/out
-     */
-    animateShown: PropTypes.bool,
-    /**
      * Callback called when sidepanel changes its visibility during touch events. Set by parent scene. Do not overwrite!.
      */
     visibilityCallback: PropTypes.func,
@@ -609,7 +606,6 @@ AirrSidepanel.defaultProps = {
     sizeFactor: 2 / 3,
     sceneWidth: null,
     sceneHeight: null,
-    animateShown: true,
     visibilityCallback: function(isShown) {},
     animationTime: 200,
     bgLayerOpacity: 0.7

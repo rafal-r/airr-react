@@ -491,6 +491,11 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      */
     openSidepanel = () => {
         if (this.state.sidepanel && this.refCOMPSidepanel.current) {
+            this.setState({
+                sidepanel: update(this.state.sidepanel, {
+                    props: { enabled: { $set: true } }
+                })
+            });
             return this.refCOMPSidepanel.current.show();
         }
 
@@ -712,7 +717,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             this.state.navbarHeight &&
             this.refDOMContainer.current
         ) {
-            //subsctract navbar height from scene's container
+            //substract navbar height from scene's container
             this.refDOMContainer.current.style.height =
                 this.refDOMContainer.current.parentNode.clientHeight -
                 this.state.navbarHeight +
@@ -1467,10 +1472,6 @@ AirrSceneWrapper.propTypes = {
              * Parent scene height dimension. Set by parent scene. Do not overwrite!.
              */
             sceneHeight: PropTypes.number,
-            /**
-             * Do you want to animate sidepanel showing in/out
-             */
-            animateShown: PropTypes.bool,
             /**
              * Callback called when sidepanel changes its visibility during touch events. Passed by scene itself.
              */
