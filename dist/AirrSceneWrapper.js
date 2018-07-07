@@ -99,7 +99,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
         _this.viewsAnimationEndCallback = function () {
             if (Array.isArray(_this.viewsNamesToStayList) && _this.viewsNamesToStayList.length) {
                 _this.viewsNamesToStayList.push(_this.state.activeViewName);
-                _this.__filterViews(_this.viewsNamesToStayList).then(function () {
+                _this.filterViews(_this.viewsNamesToStayList).then(function () {
                     _this.viewsNamesToStayList = [];
                 });
             }
@@ -320,8 +320,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             }
         }
     }, {
-        key: "__filterViews",
-        value: function __filterViews() {
+        key: "filterViews",
+        value: function filterViews() {
             var _this2 = this;
 
             var viewsNameList = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];

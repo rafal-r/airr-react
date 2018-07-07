@@ -172,7 +172,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             this.viewsNamesToStayList.length
         ) {
             this.viewsNamesToStayList.push(this.state.activeViewName);
-            this.__filterViews(this.viewsNamesToStayList).then(() => {
+            this.filterViews(this.viewsNamesToStayList).then(() => {
                 this.viewsNamesToStayList = [];
             });
         }
@@ -183,7 +183,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @param {array} viewsNameList List of views names that will stay in state
      * @returns {Promise} Will be resolved on succesful state update
      */
-    __filterViews(viewsNameList = []) {
+    filterViews(viewsNameList = []) {
         return new Promise(resolve => {
             this.setState(
                 {
