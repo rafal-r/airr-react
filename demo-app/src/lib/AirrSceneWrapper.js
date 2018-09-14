@@ -1151,10 +1151,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                     this.state.animationTime,
                     () => {
                         newViewDOM.style.display = "";
-                        this.refDOMContainer.current.style.webkitTransform =
-                            "translate3d(0,0,0)";
-                        this.refDOMContainer.current.style.transform =
-                            "translate3d(0,0,0)";
+                        this.refDOMContainer.current.style.webkitTransform = "";
+                        this.refDOMContainer.current.style.transform = "";
                         this.refDOMContainer.current.style.webkitTransition =
                             "";
                         this.refDOMContainer.current.style.transition = "";

@@ -779,8 +779,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
 
                     _AirrFX2.default.doTransitionAnimation(_this12.refDOMContainer.current, startProps, ["transform " + _this12.state.animationTime + "ms ease-out"], endProps, null, _this12.state.animationTime, function () {
                         newViewDOM.style.display = "";
-                        _this12.refDOMContainer.current.style.webkitTransform = "translate3d(0,0,0)";
-                        _this12.refDOMContainer.current.style.transform = "translate3d(0,0,0)";
+                        _this12.refDOMContainer.current.style.webkitTransform = "";
+                        _this12.refDOMContainer.current.style.transform = "";
                         _this12.refDOMContainer.current.style.webkitTransition = "";
                         _this12.refDOMContainer.current.style.transition = "";
                         _this12.refDOMContainer.current.style.transition = "";
