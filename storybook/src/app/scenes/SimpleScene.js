@@ -89,8 +89,8 @@ export default class SimpleScene extends SceneWrapper {
         this.changeView(CommonViewNameTpl, {
             children: (
                 <h2 style={{ textAlign: "center" }}>
-                    This views was pushed from SimpleScene's `viewsConfig`
-                    special object which defines views specifications.
+                    This view was pushed from SimpleScene's `viewsConfig`<br/>
+                    special object which defines views specification.
                 </h2>
             )
         });
@@ -103,7 +103,7 @@ export default class SimpleScene extends SceneWrapper {
                 name: "view-from-raw-config",
                 children: (
                     <h2 style={{ textAlign: "center" }}>
-                        This views was pushed by passing raw object specifying
+                        This view was pushed by passing raw object specifying<br/>
                         view's configuration.
                     </h2>
                 ),
@@ -116,7 +116,7 @@ export default class SimpleScene extends SceneWrapper {
         this.changeView(HelloWorldViewName, {
             children: (
                 <h2 style={{ textAlign: "center" }}>
-                    The button was removed and this header was render instead.
+                    The button was removed and this header was render instead.<br/>
                     Background color also changed.
                 </h2>
             ),
