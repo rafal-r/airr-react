@@ -1,2 +1,4 @@
 nbproject
 node_modules
+docs
+.esdoc.json
