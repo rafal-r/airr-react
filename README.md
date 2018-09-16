@@ -1,8 +1,7 @@
 # airr-react
 
-This library is set of several React components that allows building Single Page Apps for desktop and mobile apps aswell.  
-Airr-react defines few basic UI classes and features that every app needs.  
-The core component is resposible for maintaining navigation in the app.  
+This library is set of several React components that helps building Single Page Apps for desktop and mobile apps aswell.  
+Airr-react defines few basic UI classes and features that every app needs. The core component is resposible for maintaining navigation in the app.  
 It can be your starting point for creating unique apps. 
 
 It can be used for:
@@ -11,9 +10,6 @@ It can be used for:
 *   rapidly designing prototypes showing your ideas,
 *   creating responsive apps that will handle mobile and desktop rendering.
 
-Create unique apps with minimal or none overwrites upon choosen library styles and structures and keep your DOM tree simple.
-Core elements are allready defined and working and the rest is up to you.
-
 To check all main features go and see demonstration app:
 **[Mobile Demo App](http://react.airr.pl)**
 
@@ -21,8 +17,6 @@ and for documentation and intreactive examples check:
 **[Storybook](http://react.airr.pl/storybook)**
 
 Browse both examples in Chrome for best experience.
-
-Libary code was designed to handle WebViews runtimes from Android 4.4+ and iOS8+.
 
 ## Installation
 
