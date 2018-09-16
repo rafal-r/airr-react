@@ -1,8 +1,9 @@
 # airr-react
 
-This library is set of several React components that allows building Single Page Apps for desktop and mobile using React.js itself.
-Airr-react defines few basic UI classes and features that every app needs.
-It can be your starting point for creating unique apps.
+This library is set of several React components that allows building Single Page Apps for desktop and mobile apps aswell. 
+Airr-react defines few basic UI classes and features that every app needs. 
+The core component is resposible for maintaining navigation in the app. 
+It can be your starting point for creating unique apps. 
 
 It can be used for:
 
@@ -14,18 +15,14 @@ Create unique apps with minimal or none overwrites upon choosen library styles a
 Core elements are allready defined and working and the rest is up to you.
 
 To check all main features go and see demonstration app:
+**[Mobile Demo App](http://react.airr.pl)**
 
-**[airr-react mobile demo app](http://react.airr.pl)**
+and for documentation and intreactive examples check:
+**[Storybook](http://react.airr.pl/storybook)**
 
-browse in Chrome for best experience.
+Browse both examples in Chrome for best experience.
 
 Libary code was designed to handle WebViews runtimes from Android 4.4+ and iOS8+.
-
-## Prerequisites
-
-Before you continue with project installation make sure you have installed:
-
-*   [node.js](https://nodejs.org/en/)
 
 ## Installation
 
@@ -60,7 +57,7 @@ If you are having custom react configuration feel free to investigate airr-react
 ## Airr Components life-cycles
 
 Airr library provides easy to implement app views life-cycles methods.
-When you are dealing with mobile app development you have to deal with many tasks before or after certain view is activated and animated into the screen.
+When you are dealing with app development you have to deal with many tasks before or after certain view is activated and animated into the screen.
 
 Like Reacts `componentDidMount` method, Airr provides self explanatory methods that can be used by Components that extends `ViewWrapper` and `SceneWrapper` components. These methods are:
 
@@ -70,23 +67,6 @@ Like Reacts `componentDidMount` method, Airr provides self explanatory methods t
 *   `viewAfterDeactivation`
 
 You can search for these methods in demo-app code to find out how they are used.
-
-## Usage
-
-For components usage please reffer at the moment to the demo app code.
-
-## Documentation
-
-Real docs are planned to be written in the future.
-Methods and properties descriptions aswell as properties specification can be found in library files at `airr-react/lib`.
-For Airr Components descriptions check [the demo app](http://react.airr.pl).
-
-### Building project for Cordova
-
-When building your production code using `npm run build` with `react-scripts` remember about proper configuration for specific platforms:
-
-*   Android - add `"homepage": "file:///android_asset/www"` entry to your package.json
-*   iOS - snippet will be added soon
 
 ## License
 
