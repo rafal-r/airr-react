@@ -2,3 +2,4 @@ nbproject
 node_modules
 docs
 .esdoc.json
+storybook/storybook-static
