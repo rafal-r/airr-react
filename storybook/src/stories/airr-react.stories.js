@@ -46,13 +46,13 @@ storiesOf("Component's API/SceneWrapper/::changeView", module)
     .add(
         "Push new view from viewsConfig",
         withInfo(
-            "Check SimpleScene::pushNewViewFromViewsConfig method for implementation details."
+            "Check [SimpleScene::pushNewViewFromViewsConfig](https://github.com/rafal-r/airr-react/blob/8098385cc1e95a7b2b433afab3fe6a1accb526ba/storybook/src/app/scenes/SimpleScene.js#L88) method for implementation details."
         )(() => <SimpleScene handleMethod="pushNewViewFromViewsConfig" />)
     )
     .add(
         "Push new view via raw config",
         withInfo(
-            "Check SimpleScene::pushNewViewFromRawConfigDefinition method for implementation details."
+            "Check [SimpleScene::pushNewViewFromRawConfigDefinition](https://github.com/rafal-r/airr-react/blob/8098385cc1e95a7b2b433afab3fe6a1accb526ba/storybook/src/app/scenes/SimpleScene.js#L99) method for implementation details."
         )(() => (
             <SimpleScene handleMethod="pushNewViewFromRawConfigDefinition" />
         ))
@@ -60,26 +60,26 @@ storiesOf("Component's API/SceneWrapper/::changeView", module)
     .add(
         "Go to another view",
         withInfo(
-            "Check SimpleScene::goToAnotherView method for implementation details."
+            "Check [SimpleScene::goToAnotherView](https://github.com/rafal-r/airr-react/blob/8098385cc1e95a7b2b433afab3fe6a1accb526ba/storybook/src/app/scenes/SimpleScene.js#L76) method for implementation details."
         )(() => <SimpleScene handleMethod="goToAnotherView" />)
     )
     .add(
         "Update current view",
         withInfo(
-            "Check SimpleScene::updateCurrentView method for implementation details."
+            "Check [SimpleScene::updateCurrentView](https://github.com/rafal-r/airr-react/blob/8098385cc1e95a7b2b433afab3fe6a1accb526ba/storybook/src/app/scenes/SimpleScene.js#L115) method for implementation details."
         )(() => <SimpleScene handleMethod="updateCurrentView" />)
     )
     .add(
         "Update scene",
         withInfo(
-            "Check SimpleScene::updateScene method for implementation details."
+            "Check [SimpleScene::updateScene](https://github.com/rafal-r/airr-react/blob/8098385cc1e95a7b2b433afab3fe6a1accb526ba/storybook/src/app/scenes/SimpleScene.js#L127) method for implementation details."
         )(() => <SimpleScene handleMethod="updateScene" />)
     );
 
 storiesOf("Component's API/SceneWrapper", module).add(
     "::openSidepanel",
     withInfo(
-        "Check SimpleScene::openSidepanelExample method for implementation details."
+        "Check [SimpleScene::openSidepanelExample](https://github.com/rafal-r/airr-react/blob/8098385cc1e95a7b2b433afab3fe6a1accb526ba/storybook/src/app/scenes/SimpleScene.js#L144) method for implementation details."
     )(() => <SimpleScene handleMethod="openSidepanelExample" />)
 );
 
