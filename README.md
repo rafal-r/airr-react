@@ -10,7 +10,7 @@ It can be used for:
 *   rapidly designing prototypes showing your ideas,
 *   creating responsive apps that will handle mobile and desktop rendering.
 
-To check all main features go and see demonstration app:
+To check all main features please go and see demonstration app:
 **[Mobile Demo App](http://react.airr.pl)**
 
 and for documentation (still uncomplete) and intreactive examples check:
