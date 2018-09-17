@@ -13,10 +13,10 @@ It can be used for:
 To check all main features go and see demonstration app:
 **[Mobile Demo App](http://react.airr.pl)**
 
-and for documentation and intreactive examples check:
+and for documentation (still uncomplete) and intreactive examples check:
 **[Storybook](http://react.airr.pl/storybook)**
 
-Browse both examples in Chrome for best experience.
+Browse both examples in Chrome for best experience.  
 
 ## Installation
 
