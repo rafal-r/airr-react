@@ -16,7 +16,6 @@ To check all main features please go and see demonstration app:
 and for documentation (still uncomplete) and intreactive examples check:
 **[Storybook](http://react.airr.pl/storybook)**
 
-Browse both examples in Chrome for best experience.  
 
 ## Installation
 
