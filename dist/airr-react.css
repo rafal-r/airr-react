@@ -131,9 +131,7 @@ input:focus {
     backface-visibility: hidden;
     overflow-y: scroll;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;    
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
+    -webkit-overflow-scrolling: touch;
 }
 
 .airr-container > .airr-view.airr-scene {
