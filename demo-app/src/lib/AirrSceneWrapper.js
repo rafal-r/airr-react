@@ -280,7 +280,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 );
             });
         } else {
-            return Promise.reject();
+            console.warn('[Airr] No view to pop.');
+            return Promise.resolve();
         }
     };
 
@@ -433,7 +434,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             return this.popView(viewProps, sceneProps);
         }
 
-        return Promise.reject();
+        return Promise.resolve();
     };
 
     /**
@@ -456,8 +457,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 )
             );
         }
-
-        return Promise.reject();
+        console.warn('[Airr] No sidepanel to disable');
+        return Promise.resolve();
     };
 
     /**
@@ -481,8 +482,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 )
             );
         }
-
-        return Promise.reject();
+        console.warn('[Airr] No sidepanel to enable');
+        return Promise.resolve();
     };
 
     /**
@@ -499,7 +500,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             return this.refCOMPSidepanel.current.show();
         }
 
-        return Promise.reject();
+        return Promise.resolve();
     };
 
     /**
@@ -511,7 +512,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             return this.refCOMPSidepanel.current.hide();
         }
 
-        return Promise.reject();
+        return Promise.resolve();
     };
 
     /**
@@ -712,56 +713,75 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     };
 
     componentDidMount() {
-        if (
-            this.state.navbar &&
-            this.state.navbarHeight &&
-            this.refDOMContainer.current
-        ) {
-            //substract navbar height from scene's container
-            this.refDOMContainer.current.style.height =
-                this.refDOMContainer.current.parentNode.clientHeight -
-                this.state.navbarHeight +
-                "px";
-        }
-
-        if (this.state.sidepanel) {
-            this.__updateSidepanelSizeProps(
-                this.refDOM.current.clientWidth,
-                this.refDOM.current.clientHeight
-            );
-        }
-
-        /**
-         * Call first active view life cycle method - viewAfterActivation
-         */
-        if (
-            this.state.activeViewName &&
-            this.refsCOMPViews[this.state.activeViewName] &&
-            typeof this.refsCOMPViews[this.state.activeViewName].current
-                .viewAfterActivation === "function"
-        ) {
-            this.refsCOMPViews[
-                this.state.activeViewName
-            ].current.viewAfterActivation();
-        }
+        return new Promise(resolve => {
+            if (
+                this.state.navbar &&
+                this.state.navbarHeight &&
+                this.refDOMContainer.current
+            ) {
+                //substract navbar height from scene's container
+                this.refDOMContainer.current.style.height =
+                    this.refDOMContainer.current.parentNode.clientHeight -
+                    this.state.navbarHeight +
+                    "px";
+            }
+    
+            if (window.addEventListener) {
+                window.addEventListener('resize', () => {
+                    if (this.state.sidepanel) {
+                        this.__updateSidepanelSizeProps(
+                            this.refDOM.current.clientWidth,
+                            this.refDOM.current.clientHeight
+                        );
+                    }                
+                })
+            }
+    
+            if (this.state.sidepanel) {
+                this.__updateSidepanelSizeProps(
+                    this.refDOM.current.clientWidth,
+                    this.refDOM.current.clientHeight
+                ).then(resolve);
+            }
+            else {
+                resolve();
+            }
+    
+            /**
+             * Call first active view life cycle method - viewAfterActivation
+             */
+            if (
+                this.state.activeViewName &&
+                this.refsCOMPViews[this.state.activeViewName] &&
+                typeof this.refsCOMPViews[this.state.activeViewName].current
+                    .viewAfterActivation === "function"
+            ) {
+                this.refsCOMPViews[
+                    this.state.activeViewName
+                ].current.viewAfterActivation();
+            }
+        });
     }
 
     /**
      * Private utility function for updating sidepanel's sceneWidth,sceneHeight properties
      * @param {number} width
      * @param {number} height
-     * @returns {void}
+     * @returns {Promise}
      */
     __updateSidepanelSizeProps(width, height) {
-        this.setState({
-            sidepanel: update(this.state.sidepanel, {
-                props: {
-                    sceneWidth: { $set: width },
-                    sceneHeight: { $set: height }
-                }
-            })
-        });
+        return new Promise(resolve => {
+            this.setState({
+                sidepanel: update(this.state.sidepanel, {
+                    props: {
+                        sceneWidth: { $set: width },
+                        sceneHeight: { $set: height }
+                    }
+                })
+            }, resolve);
+        });        
     }
+
     /**
      * Private utility function for preparing sidepanel configuration objects
      * @param {object} sidepanel
