@@ -2,7 +2,7 @@
 
 This library is set of several React components that helps building Single Page Apps for desktop and mobile apps aswell.  
 airr-react defines few basic UI classes and features that every app needs. The core component is resposible for maintaining navigation in the app.
-All of it when minified and gzipped weighs only ~13.5kB ([https://bundlephobia.com/result?p=airr-react@2.0.20](bundlephobia.com))  
+All of it when minified and gzipped weights only ~13.5kB ([bundlephobia.com](https://bundlephobia.com/result?p=airr-react@2.0.20)).  
 
 Library can be used for:
 
