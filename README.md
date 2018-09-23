@@ -91,7 +91,7 @@ class Viewport extends SceneWrapper {
             name: "foo-mayer",
             content: (
               <div>
-                Hello! I'm modal layer!<br />
+                Hello! I\'m modal layer!<br />
                 <br />
                 <button onClick={() => this.closeMayer("foo-mayer")}>
                   close me
