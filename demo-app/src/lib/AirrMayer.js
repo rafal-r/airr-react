@@ -149,7 +149,6 @@ AirrMayer.propTypes = {
     /**
      * Content of mayer
      */
-
     content: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     /**
      * Array with buttons configuration
