@@ -54,13 +54,8 @@ class BlueView extends ViewWrapper {
     return (
       <div className={BlueViewName}>
         BlueView<br />
-        <br />
         <button onClick={this.props.goToRedView}>go to red</button>
-        <br />
-        <br />
         <button onClick={this.props.openSidepanel}>open sidepanel</button>
-        <br />
-        <br />
         <button onClick={this.props.openMayer}>open modal</button>
       </div>
     );
@@ -71,7 +66,6 @@ class RedView extends ViewWrapper {
     return (
       <div className={RedViewName}>
         RedView<br />
-        <br />
         <button onClick={this.props.goToBlueView}>go to blue</button>
       </div>
     );
@@ -91,8 +85,7 @@ class Viewport extends SceneWrapper {
             name: "foo-mayer",
             content: (
               <div>
-                Hello! I\'m modal layer!<br />
-                <br />
+                Hello! I am modal layer!<br />
                 <button onClick={() => this.closeMayer("foo-mayer")}>
                   close me
                 </button>
