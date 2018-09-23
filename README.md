@@ -37,9 +37,9 @@ npm start;
 
 Here's a simple code usage that provides a viewport with two views. 
 
-You can also check it under codesandbox example [![Edit airr-react-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/pz83nwo50) 
+[![Edit airr-react-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/pz83nwo50) 
 
-```
+```javascript
 import React from "react";
 import ReactDOM from "react-dom";
 import { SceneWrapper, ViewWrapper, Sidepanel } from "airr-react";
