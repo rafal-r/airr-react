@@ -19,9 +19,7 @@ and for documentation (still uncomplete) and intreactive examples check:
 
 ## Installation
 
-### The simplest
-
-The most easy way to start using airr-react components in your React app is to add it to your allready created project with npm
+### The library 
 
 ```
 npm install airr-react
@@ -29,23 +27,112 @@ npm install airr-react
 
 ### The demo
 
-If you want to explore demo app as a code refference just download `demo-app` directory content, open your system console and execute standard installation command on this directory:
+If you want to explore demo app as a code refference just download `demo-app` directory content, open your system console and execute standard installation and start commands on this directory:
 
 ```
-npm install
+npm install;
+npm start;
 ```
+## Example
 
-after that you can perform another known line:
+Here's a simple code usage that provides a viewport with two views. 
+
+You can also check it under codesandbox example [![Edit airr-react-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/pz83nwo50) 
 
 ```
-npm start
+import React from "react";
+import ReactDOM from "react-dom";
+import { SceneWrapper, ViewWrapper, Sidepanel } from "airr-react";
+import "airr-react/dist/airr-react.css";
+import "./styles.css";
+
+const BlueViewName = "blue-view";
+const RedViewName = "red-view";
+
+class BlueView extends ViewWrapper {
+  content() {
+    return (
+      <div className={BlueViewName}>
+        BlueView<br />
+        <br />
+        <button onClick={this.props.goToRedView}>go to red</button>
+        <br />
+        <br />
+        <button onClick={this.props.openSidepanel}>open sidepanel</button>
+        <br />
+        <br />
+        <button onClick={this.props.openMayer}>open modal</button>
+      </div>
+    );
+  }
+}
+class RedView extends ViewWrapper {
+  content() {
+    return (
+      <div className={RedViewName}>
+        RedView<br />
+        <br />
+        <button onClick={this.props.goToBlueView}>go to blue</button>
+      </div>
+    );
+  }
+}
+
+class Viewport extends SceneWrapper {
+  viewsConfig = {
+    [BlueViewName]: {
+      type: BlueView,
+      props: {
+        name: BlueViewName,
+        goToRedView: () => this.changeView(RedViewName),
+        openSidepanel: this.openSidepanel,
+        openMayer: () =>
+          this.openMayer({
+            name: "foo-mayer",
+            content: (
+              <div>
+                Hello! I'm modal layer!<br />
+                <br />
+                <button onClick={() => this.closeMayer("foo-mayer")}>
+                  close me
+                </button>
+              </div>
+            )
+          })
+      }
+    },
+    [RedViewName]: {
+      type: RedView,
+      props: {
+        name: RedViewName,
+        goToBlueView: () => this.changeView(BlueViewName)
+      }
+    }
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      ...this.state,
+      activeViewName: BlueViewName,
+      sidepanel: {
+        type: Sidepanel,
+        props: {          
+          children: "Hello! I'm sidepanel!"
+        }
+      },
+      views: [
+        this.getFreshViewConfig(BlueViewName),
+        this.getFreshViewConfig(RedViewName)
+      ]
+    };
+  }
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<Viewport />, rootElement);
 ```
-
-to activate react scripts and your local version of demo-app.
-
-### Other
-
-If you are having custom react configuration feel free to investigate airr-react usage on your own. Just install it with npm like in "The simplest" section.
 
 ## Airr Components life-cycles
 
