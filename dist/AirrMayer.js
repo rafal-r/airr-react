@@ -147,7 +147,6 @@ AirrMayer.propTypes = {
 
     leaveTo: _propTypes2.default.oneOf(["top", "bottom", "left", "right"]),
 
-
     content: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
 
     buttons: _propTypes2.default.arrayOf(_propTypes2.default.shape({

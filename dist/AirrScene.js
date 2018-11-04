@@ -194,16 +194,13 @@ var AirrScene = function (_Component) {
                 navbar = _react2.default.createElement(
                     "div",
                     {
-                        className: "airr-navbar",
+                        className: "airr-navbar " + (typeof this.props.navbarClass === "string" ? this.props.navbarClass : ""),
                         ref: this.props.refDOMNavbar,
                         style: navbarStyle
                     },
                     _react2.default.createElement(
                         "div",
-                        {
-                            className: this.props.navbarClass,
-                            style: { height: this.props.navbarHeight + "px" }
-                        },
+                        { style: { height: this.props.navbarHeight + "px" } },
                         mockTitle,
                         back,
                         _react2.default.createElement(

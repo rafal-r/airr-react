@@ -196,14 +196,16 @@ export default class AirrScene extends Component {
 
             navbar = (
                 <div
-                    className="airr-navbar"
+                    className={
+                        "airr-navbar " +
+                        (typeof this.props.navbarClass === "string"
+                            ? this.props.navbarClass
+                            : "")
+                    }
                     ref={this.props.refDOMNavbar}
                     style={navbarStyle}
                 >
-                    <div
-                        className={this.props.navbarClass}
-                        style={{ height: this.props.navbarHeight + "px" }}
-                    >
+                    <div style={{ height: this.props.navbarHeight + "px" }}>
                         {mockTitle}
                         {back}
                         <div
@@ -432,7 +434,10 @@ AirrScene.propTypes = {
                 /**
                  * Titlebar name. if parent scene navbar is enabled, this title will be showed there. Might be string or React element.
                  */
-                title: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+                title: PropTypes.oneOfType([
+                    PropTypes.string,
+                    PropTypes.object
+                ]),
                 /**
                  * Determine if this view is active. Set by parent scene.
                  */
