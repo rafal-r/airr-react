@@ -53,12 +53,6 @@ export default function() {
         GROUP_IDS.ANIMATION
     );
     const stackMode = boolean("stackMode", true, GROUP_IDS.ANIMATION);
-    const viewsAnimationEndCallback = select(
-        "viewsAnimationEndCallback",
-        [ALERT_SOMETHING, LOG_IN_CONSOLE, NONE],
-        NONE,
-        GROUP_IDS.ANIMATION
-    );
 
     //NAVBAR
     const navbar = selectV2(
@@ -136,9 +130,6 @@ export default function() {
         handleBackBehaviourOnFirstView: getHandleBackBahaviourOnFirstView(
             handleBackBehaviourOnFirstView,
             viewportRef
-        ),
-        viewsAnimationEndCallback: getViewsAnimationEndCallbackValue(
-            viewsAnimationEndCallback
         )
     };
 
@@ -220,17 +211,6 @@ function getHandleBackButtonValue(selected, viewportRef) {
             };
         case ALERT_SOMETHING:
             return () => alert("The back button was clicked");
-        default:
-            return null;
-    }
-}
-
-function getViewsAnimationEndCallbackValue(selected) {
-    switch (selected) {
-        case ALERT_SOMETHING:
-            return () => alert("BOOM! Views animation end!");
-        case LOG_IN_CONSOLE:
-            return () => console.log("views animation end callback invoked!");
         default:
             return null;
     }
