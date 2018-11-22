@@ -231,6 +231,11 @@ export default class AirrScene extends Component {
                 <div
                     className={containerClassList.join(" ")}
                     ref={this.props.refDOMContainer}
+                    style={
+                        this.props.containersHeight
+                            ? { height: this.props.containersHeight }
+                            : null
+                    }
                 >
                     {views}
                 </div>
@@ -259,13 +264,13 @@ AirrScene.defaultProps = {
     backButtonOnFirstView: false,
     handleBackButton: null,
     handleBackBehaviourOnFirstView: null,
-    viewsAnimationEndCallback: null,
     active: false,
     sidepanel: null,
     views: [],
     mayers: [],
     title: "",
-    className: ""
+    className: "",
+    containersHeight: null
 };
 
 AirrScene.propTypes = {
@@ -354,10 +359,6 @@ AirrScene.propTypes = {
      * Function that will handle back button clicks events on when first view in stack is active
      */
     handleBackBehaviourOnFirstView: PropTypes.func,
-    /**
-     * Callback that will be invoked when views animation finishes
-     */
-    viewsAnimationEndCallback: PropTypes.func,
     /**
      * Is this view active in parent scene
      */
@@ -530,5 +531,11 @@ AirrScene.propTypes = {
     /**
      * Extra, space separated classes names to use upon first div element.
      */
-    className: PropTypes.string
+    className: PropTypes.string,
+    /**
+     * If navbars height was declared then this value will come from parent SceneWrapper
+     * as a substract between available height and navbars height.
+     * Height will be passed as string with suffixed "px"
+     */
+    containersHeight: PropTypes.string
 };

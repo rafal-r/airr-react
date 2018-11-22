@@ -94,16 +94,6 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
         _this.refCOMPSidepanel = _react2.default.createRef();
         _this.refDOMContainer = _react2.default.createRef();
         _this.refDOMNavbar = _react2.default.createRef();
-        _this.viewsNamesToStayList = [];
-
-        _this.viewsAnimationEndCallback = function () {
-            if (Array.isArray(_this.viewsNamesToStayList) && _this.viewsNamesToStayList.length) {
-                _this.viewsNamesToStayList.push(_this.state.activeViewName);
-                _this.filterViews(_this.viewsNamesToStayList).then(function () {
-                    _this.viewsNamesToStayList = [];
-                });
-            }
-        };
 
         _this.disableGUI = function () {
             var cover = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -146,7 +136,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                     });
                 });
             } else {
-                console.warn('[Airr] No view to pop.');
+                console.warn("[Airr] No view to pop.");
                 return Promise.resolve();
             }
         };
@@ -182,7 +172,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                     }, resolve);
                 });
             }
-            console.warn('[Airr] No sidepanel to disable');
+            console.warn("[Airr] No sidepanel to disable");
             return Promise.resolve();
         };
 
@@ -199,7 +189,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                     }, resolve);
                 });
             }
-            console.warn('[Airr] No sidepanel to enable');
+            console.warn("[Airr] No sidepanel to enable");
             return Promise.resolve();
         };
 
@@ -293,7 +283,6 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             children: props.children,
             animationTime: props.animationTime,
             handleBackBehaviourOnFirstView: props.handleBackBehaviourOnFirstView,
-            viewsAnimationEndCallback: props.viewsAnimationEndCallback,
             handleBackButton: props.handleBackButton,
             stackMode: props.stackMode
         };
@@ -367,6 +356,7 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             var sceneProps = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
             return this.__changeView(view, viewProps, sceneProps).then(function (viewName) {
+                _this4.__updateContainersHeight();
                 return _this4.__performViewsAnimation(viewName);
             });
         }
@@ -531,12 +521,10 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             var _this9 = this;
 
             return new Promise(function (resolve) {
-                if (_this9.state.navbar && _this9.state.navbarHeight && _this9.refDOMContainer.current) {
-                    _this9.refDOMContainer.current.style.height = _this9.refDOMContainer.current.parentNode.clientHeight - _this9.state.navbarHeight + "px";
-                }
+                _this9.__updateContainersHeight();
 
                 if (window.addEventListener) {
-                    window.addEventListener('resize', function () {
+                    window.addEventListener("resize", function () {
                         if (_this9.state.sidepanel) {
                             _this9.__updateSidepanelSizeProps(_this9.refDOM.current.clientWidth, _this9.refDOM.current.clientHeight);
                         }
@@ -553,6 +541,15 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                     _this9.refsCOMPViews[_this9.state.activeViewName].current.viewAfterActivation();
                 }
             });
+        }
+    }, {
+        key: "__updateContainersHeight",
+        value: function __updateContainersHeight() {
+            if (this.state.navbar && this.state.navbarHeight && Boolean(this.state.navbarHeight) && this.refDOMNavbar.current && this.refDOMContainer.current) {
+                this.setState({
+                    containersHeight: this.refDOMContainer.current.parentNode.clientHeight - this.refDOMNavbar.current.clientHeight + "px"
+                });
+            }
         }
     }, {
         key: "__updateSidepanelSizeProps",
@@ -660,8 +657,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                                     oldViewComp.viewAfterDeactivation();
                                 }
 
-                                if (typeof _this13.props.viewsAnimationEndCallback === "function") {
-                                    _this13.props.viewsAnimationEndCallback();
+                                if (typeof _this13.viewsAnimationEnd === "function") {
+                                    _this13.viewsAnimationEnd(oldViewName, newViewName);
                                 }
 
                                 resolve();
@@ -921,7 +918,6 @@ AirrSceneWrapper.defaultProps = {
     backButtonOnFirstView: false,
     handleBackButton: null,
     handleBackBehaviourOnFirstView: null,
-    viewsAnimationEndCallback: null,
     active: false,
     sidepanel: null,
     sidepanelVisibilityCallback: null,
@@ -974,8 +970,6 @@ AirrSceneWrapper.propTypes = {
     handleBackButton: _propTypes2.default.func,
 
     handleBackBehaviourOnFirstView: _propTypes2.default.func,
-
-    viewsAnimationEndCallback: _propTypes2.default.func,
 
     active: _propTypes2.default.bool,
 

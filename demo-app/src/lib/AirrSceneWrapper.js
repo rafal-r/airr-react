@@ -115,7 +115,6 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             animationTime: props.animationTime,
             handleBackBehaviourOnFirstView:
                 props.handleBackBehaviourOnFirstView,
-            viewsAnimationEndCallback: props.viewsAnimationEndCallback,
             handleBackButton: props.handleBackButton,
             stackMode: props.stackMode
         };
@@ -153,30 +152,6 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             );
         }
     }
-
-    /**
-     * Array of views names to stay in `this.state.views` array when animation of views finishes.
-     * Used in `::viewsAnimationEndCallback` default method to filter views when needed.
-     * If you populate names in this array the filter feature will be active by default
-     * unless you overwrite `::viewsAnimationEndCallback` method in descendant class.
-     */
-    viewsNamesToStayList = [];
-    viewsAnimationEndCallback = () => {
-        /**
-         * If instance variable `viewsNamesToStayList` is set
-         * then we filter views array to leave only those with names
-         * present in `viewsNamesToStayList` list.
-         */
-        if (
-            Array.isArray(this.viewsNamesToStayList) &&
-            this.viewsNamesToStayList.length
-        ) {
-            this.viewsNamesToStayList.push(this.state.activeViewName);
-            this.filterViews(this.viewsNamesToStayList).then(() => {
-                this.viewsNamesToStayList = [];
-            });
-        }
-    };
 
     /**
      * Removes views that are not contained by name in array
@@ -280,7 +255,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 );
             });
         } else {
-            console.warn('[Airr] No view to pop.');
+            console.warn("[Airr] No view to pop.");
             return Promise.resolve();
         }
     };
@@ -315,6 +290,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      */
     changeView(view, viewProps = {}, sceneProps = {}) {
         return this.__changeView(view, viewProps, sceneProps).then(viewName => {
+            this.__updateContainersHeight();
             return this.__performViewsAnimation(viewName);
         });
     }
@@ -457,7 +433,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 )
             );
         }
-        console.warn('[Airr] No sidepanel to disable');
+        console.warn("[Airr] No sidepanel to disable");
         return Promise.resolve();
     };
 
@@ -482,7 +458,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 )
             );
         }
-        console.warn('[Airr] No sidepanel to enable');
+        console.warn("[Airr] No sidepanel to enable");
         return Promise.resolve();
     };
 
@@ -714,39 +690,28 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
 
     componentDidMount() {
         return new Promise(resolve => {
-            if (
-                this.state.navbar &&
-                this.state.navbarHeight &&
-                this.refDOMContainer.current
-            ) {
-                //substract navbar height from scene's container
-                this.refDOMContainer.current.style.height =
-                    this.refDOMContainer.current.parentNode.clientHeight -
-                    this.state.navbarHeight +
-                    "px";
-            }
-    
+            this.__updateContainersHeight();
+
             if (window.addEventListener) {
-                window.addEventListener('resize', () => {
+                window.addEventListener("resize", () => {
                     if (this.state.sidepanel) {
                         this.__updateSidepanelSizeProps(
                             this.refDOM.current.clientWidth,
                             this.refDOM.current.clientHeight
                         );
-                    }                
-                })
+                    }
+                });
             }
-    
+
             if (this.state.sidepanel) {
                 this.__updateSidepanelSizeProps(
                     this.refDOM.current.clientWidth,
                     this.refDOM.current.clientHeight
                 ).then(resolve);
-            }
-            else {
+            } else {
                 resolve();
             }
-    
+
             /**
              * Call first active view life cycle method - viewAfterActivation
              */
@@ -764,6 +729,27 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     }
 
     /**
+     * Private utility function for updating containers height when navbar is present and has
+     * declared height
+     */
+    __updateContainersHeight() {
+        if (
+            this.state.navbar &&
+            this.state.navbarHeight &&
+            Boolean(this.state.navbarHeight) &&
+            this.refDOMNavbar.current &&
+            this.refDOMContainer.current
+        ) {
+            //substract navbar height from scene's container
+            this.setState({
+                containersHeight:
+                    this.refDOMContainer.current.parentNode.clientHeight -
+                    this.refDOMNavbar.current.clientHeight +
+                    "px"
+            });
+        }
+    }
+    /**
      * Private utility function for updating sidepanel's sceneWidth,sceneHeight properties
      * @param {number} width
      * @param {number} height
@@ -771,15 +757,18 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      */
     __updateSidepanelSizeProps(width, height) {
         return new Promise(resolve => {
-            this.setState({
-                sidepanel: update(this.state.sidepanel, {
-                    props: {
-                        sceneWidth: { $set: width },
-                        sceneHeight: { $set: height }
-                    }
-                })
-            }, resolve);
-        });        
+            this.setState(
+                {
+                    sidepanel: update(this.state.sidepanel, {
+                        props: {
+                            sceneWidth: { $set: width },
+                            sceneHeight: { $set: height }
+                        }
+                    })
+                },
+                resolve
+            );
+        });
     }
 
     /**
@@ -904,11 +893,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                 }
 
                                 if (
-                                    typeof this.props
-                                        .viewsAnimationEndCallback ===
-                                    "function"
+                                    typeof this.viewsAnimationEnd === "function"
                                 ) {
-                                    this.props.viewsAnimationEndCallback();
+                                    this.viewsAnimationEnd(
+                                        oldViewName,
+                                        newViewName
+                                    );
                                 }
 
                                 resolve();
@@ -1348,7 +1338,6 @@ AirrSceneWrapper.defaultProps = {
     backButtonOnFirstView: false,
     handleBackButton: null,
     handleBackBehaviourOnFirstView: null,
-    viewsAnimationEndCallback: null,
     active: false,
     sidepanel: null,
     sidepanelVisibilityCallback: null,
@@ -1445,10 +1434,6 @@ AirrSceneWrapper.propTypes = {
      * Function that will handle back button clicks events on when first view in stack is active
      */
     handleBackBehaviourOnFirstView: PropTypes.func,
-    /**
-     * Callback that will be invoked when views animation finishes
-     */
-    viewsAnimationEndCallback: PropTypes.func,
     /**
      * Is this view active in parent scene
      */

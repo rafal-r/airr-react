@@ -230,7 +230,8 @@ var AirrScene = function (_Component) {
                     "div",
                     {
                         className: containerClassList.join(" "),
-                        ref: this.props.refDOMContainer
+                        ref: this.props.refDOMContainer,
+                        style: this.props.containersHeight ? { height: this.props.containersHeight } : null
                     },
                     views
                 ),
@@ -264,13 +265,13 @@ AirrScene.defaultProps = {
     backButtonOnFirstView: false,
     handleBackButton: null,
     handleBackBehaviourOnFirstView: null,
-    viewsAnimationEndCallback: null,
     active: false,
     sidepanel: null,
     views: [],
     mayers: [],
     title: "",
-    className: ""
+    className: "",
+    containersHeight: null
 };
 
 AirrScene.propTypes = {
@@ -315,8 +316,6 @@ AirrScene.propTypes = {
     handleBackButton: _propTypes2.default.func,
 
     handleBackBehaviourOnFirstView: _propTypes2.default.func,
-
-    viewsAnimationEndCallback: _propTypes2.default.func,
 
     active: _propTypes2.default.bool,
 
@@ -392,5 +391,7 @@ AirrScene.propTypes = {
 
     title: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
 
-    className: _propTypes2.default.string
+    className: _propTypes2.default.string,
+
+    containersHeight: _propTypes2.default.string
 };
