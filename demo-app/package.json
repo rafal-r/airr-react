@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "react": "^16.5.1",
-    "react-dom": "^16.5.1",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
     "react-scripts": "1.0.17"
   },
   "scripts": {
