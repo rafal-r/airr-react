@@ -290,7 +290,6 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      */
     changeView(view, viewProps = {}, sceneProps = {}) {
         return this.__changeView(view, viewProps, sceneProps).then(viewName => {
-            this.__updateContainersHeight();
             return this.__performViewsAnimation(viewName);
         });
     }
@@ -690,8 +689,6 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
 
     componentDidMount() {
         return new Promise(resolve => {
-            this.__updateContainersHeight();
-
             if (window.addEventListener) {
                 window.addEventListener("resize", () => {
                     if (this.state.sidepanel) {
@@ -728,27 +725,6 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         });
     }
 
-    /**
-     * Private utility function for updating containers height when navbar is present and has
-     * declared height
-     */
-    __updateContainersHeight() {
-        if (
-            this.state.navbar &&
-            this.state.navbarHeight &&
-            Boolean(this.state.navbarHeight) &&
-            this.refDOMNavbar.current &&
-            this.refDOMContainer.current
-        ) {
-            //substract navbar height from scene's container
-            this.setState({
-                containersHeight:
-                    this.refDOMContainer.current.parentNode.clientHeight -
-                    this.refDOMNavbar.current.clientHeight +
-                    "px"
-            });
-        }
-    }
     /**
      * Private utility function for updating sidepanel's sceneWidth,sceneHeight properties
      * @param {number} width

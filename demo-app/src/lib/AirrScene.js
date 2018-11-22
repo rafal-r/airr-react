@@ -227,17 +227,19 @@ export default class AirrScene extends Component {
 
         return (
             <div className={className} ref={this.props.refDOM}>
-                {navbar}
-                <div
-                    className={containerClassList.join(" ")}
-                    ref={this.props.refDOMContainer}
-                    style={
-                        this.props.containersHeight
-                            ? { height: this.props.containersHeight }
-                            : null
-                    }
-                >
-                    {views}
+                <div className="content-wrap">
+                    {navbar}
+                    <div
+                        className={containerClassList.join(" ")}
+                        ref={this.props.refDOMContainer}
+                        style={
+                            this.props.containersHeight
+                                ? { height: this.props.containersHeight }
+                                : null
+                        }
+                    >
+                        {views}
+                    </div>
                 </div>
                 {children}
                 {sidepanel}
@@ -269,8 +271,7 @@ AirrScene.defaultProps = {
     views: [],
     mayers: [],
     title: "",
-    className: "",
-    containersHeight: null
+    className: ""
 };
 
 AirrScene.propTypes = {
@@ -531,11 +532,5 @@ AirrScene.propTypes = {
     /**
      * Extra, space separated classes names to use upon first div element.
      */
-    className: PropTypes.string,
-    /**
-     * If navbars height was declared then this value will come from parent SceneWrapper
-     * as a substract between available height and navbars height.
-     * Height will be passed as string with suffixed "px"
-     */
-    containersHeight: PropTypes.string
+    className: PropTypes.string
 };

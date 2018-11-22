@@ -225,15 +225,19 @@ var AirrScene = function (_Component) {
             return _react2.default.createElement(
                 "div",
                 { className: className, ref: this.props.refDOM },
-                navbar,
                 _react2.default.createElement(
                     "div",
-                    {
-                        className: containerClassList.join(" "),
-                        ref: this.props.refDOMContainer,
-                        style: this.props.containersHeight ? { height: this.props.containersHeight } : null
-                    },
-                    views
+                    { className: "content-wrap" },
+                    navbar,
+                    _react2.default.createElement(
+                        "div",
+                        {
+                            className: containerClassList.join(" "),
+                            ref: this.props.refDOMContainer,
+                            style: this.props.containersHeight ? { height: this.props.containersHeight } : null
+                        },
+                        views
+                    )
                 ),
                 children,
                 sidepanel,
@@ -270,8 +274,7 @@ AirrScene.defaultProps = {
     views: [],
     mayers: [],
     title: "",
-    className: "",
-    containersHeight: null
+    className: ""
 };
 
 AirrScene.propTypes = {
@@ -391,7 +394,5 @@ AirrScene.propTypes = {
 
     title: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
 
-    className: _propTypes2.default.string,
-
-    containersHeight: _propTypes2.default.string
+    className: _propTypes2.default.string
 };

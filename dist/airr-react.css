@@ -133,7 +133,11 @@ input:focus {
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
 }
-
+.airr-scene > .content-wrap {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 .airr-container > .airr-view.airr-scene {
     overflow: hidden;
 }

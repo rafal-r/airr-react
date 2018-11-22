@@ -356,7 +356,6 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             var sceneProps = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
             return this.__changeView(view, viewProps, sceneProps).then(function (viewName) {
-                _this4.__updateContainersHeight();
                 return _this4.__performViewsAnimation(viewName);
             });
         }
@@ -521,8 +520,6 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             var _this9 = this;
 
             return new Promise(function (resolve) {
-                _this9.__updateContainersHeight();
-
                 if (window.addEventListener) {
                     window.addEventListener("resize", function () {
                         if (_this9.state.sidepanel) {
@@ -541,15 +538,6 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                     _this9.refsCOMPViews[_this9.state.activeViewName].current.viewAfterActivation();
                 }
             });
-        }
-    }, {
-        key: "__updateContainersHeight",
-        value: function __updateContainersHeight() {
-            if (this.state.navbar && this.state.navbarHeight && Boolean(this.state.navbarHeight) && this.refDOMNavbar.current && this.refDOMContainer.current) {
-                this.setState({
-                    containersHeight: this.refDOMContainer.current.parentNode.clientHeight - this.refDOMNavbar.current.clientHeight + "px"
-                });
-            }
         }
     }, {
         key: "__updateSidepanelSizeProps",
