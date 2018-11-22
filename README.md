@@ -139,6 +139,10 @@ Like Reacts `componentDidMount` method, Airr provides self explanatory methods t
 *   `viewBeforeDeactivation`
 *   `viewAfterDeactivation`
 
+Additionaly `SceneWrapper` has:
+
+* `viewsAnimationEnd(oldViewName: string, newViewName: string)`
+ 
 You can search for these methods in demo-app code to find out how they are used.
 
 ## License
