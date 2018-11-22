@@ -39,6 +39,12 @@ export default class MainScene extends SceneWrapper {
         };
     }
 
+    viewsAnimationEnd(oldViewName, newViewName) {
+        console.log(
+            `[MainScene::viewsAnimationEnd] oldViewName: ${oldViewName}, newViewName: ${newViewName}`
+        );
+    }
+
     getSidepanelContent = viewname => {
         const description = this.viewsConfig[viewname].props.description;
 
@@ -247,8 +253,7 @@ export default class MainScene extends SceneWrapper {
             props: {
                 name: "tabs",
                 handleViewportScenePush: this.props.handleViewportScenePush,
-                handleViewportViewPop: this.props
-                    .handleViewportViewPop,
+                handleViewportViewPop: this.props.handleViewportViewPop,
                 title: "Tabs",
                 description: (
                     <div>
