@@ -1281,6 +1281,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 AirrFX.doTransitionAnimation(
                     newViewDOM,
                     {
+                        display: "block",
                         opacity: 0
                     },
                     [`opacity ${this.state.animationTime}ms ease-out`],
@@ -1290,7 +1291,14 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                     () => (newViewDOM.style.zIndex = 102),
                     this.state.animationTime,
                     () => {
+                        newViewDOM.style.display = "";
                         newViewDOM.style.zIndex = "";
+                        newViewDOM.style.transform = "";
+                        newViewDOM.style.webkitTransform = "";
+                        newViewDOM.style.transition = "";
+                        newViewDOM.style.webkitTransition = "";
+                        newViewDOM.style.opacity = "";
+
                         resolve();
                     }
                 );

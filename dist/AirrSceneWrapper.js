@@ -871,13 +871,21 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                     }
                 } else if (_this14.state.animation === "fade" || !oldViewName) {
                     _AirrFX2.default.doTransitionAnimation(newViewDOM, {
+                        display: "block",
                         opacity: 0
                     }, ["opacity " + _this14.state.animationTime + "ms ease-out"], {
                         opacity: 1
                     }, function () {
                         return newViewDOM.style.zIndex = 102;
                     }, _this14.state.animationTime, function () {
+                        newViewDOM.style.display = "";
                         newViewDOM.style.zIndex = "";
+                        newViewDOM.style.transform = "";
+                        newViewDOM.style.webkitTransform = "";
+                        newViewDOM.style.transition = "";
+                        newViewDOM.style.webkitTransition = "";
+                        newViewDOM.style.opacity = "";
+
                         resolve();
                     });
                 }
