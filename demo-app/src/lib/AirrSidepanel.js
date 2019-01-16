@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { isMobileDevice, supportPassive } from "./eventHelpers";
 
-export default class AirrSidepanel extends Component {
+export default class AirrSidepanel extends PureComponent {
     size;
     sceneSize;
     currentVal;

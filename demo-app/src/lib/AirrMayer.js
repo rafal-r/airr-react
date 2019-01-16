@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import AirrFX from "./AirrFX";
 
-export default class AirrMayer extends Component {
+export default class AirrMayer extends PureComponent {
     /**
      * Mayer's HTML DOM Element refferency
      */

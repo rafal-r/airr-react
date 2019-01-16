@@ -1,8 +1,117 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import AirrMayer from "./AirrMayer";
 
-export default class AirrScene extends Component {
+const ChildrenRenderer = React.memo(function ChildrenRenderer({ children }) {
+    return typeof children === "function" ? children() : children;
+});
+const MayersRenderer = React.memo(function MayersRenderer({ mayers }) {
+    return mayers.map(({ name, ...props }) => {
+        return <AirrMayer key={name} {...props} />;
+    });
+});
+const SidepanelRenderer = React.memo(function SidepanelRenderer({
+    type,
+    ...props
+}) {
+    return React.createElement(type, props);
+});
+const BlankmaskRenderer = React.memo(function BlankmaskRenderer({
+    GUIDisabled,
+    GUIDisableCover
+}) {
+    return (
+        GUIDisabled && <div className="airr-blank-mask">{GUIDisableCover}</div>
+    );
+});
+const NavbarRenderer = React.memo(function NavbarRenderer({
+    navbar,
+    activeViewIndex,
+    backButtonOnFirstView,
+    handleBackButton,
+    backButton,
+    navbarMenu,
+    hasSidepanel,
+    handleMenuButtonToggleSidepanel,
+    mockViewTitle,
+    activeViewTitle,
+    navbarClass,
+    refDOMNavbar,
+    navbarHeight
+}) {
+    if (navbar) {
+        let mockTitle = null;
+        let title = "";
+        let back = null;
+
+        if (backButton) {
+            const backClassName =
+                "back " +
+                (activeViewIndex < 1 && !backButtonOnFirstView ? "hidden" : "");
+            back = (
+                <div className={backClassName} onClick={handleBackButton}>
+                    <div />
+                </div>
+            );
+        }
+
+        let menu;
+        if (navbarMenu) {
+            if (navbarMenu === "toggleSidepanel") {
+                menu = hasSidepanel ? (
+                    <div
+                        className="menu"
+                        onClick={handleMenuButtonToggleSidepanel}
+                    >
+                        <div />
+                    </div>
+                ) : null;
+            } else if (Array.isArray(navbarMenu)) {
+                menu = <div className="menu">{navbarMenu}</div>;
+            }
+        }
+
+        const navbarStyle = {};
+        if ([1, true].indexOf(navbar) === -1) {
+            navbarStyle.visibility = "hidden";
+        }
+
+        if (mockViewTitle) {
+            mockTitle = (
+                <div className="mock-title">
+                    <span>{activeViewTitle}</span>
+                </div>
+            );
+            title = mockViewTitle;
+        } else {
+            title = activeViewTitle;
+        }
+
+        return (
+            <div
+                className={
+                    "airr-navbar " +
+                    (typeof navbarClass === "string" ? navbarClass : "")
+                }
+                ref={refDOMNavbar}
+                style={navbarStyle}
+            >
+                <div style={{ height: navbarHeight + "px" }}>
+                    {mockTitle}
+                    {back}
+                    <div
+                        className="title"
+                        style={{ opacity: mockViewTitle ? 0 : 1 }}
+                    >
+                        <span>{title}</span>
+                    </div>
+                    {menu}
+                </div>
+            </div>
+        );
+    }
+});
+export default class AirrScene extends PureComponent {
     /**
      * Mayers Components refferencies
      */
@@ -101,134 +210,39 @@ export default class AirrScene extends Component {
                     "."
             );
         }
-
-        let sidepanel = null;
-        if (this.props.sidepanel) {
-            sidepanel = React.createElement(
-                this.props.sidepanel.type,
-                this.props.sidepanel.props
-            );
-        }
-
-        let blankmask = null;
-        if (this.props.GUIDisabled) {
-            blankmask = (
-                <div className="airr-blank-mask">
-                    {this.props.GUIDisableCover}
-                </div>
-            );
-        }
-
-        let mayers = [];
-        if (this.props.mayers.length) {
-            mayers = this.props.mayers.map(mayerProps => {
-                mayerProps.key = mayerProps.name;
-                return React.createElement(AirrMayer, mayerProps);
-            });
-        }
-
-        let navbar = null;
-        if (this.props.navbar) {
-            let mockTitle = null;
-            let title = "";
-            let back = null;
-            const activeViewIndex = this.getViewIndex(
-                this.props.activeViewName
-            );
-
-            if (this.props.backButton) {
-                const backClassName =
-                    "back " +
-                    (activeViewIndex < 1 && !this.props.backButtonOnFirstView
-                        ? "hidden"
-                        : "");
-                back = (
-                    <div
-                        className={backClassName}
-                        onClick={this.handleBackButton}
-                    >
-                        <div />
-                    </div>
-                );
-            }
-
-            let menu;
-            if (this.props.navbarMenu) {
-                if (this.props.navbarMenu === "toggleSidepanel") {
-                    menu = this.props.sidepanel ? (
-                        <div
-                            className="menu"
-                            onClick={this.handleMenuButtonToggleSidepanel}
-                        >
-                            <div />
-                        </div>
-                    ) : null;
-                } else if (Array.isArray(this.props.navbarMenu)) {
-                    menu = <div className="menu">{this.props.navbarMenu}</div>;
-                }
-            }
-
-            const navbarStyle = {};
-            if ([1, true].indexOf(this.props.navbar) === -1) {
-                navbarStyle.visibility = "hidden";
-            }
-
-            if (this.props.mockTitle) {
-                const mockTitleContent =
-                    this.props.views[activeViewIndex] &&
-                    this.props.views[activeViewIndex].props.title;
-                const mockTitleViewIndex = this.getViewIndex(
-                    this.props.mockTitle
-                );
-                mockTitle = this.props.mockTitle ? (
-                    <div className="mock-title">
-                        <span>{mockTitleContent}</span>
-                    </div>
-                ) : null;
-                title = this.props.views[mockTitleViewIndex]
-                    ? this.props.views[mockTitleViewIndex].props.title
-                    : "";
-            } else {
-                title = this.props.views[activeViewIndex]
-                    ? this.props.views[activeViewIndex].props.title
-                    : "";
-            }
-
-            navbar = (
-                <div
-                    className={
-                        "airr-navbar " +
-                        (typeof this.props.navbarClass === "string"
-                            ? this.props.navbarClass
-                            : "")
-                    }
-                    ref={this.props.refDOMNavbar}
-                    style={navbarStyle}
-                >
-                    <div style={{ height: this.props.navbarHeight + "px" }}>
-                        {mockTitle}
-                        {back}
-                        <div
-                            className="title"
-                            style={{ opacity: this.props.mockTitle ? 0 : 1 }}
-                        >
-                            <span>{title}</span>
-                        </div>
-                        {menu}
-                    </div>
-                </div>
-            );
-        }
-
-        const children =
-            typeof this.props.children === "function"
-                ? this.props.children(this.props)
-                : this.props.children;
+        const activeViewIndex = this.getViewIndex(this.props.activeViewName);
 
         return (
             <div className={className} ref={this.props.refDOM}>
                 <div className="content-wrap">
-                    {navbar}
+                    <NavbarRenderer
+                        navbar={this.props.navbar}
+                        activeViewIndex={activeViewIndex}
+                        backButtonOnFirstView={this.props.backButtonOnFirstView}
+                        backButton={this.props.backButton}
+                        handleBackButton={this.handleBackButton}
+                        navbarMenu={this.props.navbarMenu}
+                        hasSidepanel={this.props.hasSidepanel}
+                        handleMenuButtonToggleSidepanel={
+                            this.handleMenuButtonToggleSidepanel
+                        }
+                        navbarClass={this.props.navbarClass}
+                        mockViewTitle={
+                            this.props.mockTitle &&
+                            this.props.views[
+                                this.getViewIndex(this.props.mockTitle)
+                            ] &&
+                            this.props.views[
+                                this.getViewIndex(this.props.mockTitle)
+                            ].props.title
+                        }
+                        activeViewTitle={
+                            this.props.views[activeViewIndex] &&
+                            this.props.views[activeViewIndex].props.title
+                        }
+                        refDOMNavbar={this.props.refDOMNavbar}
+                        navbarHeight={this.props.navbarHeight}
+                    />
                     <div
                         className={containerClassList.join(" ")}
                         ref={this.props.refDOMContainer}
@@ -241,10 +255,18 @@ export default class AirrScene extends Component {
                         {views}
                     </div>
                 </div>
-                {children}
-                {sidepanel}
-                {mayers}
-                {blankmask}
+                <ChildrenRenderer>{this.props.children}</ChildrenRenderer>
+                {this.props.sidepanel && (
+                    <SidepanelRenderer
+                        type={this.props.sidepanel.type}
+                        {...this.props.sidepanel.props}
+                    />
+                )}
+                <MayersRenderer mayers={this.props.mayers} />
+                <BlankmaskRenderer
+                    GUIDisabled={this.props.GUIDisabled}
+                    GUIDisableCover={this.props.GUIDisableCover}
+                />
             </div>
         );
     }
@@ -402,7 +424,7 @@ AirrScene.propTypes = {
              */
             sceneHeight: PropTypes.number,
             /**
-             * Callback called when sidepanel changes its visibility during touch events. Passed by scene itself.
+             * Callback called when sidepanel changes its visibility during touch events. Passed by scene itself. Do not overwrite.
              */
             visibilityCallback: PropTypes.func,
             /**

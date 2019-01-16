@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 
-export default class AirrView extends Component {
+export default class AirrView extends PureComponent {
     render() {
         const {
             name,

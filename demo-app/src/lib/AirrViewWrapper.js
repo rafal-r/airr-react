@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import AirrView from "./AirrView";
 import PropTypes from "prop-types";
 
-export default class AirrViewWrapper extends Component {
+export default class AirrViewWrapper extends PureComponent {
     /**
      * Refferency to view's DOM element.
      */

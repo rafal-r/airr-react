@@ -748,28 +748,35 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     }
 
     /**
+     * Private utility function for updating sidepanel isShown prop
+     * @param {boolean} isShown
+     * @returns {void}
+     */    
+    __sidepanelVisibilityCallback = isShown => {
+        this.setState(
+            {
+                sidepanel: update(this.state.sidepanel, {
+                    props: {
+                        isShown: {
+                            $set: isShown
+                        }
+                    }
+                })
+            },
+            () =>
+                this.state.sidepanelVisibilityCallback &&
+                this.state.sidepanelVisibilityCallback(isShown)
+        );
+    };
+
+    /**
      * Private utility function for preparing sidepanel configuration objects
      * @param {object} sidepanel
      * @returns {object}
      */
     __prepareSidepanel(sidepanel) {
         sidepanel.props.ref = this.refCOMPSidepanel;
-        sidepanel.props.visibilityCallback = isShown => {
-            this.setState(
-                {
-                    sidepanel: update(this.state.sidepanel, {
-                        props: {
-                            isShown: {
-                                $set: isShown
-                            }
-                        }
-                    })
-                },
-                () =>
-                    this.state.sidepanelVisibilityCallback &&
-                    this.state.sidepanelVisibilityCallback(isShown)
-            );
-        };
+        sidepanel.props.visibilityCallback = this.__sidepanelVisibilityCallback;
 
         if (typeof sidepanel.props.enabled === "undefined") {
             sidepanel.props.enabled = true; //force explicit value, e.g needed when checking if panel is enabled in `openMayer` method
@@ -1460,7 +1467,7 @@ AirrSceneWrapper.propTypes = {
              */
             sceneHeight: PropTypes.number,
             /**
-             * Callback called when sidepanel changes its visibility during touch events. Passed by scene itself.
+             * Callback called when sidepanel changes its visibility during touch events. Passed by scene itself. Do not overwrite.
              */
             visibilityCallback: PropTypes.func,
             /**
