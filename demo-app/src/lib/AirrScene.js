@@ -2,115 +2,6 @@ import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import AirrMayer from "./AirrMayer";
 
-const ChildrenRenderer = React.memo(function ChildrenRenderer({ children }) {
-    return typeof children === "function" ? children() : children;
-});
-const MayersRenderer = React.memo(function MayersRenderer({ mayers }) {
-    return mayers.map(({ name, ...props }) => {
-        return <AirrMayer key={name} {...props} />;
-    });
-});
-const SidepanelRenderer = React.memo(function SidepanelRenderer({
-    type,
-    ...props
-}) {
-    return React.createElement(type, props);
-});
-const BlankmaskRenderer = React.memo(function BlankmaskRenderer({
-    GUIDisabled,
-    GUIDisableCover
-}) {
-    return (
-        GUIDisabled && <div className="airr-blank-mask">{GUIDisableCover}</div>
-    );
-});
-const NavbarRenderer = React.memo(function NavbarRenderer({
-    navbar,
-    activeViewIndex,
-    backButtonOnFirstView,
-    handleBackButton,
-    backButton,
-    navbarMenu,
-    hasSidepanel,
-    handleMenuButtonToggleSidepanel,
-    mockViewTitle,
-    activeViewTitle,
-    navbarClass,
-    refDOMNavbar,
-    navbarHeight
-}) {
-    if (navbar) {
-        let mockTitle = null;
-        let title = "";
-        let back = null;
-
-        if (backButton) {
-            const backClassName =
-                "back " +
-                (activeViewIndex < 1 && !backButtonOnFirstView ? "hidden" : "");
-            back = (
-                <div className={backClassName} onClick={handleBackButton}>
-                    <div />
-                </div>
-            );
-        }
-
-        let menu;
-        if (navbarMenu) {
-            if (navbarMenu === "toggleSidepanel") {
-                menu = hasSidepanel ? (
-                    <div
-                        className="menu"
-                        onClick={handleMenuButtonToggleSidepanel}
-                    >
-                        <div />
-                    </div>
-                ) : null;
-            } else if (Array.isArray(navbarMenu)) {
-                menu = <div className="menu">{navbarMenu}</div>;
-            }
-        }
-
-        const navbarStyle = {};
-        if ([1, true].indexOf(navbar) === -1) {
-            navbarStyle.visibility = "hidden";
-        }
-
-        if (mockViewTitle) {
-            mockTitle = (
-                <div className="mock-title">
-                    <span>{activeViewTitle}</span>
-                </div>
-            );
-            title = mockViewTitle;
-        } else {
-            title = activeViewTitle;
-        }
-
-        return (
-            <div
-                className={
-                    "airr-navbar " +
-                    (typeof navbarClass === "string" ? navbarClass : "")
-                }
-                ref={refDOMNavbar}
-                style={navbarStyle}
-            >
-                <div style={{ height: navbarHeight + "px" }}>
-                    {mockTitle}
-                    {back}
-                    <div
-                        className="title"
-                        style={{ opacity: mockViewTitle ? 0 : 1 }}
-                    >
-                        <span>{title}</span>
-                    </div>
-                    {menu}
-                </div>
-            </div>
-        );
-    }
-});
 export default class AirrScene extends PureComponent {
     /**
      * Mayers Components refferencies
@@ -180,36 +71,30 @@ export default class AirrScene extends PureComponent {
         }
     };
 
-    render() {
-        const containerClassList = ["airr-container"];
-        if (this.props.animation) {
-            containerClassList.push(this.props.animation + "-animation");
-        }
-
-        let className = "airr-view airr-scene";
-        this.props.active && (className += " active");
-        this.props.className && (className += " " + this.props.className);
-
-        let views = [];
-        let isAnyViewActive = false;
-        this.props.views.forEach(item => {
-            let viewProps = Object.assign({}, item.props);
-
-            if (viewProps.name === this.props.activeViewName) {
-                viewProps.active = true;
-                isAnyViewActive = true;
-            }
-
-            views.push(React.createElement(item.type, viewProps));
-        });
+    checkValidActiveView = () => {
+        const isAnyViewActive = this.props.views.some(
+            view => view.props.name === this.props.activeViewName
+        );
 
         if (!isAnyViewActive) {
             console.warn(
                 "[Airr] No view was set as active" +
-                    (this.props.name && " in Scene named `" + this.props.name) +
+                    (this.props.name &&
+                        " in Scene named `" + this.props.name + "`") +
                     "."
             );
         }
+
+        return isAnyViewActive;
+    };
+
+    render() {
+        let className = "airr-view airr-scene";
+        this.props.active && (className += " active");
+        this.props.className && (className += " " + this.props.className);
+
+        this.checkValidActiveView();
+
         const activeViewIndex = this.getViewIndex(this.props.activeViewName);
 
         return (
@@ -243,22 +128,27 @@ export default class AirrScene extends PureComponent {
                         refDOMNavbar={this.props.refDOMNavbar}
                         navbarHeight={this.props.navbarHeight}
                     />
-                    <div
-                        className={containerClassList.join(" ")}
-                        ref={this.props.refDOMContainer}
-                        style={
-                            this.props.containersHeight
-                                ? { height: this.props.containersHeight }
-                                : null
+                    <ViewsRenderer
+                        className={
+                            this.props.animation
+                                ? this.props.animation + "-animation"
+                                : ""
                         }
-                    >
-                        {views}
-                    </div>
+                        refsCOMPViews={this.props.refsCOMPViews}
+                        activeViewName={this.props.activeViewName}
+                        views={this.props.views}
+                        refDOMContainer={this.props.refDOMContainer}
+                        containersHeight={this.props.containersHeight}
+                    />
                 </div>
                 <ChildrenRenderer>{this.props.children}</ChildrenRenderer>
                 {this.props.sidepanel && (
                     <SidepanelRenderer
                         type={this.props.sidepanel.type}
+                        refCOMPSidepanel={this.props.refCOMPSidepanel}
+                        visibilityCallback={
+                            this.props.sidepanelVisibilityCallback
+                        }
                         {...this.props.sidepanel.props}
                     />
                 )}
@@ -556,3 +446,169 @@ AirrScene.propTypes = {
      */
     className: PropTypes.string
 };
+
+const ChildrenRenderer = React.memo(function ChildrenRenderer({ children }) {
+    return typeof children === "function" ? children() : children;
+});
+const MayersRenderer = React.memo(function MayersRenderer({ mayers }) {
+    return mayers.map(({ name, ...props }) => {
+        return <AirrMayer key={name} name={name} {...props} />;
+    });
+});
+const SidepanelRenderer = React.memo(function SidepanelRenderer({
+    type,
+    refCOMPSidepanel,
+    visibilityCallback,
+    ...props
+}) {
+    if (!props.ref) {
+        props.ref = refCOMPSidepanel;
+    }
+    if (!props.visibilityCallback) {
+        props.visibilityCallback = visibilityCallback;
+    }
+    if (typeof props.enabled === "undefined") {
+        props.enabled = true; //force explicit value, e.g needed when checking if panel is enabled in `openMayer` method
+    }
+
+    return React.createElement(type, props);
+});
+const BlankmaskRenderer = React.memo(function BlankmaskRenderer({
+    GUIDisabled,
+    GUIDisableCover
+}) {
+    return (
+        GUIDisabled && <div className="airr-blank-mask">{GUIDisableCover}</div>
+    );
+});
+const NavbarRenderer = React.memo(function NavbarRenderer({
+    navbar,
+    activeViewIndex,
+    backButtonOnFirstView,
+    handleBackButton,
+    backButton,
+    navbarMenu,
+    hasSidepanel,
+    handleMenuButtonToggleSidepanel,
+    mockViewTitle,
+    activeViewTitle,
+    navbarClass,
+    refDOMNavbar,
+    navbarHeight
+}) {
+    if (navbar) {
+        let mockTitle = null;
+        let title = "";
+        let back = null;
+
+        if (backButton) {
+            const backClassName =
+                "back " +
+                (activeViewIndex < 1 && !backButtonOnFirstView ? "hidden" : "");
+            back = (
+                <div className={backClassName} onClick={handleBackButton}>
+                    <div />
+                </div>
+            );
+        }
+
+        let menu;
+        if (navbarMenu) {
+            if (navbarMenu === "toggleSidepanel") {
+                menu = hasSidepanel ? (
+                    <div
+                        className="menu"
+                        onClick={handleMenuButtonToggleSidepanel}
+                    >
+                        <div />
+                    </div>
+                ) : null;
+            } else if (Array.isArray(navbarMenu)) {
+                menu = <div className="menu">{navbarMenu}</div>;
+            }
+        }
+
+        const navbarStyle = {};
+        if ([1, true].indexOf(navbar) === -1) {
+            navbarStyle.visibility = "hidden";
+        }
+
+        if (mockViewTitle) {
+            mockTitle = (
+                <div className="mock-title">
+                    <span>{activeViewTitle}</span>
+                </div>
+            );
+            title = mockViewTitle;
+        } else {
+            title = activeViewTitle;
+        }
+
+        return (
+            <div
+                className={
+                    "airr-navbar " +
+                    (typeof navbarClass === "string" ? navbarClass : "")
+                }
+                ref={refDOMNavbar}
+                style={navbarStyle}
+            >
+                <div style={{ height: navbarHeight + "px" }}>
+                    {mockTitle}
+                    {back}
+                    <div
+                        className="title"
+                        style={{ opacity: mockViewTitle ? 0 : 1 }}
+                    >
+                        <span>{title}</span>
+                    </div>
+                    {menu}
+                </div>
+            </div>
+        );
+    }
+});
+
+const ViewsMapper = React.memo(function ViewsMapper({
+    views,
+    activeViewName,
+    refsCOMPViews
+}) {
+    return views.map(item => {
+        if (item.props.name === activeViewName) {
+            item.props.active = true;
+        } else {
+            item.props.active = false;
+        }
+
+        item.props.key = item.props.name;
+        if (!item.props.ref) {
+            item.props.ref = React.createRef();
+            refsCOMPViews[item.props.name] = item.props.ref;
+        }
+
+        return React.createElement(item.type, item.props);
+    });
+});
+const ViewsRenderer = React.memo(function ViewsRenderer({
+    views,
+    className = "",
+    refDOMContainer,
+    activeViewName,
+    containersHeight,
+    refsCOMPViews
+}) {
+    return (
+        <div
+            className={"airr-container " + className}
+            ref={refDOMContainer}
+            style={containersHeight ? { height: containersHeight } : null}
+        >
+            <ViewsMapper
+                views={views}
+                activeViewName={activeViewName}
+                refsCOMPViews={refsCOMPViews}
+            />
+        </div>
+    );
+});

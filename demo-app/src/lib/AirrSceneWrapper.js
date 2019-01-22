@@ -769,39 +769,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
         );
     };
 
-    /**
-     * Private utility function for preparing sidepanel configuration objects
-     * @param {object} sidepanel
-     * @returns {object}
-     */
-    __prepareSidepanel(sidepanel) {
-        sidepanel.props.ref = this.refCOMPSidepanel;
-        sidepanel.props.visibilityCallback = this.__sidepanelVisibilityCallback;
 
-        if (typeof sidepanel.props.enabled === "undefined") {
-            sidepanel.props.enabled = true; //force explicit value, e.g needed when checking if panel is enabled in `openMayer` method
-        }
-
-        return Object.assign({}, sidepanel);
-    }
-
-    /**
-     * Takes array of views and assign react specific properties (key and ref) to each view configuartion
-     *
-     * @param {array} views
-     * @returns {array}
-     */
-    __prepareViews(views) {
-        return views.map(item => {
-            item.props.key = item.props.name;
-
-            const ref = React.createRef();
-            item.props.ref = ref;
-            this.refsCOMPViews[item.props.name] = ref;
-
-            return item;
-        });
-    }
 
     render() {
         const { views, sidepanel, className, ...stateRest } = this.state;
@@ -810,12 +778,14 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
             <AirrScene
                 {...{
                     ...stateRest,
-                    views: this.__prepareViews(views),
-                    sidepanel: sidepanel && this.__prepareSidepanel(sidepanel),
+                    views: views,
+                    sidepanel: sidepanel,
                     refDOM: this.refDOM,
                     refDOMContainer: this.refDOMContainer,
                     refDOMNavbar: this.refDOMNavbar,
-                    refCOMPSidepanel: this.refCOMPSidepanel
+                    refsCOMPViews: this.refsCOMPViews,
+                    refCOMPSidepanel: this.refCOMPSidepanel,
+                    sidepanelVisibilityCallback: this.__sidepanelVisibilityCallback
                 }}
                 {...this.getViewProps()}
                 {...{ className }}
