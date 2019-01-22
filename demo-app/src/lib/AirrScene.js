@@ -15,15 +15,9 @@ export default class AirrScene extends PureComponent {
      * @returns {Number}
      */
     getViewIndex(viewName) {
-        let index = -1;
-
-        this.props.views.forEach((config, i) => {
-            if (config.props.name === viewName) {
-                index = i;
-            }
-        });
-
-        return index;
+        return this.props.views.findIndex(
+            config => config.props.name === viewName
+        );
     }
 
     /**
