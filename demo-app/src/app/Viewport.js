@@ -22,7 +22,8 @@ export default class Viewport extends SceneWrapper {
                         avaibleHeight: window.innerHeight
                     }
                 }
-            ]
+            ],
+            stackMode: true
         };
     }
 
