@@ -106,6 +106,24 @@ const BodyRenderer = React.memo(function BodyRenderer({ children, content }) {
         </div>
     );
 });
+const MayerButton = React.memo(function MayerButton({
+    className,
+    style,
+    onClick,
+    children,
+    ...spareAttribs
+}) {
+    return (
+        <button
+            className={className}
+            style={style}
+            onClick={onClick}
+            {...spareAttribs}
+        >
+            {children}
+        </button>
+    );
+});
 const ButtonRenderer = React.memo(function ButtonRenderer({ buttons }) {
     return (
         <div className="btns">
@@ -122,7 +140,7 @@ const ButtonRenderer = React.memo(function ButtonRenderer({ buttons }) {
                 }
 
                 return (
-                    <button
+                    <MayerButton
                         key={"btn" + index}
                         className={className}
                         style={config.style || null}
@@ -130,7 +148,7 @@ const ButtonRenderer = React.memo(function ButtonRenderer({ buttons }) {
                         {...spareAttribs}
                     >
                         {config.content}
-                    </button>
+                    </MayerButton>
                 );
             })}
         </div>
