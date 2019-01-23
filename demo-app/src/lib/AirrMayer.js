@@ -18,35 +18,6 @@ export default class AirrMayer extends PureComponent {
             throw new Error("Every Mayer must has its `name` property set");
         }
     }
-    /**
-     * Private utility method for rendering buttons based upon passed config object
-     * @param {object} config
-     * @param {int} index
-     * @returns {ReactElement}
-     */
-    __renderButton(config, index) {
-        let className = "btn text";
-        if (config.className) {
-            className += " " + config.className;
-        }
-
-        let spareAttribs = {};
-        if (config.attrs) {
-            spareAttribs = config.attrs;
-        }
-
-        return (
-            <button
-                key={"btn" + index}
-                className={className}
-                style={config.style || null}
-                onClick={config.handler || null}
-                {...spareAttribs}
-            >
-                {config.content}
-            </button>
-        );
-    }
 
     componentDidMount() {
         if (this.refDOMCtn.current.clientHeight >= this.props.avaibleHeight) {
@@ -99,31 +70,72 @@ export default class AirrMayer extends PureComponent {
     }
 
     render() {
-        let buttons = [];
-        if (this.props.buttons) {
-            this.props.buttons.forEach((config, index) => {
-                buttons.push(this.__renderButton(config, index));
-            });
-        }
-
         return (
             <div
                 className="airr-mayer"
                 ref={this.refDOMMayer}
                 style={this.props.style}
             >
-                <div className="bg" />
+                <BgRenderer />
                 <div className="ctn" ref={this.refDOMCtn}>
-                    <div className="text">
-                        {this.props.children}
-                        {this.props.content}
-                    </div>
-                    <div className="btns">{buttons}</div>
+                    <BodyRenderer
+                        children={this.props.children}
+                        content={this.props.content}
+                    />
+                    <ButtonRenderer buttons={this.props.buttons} />
                 </div>
             </div>
         );
     }
 }
+
+const BgRenderer = React.memo(function BgRenderer() {
+    return <div className="bg" />;
+});
+const ChildrenRenderer = React.memo(function ChildrenRenderer({ children }) {
+    return children;
+});
+const ContentRenderer = React.memo(function ContentRenderer({ content }) {
+    return content;
+});
+const BodyRenderer = React.memo(function BodyRenderer({ children, content }) {
+    return (
+        <div className="text">
+            <ChildrenRenderer children={children} />
+            <ContentRenderer content={content} />
+        </div>
+    );
+});
+const ButtonRenderer = React.memo(function ButtonRenderer({ buttons }) {
+    return (
+        <div className="btns">
+            {buttons.map((config, index) => {
+                let className = "btn text";
+
+                if (config.className) {
+                    className += " " + config.className;
+                }
+
+                let spareAttribs = {};
+                if (config.attrs) {
+                    spareAttribs = config.attrs;
+                }
+
+                return (
+                    <button
+                        key={"btn" + index}
+                        className={className}
+                        style={config.style || null}
+                        onClick={config.handler || null}
+                        {...spareAttribs}
+                    >
+                        {config.content}
+                    </button>
+                );
+            })}
+        </div>
+    );
+});
 
 AirrMayer.propTypes = {
     /**
