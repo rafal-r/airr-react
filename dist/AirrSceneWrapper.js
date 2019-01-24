@@ -260,6 +260,20 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             };
         };
 
+        _this.__sidepanelVisibilityCallback = function (isShown) {
+            _this.setState({
+                sidepanel: (0, _immutabilityHelper2.default)(_this.state.sidepanel, {
+                    props: {
+                        isShown: {
+                            $set: isShown
+                        }
+                    }
+                })
+            }, function () {
+                return _this.state.sidepanelVisibilityCallback && _this.state.sidepanelVisibilityCallback(isShown);
+            });
+        };
+
         _this.viewChangeInProgress = false;
 
 
@@ -556,47 +570,6 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
             });
         }
     }, {
-        key: "__prepareSidepanel",
-        value: function __prepareSidepanel(sidepanel) {
-            var _this11 = this;
-
-            sidepanel.props.ref = this.refCOMPSidepanel;
-            sidepanel.props.visibilityCallback = function (isShown) {
-                _this11.setState({
-                    sidepanel: (0, _immutabilityHelper2.default)(_this11.state.sidepanel, {
-                        props: {
-                            isShown: {
-                                $set: isShown
-                            }
-                        }
-                    })
-                }, function () {
-                    return _this11.state.sidepanelVisibilityCallback && _this11.state.sidepanelVisibilityCallback(isShown);
-                });
-            };
-
-            if (typeof sidepanel.props.enabled === "undefined") {
-                sidepanel.props.enabled = true;
-            }
-
-            return Object.assign({}, sidepanel);
-        }
-    }, {
-        key: "__prepareViews",
-        value: function __prepareViews(views) {
-            var _this12 = this;
-
-            return views.map(function (item) {
-                item.props.key = item.props.name;
-
-                var ref = _react2.default.createRef();
-                item.props.ref = ref;
-                _this12.refsCOMPViews[item.props.name] = ref;
-
-                return item;
-            });
-        }
-    }, {
         key: "render",
         value: function render() {
             var _state = this.state,
@@ -606,36 +579,38 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                 stateRest = _objectWithoutProperties(_state, ["views", "sidepanel", "className"]);
 
             return _react2.default.createElement(_AirrScene2.default, _extends({}, _extends({}, stateRest, {
-                views: this.__prepareViews(views),
-                sidepanel: sidepanel && this.__prepareSidepanel(sidepanel),
+                views: views,
+                sidepanel: sidepanel,
                 refDOM: this.refDOM,
                 refDOMContainer: this.refDOMContainer,
                 refDOMNavbar: this.refDOMNavbar,
-                refCOMPSidepanel: this.refCOMPSidepanel
+                refsCOMPViews: this.refsCOMPViews,
+                refCOMPSidepanel: this.refCOMPSidepanel,
+                sidepanelVisibilityCallback: this.__sidepanelVisibilityCallback
             }), this.getViewProps(), { className: className }));
         }
     }, {
         key: "__performViewsAnimation",
         value: function __performViewsAnimation(newViewName) {
-            var _this13 = this;
+            var _this11 = this;
 
             if (typeof newViewName === "string") {
                 this.viewChangeInProgress = true;
 
                 return new Promise(function (resolve, reject) {
-                    if (newViewName === _this13.state.activeViewName) {
+                    if (newViewName === _this11.state.activeViewName) {
                         console.warn("[Airr] This View is already active.");
-                        _this13.viewChangeInProgress = false;
+                        _this11.viewChangeInProgress = false;
                         return resolve();
                     }
 
-                    _this13.setState({ GUIDisabled: true, mockTitle: newViewName }, function () {
-                        if (_this13.getViewIndex(newViewName) !== -1) {
-                            var oldViewName = _this13.state.activeViewName;
-                            var newViewComp = _this13.refsCOMPViews[newViewName] && _this13.refsCOMPViews[newViewName].current;
-                            var oldViewComp = _this13.refsCOMPViews[oldViewName] && _this13.refsCOMPViews[oldViewName].current;
+                    _this11.setState({ GUIDisabled: true, mockTitle: newViewName }, function () {
+                        if (_this11.getViewIndex(newViewName) !== -1) {
+                            var oldViewName = _this11.state.activeViewName;
+                            var newViewComp = _this11.refsCOMPViews[newViewName] && _this11.refsCOMPViews[newViewName].current;
+                            var oldViewComp = _this11.refsCOMPViews[oldViewName] && _this11.refsCOMPViews[oldViewName].current;
                             var animEndCallback = function animEndCallback() {
-                                _this13.viewChangeInProgress = false;
+                                _this11.viewChangeInProgress = false;
 
                                 if (newViewComp && typeof newViewComp.viewAfterActivation === "function") {
                                     newViewComp.viewAfterActivation();
@@ -645,8 +620,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                                     oldViewComp.viewAfterDeactivation();
                                 }
 
-                                if (typeof _this13.viewsAnimationEnd === "function") {
-                                    _this13.viewsAnimationEnd(oldViewName, newViewName);
+                                if (typeof _this11.viewsAnimationEnd === "function") {
+                                    _this11.viewsAnimationEnd(oldViewName, newViewName);
                                 }
 
                                 resolve();
@@ -660,23 +635,23 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                                 oldViewComp.viewBeforeDeactivation();
                             }
 
-                            if (_this13.state.animation) {
-                                _this13.__doViewsAnimation(newViewName, oldViewName).then(function () {
-                                    _this13.setState({
+                            if (_this11.state.animation) {
+                                _this11.__doViewsAnimation(newViewName, oldViewName).then(function () {
+                                    _this11.setState({
                                         activeViewName: newViewName,
                                         GUIDisabled: false,
                                         mockTitle: false
                                     }, animEndCallback);
                                 });
                             } else {
-                                _this13.setState({
+                                _this11.setState({
                                     activeViewName: newViewName,
                                     GUIDisabled: false,
                                     mockTitle: false
                                 }, animEndCallback);
                             }
                         } else {
-                            _this13.viewChangeInProgress = false;
+                            _this11.viewChangeInProgress = false;
                             console.warn("[Airr] View with name " + newViewName + " is not presence in this Scene.");
                             reject();
                         }
@@ -690,12 +665,12 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
     }, {
         key: "__doViewsAnimation",
         value: function __doViewsAnimation(newViewName, oldViewName) {
-            var _this14 = this;
+            var _this12 = this;
 
             return new Promise(function (resolve, reject) {
-                var newViewDOM = _this14.refsCOMPViews[newViewName] && _this14.refsCOMPViews[newViewName].current && _this14.refsCOMPViews[newViewName].current.refDOM && _this14.refsCOMPViews[newViewName].current.refDOM.current;
-                var oldViewIndex = _this14.getViewIndex(oldViewName);
-                var newViewIndex = _this14.getViewIndex(newViewName);
+                var newViewDOM = _this12.refsCOMPViews[newViewName] && _this12.refsCOMPViews[newViewName].current && _this12.refsCOMPViews[newViewName].current.refDOM && _this12.refsCOMPViews[newViewName].current.refDOM.current;
+                var oldViewIndex = _this12.getViewIndex(oldViewName);
+                var newViewIndex = _this12.getViewIndex(newViewName);
 
                 var direction = newViewIndex > oldViewIndex ? 1 : -1;
 
@@ -703,9 +678,9 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                     throw new Error("new view DOM refference was not found");
                 }
 
-                if (_this14.state.navbar) {
-                    var titleNode = _this14.refDOMNavbar.current.querySelector(".title");
-                    var mockTitle = _this14.refDOMNavbar.current.querySelector(".mock-title");
+                if (_this12.state.navbar) {
+                    var titleNode = _this12.refDOMNavbar.current.querySelector(".title");
+                    var mockTitle = _this12.refDOMNavbar.current.querySelector(".mock-title");
                     var mockTextSpan = mockTitle && mockTitle.children[0];
                     var mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
 
@@ -714,11 +689,11 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                             webkitTransform: "translate3d(" + ((titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + "px") + ",0,0)",
                             transform: "translate3d(" + ((titleNode.clientWidth / 2 + mockTextSpanWidth / 2) * direction + "px") + ",0,0)",
                             opacity: 0
-                        }, ["opacity " + _this14.state.animationTime + "ms ease-out", "transform " + _this14.state.animationTime + "ms ease-out"], {
+                        }, ["opacity " + _this12.state.animationTime + "ms ease-out", "transform " + _this12.state.animationTime + "ms ease-out"], {
                             webkitTransform: "translate3d(0,0,0)",
                             transform: "translate3d(0,0,0)",
                             opacity: 1
-                        }, null, _this14.state.animationTime);
+                        }, null, _this12.state.animationTime);
                     }
 
                     if (mockTitle) {
@@ -726,38 +701,38 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                             webkitTransform: "translate3d(0,0,0)",
                             transform: "translate3d(0,0,0)",
                             opacity: 1
-                        }, ["opacity " + _this14.state.animationTime + "ms ease-out", "transform " + _this14.state.animationTime + "ms ease-out"], {
+                        }, ["opacity " + _this12.state.animationTime + "ms ease-out", "transform " + _this12.state.animationTime + "ms ease-out"], {
                             webkitTransform: "translate3d(" + (mockTextSpanWidth * direction * -1 + "px") + ",0,0)",
                             transform: "translate3d(" + (mockTextSpanWidth * direction * -1 + "px") + ",0,0)",
                             opacity: 0
-                        }, null, _this14.state.animationTime);
+                        }, null, _this12.state.animationTime);
                     }
 
-                    if (_this14.state.backButton && !_this14.state.backButtonOnFirstView) {
-                        var backDOM = _this14.refDOMNavbar.current.querySelector(".back");
+                    if (_this12.state.backButton && !_this12.state.backButtonOnFirstView) {
+                        var backDOM = _this12.refDOMNavbar.current.querySelector(".back");
 
                         if (oldViewIndex === 0) {
                             _AirrFX2.default.doTransitionAnimation(backDOM, {
                                 webkitTransform: "translate3d(100%,0,0)",
                                 transform: "translate3d(100%,0,0)",
                                 opacity: 0
-                            }, ["opacity " + _this14.state.animationTime + "ms ease-out", "transform " + _this14.state.animationTime + "ms ease-out"], {
+                            }, ["opacity " + _this12.state.animationTime + "ms ease-out", "transform " + _this12.state.animationTime + "ms ease-out"], {
                                 webkitTransform: "translate3d(0,0,0)",
                                 transform: "translate3d(0,0,0)",
                                 opacity: 1
                             }, function () {
                                 return backDOM.classList.remove("hidden");
-                            }, _this14.state.animationTime);
+                            }, _this12.state.animationTime);
                         } else if (newViewIndex === 0) {
                             _AirrFX2.default.doTransitionAnimation(backDOM, {
                                 webkitTransform: "translate3d(0,0,0)",
                                 transform: "translate3d(0,0,0)",
                                 opacity: 1
-                            }, ["opacity " + _this14.state.animationTime + "ms ease-out", "transform " + _this14.state.animationTime + "ms ease-out"], {
+                            }, ["opacity " + _this12.state.animationTime + "ms ease-out", "transform " + _this12.state.animationTime + "ms ease-out"], {
                                 webkitTransform: "translate3d(-100%,0,0)",
                                 transform: "translate3d(-100%,0,0)",
                                 opacity: 0
-                            }, null, _this14.state.animationTime, function () {
+                            }, null, _this12.state.animationTime, function () {
                                 backDOM.style.webkitTransform = "";
                                 backDOM.style.transform = "";
                                 backDOM.style.opacity = "";
@@ -766,47 +741,47 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                     }
                 }
 
-                if (_this14.state.animation === "slide" && oldViewName) {
+                if (_this12.state.animation === "slide" && oldViewName) {
                     newViewDOM.style.display = "block";
                     var startProps = {};
                     var endProps = {};
 
                     if (direction === -1) {
-                        startProps.webkitTransform = "translate3d(" + -1 * _this14.refDOM.current.clientWidth + "px,0,0)";
-                        startProps.transform = "translate3d(" + -1 * _this14.refDOM.current.clientWidth + "px,0,0)";
+                        startProps.webkitTransform = "translate3d(" + -1 * _this12.refDOM.current.clientWidth + "px,0,0)";
+                        startProps.transform = "translate3d(" + -1 * _this12.refDOM.current.clientWidth + "px,0,0)";
                         endProps.webkitTransform = "translate3d(0,0,0)";
                         endProps.transform = "translate3d(0,0,0)";
                     } else {
-                        endProps.webkitTransform = "translate3d(" + -1 * _this14.refDOM.current.clientWidth + "px,0,0)";
-                        endProps.transform = "translate3d(" + -1 * _this14.refDOM.current.clientWidth + "px,0,0)";
+                        endProps.webkitTransform = "translate3d(" + -1 * _this12.refDOM.current.clientWidth + "px,0,0)";
+                        endProps.transform = "translate3d(" + -1 * _this12.refDOM.current.clientWidth + "px,0,0)";
                     }
 
-                    _AirrFX2.default.doTransitionAnimation(_this14.refDOMContainer.current, startProps, ["transform " + _this14.state.animationTime + "ms ease-out"], endProps, null, _this14.state.animationTime, function () {
+                    _AirrFX2.default.doTransitionAnimation(_this12.refDOMContainer.current, startProps, ["transform " + _this12.state.animationTime + "ms ease-out"], endProps, null, _this12.state.animationTime, function () {
                         newViewDOM.style.display = "";
-                        _this14.refDOMContainer.current.style.webkitTransform = "";
-                        _this14.refDOMContainer.current.style.transform = "";
-                        _this14.refDOMContainer.current.style.webkitTransition = "";
-                        _this14.refDOMContainer.current.style.transition = "";
-                        _this14.refDOMContainer.current.style.transition = "";
-                        _this14.refDOMContainer.current.style.webkitBackfaceVisibility = "";
-                        _this14.refDOMContainer.current.style.backfaceVisibility = "";
+                        _this12.refDOMContainer.current.style.webkitTransform = "";
+                        _this12.refDOMContainer.current.style.transform = "";
+                        _this12.refDOMContainer.current.style.webkitTransition = "";
+                        _this12.refDOMContainer.current.style.transition = "";
+                        _this12.refDOMContainer.current.style.transition = "";
+                        _this12.refDOMContainer.current.style.webkitBackfaceVisibility = "";
+                        _this12.refDOMContainer.current.style.backfaceVisibility = "";
 
                         resolve();
                     });
-                } else if (_this14.state.animation === "overlay" && oldViewName) {
+                } else if (_this12.state.animation === "overlay" && oldViewName) {
                     if (direction === 1) {
                         _AirrFX2.default.doTransitionAnimation(newViewDOM, {
-                            webkitTransform: "translate3d(" + (_this14.refDOMContainer.current.clientWidth + "px") + ",0,0)",
-                            transform: "translate3d(" + (_this14.refDOMContainer.current.clientWidth + "px") + ",0,0)",
+                            webkitTransform: "translate3d(" + (_this12.refDOMContainer.current.clientWidth + "px") + ",0,0)",
+                            transform: "translate3d(" + (_this12.refDOMContainer.current.clientWidth + "px") + ",0,0)",
                             opacity: 0,
                             display: "block"
-                        }, ["opacity " + _this14.state.animationTime + "ms ease-out", "transform " + _this14.state.animationTime + "ms ease-out"], {
+                        }, ["opacity " + _this12.state.animationTime + "ms ease-out", "transform " + _this12.state.animationTime + "ms ease-out"], {
                             webkitTransform: "translate3d(0,0,0)",
                             transform: "translate3d(0,0,0)",
                             opacity: 1
                         }, function () {
                             return newViewDOM.style.zIndex = 102;
-                        }, _this14.state.animationTime, function () {
+                        }, _this12.state.animationTime, function () {
                             newViewDOM.style.zIndex = "";
                             newViewDOM.style.display = "";
                             newViewDOM.style.transform = "";
@@ -818,8 +793,8 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                             resolve();
                         });
                     } else {
-                        if (_this14.state.stackMode) {
-                            var oldViewDOM = _this14.refsCOMPViews[oldViewName].current.refDOM.current;
+                        if (_this12.state.stackMode) {
+                            var oldViewDOM = _this12.refsCOMPViews[oldViewName].current.refDOM.current;
                             newViewDOM.style.display = "block";
                             newViewDOM.style.opacity = 1;
 
@@ -827,11 +802,11 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                                 webkitTransform: "translate3d(0,0,0)",
                                 transform: "translate3d(0,0,0)",
                                 opacity: 1
-                            }, ["opacity " + _this14.state.animationTime + "ms ease-out", "transform " + _this14.state.animationTime + "ms ease-out"], {
-                                webkitTransform: "translate3d(0," + (_this14.refDOMContainer.current.clientHeight / 4 + "px") + ",0)",
-                                transform: "translate3d(0," + (_this14.refDOMContainer.current.clientHeight / 4 + "px") + ",0)",
+                            }, ["opacity " + _this12.state.animationTime + "ms ease-out", "transform " + _this12.state.animationTime + "ms ease-out"], {
+                                webkitTransform: "translate3d(0," + (_this12.refDOMContainer.current.clientHeight / 4 + "px") + ",0)",
+                                transform: "translate3d(0," + (_this12.refDOMContainer.current.clientHeight / 4 + "px") + ",0)",
                                 opacity: 0
-                            }, null, _this14.state.animationTime, function () {
+                            }, null, _this12.state.animationTime, function () {
                                 oldViewDOM.style.transition = "";
                                 oldViewDOM.style.webkitTransition = "";
                                 oldViewDOM.style.transform = "";
@@ -847,16 +822,16 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                             newViewDOM.style.display = "block";
 
                             _AirrFX2.default.doTransitionAnimation(newViewDOM, {
-                                webkitTransform: "translate3d(" + (-1 * _this14.refDOMContainer.current.clientWidth + "px") + ",0,0)",
-                                transform: "translate3d(" + (-1 * _this14.refDOMContainer.current.clientWidth + "px") + ",0,0)",
+                                webkitTransform: "translate3d(" + (-1 * _this12.refDOMContainer.current.clientWidth + "px") + ",0,0)",
+                                transform: "translate3d(" + (-1 * _this12.refDOMContainer.current.clientWidth + "px") + ",0,0)",
                                 opacity: 0
-                            }, ["opacity " + _this14.state.animationTime + "ms ease-out", "transform " + _this14.state.animationTime + "ms ease-out"], {
+                            }, ["opacity " + _this12.state.animationTime + "ms ease-out", "transform " + _this12.state.animationTime + "ms ease-out"], {
                                 webkitTransform: "translate3d(0,0,0)",
                                 transform: "translate3d(0,0,0)",
                                 opacity: 1
                             }, function () {
                                 return newViewDOM.style.zIndex = 102;
-                            }, _this14.state.animationTime, function () {
+                            }, _this12.state.animationTime, function () {
                                 newViewDOM.style.display = "";
                                 newViewDOM.style.zIndex = "";
                                 newViewDOM.style.transform = "";
@@ -869,15 +844,15 @@ var AirrSceneWrapper = function (_AirrViewWrapper) {
                             });
                         }
                     }
-                } else if (_this14.state.animation === "fade" || !oldViewName) {
+                } else if (_this12.state.animation === "fade" || !oldViewName) {
                     _AirrFX2.default.doTransitionAnimation(newViewDOM, {
                         display: "block",
                         opacity: 0
-                    }, ["opacity " + _this14.state.animationTime + "ms ease-out"], {
+                    }, ["opacity " + _this12.state.animationTime + "ms ease-out"], {
                         opacity: 1
                     }, function () {
                         return newViewDOM.style.zIndex = 102;
-                    }, _this14.state.animationTime, function () {
+                    }, _this12.state.animationTime, function () {
                         newViewDOM.style.display = "";
                         newViewDOM.style.zIndex = "";
                         newViewDOM.style.transform = "";

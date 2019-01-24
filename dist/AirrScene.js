@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require("react");
@@ -20,14 +22,16 @@ var _AirrMayer2 = _interopRequireDefault(_AirrMayer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var AirrScene = function (_Component) {
-    _inherits(AirrScene, _Component);
+var AirrScene = function (_PureComponent) {
+    _inherits(AirrScene, _PureComponent);
 
     function AirrScene() {
         var _ref;
@@ -61,166 +65,36 @@ var AirrScene = function (_Component) {
             if (_this.props.refCOMPSidepanel && _this.props.refCOMPSidepanel.current) {
                 _this.props.refCOMPSidepanel.current.isShown() ? _this.props.refCOMPSidepanel.current.hide() : _this.props.refCOMPSidepanel.current.show();
             }
+        }, _this.checkValidActiveView = function () {
+            var isAnyViewActive = _this.props.views.some(function (view) {
+                return view.props.name === _this.props.activeViewName;
+            });
+
+            if (!isAnyViewActive) {
+                console.warn("[Airr] No view was set as active" + (_this.props.name && " in Scene named `" + _this.props.name + "`") + ".");
+            }
+
+            return isAnyViewActive;
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
     _createClass(AirrScene, [{
         key: "getViewIndex",
         value: function getViewIndex(viewName) {
-            var index = -1;
-
-            this.props.views.forEach(function (config, i) {
-                if (config.props.name === viewName) {
-                    index = i;
-                }
+            return this.props.views.findIndex(function (config) {
+                return config.props.name === viewName;
             });
-
-            return index;
         }
     }, {
         key: "render",
         value: function render() {
-            var _this2 = this;
-
-            var containerClassList = ["airr-container"];
-            if (this.props.animation) {
-                containerClassList.push(this.props.animation + "-animation");
-            }
-
             var className = "airr-view airr-scene";
             this.props.active && (className += " active");
             this.props.className && (className += " " + this.props.className);
 
-            var views = [];
-            var isAnyViewActive = false;
-            this.props.views.forEach(function (item) {
-                var viewProps = Object.assign({}, item.props);
+            this.checkValidActiveView();
 
-                if (viewProps.name === _this2.props.activeViewName) {
-                    viewProps.active = true;
-                    isAnyViewActive = true;
-                }
-
-                views.push(_react2.default.createElement(item.type, viewProps));
-            });
-
-            if (!isAnyViewActive) {
-                console.warn("[Airr] No view was set as active" + (this.props.name && " in Scene named `" + this.props.name) + ".");
-            }
-
-            var sidepanel = null;
-            if (this.props.sidepanel) {
-                sidepanel = _react2.default.createElement(this.props.sidepanel.type, this.props.sidepanel.props);
-            }
-
-            var blankmask = null;
-            if (this.props.GUIDisabled) {
-                blankmask = _react2.default.createElement(
-                    "div",
-                    { className: "airr-blank-mask" },
-                    this.props.GUIDisableCover
-                );
-            }
-
-            var mayers = [];
-            if (this.props.mayers.length) {
-                mayers = this.props.mayers.map(function (mayerProps) {
-                    mayerProps.key = mayerProps.name;
-                    return _react2.default.createElement(_AirrMayer2.default, mayerProps);
-                });
-            }
-
-            var navbar = null;
-            if (this.props.navbar) {
-                var mockTitle = null;
-                var title = "";
-                var back = null;
-                var activeViewIndex = this.getViewIndex(this.props.activeViewName);
-
-                if (this.props.backButton) {
-                    var backClassName = "back " + (activeViewIndex < 1 && !this.props.backButtonOnFirstView ? "hidden" : "");
-                    back = _react2.default.createElement(
-                        "div",
-                        {
-                            className: backClassName,
-                            onClick: this.handleBackButton
-                        },
-                        _react2.default.createElement("div", null)
-                    );
-                }
-
-                var menu = void 0;
-                if (this.props.navbarMenu) {
-                    if (this.props.navbarMenu === "toggleSidepanel") {
-                        menu = this.props.sidepanel ? _react2.default.createElement(
-                            "div",
-                            {
-                                className: "menu",
-                                onClick: this.handleMenuButtonToggleSidepanel
-                            },
-                            _react2.default.createElement("div", null)
-                        ) : null;
-                    } else if (Array.isArray(this.props.navbarMenu)) {
-                        menu = _react2.default.createElement(
-                            "div",
-                            { className: "menu" },
-                            this.props.navbarMenu
-                        );
-                    }
-                }
-
-                var navbarStyle = {};
-                if ([1, true].indexOf(this.props.navbar) === -1) {
-                    navbarStyle.visibility = "hidden";
-                }
-
-                if (this.props.mockTitle) {
-                    var mockTitleContent = this.props.views[activeViewIndex] && this.props.views[activeViewIndex].props.title;
-                    var mockTitleViewIndex = this.getViewIndex(this.props.mockTitle);
-                    mockTitle = this.props.mockTitle ? _react2.default.createElement(
-                        "div",
-                        { className: "mock-title" },
-                        _react2.default.createElement(
-                            "span",
-                            null,
-                            mockTitleContent
-                        )
-                    ) : null;
-                    title = this.props.views[mockTitleViewIndex] ? this.props.views[mockTitleViewIndex].props.title : "";
-                } else {
-                    title = this.props.views[activeViewIndex] ? this.props.views[activeViewIndex].props.title : "";
-                }
-
-                navbar = _react2.default.createElement(
-                    "div",
-                    {
-                        className: "airr-navbar " + (typeof this.props.navbarClass === "string" ? this.props.navbarClass : ""),
-                        ref: this.props.refDOMNavbar,
-                        style: navbarStyle
-                    },
-                    _react2.default.createElement(
-                        "div",
-                        { style: { height: this.props.navbarHeight + "px" } },
-                        mockTitle,
-                        back,
-                        _react2.default.createElement(
-                            "div",
-                            {
-                                className: "title",
-                                style: { opacity: this.props.mockTitle ? 0 : 1 }
-                            },
-                            _react2.default.createElement(
-                                "span",
-                                null,
-                                title
-                            )
-                        ),
-                        menu
-                    )
-                );
-            }
-
-            var children = typeof this.props.children === "function" ? this.props.children(this.props) : this.props.children;
+            var activeViewIndex = this.getViewIndex(this.props.activeViewName);
 
             return _react2.default.createElement(
                 "div",
@@ -228,27 +102,51 @@ var AirrScene = function (_Component) {
                 _react2.default.createElement(
                     "div",
                     { className: "content-wrap" },
-                    navbar,
-                    _react2.default.createElement(
-                        "div",
-                        {
-                            className: containerClassList.join(" "),
-                            ref: this.props.refDOMContainer,
-                            style: this.props.containersHeight ? { height: this.props.containersHeight } : null
-                        },
-                        views
-                    )
+                    _react2.default.createElement(NavbarRenderer, {
+                        navbar: this.props.navbar,
+                        activeViewIndex: activeViewIndex,
+                        backButtonOnFirstView: this.props.backButtonOnFirstView,
+                        backButton: this.props.backButton,
+                        handleBackButton: this.handleBackButton,
+                        navbarMenu: this.props.navbarMenu,
+                        hasSidepanel: this.props.hasSidepanel,
+                        handleMenuButtonToggleSidepanel: this.handleMenuButtonToggleSidepanel,
+                        navbarClass: this.props.navbarClass,
+                        mockViewTitle: this.props.mockTitle && this.props.views[this.getViewIndex(this.props.mockTitle)] && this.props.views[this.getViewIndex(this.props.mockTitle)].props.title,
+                        activeViewTitle: this.props.views[activeViewIndex] && this.props.views[activeViewIndex].props.title,
+                        refDOMNavbar: this.props.refDOMNavbar,
+                        navbarHeight: this.props.navbarHeight
+                    }),
+                    _react2.default.createElement(ViewsRenderer, {
+                        className: this.props.animation ? this.props.animation + "-animation" : "",
+                        refsCOMPViews: this.props.refsCOMPViews,
+                        activeViewName: this.props.activeViewName,
+                        views: this.props.views,
+                        refDOMContainer: this.props.refDOMContainer,
+                        containersHeight: this.props.containersHeight
+                    })
                 ),
-                children,
-                sidepanel,
-                mayers,
-                blankmask
+                _react2.default.createElement(
+                    ChildrenRenderer,
+                    null,
+                    this.props.children
+                ),
+                this.props.sidepanel && _react2.default.createElement(SidepanelRenderer, _extends({
+                    type: this.props.sidepanel.type,
+                    refCOMPSidepanel: this.props.refCOMPSidepanel,
+                    visibilityCallback: this.props.sidepanelVisibilityCallback
+                }, this.props.sidepanel.props)),
+                _react2.default.createElement(MayersRenderer, { mayers: this.props.mayers }),
+                _react2.default.createElement(BlankmaskRenderer, {
+                    GUIDisabled: this.props.GUIDisabled,
+                    GUIDisableCover: this.props.GUIDisableCover
+                })
             );
         }
     }]);
 
     return AirrScene;
-}(_react.Component);
+}(_react.PureComponent);
 
 exports.default = AirrScene;
 
@@ -396,3 +294,190 @@ AirrScene.propTypes = {
 
     className: _propTypes2.default.string
 };
+
+var ChildrenRenderer = _react2.default.memo(function ChildrenRenderer(_ref2) {
+    var children = _ref2.children;
+
+    return typeof children === "function" ? children() : children;
+});
+var MayersRenderer = _react2.default.memo(function MayersRenderer(_ref3) {
+    var mayers = _ref3.mayers;
+
+    return mayers.map(function (_ref4) {
+        var name = _ref4.name,
+            props = _objectWithoutProperties(_ref4, ["name"]);
+
+        return _react2.default.createElement(_AirrMayer2.default, _extends({ key: name, name: name }, props));
+    });
+});
+var SidepanelRenderer = _react2.default.memo(function SidepanelRenderer(_ref5) {
+    var type = _ref5.type,
+        refCOMPSidepanel = _ref5.refCOMPSidepanel,
+        visibilityCallback = _ref5.visibilityCallback,
+        props = _objectWithoutProperties(_ref5, ["type", "refCOMPSidepanel", "visibilityCallback"]);
+
+    if (!props.ref) {
+        props.ref = refCOMPSidepanel;
+    }
+    if (!props.visibilityCallback) {
+        props.visibilityCallback = visibilityCallback;
+    }
+    if (typeof props.enabled === "undefined") {
+        props.enabled = true;
+    }
+
+    return _react2.default.createElement(type, props);
+});
+var BlankmaskRenderer = _react2.default.memo(function BlankmaskRenderer(_ref6) {
+    var GUIDisabled = _ref6.GUIDisabled,
+        GUIDisableCover = _ref6.GUIDisableCover;
+
+    return GUIDisabled && _react2.default.createElement(
+        "div",
+        { className: "airr-blank-mask" },
+        GUIDisableCover
+    );
+});
+var NavbarRenderer = _react2.default.memo(function NavbarRenderer(_ref7) {
+    var navbar = _ref7.navbar,
+        activeViewIndex = _ref7.activeViewIndex,
+        backButtonOnFirstView = _ref7.backButtonOnFirstView,
+        handleBackButton = _ref7.handleBackButton,
+        backButton = _ref7.backButton,
+        navbarMenu = _ref7.navbarMenu,
+        hasSidepanel = _ref7.hasSidepanel,
+        handleMenuButtonToggleSidepanel = _ref7.handleMenuButtonToggleSidepanel,
+        mockViewTitle = _ref7.mockViewTitle,
+        activeViewTitle = _ref7.activeViewTitle,
+        navbarClass = _ref7.navbarClass,
+        refDOMNavbar = _ref7.refDOMNavbar,
+        navbarHeight = _ref7.navbarHeight;
+
+    if (navbar) {
+        var mockTitle = null;
+        var title = "";
+        var back = null;
+
+        if (backButton) {
+            var backClassName = "back " + (activeViewIndex < 1 && !backButtonOnFirstView ? "hidden" : "");
+            back = _react2.default.createElement(
+                "div",
+                { className: backClassName, onClick: handleBackButton },
+                _react2.default.createElement("div", null)
+            );
+        }
+
+        var menu = void 0;
+        if (navbarMenu) {
+            if (navbarMenu === "toggleSidepanel") {
+                menu = hasSidepanel ? _react2.default.createElement(
+                    "div",
+                    {
+                        className: "menu",
+                        onClick: handleMenuButtonToggleSidepanel
+                    },
+                    _react2.default.createElement("div", null)
+                ) : null;
+            } else if (Array.isArray(navbarMenu)) {
+                menu = _react2.default.createElement(
+                    "div",
+                    { className: "menu" },
+                    navbarMenu
+                );
+            }
+        }
+
+        var navbarStyle = {};
+        if ([1, true].indexOf(navbar) === -1) {
+            navbarStyle.visibility = "hidden";
+        }
+
+        if (mockViewTitle) {
+            mockTitle = _react2.default.createElement(
+                "div",
+                { className: "mock-title" },
+                _react2.default.createElement(
+                    "span",
+                    null,
+                    activeViewTitle
+                )
+            );
+            title = mockViewTitle;
+        } else {
+            title = activeViewTitle;
+        }
+
+        return _react2.default.createElement(
+            "div",
+            {
+                className: "airr-navbar " + (typeof navbarClass === "string" ? navbarClass : ""),
+                ref: refDOMNavbar,
+                style: navbarStyle
+            },
+            _react2.default.createElement(
+                "div",
+                { style: { height: navbarHeight + "px" } },
+                mockTitle,
+                back,
+                _react2.default.createElement(
+                    "div",
+                    {
+                        className: "title",
+                        style: { opacity: mockViewTitle ? 0 : 1 }
+                    },
+                    _react2.default.createElement(
+                        "span",
+                        null,
+                        title
+                    )
+                ),
+                menu
+            )
+        );
+    }
+});
+
+var ViewsMapper = _react2.default.memo(function ViewsMapper(_ref8) {
+    var views = _ref8.views,
+        activeViewName = _ref8.activeViewName,
+        refsCOMPViews = _ref8.refsCOMPViews;
+
+    return views.map(function (item) {
+        if (item.props.name === activeViewName) {
+            item.props.active = true;
+        } else {
+            item.props.active = false;
+        }
+
+        item.props.key = item.props.name;
+        if (!item.props.ref) {
+            item.props.ref = _react2.default.createRef();
+            refsCOMPViews[item.props.name] = item.props.ref;
+        }
+
+        return _react2.default.createElement(item.type, item.props);
+    });
+});
+var ViewsRenderer = _react2.default.memo(function ViewsRenderer(_ref9) {
+    var views = _ref9.views,
+        _ref9$className = _ref9.className,
+        className = _ref9$className === undefined ? "" : _ref9$className,
+        refDOMContainer = _ref9.refDOMContainer,
+        activeViewName = _ref9.activeViewName,
+        containersHeight = _ref9.containersHeight,
+        refsCOMPViews = _ref9.refsCOMPViews;
+
+    return _react2.default.createElement(
+        "div",
+        {
+            className: "airr-container " + className,
+            ref: refDOMContainer,
+            style: containersHeight ? { height: containersHeight } : null
+        },
+        _react2.default.createElement(ViewsMapper, {
+            views: views,
+            activeViewName: activeViewName,
+            refsCOMPViews: refsCOMPViews
+        })
+    );
+});
