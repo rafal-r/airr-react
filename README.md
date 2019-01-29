@@ -1,8 +1,8 @@
 # airr-react
 
-This library is set of several React components that helps building Single Page Apps for desktop and mobile apps as well.  
+This library is set of several components that helps building browser Single Page Apps.  
 airr-react defines few basic UI classes and features that every app needs. The core component is responsible for maintaining navigation in the app.
-All of it when minified and gzipped weights only ~13.5kB ([bundlephobia.com](https://bundlephobia.com/result?p=airr-react@2.0.20)).  
+All of it when minified and gzipped weights ~13.7kB ([bundlephobia.com](https://bundlephobia.com/result?p=airr-react@2.0.20)).  
 
 Library can be used for:
 
@@ -22,17 +22,13 @@ and for documentation (still uncomplete) and interactive examples check:
 ### The library 
 
 ```
-npm install airr-react
+npm i airr-react
 ```
 
 ### The demo
 
-If you want to explore demo app as a code reference just download `demo-app` directory content, open your system console and execute standard installation and start commands on this directory:
+If you want to explore demo app as a code reference just download `demo-app` directory content and perform standard installation procedures. This project is created with `create-react-app` so you only need to `npm install; npm start`. 
 
-```
-npm install;
-npm start;
-```
 ## Example
 
 Here's a simple code usage that provides a viewport with two views. 
