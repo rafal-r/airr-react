@@ -142,39 +142,43 @@ Like React's `componentDidMount` method, Airr provides self explanatory methods 
 -   `viewAfterDeactivation`
 
 `SceneWrapper` or `ViewWrapper` can:
+
 ```javascript
 class JustView extends ViewWrapper {
-  viewBeforeActivation() {
-    console.log("JustView will be active soon")
-  }
-  viewAfterActivation() {
-    console.log("JustView was activated soon")
-  }
-  viewBeforeDeactivation() {
-    console.log("JustView will be deactivated")
-  }
-  viewAfterDeactivation() {
-    console.log("JustView is now inactive")
-  }
-  componentDidUpdate() {
-    console.log("JustView was updated")
-  }
+    viewBeforeActivation() {
+        console.log("JustView will be active soon");
+    }
+    viewAfterActivation() {
+        console.log("JustView was activated soon");
+    }
+    viewBeforeDeactivation() {
+        console.log("JustView will be deactivated");
+    }
+    viewAfterDeactivation() {
+        console.log("JustView is now inactive");
+    }
+    componentDidUpdate() {
+        console.log("JustView was updated");
+    }
 }
 ```
 
 Additionaly `SceneWrapper` has:
 
 -   `viewsAnimationEnd(oldViewName: string, newViewName: string)`
+
 ```javascript
 class BarScene extends SceneWrapper {
-  viewsAnimationEnd(oldViewName, newViewName) {
-  	console.log(`[BarScene::viewsAnimationEnd] oldViewName: ${oldViewName}, newViewName: ${newViewName}`);
-  }
+    viewsAnimationEnd(oldViewName, newViewName) {
+        console.log(
+            `[BarScene::viewsAnimationEnd] oldViewName: ${oldViewName}, newViewName: ${newViewName}`
+        );
+    }
 
-  componentDidMount() {
-  	super.componentDidMount()
-    console.log("Scene did mount")
-  }
+    componentDidMount() {
+        super.componentDidMount();
+        console.log("Scene did mount");
+    }
 }
 ```
 
@@ -182,6 +186,7 @@ class BarScene extends SceneWrapper {
 
 You can use all well known React's life-cycles methods when extending airr-react's components.  
 Only when using `componentDidMount` in the class that extends `SceneWrapper` you must also invoke super's method like:
+
 ```javascript
   componentDidMount() {
   	super.componentDidMount()
@@ -195,29 +200,32 @@ In the classes that extends `ViewWrapper` (which will be all your views) to rend
 
 ```javascript
 class FooView extends ViewWrapper {
-  content() {
-    return <div>Hello Foo world!</div>
-  }
+    content() {
+        return <div>Hello Foo world!</div>;
+    }
 }
 ```
 
 You have to do it this way because core class must set correct properties to the inner view component:
+
 ```javascript
 export default class AirrViewWrapper extends PureComponent {
-	render() {
+    render() {
         return (
             <AirrView {...this.getViewProps()}>{() => this.content()}</AirrView>
         );
     }
 }
 ```
+
 If you would like to overwrite this behaviour, you must do it like this:
+
 ```javascript
 class FooView extends ViewWrapper {
-	render() {
+    render() {
         return (
             <AirrView {...this.getViewProps()}>
-            	{() => this.myCustomRenderMethodCall()}
+                {() => this.myCustomRenderMethodCall()}
                 //or
                 {this.props.customChildThing}
             </AirrView>
