@@ -135,7 +135,9 @@ export default class AirrScene extends PureComponent {
                         containersHeight={this.props.containersHeight}
                     />
                 </div>
-                <ChildrenRenderer>{this.props.children}</ChildrenRenderer>
+                <ChildrenRenderer {...this.props}>
+                    {this.props.children}
+                </ChildrenRenderer>
                 {this.props.sidepanel && (
                     <SidepanelRenderer
                         type={this.props.sidepanel.type}
@@ -441,8 +443,11 @@ AirrScene.propTypes = {
     className: PropTypes.string
 };
 
-const ChildrenRenderer = React.memo(function ChildrenRenderer({ children }) {
-    return typeof children === "function" ? children() : children;
+const ChildrenRenderer = React.memo(function ChildrenRenderer({
+    children,
+    ...rest
+}) {
+    return typeof children === "function" ? children(rest) : children;
 });
 const MayersRenderer = React.memo(function MayersRenderer({ mayers }) {
     return mayers.map(({ name, ...props }) => {

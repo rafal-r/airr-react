@@ -128,7 +128,7 @@ var AirrScene = function (_PureComponent) {
                 ),
                 _react2.default.createElement(
                     ChildrenRenderer,
-                    null,
+                    this.props,
                     this.props.children
                 ),
                 this.props.sidepanel && _react2.default.createElement(SidepanelRenderer, _extends({
@@ -296,9 +296,10 @@ AirrScene.propTypes = {
 };
 
 var ChildrenRenderer = _react2.default.memo(function ChildrenRenderer(_ref2) {
-    var children = _ref2.children;
+    var children = _ref2.children,
+        rest = _objectWithoutProperties(_ref2, ["children"]);
 
-    return typeof children === "function" ? children() : children;
+    return typeof children === "function" ? children(rest) : children;
 });
 var MayersRenderer = _react2.default.memo(function MayersRenderer(_ref3) {
     var mayers = _ref3.mayers;
