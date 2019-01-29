@@ -129,6 +129,18 @@ const rootElement = document.getElementById("root");
 ReactDOM.render(<Viewport />, rootElement);
 ```
 
+## Concept
+
+The main concept is to put most of your jsx and html code into the View's components and to render them with `content()` method. That will be classes that extends `ViewWrapper` component.
+
+All of the props and logic will be passed to this views from Scenes - these are classes that extends `SceneWrapper`.
+They will be responsible for navigating between views and filling them with data.
+
+#### PureComponents
+
+From version 3.0.0 of airr-react all components are implementing PureComponents approach.
+So remember that your views will not be updated unless you provide them with different props.
+
 ## View's life-cycles
 
 Airr library provides easy to implement views life-cycles methods.
