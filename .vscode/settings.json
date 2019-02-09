@@ -1,0 +1,11 @@
+{
+	"typescript.validate.enable": false,
+	"javascript.validate.enable": false,
+	"javascript.format.enable": false,
+	"flow.useNPMPackagedFlow": true,
+	"prettier.eslintIntegration": true,
+	"editor.tabSize": 4,
+	"editor.detectIndentation": false,
+	"editor.insertSpaces": false,
+	"editor.formatOnSave": true
+}

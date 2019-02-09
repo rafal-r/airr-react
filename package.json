@@ -9,6 +9,7 @@
 	},
 	"main": "airr-react.js",
 	"scripts": {
+		"eslint": "eslint lib/*.js",
 		"build": "babel lib -d dist --copy-files --ignore '*.mkd'"
 	},
 	"keywords": [
@@ -30,12 +31,18 @@
 	"devDependencies": {
 		"babel-cli": "^6.26.0",
 		"babel-core": "^6.26.3",
+		"babel-eslint": "^10.0.1",
 		"babel-preset-env": "^1.7.0",
 		"babel-preset-react": "^6.24.1",
 		"babel-preset-stage-2": "^6.24.1",
 		"esdoc": "^1.1.0",
 		"esdoc-ecmascript-proposal-plugin": "^1.0.0",
 		"esdoc-jsx-plugin": "^1.0.0",
-		"esdoc-standard-plugin": "^1.0.0"
+		"esdoc-standard-plugin": "^1.0.0",
+		"eslint": "^5.13.0",
+		"eslint-config-prettier": "^4.0.0",
+		"eslint-plugin-prettier": "^3.0.1",
+		"eslint-plugin-react": "^7.12.4",
+		"prettier": "^1.16.4"
 	}
 }
