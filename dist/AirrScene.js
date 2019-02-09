@@ -109,7 +109,7 @@ var AirrScene = function (_PureComponent) {
                         backButton: this.props.backButton,
                         handleBackButton: this.handleBackButton,
                         navbarMenu: this.props.navbarMenu,
-                        hasSidepanel: this.props.hasSidepanel,
+                        hasSidepanel: Boolean(this.props.sidepanel),
                         handleMenuButtonToggleSidepanel: this.handleMenuButtonToggleSidepanel,
                         navbarClass: this.props.navbarClass,
                         mockViewTitle: this.props.mockTitle && this.props.views[this.getViewIndex(this.props.mockTitle)] && this.props.views[this.getViewIndex(this.props.mockTitle)].props.title,
