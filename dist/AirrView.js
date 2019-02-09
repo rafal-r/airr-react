@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+	value: true
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -16,6 +16,8 @@ var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
+var _propTypes3 = require("./propTypes");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
@@ -27,63 +29,62 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var AirrView = function (_PureComponent) {
-    _inherits(AirrView, _PureComponent);
+	_inherits(AirrView, _PureComponent);
 
-    function AirrView() {
-        _classCallCheck(this, AirrView);
+	function AirrView() {
+		_classCallCheck(this, AirrView);
 
-        return _possibleConstructorReturn(this, (AirrView.__proto__ || Object.getPrototypeOf(AirrView)).apply(this, arguments));
-    }
+		return _possibleConstructorReturn(this, (AirrView.__proto__ || Object.getPrototypeOf(AirrView)).apply(this, arguments));
+	}
 
-    _createClass(AirrView, [{
-        key: "render",
-        value: function render() {
-            var _props = this.props,
-                name = _props.name,
-                title = _props.title,
-                active = _props.active,
-                refDOM = _props.refDOM,
-                className = _props.className,
-                style = _props.style,
-                rest = _objectWithoutProperties(_props, ["name", "title", "active", "refDOM", "className", "style"]);
+	_createClass(AirrView, [{
+		key: "render",
+		value: function render() {
+			var _props = this.props,
+			    active = _props.active,
+			    refDOM = _props.refDOM,
+			    className = _props.className,
+			    style = _props.style,
+			    rest = _objectWithoutProperties(_props, ["active", "refDOM", "className", "style"]);
 
-            var viewClass = "airr-view" + (className ? " " + className : "");
+			var viewClass = "airr-view" + (className ? " " + className : "");
 
-            active && (viewClass += " active");
+			active && (viewClass += " active");
 
-            return _react2.default.createElement(
-                "div",
-                _extends({ className: viewClass, style: style, ref: refDOM }, rest),
-                typeof this.props.children === "function" ? this.props.children() : this.props.children
-            );
-        }
-    }]);
+			return _react2.default.createElement(
+				"div",
+				_extends({ className: viewClass, style: style, ref: refDOM }, rest),
+				typeof this.props.children === "function" ? this.props.children() : this.props.children
+			);
+		}
+	}]);
 
-    return AirrView;
+	return AirrView;
 }(_react.PureComponent);
 
 exports.default = AirrView;
 
 
 AirrView.propTypes = {
-    name: _propTypes2.default.string.isRequired,
+	name: _propTypes2.default.string.isRequired,
 
-    title: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.object]),
+	title: _propTypes3.commonChildrenProp,
 
-    active: _propTypes2.default.bool,
+	active: _propTypes2.default.bool,
 
-    refDOM: _propTypes2.default.object,
+	refDOM: _propTypes2.default.object,
 
-    className: _propTypes2.default.string,
+	className: _propTypes2.default.string,
 
-    style: _propTypes2.default.object
+	style: _propTypes2.default.object,
+	children: _propTypes3.renderChildrenProp
 };
 
 AirrView.defaultProps = {
-    name: "",
-    title: "",
-    active: false,
-    refDOM: null,
-    className: "",
-    style: {}
+	name: "",
+	title: "",
+	active: false,
+	refDOM: null,
+	className: "",
+	style: {}
 };

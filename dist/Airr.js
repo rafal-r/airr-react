@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.FX = exports.ViewWrapper = exports.SceneWrapper = exports.Sidepanel = exports.Mayer = exports.Scene = exports.View = exports.Helpers = undefined;
 

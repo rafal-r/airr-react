@@ -1,252 +1,252 @@
 /************* AIRR STRUCTURE STYLES ***************/
 * {
-    -webkit-tap-highlight-color: rgba(
-        0,
-        0,
-        0,
-        0
-    ); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+	-webkit-tap-highlight-color: rgba(
+		0,
+		0,
+		0,
+		0
+	); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 :after,
 :before {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 html,
 body {
-    background: #fff;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    -webkit-font-smoothing: antialiased;
-    margin: 0;
-    padding: 0;
+	background: #fff;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	-webkit-font-smoothing: antialiased;
+	margin: 0;
+	padding: 0;
 }
 
 .airr-blank-mask {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 110;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 110;
 }
 
 .airr-mayer {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 109;
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	z-index: 109;
 
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
 
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
 
-    -webkit-box-orient: vertical !important;
-    -ms-flex-direction: column !important;
-    flex-direction: column !important;
+	-webkit-box-orient: vertical !important;
+	-ms-flex-direction: column !important;
+	flex-direction: column !important;
 
-    display: flex;
-    display: -webkit-box;
-    display: -ms-flexbox;
+	display: flex;
+	display: -webkit-box;
+	display: -ms-flexbox;
 }
 .airr-mayer .bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(240, 240, 210, 0.7);
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(240, 240, 210, 0.7);
 }
 .airr-mayer .ctn {
-    background-color: #fff;
-    padding: 2rem;
-    position: relative;
-    width: 100%;
+	background-color: #fff;
+	padding: 2rem;
+	position: relative;
+	width: 100%;
 }
 
 .airr-mayer.full .ctn {
-    overflow: scroll;
+	overflow: scroll;
 }
 
 .airr-mayer.full .btns {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 0.3rem;
-    background: rgba(255, 255, 255, 0.5);
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 0.3rem;
+	background: rgba(255, 255, 255, 0.5);
 }
 
 .airr-mayer.full .ctn > div.text {
-    padding-bottom: 3.75rem;
+	padding-bottom: 3.75rem;
 }
 
 .airr-mayer .btns {
-    padding-top: 1rem;
-    overflow: auto;
+	padding-top: 1rem;
+	overflow: auto;
 }
 
 .airr-mayer .btns button:last-child {
-    float: right;
+	float: right;
 }
 
 textarea:focus,
 input:focus {
-    outline: none;
+	outline: none;
 }
 
 *:focus {
-    outline: none;
+	outline: none;
 }
 
 .hidden {
-    display: none;
+	display: none;
 }
 
 .airr-view,
 .airr-container {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-    background-color: #fff;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+	background-color: #fff;
 }
 
 .airr-container > .airr-view {
-    display: none;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+	display: none;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
 }
 .airr-scene > .content-wrap {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 }
 .airr-container > .airr-view.airr-scene {
-    overflow: hidden;
+	overflow: hidden;
 }
 
 .airr-container > .airr-view.active {
-    display: block;
+	display: block;
 }
 
 .airr-sidepanel {
-    position: absolute;
-    z-index: 105;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0);
-    display: none;
+	position: absolute;
+	z-index: 105;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0);
+	display: none;
 }
 
 .airr-sidepanel > div:first-child {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgb(0, 0, 0);
-    opacity: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgb(0, 0, 0);
+	opacity: 0;
 }
 
 .airr-sidepanel > div:last-child {
-    background-color: #fff;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    overflow-y: scroll;
-    overflow-x: hidden;
+	background-color: #fff;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 .airr-sidepanel.bottom > div:last-child,
 .airr-sidepanel.top > div:last-child {
-    overflow-y: hidden;
-    overflow-x: scroll;
+	overflow-y: hidden;
+	overflow-x: scroll;
 }
 .airr-container.fade-animation > .airr-view,
 .airr-container.overlay-animation > .airr-view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 100;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 100;
 }
 
 .airr-container.fade-animation > .airr-view.active,
 .airr-container.overlay-animation > .airr-view.active {
-    z-index: 101;
-    opacity: 1;
+	z-index: 101;
+	opacity: 1;
 }
 .airr-container.slide-animation {
-    width: 200%;
+	width: 200%;
 }
 .airr-container.slide-animation > .airr-view {
-    float: left;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    width: 50%;
+	float: left;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	width: 50%;
 }
 
 .airr-navbar {
-    z-index: 10;
+	z-index: 10;
 }
 .airr-navbar > div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
 }
 .airr-navbar .back {
-    width: 3rem;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
+	width: 3rem;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
 }
 .airr-navbar .back div {
-    height: 100%;
+	height: 100%;
 }
 .airr-navbar .menu {
-    width: 3rem;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    top: 0;
+	width: 3rem;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	top: 0;
 }
 .airr-navbar .menu div {
-    height: 100%;
+	height: 100%;
 }
 .airr-navbar .mock-title {
-    position: absolute;
-    opacity: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-justify-content: center;
-    justify-content: center;
+	position: absolute;
+	opacity: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
 }
 .airr-navbar .title,
 .airr-navbar .mock-title {
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
 }

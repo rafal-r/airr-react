@@ -1,15 +1,15 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+	value: true
 });
 var supportPassive = false;
 
 var opts = Object.defineProperty && Object.defineProperty({}, "passive", {
-    get: function get() {
-        exports.supportPassive = supportPassive = { passive: true };
-        return supportPassive;
-    }
+	get: function get() {
+		exports.supportPassive = supportPassive = { passive: true };
+		return supportPassive;
+	}
 });
 
 document.addEventListener("test", function () {}, opts);
