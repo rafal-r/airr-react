@@ -3,9 +3,9 @@
 	"version": "3.0.0",
 	"description": "Reusable React components for building Single Page Apps.",
 	"dependencies": {
-		"immutability-helper": "^2.5.0",
-		"prop-types": "^15.6.0",
-		"react": "^16.1.1"
+		"immutability-helper": "^2.9.1",
+		"prop-types": "^15.6.2",
+		"react": "^16.7.0"
 	},
 	"main": "airr-react.js",
 	"scripts": {
@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",
-		"babel-core": "^6.26.0",
+		"babel-core": "^6.26.3",
 		"babel-preset-env": "^1.7.0",
 		"babel-preset-react": "^6.24.1",
 		"babel-preset-stage-2": "^6.24.1",
