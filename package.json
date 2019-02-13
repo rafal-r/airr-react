@@ -4,13 +4,14 @@
 	"description": "Reusable React components for building Single Page Apps.",
 	"dependencies": {
 		"immutability-helper": "^2.9.1",
-		"prop-types": "^15.6.2",
+		"prop-types": "^15.7.1",
 		"react": "^16.7.0"
 	},
 	"main": "airr-react.js",
 	"scripts": {
 		"eslint": "eslint lib/*.js",
-		"build": "babel lib -d dist --copy-files --ignore '*.mkd'"
+		"build": "babel lib -d dist --copy-files --ignore '*.mkd'",
+		"flow": "flow"
 	},
 	"keywords": [
 		"react",
@@ -41,8 +42,10 @@
 		"esdoc-standard-plugin": "^1.0.0",
 		"eslint": "^5.13.0",
 		"eslint-config-prettier": "^4.0.0",
+		"eslint-plugin-flowtype": "^3.4.1",
 		"eslint-plugin-prettier": "^3.0.1",
 		"eslint-plugin-react": "^7.12.4",
+		"flow-bin": "^0.92.1",
 		"prettier": "^1.16.4"
 	}
 }

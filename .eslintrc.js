@@ -8,6 +8,7 @@ module.exports = {
 	extends: [
 		"eslint:recommended",
 		"plugin:react/recommended",
+		"plugin:flowtype/recommended",
 		"prettier",
 		"prettier/react"
 	],
@@ -18,7 +19,7 @@ module.exports = {
 		ecmaVersion: 2018,
 		sourceType: "module"
 	},
-	plugins: ["react", "prettier"],
+	plugins: ["react", "flowtype", "prettier"],
 	rules: {
 		"no-console": 0,
 		"no-unused-vars": ["error", { args: "none" }],
