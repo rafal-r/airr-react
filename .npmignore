@@ -9,3 +9,7 @@ CONTRIBUTING.md
 storybook
 docs
 .gitignore
+.flowconfig
+.eslintrc.js
+.prettierrc
+.vscode
