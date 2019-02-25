@@ -3,6 +3,7 @@
 	"version": "3.0.1",
 	"description": "Reusable React components for building Single Page Apps.",
 	"dependencies": {
+		"@types/react": "^16.8.3",
 		"immutability-helper": "^2.9.1",
 		"prop-types": "^15.7.1",
 		"react": "^16.7.0"
@@ -11,6 +12,7 @@
 	"scripts": {
 		"eslint": "eslint lib/*.js",
 		"build": "babel lib -d dist --copy-files --ignore '*.mkd'",
+		"build2": "webpack",
 		"flow": "flow"
 	},
 	"keywords": [
@@ -30,22 +32,22 @@
 		"url": "git+https://github.com/rafal-r/airr-react"
 	},
 	"devDependencies": {
+		"acorn": "^6.1.0",
+		"awesome-typescript-loader": "^5.2.1",
 		"babel-cli": "^6.26.0",
 		"babel-core": "^6.26.3",
 		"babel-eslint": "^10.0.1",
 		"babel-preset-env": "^1.7.0",
 		"babel-preset-react": "^6.24.1",
 		"babel-preset-stage-2": "^6.24.1",
-		"esdoc": "^1.1.0",
-		"esdoc-ecmascript-proposal-plugin": "^1.0.0",
-		"esdoc-jsx-plugin": "^1.0.0",
-		"esdoc-standard-plugin": "^1.0.0",
 		"eslint": "^5.13.0",
 		"eslint-config-prettier": "^4.0.0",
-		"eslint-plugin-flowtype": "^3.4.1",
 		"eslint-plugin-prettier": "^3.0.1",
 		"eslint-plugin-react": "^7.12.4",
-		"flow-bin": "^0.92.1",
-		"prettier": "^1.16.4"
+		"prettier": "^1.16.4",
+		"source-map-loader": "^0.2.4",
+		"typescript": "^3.3.3",
+		"webpack": "^4.29.5",
+		"webpack-cli": "^3.2.3"
 	}
 }

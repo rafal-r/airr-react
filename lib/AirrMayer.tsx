@@ -1,69 +1,67 @@
-// @flow
-import React, { PureComponent } from "react";
+import { PureComponent,ReactElement,createRef } from "react";
 import AirrFX from "./AirrFX";
-import type { Node as ReactNode } from "react";
-import type { CSSPropObject, Placement } from "./Types";
+import { CSSPropObject,Placement } from "./Types";
 
-type MayerButtonProps = {
+interface MayerButtonProps {
 	/**
 	 * Extra class names to use upon button
 	 */
-	className?: string,
+	className?: string
 	/**
 	 * Extra attributes to apply on HTML element
 	 */
-	attrs?: ?CSSPropObject,
+	attrs?: ?CSSPropObject
 	/**
 	 * Additional inline styles
 	 */
-	style?: ?CSSPropObject,
+	style?: ?CSSPropObject
 	/**
 	 * OnClick function handler
 	 */
-	handler?: ?() => void,
+	handler?: ?() => void
 	/**
 	 * Content to render inside Mayer. Might be string or ReactElement.
 	 */
-	content?: ?ReactNode,
-	children?: ?ReactNode
+	content?: ?ReactElement
+	children?: ?ReactElement
 };
-type ButtonRendererProps = {
+interface ButtonRendererProps {
 	buttons?: MayerButtonProps[]
 };
-type Props = {
+interface Props {
 	/**
 	 * The name of the mayer. Must be unique among others mayers in scene. Will be used as identification.
 	 */
-	name: string,
+	name: string
 	/**
 	 * Extra styles to apply on Mayer's DOM element
 	 */
-	style?: CSSPropObject,
+	style?: CSSPropObject
 	/**
 	 * Parent scene height. Set by parent Scene. Do not overwrite!
 	 */
-	avaibleHeight: number,
+	avaibleHeight: number
 	/**
 	 * Side from which mayer content box will enter
 	 */
-	appearFrom: Placement,
+	appearFrom: Placement
 	/**
 	 * Side to which mayer content box will leave
 	 */
-	leaveTo: Placement,
+	leaveTo: Placement
 	/**
 	 * Content of mayer
 	 */
-	content?: ReactNode,
+	content?: ReactElement
 	/**
 	 * Array with buttons configuration
 	 */
-	buttons?: MayerButtonProps[],
+	buttons?: MayerButtonProps[]
 	/**
 	 * Time in miliseconds of mayer's appear/disappear animation
 	 */
-	animationTime: number,
-	children: ReactNode
+	animationTime: number
+	children: ReactElement
 };
 
 export default class AirrMayer extends PureComponent<Props> {
@@ -80,11 +78,11 @@ export default class AirrMayer extends PureComponent<Props> {
 	/**
 	 * Mayer's HTML DOM Element refferency
 	 */
-	refDOMMayer = React.createRef<HTMLDivElement>();
+	refDOMMayer = createRef<HTMLDivElement>();
 	/**
 	 * Mayer's container's HTML DOM Element refferency
 	 */
-	refDOMCtn = React.createRef<HTMLDivElement>();
+	refDOMCtn = createRef<HTMLDivElement>();
 
 	constructor(props: Props) {
 		super(props);
@@ -179,25 +177,25 @@ export default class AirrMayer extends PureComponent<Props> {
 const BgRenderer = React.memo(function BgRenderer() {
 	return <div className="bg" />;
 });
-type ChildrenRendererProps = {
-	children: ReactNode
+interface ChildrenRendererProps = {
+	children: ReactElement
 };
 const ChildrenRenderer = React.memo<ChildrenRendererProps>(function ChildrenRenderer({
 	children
 }: ChildrenRendererProps) {
 	return children;
 });
-type ContentRendererProps = {
-	content: ReactNode
+interface ContentRendererProps = {
+	content: ReactElement
 };
 const ContentRenderer = React.memo<ContentRendererProps>(function ContentRenderer({
 	content
 }: ContentRendererProps) {
 	return content;
 });
-type BodyRendererProps = {
-	children: ReactNode,
-	content?: ReactNode
+interface BodyRendererProps = {
+	children: ReactElement,
+	content?: ReactElement
 };
 const BodyRenderer = React.memo<BodyRendererProps>(function BodyRenderer({
 	children,

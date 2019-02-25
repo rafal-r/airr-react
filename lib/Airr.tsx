@@ -1,4 +1,3 @@
-// @flow
 import View from "./AirrView";
 import Scene from "./AirrScene";
 import Mayer from "./AirrMayer";

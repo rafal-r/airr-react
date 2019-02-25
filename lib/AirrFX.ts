@@ -1,5 +1,4 @@
-// @flow
-import type { CSSPropObject, Placement } from "./Types";
+import { CSSPropObject, Placement } from "./Types";
 
 /**
  * Animation utiliy class. Performs css based transition animations

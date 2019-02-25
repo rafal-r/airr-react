@@ -5,13 +5,7 @@ module.exports = {
 		jest: true
 	},
 	parser: "babel-eslint",
-	extends: [
-		"eslint:recommended",
-		"plugin:react/recommended",
-		"plugin:flowtype/recommended",
-		"prettier",
-		"prettier/react"
-	],
+	extends: ["eslint:recommended", "plugin:react/recommended", "prettier", "prettier/react"],
 	parserOptions: {
 		ecmaFeatures: {
 			jsx: true
@@ -19,7 +13,7 @@ module.exports = {
 		ecmaVersion: 2018,
 		sourceType: "module"
 	},
-	plugins: ["react", "flowtype", "prettier"],
+	plugins: ["react", "prettier"],
 	rules: {
 		"no-console": 0,
 		"no-unused-vars": ["error", { args: "none" }],
