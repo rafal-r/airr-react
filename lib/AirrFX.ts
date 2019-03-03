@@ -1,9 +1,9 @@
-import { CSSPropObject, Placement } from "./Types";
+import { Placement, CSSStringProperties } from "./Types";
 
 /**
  * Animation utiliy class. Performs css based transition animations
  */
-export default function AirrFX() {}
+export default function AirrFX(): void {}
 
 /**
  * Animate passed HTML element with power of css transitions
@@ -18,74 +18,68 @@ export default function AirrFX() {}
  * @returns {void}
  */
 AirrFX.doTransitionAnimation = function(
-	element: HTMLElement,
-	startProps: CSSPropObject,
-	transitionProps: string[],
-	endProps: CSSPropObject,
-	preAnimationCallback?: ?() => void,
-	endAfter?: ?number,
-	endCallback?: ?() => void
+    element: HTMLElement,
+    startProps: CSSStringProperties,
+    transitionProps: string[],
+    endProps: CSSStringProperties,
+    preAnimationCallback?: () => void,
+    endAfter?: number,
+    endCallback?: () => void
 ) {
-	//$FlowFixMe
-	element.style.webkitTransition = "none";
-	element.style.transition = "none";
-	// eslint-disable-next-line
-	element.offsetHeight;
+    element.style.webkitTransition = "none";
+    element.style.transition = "none";
+    element.offsetHeight;
 
-	//$FlowFixMe
-	element.style.webkitBackfaceVisibility = "hidden";
-	element.style.backfaceVisibility = "hidden";
-	for (let prop in startProps) {
-		if (prop === "transform") {
-			element.style.webkitTransform = startProps[prop];
-		}
-		//$FlowFixMe
-		element.style[prop] = startProps[prop];
-	}
-	let compatibilityString = null;
-	let transitionString = transitionProps.join(",");
+    element.style.webkitBackfaceVisibility = "hidden";
+    element.style.backfaceVisibility = "hidden";
+    for (let prop in startProps) {
+        if (prop === "transform") {
+            element.style.webkitTransform = startProps[prop];
+        }
 
-	if (
-		transitionString.indexOf("transform") !== -1 &&
-		transitionString.indexOf("-webkit-transform") === -1
-	) {
-		compatibilityString = transitionString.replace("transform", "-webkit-transform");
-	}
+        // eslint-disable-next-line
+        (element.style as any)[prop] = startProps[prop];
+    }
+    let compatibilityString = null;
+    let transitionString = transitionProps.join(",");
 
-	if (typeof preAnimationCallback === "function") {
-		preAnimationCallback();
-	}
+    if (
+        transitionString.indexOf("transform") !== -1 &&
+        transitionString.indexOf("-webkit-transform") === -1
+    ) {
+        compatibilityString = transitionString.replace("transform", "-webkit-transform");
+    }
 
-	// eslint-disable-next-line
-	element.offsetHeight;
+    if (typeof preAnimationCallback === "function") {
+        preAnimationCallback();
+    }
 
-	if (compatibilityString) {
-		//$FlowFixMe
-		element.style.webkitTransition = compatibilityString;
-	}
-	//$FlowFixMe
-	element.style.webkitTransition = transitionString;
-	if (compatibilityString) {
-		element.style.transition = compatibilityString;
-	}
-	element.style.transition = transitionString;
+    element.offsetHeight;
 
-	// eslint-disable-next-line
-	element.offsetHeight;
+    if (compatibilityString) {
+        element.style.webkitTransition = compatibilityString;
+    }
 
-	for (let prop in endProps) {
-		if (prop === "transform") {
-			element.style.webkitTransform = endProps[prop];
-		}
-		//$FlowFixMe
-		element.style[prop] = endProps[prop];
-	}
+    element.style.webkitTransition = transitionString;
+    if (compatibilityString) {
+        element.style.transition = compatibilityString;
+    }
+    element.style.transition = transitionString;
+    element.offsetHeight;
 
-	if (typeof endCallback === "function" && endAfter) {
-		setTimeout(function() {
-			endCallback && endCallback();
-		}, endAfter);
-	}
+    for (let prop in endProps) {
+        if (prop === "transform") {
+            element.style.webkitTransform = endProps[prop];
+        }
+        // eslint-disable-next-line
+        (element.style as any)[prop] = endProps[prop];
+    }
+
+    if (typeof endCallback === "function" && endAfter) {
+        setTimeout(function() {
+            endCallback && endCallback();
+        }, endAfter);
+    }
 };
 
 /**
@@ -100,49 +94,49 @@ AirrFX.doTransitionAnimation = function(
  * @returns {void}
  */
 AirrFX.doOverlayOutAnimation = function(
-	dom: HTMLElement,
-	width: number,
-	height: number,
-	t: number,
-	headTo: Placement,
-	callback: () => void
+    dom: HTMLElement,
+    width: number,
+    height: number,
+    t: number,
+    headTo: Placement,
+    callback: () => void
 ) {
-	let startProps = { opacity: "1" };
-	let endProps = { zIndex: "102", opacity: "0", webkitTransform: "", transform: "" };
+    let startProps = { opacity: "1" };
+    let endProps = { zIndex: "102", opacity: "0", webkitTransform: "", transform: "" };
 
-	if (["top", "bottom"].indexOf(headTo) !== -1) {
-		if (headTo === "top") {
-			endProps.webkitTransform = "scale(0, 1) translate3d(0,-" + height + "px,0)";
-			endProps.transform = "scale(0, 1) translate3d(0,-" + height + "px,0)";
-		} else {
-			endProps.webkitTransform = "scale(0, 1) translate3d(0," + height + "px,0)";
-			endProps.transform = "scale(0, 1) translate3d(0," + height + "px,0)";
-		}
-	} else {
-		if (headTo === "left") {
-			endProps.webkitTransform = "scale(1, 0) translate3d(-" + width + "px,0,0)";
-			endProps.transform = "scale(1, 0) translate3d(-" + width + "px,0,0)";
-		} else {
-			endProps.webkitTransform = "scale(1, 0) translate3d(" + width + "px,0,0)";
-			endProps.transform = "scale(1, 0) translate3d(" + width + "px,0,0)";
-		}
-	}
+    if (["top", "bottom"].includes(headTo)) {
+        if (headTo === "top") {
+            endProps.webkitTransform = "scale(0, 1) translate3d(0,-" + height + "px,0)";
+            endProps.transform = "scale(0, 1) translate3d(0,-" + height + "px,0)";
+        } else {
+            endProps.webkitTransform = "scale(0, 1) translate3d(0," + height + "px,0)";
+            endProps.transform = "scale(0, 1) translate3d(0," + height + "px,0)";
+        }
+    } else {
+        if (headTo === "left") {
+            endProps.webkitTransform = "scale(1, 0) translate3d(-" + width + "px,0,0)";
+            endProps.transform = "scale(1, 0) translate3d(-" + width + "px,0,0)";
+        } else {
+            endProps.webkitTransform = "scale(1, 0) translate3d(" + width + "px,0,0)";
+            endProps.transform = "scale(1, 0) translate3d(" + width + "px,0,0)";
+        }
+    }
 
-	AirrFX.doTransitionAnimation(
-		dom,
-		startProps,
-		[`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
-		endProps,
-		null,
-		t,
-		() => {
-			dom.style.cssText = "";
+    AirrFX.doTransitionAnimation(
+        dom,
+        startProps as CSSStringProperties,
+        [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
+        endProps as CSSStringProperties,
+        null,
+        t,
+        () => {
+            dom.style.cssText = "";
 
-			if (typeof callback === "function") {
-				callback();
-			}
-		}
-	);
+            if (typeof callback === "function") {
+                callback();
+            }
+        }
+    );
 };
 
 /**
@@ -157,53 +151,55 @@ AirrFX.doOverlayOutAnimation = function(
  * @returns {void}
  */
 AirrFX.doOverlayInAnimation = function(
-	dom: HTMLElement,
-	width: number,
-	height: number,
-	t: number,
-	appearFrom: Placement,
-	callback: ?() => void
+    dom: HTMLElement,
+    width: number,
+    height: number,
+    t: number,
+    appearFrom: Placement,
+    callback?: () => void
 ) {
-	let startProps = { opacity: "0", webkitTransform: "", transform: "" };
+    let startProps = { opacity: "0", webkitTransform: "", transform: "" };
 
-	if (["top", "bottom"].indexOf(appearFrom) !== -1) {
-		if (appearFrom === "bottom") {
-			startProps.webkitTransform = "scale(0, 1) translate3d(0," + height + "px,0)";
-			startProps.transform = "scale(0, 1) translate3d(0," + height + "px,0)";
-		} else {
-			startProps.webkitTransform = "scale(0, 1) translate3d(0," + -1 * height + "px,0)";
-			startProps.transform = "scale(0, 1) translate3d(0," + -1 * height + "px,0)";
-		}
-	} else {
-		if (appearFrom === "right") {
-			startProps.webkitTransform = "scale(1, 0) translate3d(" + width + "px,0,0)";
-			startProps.transform = "scale(1, 0) translate3d(" + width + "px,0,0)";
-		} else {
-			startProps.webkitTransform = "scale(1, 0) translate3d(" + -1 * width + "px,0,0)";
-			startProps.transform = "scale(1, 0) translate3d(" + -1 * width + "px,0,0)";
-		}
-	}
+    if (["top", "bottom"].includes(appearFrom)) {
+        if (appearFrom === "bottom") {
+            startProps.webkitTransform = "scale(0, 1) translate3d(0," + height + "px,0)";
+            startProps.transform = "scale(0, 1) translate3d(0," + height + "px,0)";
+        } else {
+            startProps.webkitTransform = "scale(0, 1) translate3d(0," + -1 * height + "px,0)";
+            startProps.transform = "scale(0, 1) translate3d(0," + -1 * height + "px,0)";
+        }
+    } else {
+        if (appearFrom === "right") {
+            startProps.webkitTransform = "scale(1, 0) translate3d(" + width + "px,0,0)";
+            startProps.transform = "scale(1, 0) translate3d(" + width + "px,0,0)";
+        } else {
+            startProps.webkitTransform = "scale(1, 0) translate3d(" + -1 * width + "px,0,0)";
+            startProps.transform = "scale(1, 0) translate3d(" + -1 * width + "px,0,0)";
+        }
+    }
 
-	AirrFX.doTransitionAnimation(
-		dom,
-		startProps,
-		[`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
-		{
-			zIndex: "102",
-			webkitTransform: "scale(1, 1) translate3d(0,0,0)",
-			transform: "scale(1, 1) translate3d(0,0,0)",
-			opacity: "1"
-		},
-		null,
-		t,
-		() => {
-			dom.style.cssText = "";
+    const endProps = {
+        zIndex: "102",
+        webkitTransform: "scale(1, 1) translate3d(0,0,0)",
+        transform: "scale(1, 1) translate3d(0,0,0)",
+        opacity: "1"
+    };
 
-			if (typeof callback === "function") {
-				callback();
-			}
-		}
-	);
+    AirrFX.doTransitionAnimation(
+        dom,
+        startProps as CSSStringProperties,
+        [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
+        endProps as CSSStringProperties,
+        null,
+        t,
+        () => {
+            dom.style.cssText = "";
+
+            if (typeof callback === "function") {
+                callback();
+            }
+        }
+    );
 };
 
 /**
@@ -214,29 +210,33 @@ AirrFX.doOverlayInAnimation = function(
  * @param {string} direction top or bottom
  * @returns {void}
  */
-AirrFX.doVerticalScrollAnimation = function(element, scrollDuration, direction) {
-	if (["top", "bottom"].indexOf(direction) === -1) {
-		throw new Error("Invalid direction parameter speciefied");
-	}
+AirrFX.doVerticalScrollAnimation = function(
+    element: HTMLElement,
+    scrollDuration: number,
+    direction: Placement
+) {
+    if (["top", "bottom"].indexOf(direction) === -1) {
+        throw new Error("Invalid direction parameter speciefied");
+    }
 
-	let scrollHeight = element.scrollHeight,
-		scrollStep = Math.PI / (scrollDuration / 15),
-		cosParameter = scrollHeight / 2,
-		scrollCount = 0,
-		scrollMargin,
-		scrollEnd = direction === "top" ? 0 : scrollHeight - element.parentNode.clientHeight;
-	let scrollInterval = setInterval(() => {
-		if (element.scrollTop !== scrollEnd) {
-			scrollCount += 1;
-			scrollMargin = cosParameter - cosParameter * Math.cos(scrollCount * scrollStep);
+    let scrollHeight = element.scrollHeight,
+        scrollStep = Math.PI / (scrollDuration / 15),
+        cosParameter = scrollHeight / 2,
+        scrollCount = 0,
+        scrollMargin,
+        scrollEnd = direction === "top" ? 0 : scrollHeight - element.parentElement.clientHeight;
+    let scrollInterval = setInterval(() => {
+        if (element.scrollTop !== scrollEnd) {
+            scrollCount += 1;
+            scrollMargin = cosParameter - cosParameter * Math.cos(scrollCount * scrollStep);
 
-			if (direction === "top") {
-				element.scrollTop = element.scrollTop - scrollMargin;
-			} else {
-				element.scrollTop = element.scrollTop + scrollMargin;
-			}
-		} else {
-			clearInterval(scrollInterval);
-		}
-	}, 15);
+            if (direction === "top") {
+                element.scrollTop = element.scrollTop - scrollMargin;
+            } else {
+                element.scrollTop = element.scrollTop + scrollMargin;
+            }
+        } else {
+            clearInterval(scrollInterval);
+        }
+    }, 15);
 };

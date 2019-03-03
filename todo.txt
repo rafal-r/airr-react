@@ -1,0 +1,3 @@
+- dlaczego referencje do nie istniejeacych typow nie sa oznaczane bledami ? przy definicji przyjmuje wtedy wartosc any - dlatego trzeba zadbac o importowanie wszystkich typow, interfejsow
+	- moze dlatego ze wylaczylem walidacje TS w settings.json
+- dokoncz od AirrScene, przejrzyc defaultProps

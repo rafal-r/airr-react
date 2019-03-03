@@ -1,8 +1,34 @@
 {
-	"javascript.format.enable": false,
-	"prettier.eslintIntegration": true,
-	"editor.tabSize": 4,
-	"editor.detectIndentation": false,
-	"editor.insertSpaces": false,
-	"editor.formatOnSave": true
+    // "typescript.validate.enable": false,
+    "javascript.format.enable": false,
+    "prettier.eslintIntegration": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "editor.insertSpaces": false,
+    "editor.formatOnSave": true,
+    "[javascript]": {
+        "editor.formatOnSave": false
+    },
+    "[javascriptreact]": {
+        "editor.formatOnSave": false
+    },
+    "[typescript]": {
+        "editor.formatOnSave": false
+    },
+    "[typescriptreact]": {
+        "editor.formatOnSave": false
+    },
+    "eslint.autoFixOnSave": true,
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        {
+            "language": "typescript",
+            "autoFix": true
+        },
+        {
+            "language": "typescriptreact",
+            "autoFix": true
+        }
+    ]
 }
