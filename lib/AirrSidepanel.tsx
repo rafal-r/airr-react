@@ -46,7 +46,7 @@ export interface Props {
 }
 type Axis = "X" | "Y";
 export default class AirrSidepanel extends PureComponent<Props> {
-    public static defaultProps: Props = {
+    static defaultProps: Props = {
         side: "left",
         isShown: false,
         enabled: false,
@@ -67,10 +67,10 @@ export default class AirrSidepanel extends PureComponent<Props> {
     private lastSide: Placement;
     private lastSizeFactor: number;
 
-    public refDOMDragCtn = React.createRef<HTMLDivElement>();
-    public refDOMBgLayer = React.createRef<HTMLDivElement>();
-    public refDOM = React.createRef<HTMLDivElement>();
-    public sceneDOM: Node;
+    refDOMDragCtn = React.createRef<HTMLDivElement>();
+    refDOMBgLayer = React.createRef<HTMLDivElement>();
+    refDOM = React.createRef<HTMLDivElement>();
+    sceneDOM: Node;
 
     private lastTouch: TouchPosition;
 
@@ -83,16 +83,16 @@ export default class AirrSidepanel extends PureComponent<Props> {
     private lastSceneWidth: number;
     private lastSceneHeight: number;
 
-    public enable(): void {
+    enable(): void {
         this.sceneDOM.removeEventListener(this.startEvent, this.handleTouchStart);
         this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, supportPassive);
     }
 
-    public disable(): void {
+    disable(): void {
         this.sceneDOM.removeEventListener(this.startEvent, this.handleTouchStart);
     }
 
-    public componentDidMount(): void {
+    componentDidMount(): void {
         const refSceneDOM = this.refDOM.current && this.refDOM.current.parentNode;
 
         if (refSceneDOM) {
@@ -386,20 +386,20 @@ export default class AirrSidepanel extends PureComponent<Props> {
         this.sceneDOM.removeEventListener(this.endEvent, this.handleTouchEnd);
     };
 
-    public hide = () => {
+    hide = () => {
         return this.translateTo(this.hiddenVal);
     };
 
-    public show = () => {
+    show = (): Promise<boolean> => {
         this.enable();
         return this.translateTo(this.shownVal);
     };
 
-    public isShown = () => {
+    isShown = () => {
         return this.refDOM.current.offsetParent !== null;
     };
 
-    private translateTo = (finishVal: number) => {
+    private translateTo = (finishVal: number): Promise<boolean> => {
         return new Promise(resolve => {
             this.animating = true;
 
@@ -505,13 +505,13 @@ export default class AirrSidepanel extends PureComponent<Props> {
         this.lastSceneHeight = this.props.sceneHeight;
     }
 
-    public componentDidUpdate(prevProps: Props): void {
+    componentDidUpdate(prevProps: Props): void {
         if (prevProps.enabled !== this.props.enabled) {
             this[this.props.enabled ? "enable" : "disable"]();
         }
     }
 
-    public render(): ReactNode {
+    render(): ReactNode {
         const className =
             "airr-sidepanel " +
             this.props.side +

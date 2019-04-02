@@ -20,6 +20,7 @@ module.exports = {
     },
     plugins: ["@typescript-eslint", "react", "prettier"],
     rules: {
+		"@typescript-eslint/explicit-member-accessibility": 0,
         "no-console": 0,
         "@typescript-eslint/no-unused-vars": ["error", { args: "none" }]
     },

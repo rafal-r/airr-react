@@ -5,15 +5,14 @@ import {
     ReactHTML,
     ReactNode,
     RefObject,
-    CSSProperties,
-    ReactElement
+    CSSProperties
 } from "react";
 import AirrView from "./AirrView";
 import AirrMayer, { Props as MayerProps } from "./AirrMayer";
 import AirrSidepanel, { Props as SidepanelProps } from "./AirrSidepanel";
-import { AnimationType, ViewConfig, NavbarMenu, ChildrenProp } from "./Types";
+import { AnimationType, ViewConfig, NavbarMenu } from "./Types";
 
-export interface Props {
+export interface CoreSceneProps {
     /**
      * The name of the scene. Must be unique among others views in parent scene. Will be used as identification string
      */
@@ -42,7 +41,7 @@ export interface Props {
     /**
      * Specify if navbar is present (1,true) or not (0,false). Or maybe hidden (-1)
      */
-    navbar: number | boolean;
+    navbar: 1 | true | -1 | 0 | false;
     /**
      * Height of the navbar in pixels
      */
@@ -89,6 +88,11 @@ export interface Props {
         props: SidepanelProps;
     };
     /**
+     * This function will be called when sidepanel changes it's visibility.
+     * It's argument will be isShown bool.
+     */
+    sidepanelVisibilityCallback(isShown: boolean): void;
+    /**
      * Array of `views`. Every view object declaration must contain two properties: `type` and `props`.
      */
     views: ViewConfig[];
@@ -105,6 +109,12 @@ export interface Props {
      * Extra, space separated classes names to use upon first div element.
      */
     className: string;
+    /**
+     * Children prop
+     */
+    children: ReactNode;
+}
+export interface Props extends CoreSceneProps {
     /**
      * React component's ref object
      */
@@ -133,51 +143,47 @@ export interface Props {
      * Inner, private prop with containers height information
      */
     containersHeight: number;
-    /**
-     * Children prop
-     */
-    children: ChildrenProp;
-    sidepanelVisibilityCallback(isShown: boolean): void;
 }
+export const sceneDefaultProps: CoreSceneProps = {
+    name: "",
 
+    activeViewName: null,
+    GUIDisabled: false,
+    GUIDisableCover: null,
+    animation: "slide",
+    animationTime: 300,
+    navbar: false,
+    navbarHeight: 48,
+    navbarMenu: null,
+    navbarClass: "",
+    backButton: false,
+    backButtonOnFirstView: false,
+    handleBackButton: null,
+    handleBackBehaviourOnFirstView: null,
+    active: false,
+    sidepanel: null,
+    views: [],
+    mayers: [],
+    title: "",
+    className: "",
+    sidepanelVisibilityCallback: null,
+    children: null
+};
 export default class AirrScene extends PureComponent<Props> {
-    public static defaultProps: Props = {
-        name: "",
-
-        activeViewName: null,
-        GUIDisabled: false,
-        GUIDisableCover: null,
-        animation: "slide",
-        animationTime: 300,
-        navbar: false,
-        navbarHeight: 48,
-        navbarMenu: null,
-        navbarClass: "",
-        backButton: false,
-        backButtonOnFirstView: false,
-        handleBackButton: null,
-        handleBackBehaviourOnFirstView: null,
-        active: false,
-        sidepanel: null,
-        views: [],
-        mayers: [],
-        title: "",
-        className: "",
-
+    static defaultProps: Props = {
+        ...sceneDefaultProps,
         refCOMPSidepanel: null,
         refDOM: null,
         refDOMNavbar: null,
         refsCOMPViews: null,
         refDOMContainer: null,
         mockTitleName: "",
-        containersHeight: null,
-        children: null,
-        sidepanelVisibilityCallback: null
+        containersHeight: null
     };
     /**
      * Mayers Components refferencies
      */
-    public mayersCompsRefs = {};
+    mayersCompsRefs = {};
 
     /**
      * Returns view index from this.props.views array
@@ -185,7 +191,7 @@ export default class AirrScene extends PureComponent<Props> {
      * @param {string} viewName
      * @returns {Number}
      */
-    public getViewIndex(viewName: string): number {
+    getViewIndex(viewName: string): number {
         return this.props.views.findIndex(config => config.props.name === viewName);
     }
 
@@ -195,7 +201,7 @@ export default class AirrScene extends PureComponent<Props> {
      * @param {object} e Event object
      * @returns {void}
      */
-    public handleBackButton = (e: SyntheticEvent<HTMLElement>) => {
+    handleBackButton = (e: SyntheticEvent<HTMLElement>) => {
         const backBtn = e.currentTarget;
         backBtn.classList.add("clicked");
 
@@ -223,7 +229,7 @@ export default class AirrScene extends PureComponent<Props> {
      * @param {object} e Event object
      * @returns {void}
      */
-    public handleMenuButtonToggleSidepanel = (e: SyntheticEvent<HTMLElement>) => {
+    handleMenuButtonToggleSidepanel = (e: SyntheticEvent<HTMLElement>) => {
         if (this.props.refCOMPSidepanel && this.props.refCOMPSidepanel.current) {
             this.props.refCOMPSidepanel.current.isShown()
                 ? this.props.refCOMPSidepanel.current.hide()
@@ -231,7 +237,7 @@ export default class AirrScene extends PureComponent<Props> {
         }
     };
 
-    public checkValidActiveView = () => {
+    checkValidActiveView = () => {
         const isAnyViewActive = this.props.views.some(
             view => view.props.name === this.props.activeViewName
         );
@@ -247,7 +253,7 @@ export default class AirrScene extends PureComponent<Props> {
         return isAnyViewActive;
     };
 
-    public render(): ReactNode {
+    render(): ReactNode {
         let className = "airr-view airr-scene";
         this.props.active && (className += " active");
         this.props.className && (className += " " + this.props.className);
@@ -327,7 +333,7 @@ interface MayersRendererProps {
 }
 const MayersRenderer = React.memo<MayersRendererProps>(function MayersRenderer({
     mayers
-}: MayersRendererProps) {
+}: MayersRendererProps): any {
     return mayers.map(({ name, ...props }) => {
         return <AirrMayer key={name} {...props} />;
     });
@@ -467,7 +473,7 @@ const ViewsMapper = React.memo<ViewsMapperProps>(function ViewsMapper({
     views,
     activeViewName,
     refsCOMPViews
-}: ViewsMapperProps) {
+}: ViewsMapperProps): any {
     return views.map(item => {
         if (item.props.name === activeViewName) {
             item.props.active = true;

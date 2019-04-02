@@ -1,8 +1,8 @@
 import * as React from "react";
+import { CSSStringProperties } from "./Types";
 import { PureComponent, ReactNode, RefObject } from "react";
-import { ChildrenProp } from "./Types";
 
-export interface Props {
+export interface CoreViewProps {
     /**
      * The name of the view. Must be unique among others views in scene. Will be used as identification string
      */
@@ -16,38 +16,39 @@ export interface Props {
      */
     active: boolean;
     /**
-     * Refference to view's root DOM element.
-     */
-    refDOM: RefObject<HTMLDivElement>;
-    /**
      * Extra classes to use. Space separetad string list.
      */
     className: string;
     /**
      * Extra styles to use upon root DOM element of view.
      */
-    style: React.CSSProperties;
-    children: ChildrenProp;
-    key?: string;
-    ref?: RefObject<AirrView>;
+    style?: CSSStringProperties;
+}
+export interface Props extends CoreViewProps {
+    /**
+     * Refference to view's root DOM element.
+     */
+    refDOM?: RefObject<HTMLDivElement>;
+    children?: ReactNode;
+    [propname: string]: any;
 }
 export default class AirrView extends PureComponent<Props> {
-    public static defaultProps = {
+    static defaultProps: Props = {
         name: "",
         title: "",
         active: false,
         className: "",
-        style: {}
+        style: null
     };
 
-    public render(): ReactNode {
-        const { active, refDOM, className, style, children, title, ...rest } = this.props;
+    render(): ReactNode {
+        const { active, refDOM, className, style, children } = this.props;
         let viewClass = "airr-view" + (className ? " " + className : "");
 
         active && (viewClass += " active");
 
         return (
-            <div className={viewClass} style={style} ref={refDOM} {...rest}>
+            <div className={viewClass} style={style} ref={refDOM}>
                 {typeof children === "function" ? children() : children}
             </div>
         );

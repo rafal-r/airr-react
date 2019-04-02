@@ -1,53 +1,25 @@
 import * as React from "react";
-import { PureComponent, ReactNode, Ref } from "react";
-import { React.CSSProperties } from "./Types";
-import AirrView from "./AirrView";
+import { PureComponent, ReactNode } from "react";
+import AirrView, { CoreViewProps } from "./AirrView";
 
-interface Props {
-    /**
-     * The name of the view. Must be unique among others views in scene. Will be used as identification string
-     */
-    name: string;
-    /**
-     * Titlebar name. if parent scene navbar is enabled, this title will be showed there. Might be string or React element
-     */
-    title: ReactNode;
-    /**
-     * Determine if this view is active. Set by parent scene.
-     */
-    active: boolean;
-    /**
-     * Refference to view's root DOM element.
-     */
-    refDOM?: Ref<HTMLDivElement>;
-    /**
-     * Extra classes to use. Space separetad string list.
-     */
-    className: string;
-    /**
-     * Extra styles to use upon root DOM element of view.
-     */
-    style: React.CSSProperties;
-}
-
-export default class AirrViewWrapper extends PureComponent<Props> {
-    public static defaultProps = {
+export default class AirrViewWrapper extends PureComponent<CoreViewProps> {
+    static defaultProps: CoreViewProps = {
         name: "",
         title: "",
         active: false,
         className: "",
-        style: {}
+        style: null
     };
     /**
      * Refferency to view's DOM element.
      */
-    public refDOM = React.createRef<HTMLDivElement>();
+    refDOM = React.createRef<HTMLDivElement>();
 
     /**
      * Special method for delivering props to AirrView component's.
      * Used in render method.
      */
-    public getViewProps = () => ({
+    getViewProps = () => ({
         refDOM: this.refDOM,
         name: this.props.name,
         active: this.props.active,
@@ -61,7 +33,7 @@ export default class AirrViewWrapper extends PureComponent<Props> {
      * Should be overwritten in descendant class.
      * @returns {ReactNode}
      */
-    public content(): void {
+    content(): void {
         console.warn("[Airr] This method should be overwritten in descendant class");
     }
 
@@ -70,7 +42,7 @@ export default class AirrViewWrapper extends PureComponent<Props> {
      * Use ::content() in descenadant class instead of overwritting this one.
      * @returns {ReactNode}
      */
-    public render(): ReactNode {
+    render(): ReactNode {
         return <AirrView {...this.getViewProps()}>{() => this.content()}</AirrView>;
     }
 }

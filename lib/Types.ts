@@ -17,7 +17,6 @@ export interface CSSStringProperties extends CSSProperties {
     [index: string]: string | {};
 }
 export type NavbarMenu = "toggleSidepanl" | ReactNode[];
-export type ChildrenProp = ReactNode | ((props?: {}) => ReactNode);
 export interface TouchPosition {
     [index: string]: number;
     clientX: number;

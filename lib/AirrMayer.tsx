@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PureComponent, ReactNode, createRef } from "react";
+import { PureComponent, ReactNode, createRef, RefObject } from "react";
 import AirrFX from "./AirrFX";
 import { CSSStringProperties, Placement } from "./Types";
 
@@ -39,10 +39,6 @@ export interface Props {
      */
     style?: CSSStringProperties;
     /**
-     * Parent scene height. Set by parent Scene. Do not overwrite!
-     */
-    avaibleHeight?: number;
-    /**
      * Side from which mayer content box will enter
      */
     appearFrom: Placement;
@@ -64,9 +60,14 @@ export interface Props {
     animationTime: number;
     children: ReactNode;
 }
-
-export default class AirrMayer extends PureComponent<Props> {
-    public static defaultProps: Props = {
+export interface PreparedProps extends Props {
+    /**
+     * Parent scene height. Set by parent Scene. Do not overwrite!
+     */
+    avaibleHeight?: number;
+}
+export default class AirrMayer extends PureComponent<PreparedProps> {
+    static defaultProps: PreparedProps = {
         name: "",
         appearFrom: "bottom",
         leaveTo: "bottom",
@@ -79,20 +80,20 @@ export default class AirrMayer extends PureComponent<Props> {
     /**
      * Mayer's HTML DOM Element refferency
      */
-    public refDOMMayer = createRef<HTMLDivElement>();
+    refDOMMayer = createRef<HTMLDivElement>();
     /**
      * Mayer's container's HTML DOM Element refferency
      */
-    public refDOMCtn = createRef<HTMLDivElement>();
+    refDOMCtn = createRef<HTMLDivElement>();
 
-    public constructor(props: Props) {
+    constructor(props: Props) {
         super(props);
         if (!props.name) {
             throw new Error("Every Mayer must has its `name` property set");
         }
     }
 
-    public componentDidMount(): void {
+    componentDidMount(): void {
         const refDOMCtn = this.refDOMCtn.current;
         if (refDOMCtn && refDOMCtn.clientHeight >= this.props.avaibleHeight) {
             refDOMCtn.style.height = this.props.avaibleHeight + "px";
@@ -105,7 +106,7 @@ export default class AirrMayer extends PureComponent<Props> {
     /**
      * Animates Mayers html dom element into the screen
      */
-    public animateIn(): void {
+    animateIn(): void {
         const refDOMMayer = this.refDOMMayer.current;
         const bgDOM = refDOMMayer && refDOMMayer.querySelector(".bg");
         const startProps = { opacity: "0" };
@@ -137,7 +138,7 @@ export default class AirrMayer extends PureComponent<Props> {
      * Animates Mayers html dom element out of the screen
      * @param {function} callback Called after animation end
      */
-    public animateOut(callback: () => void): void {
+    animateOut(callback: () => void): void {
         const refDOMMayer = this.refDOMMayer.current;
         const bgDOM = refDOMMayer && refDOMMayer.querySelector(".bg");
         const startProps = { opacity: "1" };
@@ -166,7 +167,7 @@ export default class AirrMayer extends PureComponent<Props> {
         }
     }
 
-    public render(): ReactNode {
+    render(): ReactNode {
         return (
             <div className="airr-mayer" ref={this.refDOMMayer} style={this.props.style}>
                 <BgRenderer />
