@@ -141,6 +141,7 @@ export default class AirrSidepanel extends PureComponent<Props> {
     private handleTouchStart = (e: TouchEvent | MouseEvent) => {
         const pos = this.getPosition(e, this.axis);
         let dragCtnOnTouchPath = false;
+        // @ts-ignore
         const path = e.path || (e.composedPath && e.composedPath());
 
         if (path) {

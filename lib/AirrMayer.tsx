@@ -1,5 +1,6 @@
 import * as React from "react";
-import { PureComponent, ReactNode, createRef, RefObject } from "react";
+import { SyntheticEvent } from "react";
+import { PureComponent, ReactNode, createRef } from "react";
 import AirrFX from "./AirrFX";
 import { CSSStringProperties, Placement } from "./Types";
 
@@ -17,9 +18,13 @@ interface MayerButtonProps {
      */
     style?: CSSStringProperties;
     /**
+     * Option bool that will automatically add close functionality to the button
+     */
+    close?: boolean;
+    /**
      * OnClick function handler
      */
-    handler?: () => void;
+    handler?: (e: SyntheticEvent<HTMLButtonElement>) => void;
     /**
      * Content to render inside Mayer. Might be string or ReactNode.
      */

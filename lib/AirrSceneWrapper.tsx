@@ -7,7 +7,7 @@ import AirrViewWrapper from "./AirrViewWrapper";
 import { Props as ViewProps } from "./AirrView";
 import AirrMayer, { PreparedProps as MayerProps } from "./AirrMayer";
 import update from "immutability-helper";
-import { ViewConfig } from "./Types";
+import { ViewConfig, CSSStringProperties } from "./Types";
 
 interface Props extends CoreSceneProps {
     /**
@@ -69,11 +69,15 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     /**
      * Refference to DOM element of container's div (first child of most outer element)
      */
-    refDOMContainer = React.createRef();
+    refDOMContainer = React.createRef<HTMLDivElement>();
     /**
      * Refference to DOM element of navbar's div
      */
-    refDOMNavbar = React.createRef();
+    refDOMNavbar = React.createRef<HTMLDivElement>();
+    /**
+     * Helper variable for storing views names that will be filtered
+     */
+    viewsNamesToStayList: string[] = [];
 
     constructor(props: Props) {
         super(props);
@@ -208,24 +212,21 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @param {object} sceneProps props to modify the scene while popping
      * @returns {Promise}  Will be resolved on succesful state update or rejected when no view to pop
      */
-    popView = (
+    popView = async (
         viewProps: ViewProps | {} = {},
         sceneProps: Props | {} = {}
     ): Promise<string | void> => {
         if (this.state.views.length > 1) {
             const viewName = this.state.views[this.state.views.length - 2].props.name;
 
-            return this.changeView(viewName, viewProps, sceneProps).then(() => {
-                const newviewdefinition = update(this.state.views, {
-                    $splice: [[this.state.views.length - 1, 1]]
-                });
-
-                delete this.refsCOMPViews[this.state.views[this.state.views.length - 1].props.name];
-
-                return new Promise(resolve =>
-                    this.setState({ views: newviewdefinition }, () => resolve(viewName))
-                );
+            await this.changeView(viewName, viewProps, sceneProps);
+            const newviewdefinition = update(this.state.views, {
+                $splice: [[this.state.views.length - 1, 1]]
             });
+            delete this.refsCOMPViews[this.state.views[this.state.views.length - 1].props.name];
+            return new Promise(resolve =>
+                this.setState({ views: newviewdefinition }, () => resolve(viewName))
+            );
         } else {
             console.warn("[Airr] No view to pop.");
             return Promise.resolve();
@@ -260,14 +261,13 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @param {object} sceneProps Extra props to manipulate this scene while changing view
      * @returns {Promise} Resolved on state succesful change and animation end. Or reject on failure.
      */
-    changeView(
+    async changeView(
         view: string | ViewConfig,
         viewProps: ViewProps | {} = {},
         sceneProps: Props | {} = {}
     ): Promise<string | void> {
-        return this.__changeView(view, viewProps, sceneProps).then((viewName: string) => {
-            return this.__performViewsAnimation(viewName);
-        });
+        const viewName = await this.__changeView(view, viewProps, sceneProps);
+        return this.__performViewsAnimation(viewName);
     }
 
     /**
@@ -380,7 +380,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     handleBackButton = (
         viewProps: ViewProps | {} = {},
         sceneProps: Props | {} = {}
-    ): Promise<any> => {
+    ): Promise<string | void> => {
         if (this.state.views.length > 1) {
             return this.popView(viewProps, sceneProps);
         }
@@ -457,7 +457,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * Hides sidepanel
      * @returns {Promise}
      */
-    hideSidepanel = (): Promise<any> => {
+    hideSidepanel = (): Promise<boolean | void> => {
         if (this.state.sidepanel && this.refCOMPSidepanel.current) {
             return this.refCOMPSidepanel.current.hide();
         }
@@ -495,7 +495,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @param {string} name Unique mayer name
      * @returns {Promise}
      */
-    closeMayer(name: string): Promise<any> {
+    closeMayer(name: string): Promise<void> {
         let mayerConfigIndex = this.state.mayers.findIndex(item => item.name === name);
 
         if (
@@ -518,7 +518,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
 
                             if (this.state.sidepanel) {
                                 let hasMayerLeft = false;
-                                const children = [...this.refDOM.current.children];
+                                const children = [...Array.from(this.refDOM.current.children)];
                                 children.forEach(item => {
                                     if (item.classList.contains("airr-mayer")) {
                                         hasMayerLeft = true;
@@ -541,6 +541,12 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     }
 
     /**
+     * Special method to be overwritten in descendant classes.
+     * Called, as name sugest, when views animation finish.
+     */
+    viewsAnimationEnd(oldViewName: string, newViewName: string): void {}
+
+    /**
      * If config has buttons that contains logical true `close` property,
      * this method will attach close mayer functionality to tap event on this button.
      *
@@ -548,28 +554,30 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @returns {object}
      */
     __prepareMayerConfig(mayerConfig: MayerProps): MayerProps {
-        const config = Object.assign({}, mayerConfig);
+        const config = Object.assign({ ref: undefined }, mayerConfig);
 
         const ref = React.createRef<AirrMayer>();
         config.ref = ref;
         this.refsCOMPMayers[config.name] = ref;
 
         if (config.buttons && config.buttons.length) {
-            config.buttons.forEach(item => {
-                if (item.close) {
-                    if (item.handler) {
-                        const oldHandler = item.handler;
-                        item.handler = e => {
-                            oldHandler(e);
-                            this.closeMayer(config.name);
-                        };
-                    } else {
-                        item.handler = e => {
-                            this.closeMayer(config.name);
-                        };
+            config.buttons.forEach(
+                (item): void => {
+                    if (item.close) {
+                        if (item.handler) {
+                            const oldHandler = item.handler;
+                            item.handler = (e): void => {
+                                oldHandler(e);
+                                this.closeMayer(config.name);
+                            };
+                        } else {
+                            item.handler = (e): void => {
+                                this.closeMayer(config.name);
+                            };
+                        }
                     }
                 }
-            });
+            );
         }
 
         config.avaibleHeight = this.refDOM.current.clientHeight || window.innerHeight;
@@ -585,13 +593,14 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
     __addMayer = (config: MayerProps): Promise<void> => {
         const newMayersDef = update(this.state.mayers, { $push: [config] });
 
-        return new Promise(resolve =>
-            this.setState(
-                {
-                    mayers: newMayersDef
-                },
-                resolve
-            )
+        return new Promise(
+            (resolve): void =>
+                this.setState(
+                    {
+                        mayers: newMayersDef
+                    },
+                    resolve
+                )
         );
     };
 
@@ -600,19 +609,19 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @param {string} name Mayer name
      * @returns {Promise}
      */
-
-    __removeMayer = (name: string): Promise<any> => {
+    __removeMayer = (name: string): Promise<void> => {
         const newMayersDef = this.state.mayers.filter(item => {
             return item.name !== name;
         });
 
-        return new Promise(resolve =>
-            this.setState(
-                {
-                    mayers: newMayersDef
-                },
-                resolve
-            )
+        return new Promise(
+            (resolve): void =>
+                this.setState(
+                    {
+                        mayers: newMayersDef
+                    },
+                    resolve
+                )
         );
     };
 
@@ -620,7 +629,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * Disables back button meaning it will not be visible in navbar anymore.
      * @returns {Promise}
      */
-    disableBackButton = (): Promise<any> => {
+    disableBackButton = (): Promise<void> => {
         return new Promise(resolve => this.setState({ backButton: false }, resolve));
     };
 
@@ -628,7 +637,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * Enables back button meaning it will be visible in navbar.
      * @returns {Promise}
      */
-    enableBackButton = (): Promise<any> => {
+    enableBackButton = (): Promise<void> => {
         return new Promise(resolve => this.setState({ backButton: true }, resolve));
     };
 
@@ -638,47 +647,55 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @param {array} viewsNamesToStayList
      * @returns {function} Function that will resolve view change on invoke.
      */
-    goToView = (name: string, viewsNamesToStayList: any[] = []): function => {
-        return (params = {}, sceneProps = {}) => {
+    goToView = (name: string, viewsNamesToStayList: string[] = []): Function => {
+        return (
+            params: ViewProps | {} = {},
+            sceneProps: Props | {} = {}
+        ): Promise<string | void> => {
             this.viewsNamesToStayList = viewsNamesToStayList;
             return this.changeView(name, params, sceneProps);
         };
     };
 
-    componentDidMount() {
-        return new Promise(resolve => {
-            if (window.addEventListener) {
-                window.addEventListener("resize", () => {
-                    if (this.state.sidepanel) {
-                        this.__updateSidepanelSizeProps(
-                            this.refDOM.current.clientWidth,
-                            this.refDOM.current.clientHeight
-                        );
-                    }
-                });
-            }
+    componentDidMount(): Promise<void> {
+        return new Promise(
+            (resolve): void => {
+                if (window.addEventListener) {
+                    window.addEventListener(
+                        "resize",
+                        (): void => {
+                            if (this.state.sidepanel) {
+                                this.__updateSidepanelSizeProps(
+                                    this.refDOM.current.clientWidth,
+                                    this.refDOM.current.clientHeight
+                                );
+                            }
+                        }
+                    );
+                }
 
-            if (this.state.sidepanel) {
-                this.__updateSidepanelSizeProps(
-                    this.refDOM.current.clientWidth,
-                    this.refDOM.current.clientHeight
-                ).then(resolve);
-            } else {
-                resolve();
-            }
+                if (this.state.sidepanel) {
+                    this.__updateSidepanelSizeProps(
+                        this.refDOM.current.clientWidth,
+                        this.refDOM.current.clientHeight
+                    ).then(resolve);
+                } else {
+                    resolve();
+                }
 
-            /**
-             * Call first active view life cycle method - viewAfterActivation
-             */
-            if (
-                this.state.activeViewName &&
-                this.refsCOMPViews[this.state.activeViewName] &&
-                typeof this.refsCOMPViews[this.state.activeViewName].current.viewAfterActivation ===
-                    "function"
-            ) {
-                this.refsCOMPViews[this.state.activeViewName].current.viewAfterActivation();
+                /**
+                 * Call first active view life cycle method - viewAfterActivation
+                 */
+                if (
+                    this.state.activeViewName &&
+                    this.refsCOMPViews[this.state.activeViewName] &&
+                    typeof this.refsCOMPViews[this.state.activeViewName].current
+                        .viewAfterActivation === "function"
+                ) {
+                    this.refsCOMPViews[this.state.activeViewName].current.viewAfterActivation();
+                }
             }
-        });
+        );
     }
 
     /**
@@ -687,20 +704,22 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @param {number} height
      * @returns {Promise}
      */
-    __updateSidepanelSizeProps(width: number, height: number): Promise<any> {
-        return new Promise(resolve => {
-            this.setState(
-                {
-                    sidepanel: update(this.state.sidepanel, {
-                        props: {
-                            sceneWidth: { $set: width },
-                            sceneHeight: { $set: height }
-                        }
-                    })
-                },
-                resolve
-            );
-        });
+    __updateSidepanelSizeProps(width: number, height: number): Promise<void> {
+        return new Promise(
+            (resolve): void => {
+                this.setState(
+                    {
+                        sidepanel: update(this.state.sidepanel, {
+                            props: {
+                                sceneWidth: { $set: width },
+                                sceneHeight: { $set: height }
+                            }
+                        })
+                    },
+                    resolve
+                );
+            }
+        );
     }
 
     /**
@@ -720,13 +739,13 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                     }
                 })
             },
-            () =>
+            (): void =>
                 this.state.sidepanelVisibilityCallback &&
                 this.state.sidepanelVisibilityCallback(isShown)
         );
     };
 
-    render() {
+    render(): ReactNode {
         const { views, sidepanel, className, ...stateRest } = this.state;
 
         return (
@@ -778,7 +797,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                         const oldViewComp =
                             this.refsCOMPViews[oldViewName] &&
                             this.refsCOMPViews[oldViewName].current;
-                        const animEndCallback = () => {
+                        const animEndCallback = (): void => {
                             this.viewChangeInProgress = false;
 
                             if (
@@ -858,7 +877,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
      * @param {string} oldViewName
      * @returns {Promise}
      */
-    __doViewsAnimation(newViewName: string, oldViewName: string): Promise<any> {
+    __doViewsAnimation(newViewName: string, oldViewName: string): Promise<void> {
         return new Promise((resolve, reject) => {
             const newViewDOM =
                 this.refsCOMPViews[newViewName] &&
@@ -876,8 +895,10 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
 
             if (this.state.navbar) {
                 //perform navbar animations
-                const titleNode = this.refDOMNavbar.current.querySelector(".title");
-                const mockTitle = this.refDOMNavbar.current.querySelector(".mock-title");
+                const titleNode = this.refDOMNavbar.current.querySelector(".title") as HTMLElement;
+                const mockTitle = this.refDOMNavbar.current.querySelector(
+                    ".mock-title"
+                ) as HTMLElement;
                 const mockTextSpan = mockTitle && mockTitle.children[0];
                 const mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
 
@@ -934,7 +955,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                 }
 
                 if (this.state.backButton && !this.state.backButtonOnFirstView) {
-                    const backDOM = this.refDOMNavbar.current.querySelector(".back");
+                    const backDOM = this.refDOMNavbar.current.querySelector(".back") as HTMLElement;
 
                     if (oldViewIndex === 0) {
                         //show back button with animation
@@ -989,8 +1010,8 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
 
             if (this.state.animation === "slide" && oldViewName) {
                 newViewDOM.style.display = "block";
-                let startProps = {};
-                let endProps = {};
+                let startProps: CSSStringProperties = {};
+                let endProps: CSSStringProperties = {};
 
                 if (direction === -1) {
                     startProps.webkitTransform =
@@ -1047,7 +1068,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                             transform: `translate3d(0,0,0)`,
                             opacity: 1
                         },
-                        () => (newViewDOM.style.zIndex = 102),
+                        () => (newViewDOM.style.zIndex = "102"),
                         this.state.animationTime,
                         () => {
                             newViewDOM.style.zIndex = "";
@@ -1065,7 +1086,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                     if (this.state.stackMode) {
                         const oldViewDOM = this.refsCOMPViews[oldViewName].current.refDOM.current;
                         newViewDOM.style.display = "block";
-                        newViewDOM.style.opacity = 1;
+                        newViewDOM.style.opacity = "1";
 
                         AirrFX.doTransitionAnimation(
                             oldViewDOM,
@@ -1127,7 +1148,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                                 transform: `translate3d(0,0,0)`,
                                 opacity: 1
                             },
-                            () => (newViewDOM.style.zIndex = 102),
+                            () => (newViewDOM.style.zIndex = "102"),
                             this.state.animationTime,
                             () => {
                                 newViewDOM.style.display = "";
@@ -1154,7 +1175,7 @@ export default class AirrSceneWrapper extends AirrViewWrapper {
                     {
                         opacity: 1
                     },
-                    () => (newViewDOM.style.zIndex = 102),
+                    () => (newViewDOM.style.zIndex = "102"),
                     this.state.animationTime,
                     () => {
                         newViewDOM.style.display = "";

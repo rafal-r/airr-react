@@ -1,21 +1,21 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+  value: true
 });
-var supportPassive = false;
-
-var opts = Object.defineProperty && Object.defineProperty({}, "passive", {
-	get: function get() {
-		exports.supportPassive = supportPassive = { passive: true };
-		return supportPassive;
-	}
-});
-
-document.addEventListener("test", function () {}, opts);
-
-var mobileTest = /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile|Kindle|NetFront|Silk-Accelerated|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune/;
-var isMobileDevice = mobileTest.test(navigator.userAgent);
+exports.isMobileDevice = exports.supportPassive = void 0;
+var supportPassive = false; // create options object with a getter to see if its passive property is accessed
 
 exports.supportPassive = supportPassive;
+var opts = Object.defineProperty && Object.defineProperty({}, "passive", {
+  get: function get() {
+    exports.supportPassive = supportPassive = true;
+    return supportPassive;
+  }
+}); // create a throwaway element & event and (synchronously) test out our options
+
+document.addEventListener("test", function () {}, opts);
+var mobileTest = /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile|Kindle|NetFront|Silk-Accelerated|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune/;
+var isMobileDevice = mobileTest.test(navigator.userAgent);
 exports.isMobileDevice = isMobileDevice;
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL2xpYi9ldmVudEhlbHBlcnMudHMiXSwibmFtZXMiOlsic3VwcG9ydFBhc3NpdmUiLCJvcHRzIiwiT2JqZWN0IiwiZGVmaW5lUHJvcGVydHkiLCJnZXQiLCJkb2N1bWVudCIsImFkZEV2ZW50TGlzdGVuZXIiLCJtb2JpbGVUZXN0IiwiaXNNb2JpbGVEZXZpY2UiLCJ0ZXN0IiwibmF2aWdhdG9yIiwidXNlckFnZW50Il0sIm1hcHBpbmdzIjoiOzs7Ozs7QUFBQSxJQUFJQSxjQUFjLEdBQUcsS0FBckIsQyxDQUNBOzs7QUFDQSxJQUFNQyxJQUFJLEdBQ05DLE1BQU0sQ0FBQ0MsY0FBUCxJQUNBRCxNQUFNLENBQUNDLGNBQVAsQ0FBc0IsRUFBdEIsRUFBMEIsU0FBMUIsRUFBcUM7QUFDakNDLEVBQUFBLEdBQUcsRUFBRSxlQUFXO0FBQ1osNkJBQUFKLGNBQWMsR0FBRyxJQUFqQjtBQUNBLFdBQU9BLGNBQVA7QUFDSDtBQUpnQyxDQUFyQyxDQUZKLEMsQ0FRQTs7QUFDQUssUUFBUSxDQUFDQyxnQkFBVCxDQUEwQixNQUExQixFQUFrQyxZQUFNLENBQUUsQ0FBMUMsRUFBNENMLElBQTVDO0FBRUEsSUFBTU0sVUFBVSxHQUFHLGtLQUFuQjtBQUNBLElBQU1DLGNBQWMsR0FBR0QsVUFBVSxDQUFDRSxJQUFYLENBQWdCQyxTQUFTLENBQUNDLFNBQTFCLENBQXZCIiwic291cmNlc0NvbnRlbnQiOlsibGV0IHN1cHBvcnRQYXNzaXZlID0gZmFsc2U7XG4vLyBjcmVhdGUgb3B0aW9ucyBvYmplY3Qgd2l0aCBhIGdldHRlciB0byBzZWUgaWYgaXRzIHBhc3NpdmUgcHJvcGVydHkgaXMgYWNjZXNzZWRcbmNvbnN0IG9wdHMgPVxuICAgIE9iamVjdC5kZWZpbmVQcm9wZXJ0eSAmJlxuICAgIE9iamVjdC5kZWZpbmVQcm9wZXJ0eSh7fSwgXCJwYXNzaXZlXCIsIHtcbiAgICAgICAgZ2V0OiBmdW5jdGlvbigpIHtcbiAgICAgICAgICAgIHN1cHBvcnRQYXNzaXZlID0gdHJ1ZTtcbiAgICAgICAgICAgIHJldHVybiBzdXBwb3J0UGFzc2l2ZTtcbiAgICAgICAgfVxuICAgIH0pO1xuLy8gY3JlYXRlIGEgdGhyb3dhd2F5IGVsZW1lbnQgJiBldmVudCBhbmQgKHN5bmNocm9ub3VzbHkpIHRlc3Qgb3V0IG91ciBvcHRpb25zXG5kb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKFwidGVzdFwiLCAoKSA9PiB7fSwgb3B0cyk7XG5cbmNvbnN0IG1vYmlsZVRlc3QgPSAvTW9iaWxlfGlQKGhvbmV8b2R8YWQpfEFuZHJvaWR8QmxhY2tCZXJyeXxJRU1vYmlsZXxLaW5kbGV8TmV0RnJvbnR8U2lsay1BY2NlbGVyYXRlZHwoaHB3fHdlYilPU3xGZW5uZWN8TWluaW1vfE9wZXJhIE0ob2JpfGluaSl8QmxhemVyfERvbGZpbnxEb2xwaGlufFNreWZpcmV8WnVuZS87XG5jb25zdCBpc01vYmlsZURldmljZSA9IG1vYmlsZVRlc3QudGVzdChuYXZpZ2F0b3IudXNlckFnZW50KTtcblxuZXhwb3J0IHsgc3VwcG9ydFBhc3NpdmUsIGlzTW9iaWxlRGV2aWNlIH07XG4iXX0=

@@ -45,4 +45,9 @@ export default class AirrViewWrapper extends PureComponent<CoreViewProps> {
     render(): ReactNode {
         return <AirrView {...this.getViewProps()}>{() => this.content()}</AirrView>;
     }
+
+    viewAfterActivation(): void {}
+    viewAfterDeactivation(): void {}
+    viewBeforeActivation(): void {}
+    viewBeforeDeactivation(): void {}
 }
