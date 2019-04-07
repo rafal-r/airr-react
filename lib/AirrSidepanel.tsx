@@ -53,7 +53,7 @@ export default class AirrSidepanel extends PureComponent<Props> {
         sizeFactor: 2 / 3,
         sceneWidth: null,
         sceneHeight: null,
-        visibilityCallback: (isShown: boolean) => {},
+        visibilityCallback: (isShown: boolean): void => {},
         animationTime: 200,
         bgLayerOpacity: 0.7
     };
@@ -120,25 +120,27 @@ export default class AirrSidepanel extends PureComponent<Props> {
         }
     }
 
-    private getPosition = (e: TouchEvent | MouseEvent, axis: Axis) => {
+    private getPosition = (e: TouchEvent | MouseEvent, axis: Axis): number => {
         const obj = "changedTouches" in e ? e.changedTouches[0] : e;
         return axis === "X" ? obj.clientX : obj.clientY;
     };
 
-    private getLastPosition = (e: TouchEvent | MouseEvent) => {
+    private getLastPosition = (
+        e: TouchEvent | MouseEvent
+    ): { clientX: number; clientY: number } => {
         const obj = "changedTouches" in e ? e.changedTouches[0] : e;
         return { clientX: obj.clientX, clientY: obj.clientY };
     };
 
-    private getEventX = (e: TouchEvent | MouseEvent) => {
+    private getEventX = (e: TouchEvent | MouseEvent): number => {
         return "changedTouches" in e ? e.changedTouches[0].clientX : e.clientX;
     };
 
-    private getEventY = (e: TouchEvent | MouseEvent) => {
+    private getEventY = (e: TouchEvent | MouseEvent): number => {
         return "changedTouches" in e ? e.changedTouches[0].clientY : e.clientY;
     };
 
-    private handleTouchStart = (e: TouchEvent | MouseEvent) => {
+    private handleTouchStart = (e: TouchEvent | MouseEvent): void => {
         const pos = this.getPosition(e, this.axis);
         let dragCtnOnTouchPath = false;
         // @ts-ignore
@@ -227,7 +229,7 @@ export default class AirrSidepanel extends PureComponent<Props> {
         this.lastTouch = this.getLastPosition(e);
     };
 
-    private handleShowTouchMove = (e: TouchEvent | MouseEvent) => {
+    private handleShowTouchMove = (e: TouchEvent | MouseEvent): void => {
         const pos = this.getPosition(e, this.axis);
         let newVal,
             progress = 0;
@@ -271,11 +273,11 @@ export default class AirrSidepanel extends PureComponent<Props> {
         }
     };
 
-    private handleHideTouchMove = (e: TouchEvent | MouseEvent) => {
+    private handleHideTouchMove = (e: TouchEvent | MouseEvent): void => {
         let progress = 0,
-            newVal,
-            change,
-            moveAxis;
+            newVal: number,
+            change: number,
+            moveAxis: string;
 
         if (this.lastTouch) {
             if (
@@ -353,7 +355,7 @@ export default class AirrSidepanel extends PureComponent<Props> {
         }
     };
 
-    private handleTouchEnd = (e: TouchEvent | MouseEvent) => {
+    private handleTouchEnd = (e: TouchEvent | MouseEvent): void => {
         let val = null;
 
         if (!this.animating) {
@@ -387,7 +389,7 @@ export default class AirrSidepanel extends PureComponent<Props> {
         this.sceneDOM.removeEventListener(this.endEvent, this.handleTouchEnd);
     };
 
-    hide = () => {
+    hide = (): Promise<boolean> => {
         return this.translateTo(this.hiddenVal);
     };
 
@@ -396,80 +398,82 @@ export default class AirrSidepanel extends PureComponent<Props> {
         return this.translateTo(this.shownVal);
     };
 
-    isShown = () => {
+    isShown = (): boolean => {
         return this.refDOM.current.offsetParent !== null;
     };
 
     private translateTo = (finishVal: number): Promise<boolean> => {
-        return new Promise(resolve => {
-            this.animating = true;
+        return new Promise(
+            (resolve): void => {
+                this.animating = true;
 
-            this.refDOMBgLayer.current.style.webkitTransition = `opacity ${
-                this.props.animationTime
-            }ms ease-in`;
-            this.refDOMBgLayer.current.style.transition = `opacity ${
-                this.props.animationTime
-            }ms ease-in`;
-            this.refDOMBgLayer.current.offsetHeight;
+                this.refDOMBgLayer.current.style.webkitTransition = `opacity ${
+                    this.props.animationTime
+                }ms ease-in`;
+                this.refDOMBgLayer.current.style.transition = `opacity ${
+                    this.props.animationTime
+                }ms ease-in`;
+                this.refDOMBgLayer.current.offsetHeight;
 
-            if (finishVal === this.shownVal) {
-                if (!this.isShown()) {
-                    this.refDOM.current.style.display = "block";
+                if (finishVal === this.shownVal) {
+                    if (!this.isShown()) {
+                        this.refDOM.current.style.display = "block";
+                    }
+
+                    this.refDOMBgLayer.current.style.opacity = String(this.props.bgLayerOpacity);
+                } else if (finishVal === this.hiddenVal) {
+                    this.refDOMBgLayer.current.style.opacity = "0";
                 }
 
-                this.refDOMBgLayer.current.style.opacity = String(this.props.bgLayerOpacity);
-            } else if (finishVal === this.hiddenVal) {
-                this.refDOMBgLayer.current.style.opacity = "0";
+                this.refDOM.current.offsetHeight;
+                this.refDOM.current.style.webkitTransition = "initial";
+                this.refDOM.current.style.transition = "initial";
+
+                this.refDOMDragCtn.current.style.webkitTransition = `-webkit-transform ${
+                    this.props.animationTime
+                }ms ease-out`;
+                this.refDOMDragCtn.current.style.webkitTransition = `transform ${
+                    this.props.animationTime
+                }ms ease-out`;
+                this.refDOMDragCtn.current.style.transition = `transform ${
+                    this.props.animationTime
+                }ms ease-out`;
+
+                this.refDOMDragCtn.current.offsetHeight;
+                this.refDOMDragCtn.current.style.webkitTransform = this.transformScheme.replace(
+                    "%v",
+                    String(finishVal)
+                );
+                this.refDOMDragCtn.current.style.transform = this.transformScheme.replace(
+                    "%v",
+                    String(finishVal)
+                );
+
+                this.refDOMDragCtn.current.offsetHeight;
+
+                this.refDOMDragCtn.current.style.webkitTransition = "initial";
+                this.refDOMDragCtn.current.style.transition = "initial";
+
+                setTimeout((): void => {
+                    this.refDOMBgLayer.current.style.webkitTransition = "initial";
+                    this.refDOMBgLayer.current.style.transition = "initial";
+
+                    this.currentVal = finishVal;
+
+                    if (finishVal === this.hiddenVal) {
+                        this.refDOM.current.style.display = "none";
+                    }
+
+                    this.animating = false;
+
+                    if (this.props.isShown !== this.isShown()) {
+                        this.props.visibilityCallback(this.isShown());
+                    }
+
+                    resolve(this.isShown());
+                }, this.props.animationTime + 5);
             }
-
-            this.refDOM.current.offsetHeight;
-            this.refDOM.current.style.webkitTransition = "initial";
-            this.refDOM.current.style.transition = "initial";
-
-            this.refDOMDragCtn.current.style.webkitTransition = `-webkit-transform ${
-                this.props.animationTime
-            }ms ease-out`;
-            this.refDOMDragCtn.current.style.webkitTransition = `transform ${
-                this.props.animationTime
-            }ms ease-out`;
-            this.refDOMDragCtn.current.style.transition = `transform ${
-                this.props.animationTime
-            }ms ease-out`;
-
-            this.refDOMDragCtn.current.offsetHeight;
-            this.refDOMDragCtn.current.style.webkitTransform = this.transformScheme.replace(
-                "%v",
-                String(finishVal)
-            );
-            this.refDOMDragCtn.current.style.transform = this.transformScheme.replace(
-                "%v",
-                String(finishVal)
-            );
-
-            this.refDOMDragCtn.current.offsetHeight;
-
-            this.refDOMDragCtn.current.style.webkitTransition = "initial";
-            this.refDOMDragCtn.current.style.transition = "initial";
-
-            setTimeout(() => {
-                this.refDOMBgLayer.current.style.webkitTransition = "initial";
-                this.refDOMBgLayer.current.style.transition = "initial";
-
-                this.currentVal = finishVal;
-
-                if (finishVal === this.hiddenVal) {
-                    this.refDOM.current.style.display = "none";
-                }
-
-                this.animating = false;
-
-                if (this.props.isShown !== this.isShown()) {
-                    this.props.visibilityCallback(this.isShown());
-                }
-
-                resolve(this.isShown());
-            }, this.props.animationTime + 5);
-        });
+        );
     };
 
     private updateSideProps(side: Placement, sizeFactor: number): void {

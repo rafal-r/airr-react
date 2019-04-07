@@ -4,6 +4,7 @@ import {
     SyntheticEvent,
     ReactHTML,
     ReactNode,
+    ReactElement,
     RefObject,
     CSSProperties
 } from "react";
@@ -192,7 +193,7 @@ export default class AirrScene extends PureComponent<Props> {
      * @returns {Number}
      */
     getViewIndex(viewName: string): number {
-        return this.props.views.findIndex(config => config.props.name === viewName);
+        return this.props.views.findIndex((config): boolean => config.props.name === viewName);
     }
 
     /**
@@ -201,11 +202,11 @@ export default class AirrScene extends PureComponent<Props> {
      * @param {object} e Event object
      * @returns {void}
      */
-    handleBackButton = (e: SyntheticEvent<HTMLElement>) => {
+    handleBackButton = (e: SyntheticEvent<HTMLElement>): void => {
         const backBtn = e.currentTarget;
         backBtn.classList.add("clicked");
 
-        setTimeout(() => {
+        setTimeout((): void => {
             backBtn.classList.remove("clicked");
         }, 300);
 
@@ -229,7 +230,7 @@ export default class AirrScene extends PureComponent<Props> {
      * @param {object} e Event object
      * @returns {void}
      */
-    handleMenuButtonToggleSidepanel = (e: SyntheticEvent<HTMLElement>) => {
+    handleMenuButtonToggleSidepanel = (e: SyntheticEvent<HTMLElement>): void => {
         if (this.props.refCOMPSidepanel && this.props.refCOMPSidepanel.current) {
             this.props.refCOMPSidepanel.current.isShown()
                 ? this.props.refCOMPSidepanel.current.hide()
@@ -237,9 +238,9 @@ export default class AirrScene extends PureComponent<Props> {
         }
     };
 
-    checkValidActiveView = () => {
+    checkValidActiveView = (): boolean => {
         const isAnyViewActive = this.props.views.some(
-            view => view.props.name === this.props.activeViewName
+            (view): boolean => view.props.name === this.props.activeViewName
         );
 
         if (!isAnyViewActive) {
@@ -250,7 +251,7 @@ export default class AirrScene extends PureComponent<Props> {
             );
         }
 
-        return isAnyViewActive;
+        return Boolean(isAnyViewActive);
     };
 
     render(): ReactNode {
@@ -325,7 +326,7 @@ interface ChildrenRendererProps {
 const ChildrenRenderer = React.memo<ChildrenRendererProps>(function ChildrenRenderer({
     children,
     ...rest
-}: ChildrenRendererProps) {
+}: ChildrenRendererProps): any {
     return typeof children === "function" ? children(rest) : children;
 });
 interface MayersRendererProps {
@@ -334,9 +335,11 @@ interface MayersRendererProps {
 const MayersRenderer = React.memo<MayersRendererProps>(function MayersRenderer({
     mayers
 }: MayersRendererProps): any {
-    return mayers.map(({ name, ...props }) => {
-        return <AirrMayer key={name} {...props} />;
-    });
+    return mayers.map(
+        ({ name, ...props }): ReactNode => {
+            return <AirrMayer key={name} name={name} {...props} />;
+        }
+    );
 });
 interface SidepanelRendererProps {
     type: keyof ReactHTML;
@@ -349,7 +352,7 @@ const SidepanelRenderer = React.memo<SidepanelRendererProps>(function SidepanelR
     refCOMPSidepanel,
     visibilityCallback,
     props
-}: SidepanelRendererProps) {
+}: SidepanelRendererProps): any {
     if (!props.ref) {
         props.ref = refCOMPSidepanel;
     }
@@ -369,7 +372,7 @@ interface BlankmaskRendererProps {
 const BlankmaskRenderer = React.memo<BlankmaskRendererProps>(function BlankmaskRenderer({
     GUIDisabled,
     GUIDisableCover
-}: BlankmaskRendererProps) {
+}: BlankmaskRendererProps): ReactElement<any> {
     return GUIDisabled && <div className="airr-blank-mask">{GUIDisableCover}</div>;
 });
 interface NavbarRendererProps {
@@ -401,7 +404,7 @@ const NavbarRenderer = React.memo<NavbarRendererProps>(function NavbarRenderer({
     navbarClass,
     refDOMNavbar,
     navbarHeight
-}: NavbarRendererProps) {
+}: NavbarRendererProps): any {
     if (navbar) {
         let mockTitle = null;
         let title: ReactNode;
@@ -474,21 +477,23 @@ const ViewsMapper = React.memo<ViewsMapperProps>(function ViewsMapper({
     activeViewName,
     refsCOMPViews
 }: ViewsMapperProps): any {
-    return views.map(item => {
-        if (item.props.name === activeViewName) {
-            item.props.active = true;
-        } else {
-            item.props.active = false;
-        }
+    return views.map(
+        (item): ReactNode => {
+            if (item.props.name === activeViewName) {
+                item.props.active = true;
+            } else {
+                item.props.active = false;
+            }
 
-        item.props.key = item.props.name;
-        if (!item.props.ref) {
-            item.props.ref = React.createRef<AirrView>();
-            refsCOMPViews[item.props.name] = item.props.ref;
-        }
+            item.props.key = item.props.name;
+            if (!item.props.ref) {
+                item.props.ref = React.createRef<AirrView>();
+                refsCOMPViews[item.props.name] = item.props.ref;
+            }
 
-        return React.createElement(item.type, item.props);
-    });
+            return React.createElement(item.type, item.props);
+        }
+    );
 });
 interface ViewsRendererProps extends ViewsMapperProps {
     className: Props["className"];
@@ -503,7 +508,7 @@ const ViewsRenderer = React.memo<ViewsRendererProps>(function ViewsRenderer({
     activeViewName,
     containersHeight,
     refsCOMPViews
-}: ViewsRendererProps) {
+}: ViewsRendererProps): ReactElement<any> {
     return (
         <div
             className={"airr-container " + className}
