@@ -25,7 +25,7 @@ AirrFX.doTransitionAnimation = function(
     preAnimationCallback?: () => void,
     endAfter?: number,
     endCallback?: () => void
-) {
+): void {
     element.style.webkitTransition = "none";
     element.style.transition = "none";
     element.offsetHeight;
@@ -76,7 +76,7 @@ AirrFX.doTransitionAnimation = function(
     }
 
     if (typeof endCallback === "function" && endAfter) {
-        setTimeout(function() {
+        setTimeout(function(): void {
             endCallback && endCallback();
         }, endAfter);
     }
@@ -100,7 +100,7 @@ AirrFX.doOverlayOutAnimation = function(
     t: number,
     headTo: Placement,
     callback: () => void
-) {
+): void {
     let startProps = { opacity: "1" };
     let endProps = { zIndex: "102", opacity: "0", webkitTransform: "", transform: "" };
 
@@ -129,7 +129,7 @@ AirrFX.doOverlayOutAnimation = function(
         endProps as CSSStringProperties,
         null,
         t,
-        () => {
+        (): void => {
             dom.style.cssText = "";
 
             if (typeof callback === "function") {
@@ -157,7 +157,7 @@ AirrFX.doOverlayInAnimation = function(
     t: number,
     appearFrom: Placement,
     callback?: () => void
-) {
+): void {
     let startProps = { opacity: "0", webkitTransform: "", transform: "" };
 
     if (["top", "bottom"].includes(appearFrom)) {
@@ -192,7 +192,7 @@ AirrFX.doOverlayInAnimation = function(
         endProps as CSSStringProperties,
         null,
         t,
-        () => {
+        (): void => {
             dom.style.cssText = "";
 
             if (typeof callback === "function") {
@@ -214,7 +214,7 @@ AirrFX.doVerticalScrollAnimation = function(
     element: HTMLElement,
     scrollDuration: number,
     direction: Placement
-) {
+): void {
     if (["top", "bottom"].indexOf(direction) === -1) {
         throw new Error("Invalid direction parameter speciefied");
     }
@@ -225,7 +225,7 @@ AirrFX.doVerticalScrollAnimation = function(
         scrollCount = 0,
         scrollMargin,
         scrollEnd = direction === "top" ? 0 : scrollHeight - element.parentElement.clientHeight;
-    let scrollInterval = setInterval(() => {
+    let scrollInterval = setInterval((): void => {
         if (element.scrollTop !== scrollEnd) {
             scrollCount += 1;
             scrollMargin = cosParameter - cosParameter * Math.cos(scrollCount * scrollStep);
