@@ -51,9 +51,7 @@ class BlueView extends ViewWrapper {
                 BlueView
                 <br />
                 <button onClick={this.props.goToRedView}>go to red</button>
-                <button onClick={this.props.openSidepanel}>
-                    open sidepanel
-                </button>
+                <button onClick={this.props.openSidepanel}>open sidepanel</button>
                 <button onClick={this.props.openMayer}>open modal</button>
             </div>
         );
@@ -86,9 +84,7 @@ class Viewport extends SceneWrapper {
                             <div>
                                 Hello! I am modal layer!
                                 <br />
-                                <button
-                                    onClick={() => this.closeMayer("foo-mayer")}
-                                >
+                                <button onClick={() => this.closeMayer("foo-mayer")}>
                                     close me
                                 </button>
                             </div>
@@ -117,10 +113,7 @@ class Viewport extends SceneWrapper {
                     children: "Hello! I'm sidepanel!"
                 }
             },
-            views: [
-                this.getFreshViewConfig(BlueViewName),
-                this.getFreshViewConfig(RedViewName)
-            ]
+            views: [this.getFreshViewConfig(BlueViewName), this.getFreshViewConfig(RedViewName)]
         };
     }
 }
@@ -201,7 +194,7 @@ Only when using `componentDidMount` in the class that extends `SceneWrapper` you
 
 ```javascript
   componentDidMount() {
-  	super.componentDidMount()
+    super.componentDidMount()
     console.log("Scene did mount")
   }
 ```
@@ -223,9 +216,7 @@ You have to do it this way because core class must set correct properties to the
 ```javascript
 export default class AirrViewWrapper extends PureComponent {
     render() {
-        return (
-            <AirrView {...this.getViewProps()}>{() => this.content()}</AirrView>
-        );
+        return <AirrView {...this.getViewProps()}>{() => this.content()}</AirrView>;
     }
 }
 ```
