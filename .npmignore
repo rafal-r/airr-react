@@ -1,7 +1,8 @@
 node_modules
+dist/airr-react.d.js
+dist2
 storybook
 lib
-dist2
 .vscode
 .babelrc
 package-lock.json
@@ -13,3 +14,4 @@ CONTRIBUTING.md
 .tsconfig.json
 webpack.config.js
 todo.txt
+styleguide.config.js
