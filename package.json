@@ -47,14 +47,25 @@
         "@typescript-eslint/parser": "^1.6.0",
         "acorn": "^6.1.1",
         "awesome-typescript-loader": "^5.2.1",
+        "babel-loader": "^8.0.5",
         "eslint": "^5.16.0",
         "eslint-config-prettier": "^4.1.0",
         "eslint-plugin-prettier": "^3.0.1",
         "eslint-plugin-react": "^7.12.4",
         "prettier": "^1.16.4",
+        "react": "^16.8.6",
+        "react-docgen-typescript": "^1.12.3",
+        "react-dom": "^16.8.6",
+        "react-styleguidist": "^9.0.7",
         "source-map-loader": "^0.2.4",
         "typescript": "^3.4.1",
         "webpack": "^4.29.6",
         "webpack-cli": "^3.3.0"
-    }
+    },
+    "browserslist": [
+        ">1%",
+        "last 1 version",
+        "Firefox ESR",
+        "not dead"
+    ]
 }
