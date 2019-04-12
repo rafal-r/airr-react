@@ -60,17 +60,3 @@
         // "declarationDir": "lib"                /* Output directory for generated declaration files. */
     }
 }
-// {
-
-//     "compilerOptions": {
-//         // "outDir": "./dist2/",
-//         "noEmit": true,
-//         "sourceMap": true,
-//         "noImplicitAny": true,
-//         "module": "commonjs",
-//         "target": "es5",
-//         "jsx": "react",
-//         "lib": ["es5", "es6", "es7", "es2017", "dom"]
-//     },
-//     "include": ["./lib/**/*"]
-// }
