@@ -34,6 +34,9 @@
         "type": "git",
         "url": "git+https://github.com/rafal-r/airr-react"
     },
+    "files": [
+        "dist"
+    ],
     "devDependencies": {
         "@babel/cli": "^7.2.3",
         "@babel/core": "^7.4.0",
