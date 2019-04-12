@@ -6,43 +6,43 @@ Object.defineProperty(exports, "__esModule", {
 Object.defineProperty(exports, "View", {
   enumerable: true,
   get: function get() {
-    return _AirrView["default"];
+    return _AirrView.default;
   }
 });
 Object.defineProperty(exports, "Scene", {
   enumerable: true,
   get: function get() {
-    return _AirrScene["default"];
+    return _AirrScene.default;
   }
 });
 Object.defineProperty(exports, "Mayer", {
   enumerable: true,
   get: function get() {
-    return _AirrMayer["default"];
+    return _AirrMayer.default;
   }
 });
 Object.defineProperty(exports, "Sidepanel", {
   enumerable: true,
   get: function get() {
-    return _AirrSidepanel["default"];
+    return _AirrSidepanel.default;
   }
 });
 Object.defineProperty(exports, "SceneWrapper", {
   enumerable: true,
   get: function get() {
-    return _AirrSceneWrapper["default"];
+    return _AirrSceneWrapper.default;
   }
 });
 Object.defineProperty(exports, "ViewWrapper", {
   enumerable: true,
   get: function get() {
-    return _AirrViewWrapper["default"];
+    return _AirrViewWrapper.default;
   }
 });
 Object.defineProperty(exports, "FX", {
   enumerable: true,
   get: function get() {
-    return _AirrFX["default"];
+    return _AirrFX.default;
   }
 });
 exports.Helpers = void 0;
@@ -63,7 +63,7 @@ var _AirrFX = _interopRequireDefault(require("./AirrFX"));
 
 var _eventHelpers = require("./eventHelpers");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Helpers = {
   supportPassive: _eventHelpers.supportPassive,

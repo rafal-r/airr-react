@@ -1,4 +1,4 @@
-import { Placement, CSSStringProperties } from "./Types";
+import { Placement, CSSStringProperties } from "./airr-react";
 
 /**
  * Animation utiliy class. Performs css based transition animations

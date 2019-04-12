@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CSSStringProperties } from "./Types";
+import { CSSStringProperties } from "./airr-react";
 import { PureComponent, ReactNode, RefObject } from "react";
 
 export interface CoreViewProps {
@@ -12,7 +12,7 @@ export interface CoreViewProps {
      */
     title: ReactNode;
     /**
-     * Determine if this view is active. Set by parent scene.
+     * Determine if this view is active. Set by parent scene. Readonly.
      */
     active: boolean;
     /**

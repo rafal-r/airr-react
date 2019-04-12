@@ -2,7 +2,7 @@ import * as React from "react";
 import { PureComponent, RefObject } from "react";
 import { isMobileDevice, supportPassive } from "./eventHelpers";
 import { ReactNode } from "react";
-import { Placement, TouchPosition } from "./Types";
+import { Placement, TouchPosition } from "./airr-react";
 
 export interface Props {
     /**
@@ -45,6 +45,7 @@ export interface Props {
     ref?: RefObject<AirrSidepanel>;
 }
 type Axis = "X" | "Y";
+
 export default class AirrSidepanel extends PureComponent<Props> {
     static defaultProps: Props = {
         side: "left",

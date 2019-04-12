@@ -2,16 +2,16 @@ import * as React from "react";
 import {
     PureComponent,
     SyntheticEvent,
-    ReactHTML,
     ReactNode,
     ReactElement,
     RefObject,
-    CSSProperties
+    CSSProperties,
+    ComponentClass
 } from "react";
 import AirrView from "./AirrView";
 import AirrMayer, { Props as MayerProps } from "./AirrMayer";
 import AirrSidepanel, { Props as SidepanelProps } from "./AirrSidepanel";
-import { AnimationType, ViewConfig, NavbarMenu } from "./Types";
+import { AnimationType, ViewConfig, NavbarMenu } from "./airr-react";
 
 export interface CoreSceneProps {
     /**
@@ -80,9 +80,9 @@ export interface CoreSceneProps {
      **/
     sidepanel: {
         /**
-         * ference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself.
+         * reference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself.
          */
-        type: keyof ReactHTML;
+        type: ComponentClass<SidepanelProps, any>;
         /**
          * Special properties of AirrSidepanel class. Go to class declaration for further properties documenation.
          */
@@ -342,7 +342,7 @@ const MayersRenderer = React.memo<MayersRendererProps>(function MayersRenderer({
     );
 });
 interface SidepanelRendererProps {
-    type: keyof ReactHTML;
+    type: ComponentClass<SidepanelProps, any>;
     props: SidepanelProps;
     refCOMPSidepanel: Props["refCOMPSidepanel"];
     visibilityCallback: Props["sidepanelVisibilityCallback"];

@@ -7,7 +7,7 @@ import AirrViewWrapper from "./AirrViewWrapper";
 import { Props as ViewProps } from "./AirrView";
 import AirrMayer, { PreparedProps as MayerProps } from "./AirrMayer";
 import update from "immutability-helper";
-import { ViewConfig, CSSStringProperties } from "./Types";
+import { ViewConfig, CSSStringProperties } from "./airr-react";
 
 interface Props extends CoreSceneProps {
     /**

@@ -2,7 +2,7 @@ import * as React from "react";
 import { SyntheticEvent } from "react";
 import { PureComponent, ReactNode, createRef } from "react";
 import AirrFX from "./AirrFX";
-import { CSSStringProperties, Placement } from "./Types";
+import { CSSStringProperties, Placement } from "./airr-react";
 
 interface MayerButtonProps {
     /**
