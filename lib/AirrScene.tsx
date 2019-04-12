@@ -19,7 +19,7 @@ export interface CoreSceneProps {
      */
     name: string;
     /**
-     * Name of the active view.
+     * Name of the active view
      */
     activeViewName: string;
     /**
@@ -30,7 +30,7 @@ export interface CoreSceneProps {
     /**
      * React element to be placed in GUI disabling div
      */
-    GUIDisableCover?: ReactNode;
+    GUIDisableCover: ReactNode;
     /**
      * Type of animation to perform when switching views
      */
