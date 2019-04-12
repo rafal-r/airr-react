@@ -2,7 +2,7 @@
 
 This library is set of several components that helps building Single Page Apps with ReactJS.  
 airr-react defines few basic UI classes and features that every app needs. The core component is responsible for maintaining navigation in the app.
-All of it when minified and gzipped weights ~13.7kB ([bundlephobia.com](https://bundlephobia.com/result?p=airr-react@2.0.20)).
+All of it when minified and gzipped weights ~11.8kB ([bundlephobia.com](https://bundlephobia.com/result?p=airr-react@3.1.1)).
 
 Library can be used for:
 
@@ -10,25 +10,32 @@ Library can be used for:
 -   rapidly designing prototypes showing your ideas,
 -   creating responsive apps that will handle mobile and desktop rendering.
 
-To check all main features please go and see demonstration app:
-**[Mobile Demo App](http://react.airr.pl)**
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-and for documentation (still uncomplete) and interactive examples check:
-**[Storybook](http://react.airr.pl/storybook)**
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Concept](#concept)
+  - [PureComponents](#purecomponents)
+- [View's life-cycles](#views-life-cycles)
+- [React Component's life-cycles](#react-components-life-cycles)
+- [Rendering View's content](#rendering-views-content)
+- [Props documentation](#props-documentation)
+  - [SceneWrapper Props](#scenewrapper-props)
+  - [Common types](#common-types)
+      - [AnimationType](#animationtype)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Installation
-
-### The library
 
 ```
 npm i airr-react
 ```
 
-### The demo
-
-If you want to explore demo app as a code reference just download `demo-app` directory content and perform standard installation procedures. Demo app is created with `create-react-app` so you only need to `npm install; npm start`.
-
-## Example
+## Usage
 
 Here's a simple code usage that provides a viewport with two views.
 
@@ -129,7 +136,7 @@ The main concept is to put most of your jsx and html code into the View's compon
 All of the props and logic will be passed to this views from Scenes - these are classes that extends `SceneWrapper`.
 They will be responsible for navigating between views and filling them with data.
 
-#### PureComponents
+### PureComponents
 
 From version 3.0.0 of airr-react all components are implementing PureComponents approach.
 So remember that your views will not be updated unless you provide them with different props.
@@ -236,6 +243,24 @@ class FooView extends ViewWrapper {
     }
 }
 ```
+
+## Props documentation
+
+### SceneWrapper Props
+
+| property        | type                            | description                                                                                                                                                                  |
+| --------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name            | string                          | The name of the scene. Must be unique among others views in parent scene. Will be used as identification string                                                              |
+| activeViewName  | string                          | Name of the active view                                                                                                                                                      |
+| GUIDisabled     | boolean                         | Boolean telling if GUI should be disabled meaning no user actions, events are allowed. GUI is disabled via absolute positioned, not visible div that has the biggest z-Index |
+| GUIDisableCover | ReactNode                       | React element to be placed in GUI disabling div                                                                                                                              |
+| animation       | [AnimationType](#animationtype) | Type of animation to perform when switching views                                                                                                                            |
+
+### Common types
+
+##### AnimationType
+
+`"slide" | "overlay" | "fade"`
 
 ## License
 
