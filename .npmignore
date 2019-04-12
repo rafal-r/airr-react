@@ -11,7 +11,7 @@ CONTRIBUTING.md
 .flowconfig
 .eslintrc.js
 .prettierrc
-.tsconfig.json
+tsconfig.json
 webpack.config.js
 todo.txt
 styleguide.config.js
