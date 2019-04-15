@@ -291,18 +291,20 @@ class FooView extends ViewWrapper {
 ##### SidepanelConfig
 
 Object defined with:
-| property name | type | description |
+
+| property name |                          type                           |                                                                                             description |
 | ------------- | :-----------------------------------------------------: | ------------------------------------------------------------------------------------------------------: |
-| type | ComponentClass<[SidepanelProps](#sidepanel-props), any> | Reference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself |
-| props | [SidepanelProps](#sidepanel-props) | Special properties of AirrSidepanel class. Go to class declaration for further properties documenation. |
+| type          | ComponentClass<[SidepanelProps](#sidepanel-props), any> |            Reference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself |
+| props         |           [SidepanelProps](#sidepanel-props)            | Special properties of AirrSidepanel class. Go to class declaration for further properties documenation. |
 
 ##### ViewConfig
 
 Object defined with:
-| property name | type | description |
-| ------------- | :-----------------------------------------------------: | ------------------------------------------------------------------------------------------------------: |
-| type | ComponentClass<[ViewProps](#view-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to use AirrViewWrapper. |
-| props | [ViewProps](#view-props) | Special properties of AirrView class. Go to class declaration for further properties documenation. |
+
+| property name |                     type                      |                                                                                                                description |
+| ------------- | :-------------------------------------------: | -------------------------------------------------------------------------------------------------------------------------: |
+| type          | ComponentClass<[ViewProps](#view-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to use AirrViewWrapper. |
+| props         |           [ViewProps](#view-props)            |                         Special properties of AirrView class. Go to class declaration for further properties documenation. |
 
 ## License
 
