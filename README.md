@@ -15,18 +15,28 @@ Library can be used for:
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
--   [Installation](#installation)
--   [Usage](#usage)
--   [Concept](#concept)
-    -   [PureComponents](#purecomponents)
--   [View's life-cycles](#views-life-cycles)
--   [React Component's life-cycles](#react-components-life-cycles)
--   [Rendering View's content](#rendering-views-content)
--   [Props documentation](#props-documentation)
-    -   [SceneWrapper Props](#scenewrapper-props)
-    -   [Common types](#common-types)
-        -   [AnimationType](#animationtype)
--   [License](#license)
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Concept](#concept)
+  - [PureComponents](#purecomponents)
+- [View's life-cycles](#views-life-cycles)
+- [React Component's life-cycles](#react-components-life-cycles)
+- [Rendering View's content](#rendering-views-content)
+- [Props documentation](#props-documentation)
+  - [SceneWrapper Props](#scenewrapper-props)
+  - [View Props](#view-props)
+  - [Sidepanel Props](#sidepanel-props)
+  - [Mayer Props](#mayer-props)
+  - [Common types](#common-types)
+    - [AnimationType](#animationtype)
+    - [NavbarMenu](#navbarmenu)
+    - [SidepanelConfig](#sidepanelconfig)
+    - [ViewConfig](#viewconfig)
+    - [CSSStringProperties](#cssstringproperties)
+    - [Placement](#placement)
+    - [MayerButtonProps](#mayerbuttonprops)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -284,7 +294,6 @@ class FooView extends ViewWrapper {
 | className         | string                                       | Extra classes to use. Space separetad string list.                                                                   |
 | style             | ?[CSSStringProperties](#cssstringproperties) | Extra styles to use upon root DOM element of view.                                                                   |
 | [propname:string] | any                                          | Any property you will need to populate into the view                                                                 |
-|                   |                                              |                                                                                                                      |
 
 ### Sidepanel Props
 
@@ -301,7 +310,7 @@ class FooView extends ViewWrapper {
 
 | property      | name                                         | description                                                                                         |
 | ------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| name          | string                                       | The name of the mayer. Must be unique among others mayers in scene. Will be used as identification. |
+| name          | string (required)                            | The name of the mayer. Must be unique among others mayers in scene. Will be used as identification. |
 | style         | ?[CSSStringProperties](#cssstringproperties) | Extra styles to apply on Mayer's DOM element                                                        |
 | appearFrom    | [Placement](#placement)                      | Side from which mayer content box will enter                                                        |
 | leaveTo       | [Placement](#placement)                      | Side to which mayer content box will leave                                                          |
@@ -332,10 +341,10 @@ Object defined with:
 
 Object defined with:
 
-| property name |                     type                      |                                                                                                                description |
-| ------------- | :-------------------------------------------: | -------------------------------------------------------------------------------------------------------------------------: |
-| type          | ComponentClass<[ViewProps](#view-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to use AirrViewWrapper. |
-| props         |           [ViewProps](#view-props)            |                         Special properties of AirrView class. Go to class declaration for further properties documenation. |
+| property name |                     type                      |                                                                                                                                       description |
+| ------------- | :-------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------: |
+| type          | ComponentClass<[ViewProps](#view-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to specify class that extends AirrViewWrapper. |
+| props         |           [ViewProps](#view-props)            |                                                Special properties of AirrView class. Go to class declaration for further properties documenation. |
 
 #### CSSStringProperties
 
