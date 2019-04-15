@@ -23,9 +23,13 @@ Library can be used for:
 - [View's life-cycles](#views-life-cycles)
 - [React Component's life-cycles](#react-components-life-cycles)
 - [Rendering View's content](#rendering-views-content)
+- [Examples](#examples)
+  - [Kitchen sink app](#kitchen-sink-app)
+  - [Infinite viewport](#infinite-viewport)
+  - [Simple Scene](#simple-scene)
 - [Props documentation](#props-documentation)
   - [SceneWrapper Props](#scenewrapper-props)
-  - [View Props](#view-props)
+  - [ViewWrapper Props](#viewwrapper-props)
   - [Sidepanel Props](#sidepanel-props)
   - [Mayer Props](#mayer-props)
   - [Common types](#common-types)
@@ -255,6 +259,14 @@ class FooView extends ViewWrapper {
 }
 ```
 
+## Examples
+
+### [Kitchen sink app](https://codesandbox.io/s/2xmmm725p)
+
+### [Infinite viewport](https://codesandbox.io/s/2xmmm725p)
+
+### [Simple Scene](https://codesandbox.io/s/pz83nwo50)
+
 ## Props documentation
 
 ### SceneWrapper Props
@@ -284,7 +296,7 @@ class FooView extends ViewWrapper {
 | className                      | string                                    | Extra, space separated classes names to use upon first div element.                                                                                                          |
 | children                       | ReactNode                                 | Children to be render in Scene's container. Might be useful for creating navigation UI.                                                                                      |
 
-### View Props
+### ViewWrapper Props
 
 | property          | type                                         | description                                                                                                          |
 | ----------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -341,10 +353,10 @@ Object defined with:
 
 Object defined with:
 
-| property name |                     type                      |                                                                                                                                       description |
-| ------------- | :-------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------: |
-| type          | ComponentClass<[ViewProps](#view-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to specify class that extends AirrViewWrapper. |
-| props         |           [ViewProps](#view-props)            |                                                Special properties of AirrView class. Go to class declaration for further properties documenation. |
+| property name |                             type                             |                                                                                                                                       description |
+| ------------- | :----------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------: |
+| type          | ComponentClass<[ViewWrapperProps](#viewwrappers-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to specify class that extends AirrViewWrapper. |
+| props         |           [ViewWrapperProps](#viewwrappers-props)            |                                                Special properties of AirrView class. Go to class declaration for further properties documenation. |
 
 #### CSSStringProperties
 
