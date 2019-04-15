@@ -11,7 +11,7 @@ import {
 import AirrView from "./AirrView";
 import AirrMayer, { Props as MayerProps } from "./AirrMayer";
 import AirrSidepanel, { Props as SidepanelProps } from "./AirrSidepanel";
-import { AnimationType, ViewConfig, NavbarMenu } from "./airr-react";
+import { AnimationType, ViewConfig, NavbarMenu, SidepanelConfig } from "./airr-react";
 
 export interface CoreSceneProps {
     /**
@@ -30,7 +30,7 @@ export interface CoreSceneProps {
     /**
      * React element to be placed in GUI disabling div
      */
-    GUIDisableCover: ReactNode;
+    GUIDisableCover?: ReactNode;
     /**
      * Type of animation to perform when switching views
      */
@@ -52,7 +52,7 @@ export interface CoreSceneProps {
      */
     navbarMenu?: NavbarMenu;
     /**
-     * Extra, space separated, navbar's class names list
+     * Extra, space separated, navbar's class list
      */
     navbarClass: string;
     /**
@@ -66,33 +66,24 @@ export interface CoreSceneProps {
     /**
      * Function that will handle back button click events
      */
-    handleBackButton?(e: SyntheticEvent<HTMLElement>): void;
+    handleBackButton?: (e: SyntheticEvent<HTMLElement>) => void;
     /**
      * Function that will handle back button clicks events on when first view in stack is active
      */
-    handleBackBehaviourOnFirstView?(): void;
+    handleBackBehaviourOnFirstView?: () => void;
     /**
-     * Is this view active in parent scene
+     * Is this view active in parent scene. Readonly.
      */
     active: boolean;
     /**
      * Sidepanels declaration. Must contain two properties: `type` and `props`
      **/
-    sidepanel: {
-        /**
-         * reference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself.
-         */
-        type: ComponentClass<SidepanelProps, any>;
-        /**
-         * Special properties of AirrSidepanel class. Go to class declaration for further properties documenation.
-         */
-        props: SidepanelProps;
-    };
+    sidepanel?: SidepanelConfig;
     /**
      * This function will be called when sidepanel changes it's visibility.
      * It's argument will be isShown bool.
      */
-    sidepanelVisibilityCallback(isShown: boolean): void;
+    sidepanelVisibilityCallback?(isShown: boolean): void;
     /**
      * Array of `views`. Every view object declaration must contain two properties: `type` and `props`.
      */
