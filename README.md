@@ -2,7 +2,7 @@
 
 This library is set of several components that helps building Single Page Apps with ReactJS.  
 airr-react defines few basic UI classes and features that every app needs. The core component is responsible for maintaining navigation in the app.
-All of it when minified and gzipped weights ~11.8kB ([bundlephobia.com](https://bundlephobia.com/result?p=airr-react@3.1.1)).
+All of it when minified and gzipped weights ~11.8kB ([bundlephobia.com](https://bundlephobia.com/result?p=airr-react@latest)).
 
 Library can be used for:
 
@@ -10,22 +10,23 @@ Library can be used for:
 -   rapidly designing prototypes showing your ideas,
 -   creating responsive apps that will handle mobile and desktop rendering.
 
+# Table of contents
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Concept](#concept)
-  - [PureComponents](#purecomponents)
-- [View's life-cycles](#views-life-cycles)
-- [React Component's life-cycles](#react-components-life-cycles)
-- [Rendering View's content](#rendering-views-content)
-- [Props documentation](#props-documentation)
-  - [SceneWrapper Props](#scenewrapper-props)
-  - [Common types](#common-types)
-      - [AnimationType](#animationtype)
-- [License](#license)
+-   [Installation](#installation)
+-   [Usage](#usage)
+-   [Concept](#concept)
+    -   [PureComponents](#purecomponents)
+-   [View's life-cycles](#views-life-cycles)
+-   [React Component's life-cycles](#react-components-life-cycles)
+-   [Rendering View's content](#rendering-views-content)
+-   [Props documentation](#props-documentation)
+    -   [SceneWrapper Props](#scenewrapper-props)
+    -   [Common types](#common-types)
+        -   [AnimationType](#animationtype)
+-   [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -248,19 +249,72 @@ class FooView extends ViewWrapper {
 
 ### SceneWrapper Props
 
-| property        | type                            | description                                                                                                                                                                  |
-| --------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| name            | string                          | The name of the scene. Must be unique among others views in parent scene. Will be used as identification string                                                              |
-| activeViewName  | string                          | Name of the active view                                                                                                                                                      |
-| GUIDisabled     | boolean                         | Boolean telling if GUI should be disabled meaning no user actions, events are allowed. GUI is disabled via absolute positioned, not visible div that has the biggest z-Index |
-| GUIDisableCover | ReactNode                       | React element to be placed in GUI disabling div                                                                                                                              |
-| animation       | [AnimationType](#animationtype) | Type of animation to perform when switching views                                                                                                                            |
+| property                       | type                                      | description                                                                                                                                                                  |
+| ------------------------------ | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name                           | string                                    | The name of the scene. Must be unique among others views in parent scene. Will be used as identification string                                                              |
+| activeViewName                 | string                                    | Name of the active view                                                                                                                                                      |
+| GUIDisabled                    | boolean                                   | Boolean telling if GUI should be disabled meaning no user actions, events are allowed. GUI is disabled via absolute positioned, not visible div that has the biggest z-Index |
+| GUIDisableCover                | ?ReactNode                                | React element to be placed in GUI disabling div                                                                                                                              |
+| animation                      | [AnimationType](#animationtype)           | Type of animation to perform when switching views                                                                                                                            |
+| animationTime                  | number                                    | Time of views changing animation in miliseconds                                                                                                                              |
+| navbar                         | 1                                         | true                                                                                                                                                                         | -1 | 0 | false | Specify if navbar is present (1,true) or not (0,false). Or maybe hidden (-1) |
+| navbarHeight                   | number                                    | Height of the navbar in pixels                                                                                                                                               |
+| navbarMenu                     | [?NavbarMenu](#navbarmenu)                | Navbar menu is placed on the right most side. Might contain "toggleSidepanel" button or any custom buttons list.                                                             |
+| navbarClass                    | string                                    | Extra, space separated, navbar's class list                                                                                                                                  |
+| backButton                     | boolean                                   | Boolean specifing if navbar renders BackButton. Placed by default on the left side of navbar.                                                                                |
+| backButtonOnFirstView          | boolean                                   | Do you need to still show backButton even if scene is rendering first view from stack?                                                                                       |
+| handleBackButton               | ?(e: SyntheticEvent<HTMLElement>) => void | Function that will handle back button click events                                                                                                                           |
+| handleBackBehaviourOnFirstView | ?() => void                               | Function that will handle back button clicks events on when first view in stack is active                                                                                    |
+| active                         | boolean                                   | Is this view active in parent scene. Readonly. Set by parent Scene.                                                                                                          |
+| sidepanel                      | [?SidepanelConfig](#sidepanelconfig)      | Sidepanels configuration declaration. Must contain two properties: `type` and `props`                                                                                        |
+| sidepanelVisibilityCallback    | ?(isShown: boolean) => void               | This function will be called when sidepanel changes it's visibility. It's argument will be isShown bool.                                                                     |
+| views                          | [ViewConfig[]](#viewconfig)               | Array of `views`. Every view object declaration must contain two properties: `type` and `props`.                                                                             |
+|                                |                                           |                                                                                                                                                                              |
+|                                |                                           |                                                                                                                                                                              |
+|                                |                                           |                                                                                                                                                                              |
+|                                |                                           |                                                                                                                                                                              |
+
+### Sidepanel Props
 
 ### Common types
 
 ##### AnimationType
 
 `"slide" | "overlay" | "fade"`
+
+##### NavbarMenu
+
+`"toggleSidepanl" | ReactNode[]`
+
+##### SidepanelConfig
+
+```javascript
+{
+    /**
+     * reference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself.
+     */
+    type: ComponentClass<[SidepanelProps](#sidepanel-props), any>;
+    /**
+     * Special properties of AirrSidepanel class. Go to class declaration for further properties documenation.
+     */
+    props: SidepanelProps;
+}
+```
+
+##### ViewConfig
+
+```javascript
+{
+    /**
+     * Refference to class or function that will render AirrView. The most common and adviced approach is to use AirrViewWrapper.
+     */
+    type: ComponentClass<ViewProps, any>;
+    /**
+     * Special properties of AirrView class. Go to class declaration for further properties documenation.
+     */
+    props: ViewProps;
+}
+```
 
 ## License
 
