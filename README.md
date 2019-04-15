@@ -27,6 +27,12 @@ Library can be used for:
   - [Kitchen sink app](#kitchen-sink-app)
   - [Infinite viewport](#infinite-viewport)
   - [Simple Scene](#simple-scene)
+  - [SceneWrapper API](#scenewrapper-api)
+    - [::changeView](#changeview)
+      - [from ViewConfig](#from-viewconfig)
+      - [push new view config](#push-new-view-config)
+      - [update existing](#update-existing)
+    - [::openSidepanel](#opensidepanel)
 - [Props documentation](#props-documentation)
   - [SceneWrapper Props](#scenewrapper-props)
   - [ViewWrapper Props](#viewwrapper-props)
@@ -263,9 +269,27 @@ class FooView extends ViewWrapper {
 
 ### [Kitchen sink app](https://codesandbox.io/s/2xmmm725p)
 
+Demo app showing all library features.
+
 ### [Infinite viewport](https://codesandbox.io/s/2xmmm725p)
 
+In this example can push unlimited views and play with Scene properties.
+
 ### [Simple Scene](https://codesandbox.io/s/pz83nwo50)
+
+Very simple app from 'Usage' chapter.
+
+### SceneWrapper API
+
+#### ::changeView
+
+##### [from ViewConfig](https://codesandbox.io/s/pz83nwo50)
+
+##### [push new view config](https://codesandbox.io/s/pz83nwo50)
+
+##### [update existing](https://codesandbox.io/s/pz83nwo50)
+
+#### [::openSidepanel](https://codesandbox.io/s/pz83nwo50)
 
 ## Props documentation
 
