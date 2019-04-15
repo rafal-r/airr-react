@@ -251,13 +251,13 @@ class FooView extends ViewWrapper {
 
 | property                       | type                                      | description                                                                                                                                                                  |
 | ------------------------------ | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| name                           | string                                    | The name of the scene. Must be unique among others views in parent scene. Will be used as identification string                                                              |
+| name                           | string (required)                         | The name of the scene. Must be unique among others views in parent scene. Will be used as identification string                                                              |
 | activeViewName                 | string                                    | Name of the active view                                                                                                                                                      |
 | GUIDisabled                    | boolean                                   | Boolean telling if GUI should be disabled meaning no user actions, events are allowed. GUI is disabled via absolute positioned, not visible div that has the biggest z-Index |
 | GUIDisableCover                | ?ReactNode                                | React element to be placed in GUI disabling div                                                                                                                              |
 | animation                      | [AnimationType](#animationtype)           | Type of animation to perform when switching views                                                                                                                            |
 | animationTime                  | number                                    | Time of views changing animation in miliseconds                                                                                                                              |
-| navbar                         | 1                                         | true                                                                                                                                                                         | -1 | 0 | false | Specify if navbar is present (1,true) or not (0,false). Or maybe hidden (-1) |
+| navbar                         | 1 / true / -1 / 0 / false                 | Specify if navbar is present (1,true) or not (0,false). Or maybe hidden (-1)                                                                                                 |
 | navbarHeight                   | number                                    | Height of the navbar in pixels                                                                                                                                               |
 | navbarMenu                     | [?NavbarMenu](#navbarmenu)                | Navbar menu is placed on the right most side. Might contain "toggleSidepanel" button or any custom buttons list.                                                             |
 | navbarClass                    | string                                    | Extra, space separated, navbar's class list                                                                                                                                  |
@@ -269,26 +269,57 @@ class FooView extends ViewWrapper {
 | sidepanel                      | [?SidepanelConfig](#sidepanelconfig)      | Sidepanels configuration declaration. Must contain two properties: `type` and `props`                                                                                        |
 | sidepanelVisibilityCallback    | ?(isShown: boolean) => void               | This function will be called when sidepanel changes it's visibility. It's argument will be isShown bool.                                                                     |
 | views                          | [ViewConfig[]](#viewconfig)               | Array of `views`. Every view object declaration must contain two properties: `type` and `props`.                                                                             |
-|                                |                                           |                                                                                                                                                                              |
-|                                |                                           |                                                                                                                                                                              |
-|                                |                                           |                                                                                                                                                                              |
-|                                |                                           |                                                                                                                                                                              |
+| mayers                         | [MayerProps[]](#mayer-props)              | Array of `mayers` objects that will be render into this Scene. Must contain special AirrMayer class properties.                                                              |
+| title                          | ReactNode                                 | Title that will be use in parent Scene navbar title section                                                                                                                  |
+| className                      | string                                    | Extra, space separated classes names to use upon first div element.                                                                                                          |
+| children                       | ReactNode                                 | Children to be render in Scene's container. Might be useful for creating navigation UI.                                                                                      |
 
 ### View Props
 
+| property          | type                                         | description                                                                                                          |
+| ----------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| name              | string (required)                            | The name of the view. Must be unique among others views in scene. Will be used as identification string              |
+| title             | ReactNode                                    | Titlebar name. If parent scene navbar is enabled, this title will be showed there. Might be string or React element. |
+| active            | boolean                                      | Determine if this view is active. Set by parent scene. Readonly.                                                     |
+| className         | string                                       | Extra classes to use. Space separetad string list.                                                                   |
+| style             | ?[CSSStringProperties](#cssstringproperties) | Extra styles to use upon root DOM element of view.                                                                   |
+| [propname:string] | any                                          | Any property you will need to populate into the view                                                                 |
+|                   |                                              |                                                                                                                      |
+
 ### Sidepanel Props
+
+| property       | name                    | description                                                                                                                      |
+| -------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| side           | [Placement](#placement) | Side to which sidepanel will be attached                                                                                         |
+| isShown        | boolean                 | Bool determining if sidepanel is shown or not. Use SceneWrapper's methods (openSidepanel,closeSidepanel) to manipulate this bool |
+| enabled        | boolean                 | Bool determining if sidepanel is enabled.                                                                                        |
+| sizeFactor     | number                  | Number between 0 and 1 determining how much size of whole screen sidepanel will take                                             |
+| animationTime  | number                  | Animation time in miliseconds                                                                                                    |
+| bgLayerOpacity | number                  | Opacity between 0 and 1                                                                                                          |
+
+### Mayer Props
+
+| property      | name                                         | description                                                                                         |
+| ------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| name          | string                                       | The name of the mayer. Must be unique among others mayers in scene. Will be used as identification. |
+| style         | ?[CSSStringProperties](#cssstringproperties) | Extra styles to apply on Mayer's DOM element                                                        |
+| appearFrom    | [Placement](#placement)                      | Side from which mayer content box will enter                                                        |
+| leaveTo       | [Placement](#placement)                      | Side to which mayer content box will leave                                                          |
+| content       | ?ReactNode                                   | Content of mayer                                                                                    |
+| buttons       | ?[MayerButtonProps[]](#mayerbuttonprops)     | Array with buttons configuration                                                                    |
+| animationTime | number                                       | Time in miliseconds of mayer's appear/disappear animation                                           |
 
 ### Common types
 
-##### AnimationType
+#### AnimationType
 
 `"slide" | "overlay" | "fade"`
 
-##### NavbarMenu
+#### NavbarMenu
 
 `"toggleSidepanel" | ReactNode[]`
 
-##### SidepanelConfig
+#### SidepanelConfig
 
 Object defined with:
 
@@ -297,7 +328,7 @@ Object defined with:
 | type          | ComponentClass<[SidepanelProps](#sidepanel-props), any> |            Reference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself |
 | props         |           [SidepanelProps](#sidepanel-props)            | Special properties of AirrSidepanel class. Go to class declaration for further properties documenation. |
 
-##### ViewConfig
+#### ViewConfig
 
 Object defined with:
 
@@ -305,6 +336,29 @@ Object defined with:
 | ------------- | :-------------------------------------------: | -------------------------------------------------------------------------------------------------------------------------: |
 | type          | ComponentClass<[ViewProps](#view-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to use AirrViewWrapper. |
 | props         |           [ViewProps](#view-props)            |                         Special properties of AirrView class. Go to class declaration for further properties documenation. |
+
+#### CSSStringProperties
+
+```
+CSSStringProperties extends CSSProperties {
+    [index: string]: string | {};
+}
+```
+
+#### Placement
+
+`"top" | "bottom" | "left" | "right"`
+
+#### MayerButtonProps
+
+| property  | name                                            | description                                                               |
+| --------- | ----------------------------------------------- | ------------------------------------------------------------------------- |
+| className | string                                          | Extra class names to use upon button                                      |
+| attrs     | ?[CSSStringProperties](#cssstringproperties)    | Extra attributes to apply on HTML element                                 |
+| style     | ?[CSSStringProperties](#cssstringproperties)    | Additional inline styles                                                  |
+| close     | boolean                                         | Option bool that will automatically add close functionality to the button |
+| handler   | ?(e: SyntheticEvent<HTMLButtonElement>) => void | OnClick function handler                                                  |
+| content   | ?ReactNode                                      | Content to render inside Mayer. Might be string or ReactNode.             |
 
 ## License
 

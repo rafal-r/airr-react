@@ -14,7 +14,7 @@ export interface Props {
      */
     isShown: boolean;
     /**
-     * Bool determining if sidepanel is enabled, another words, if its can be drag out
+     * Bool determining if sidepanel is enabled.
      */
     enabled: boolean;
     /**
