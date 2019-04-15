@@ -17,7 +17,7 @@ export interface ViewConfig {
 export interface CSSStringProperties extends CSSProperties {
     [index: string]: string | {};
 }
-export type NavbarMenu = "toggleSidepanl" | ReactNode[];
+export type NavbarMenu = "toggleSidepanel" | ReactNode[];
 export interface TouchPosition {
     [index: string]: number;
     clientX: number;
@@ -25,7 +25,7 @@ export interface TouchPosition {
 }
 export interface SidepanelConfig {
     /**
-     * reference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself.
+     * Reference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself.
      */
     type: ComponentClass<SidepanelProps, any>;
     /**
