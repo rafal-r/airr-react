@@ -318,6 +318,7 @@ class FooView extends ViewWrapper {
 | title                          | ReactNode                                 | Title that will be use in parent Scene navbar title section                                                                                                                  |
 | className                      | string                                    | Extra, space separated classes names to use upon first div element.                                                                                                          |
 | children                       | ReactNode                                 | Children to be render in Scene's container. Might be useful for creating navigation UI.                                                                                      |
+| stackMode                      | boolean                                   | This propety changes behaviour of views animation when overlay animation is set                                                                                              |
 
 ### ViewWrapper Props
 
