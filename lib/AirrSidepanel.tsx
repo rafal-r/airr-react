@@ -84,6 +84,8 @@ export default class AirrSidepanel extends PureComponent<Props> {
     private lastSceneWidth: number;
     private lastSceneHeight: number;
 
+    content?: () => ReactNode;
+
     enable(): void {
         this.sceneDOM.removeEventListener(this.startEvent, this.handleTouchStart);
         this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, supportPassive);
@@ -564,7 +566,11 @@ export default class AirrSidepanel extends PureComponent<Props> {
         }
 
         const children =
-            typeof this.props.children === "function" ? this.props.children() : this.props.children;
+            typeof this.content === "function"
+                ? this.content()
+                : typeof this.props.children === "function"
+                ? this.props.children()
+                : this.props.children;
 
         return (
             <div className={className} ref={this.refDOM} style={sidepanelStyle}>
