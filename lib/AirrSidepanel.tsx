@@ -84,8 +84,6 @@ export default class AirrSidepanel extends PureComponent<Props> {
     private lastSceneWidth: number;
     private lastSceneHeight: number;
 
-    content?: () => ReactNode;
-
     enable(): void {
         this.sceneDOM.removeEventListener(this.startEvent, this.handleTouchStart);
         this.sceneDOM.addEventListener(this.startEvent, this.handleTouchStart, supportPassive);
@@ -519,6 +517,16 @@ export default class AirrSidepanel extends PureComponent<Props> {
         }
     }
 
+    /**
+     * Primary render method.
+     * Should be overwritten in descendant class.
+     * @returns {ReactNode}
+     */
+    content(): ReactNode {
+        console.warn("[Airr] This method should be overwritten in descendant class");
+        return null;
+    }
+
     render(): ReactNode {
         const className =
             "airr-sidepanel " +
@@ -566,16 +574,13 @@ export default class AirrSidepanel extends PureComponent<Props> {
         }
 
         const children =
-            typeof this.content === "function"
-                ? this.content()
-                : typeof this.props.children === "function"
-                ? this.props.children()
-                : this.props.children;
+            typeof this.props.children === "function" ? this.props.children() : this.props.children;
 
         return (
             <div className={className} ref={this.refDOM} style={sidepanelStyle}>
                 <div ref={this.refDOMBgLayer} style={bgLayerStyle} />
                 <div ref={this.refDOMDragCtn} style={dragCtnStyle}>
+                    {this.content()}
                     {children}
                 </div>
             </div>

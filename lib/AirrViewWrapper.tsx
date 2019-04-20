@@ -33,8 +33,9 @@ export default class AirrViewWrapper extends PureComponent<CoreViewProps> {
      * Should be overwritten in descendant class.
      * @returns {ReactNode}
      */
-    content(): void {
+    content(): ReactNode {
         console.warn("[Airr] This method should be overwritten in descendant class");
+        return null;
     }
 
     /**
@@ -43,7 +44,15 @@ export default class AirrViewWrapper extends PureComponent<CoreViewProps> {
      * @returns {ReactNode}
      */
     render(): ReactNode {
-        return <AirrView {...this.getViewProps()}>{() => this.content()}</AirrView>;
+        const children =
+            typeof this.props.children === "function" ? this.props.children() : this.props.children;
+
+        return (
+            <AirrView {...this.getViewProps()}>
+                {this.content()}
+                {children}
+            </AirrView>
+        );
     }
 
     viewAfterActivation(): void {}
