@@ -7,7 +7,7 @@ import AirrView from "./AirrView";
 import { Props as ViewProps } from "./AirrViewRenderer";
 import AirrMayer, { PreparedProps as MayerProps } from "./AirrMayer";
 import update from "immutability-helper";
-import { ViewConfig, CSSStringProperties } from "./airr-react";
+import { ViewConfig, CSSStringProperties, SidepanelConfig } from "./airr-react";
 
 interface Props extends CoreSceneProps {
     /**
@@ -389,6 +389,25 @@ export default class AirrScene extends AirrView {
     };
 
     /**
+     * Special function for enabling sidepanel config after mounting of scene.
+     * Will ensure proper sidepanel size after incjeting it into DOM.
+     * @returns {Promise} Resolved on state succesful change.
+     */
+    setSidepanelConfig = (config: SidepanelConfig): Promise<void> => {
+        return new Promise(
+            (resolve): void =>
+                this.setState(
+                    {
+                        sidepanel: config
+                    },
+                    (): void => {
+                        this.__updateSidepanelSizeProps().then(resolve);
+                    }
+                )
+        );
+    };
+
+    /**
      * Disables scene's sidepanel by setting it prop enabled = false.
      * @returns {Promise} Resolved on state succesful change or reject on failure.
      */
@@ -665,20 +684,14 @@ export default class AirrScene extends AirrView {
                         "resize",
                         (): void => {
                             if (this.state.sidepanel) {
-                                this.__updateSidepanelSizeProps(
-                                    this.refDOM.current.clientWidth,
-                                    this.refDOM.current.clientHeight
-                                );
+                                this.__updateSidepanelSizeProps();
                             }
                         }
                     );
                 }
 
                 if (this.state.sidepanel) {
-                    this.__updateSidepanelSizeProps(
-                        this.refDOM.current.clientWidth,
-                        this.refDOM.current.clientHeight
-                    ).then(resolve);
+                    this.__updateSidepanelSizeProps().then(resolve);
                 } else {
                     resolve();
                 }
@@ -700,19 +713,17 @@ export default class AirrScene extends AirrView {
 
     /**
      * Private utility function for updating sidepanel's sceneWidth,sceneHeight properties
-     * @param {number} width
-     * @param {number} height
      * @returns {Promise}
      */
-    __updateSidepanelSizeProps(width: number, height: number): Promise<void> {
+    __updateSidepanelSizeProps(): Promise<void> {
         return new Promise(
             (resolve): void => {
                 this.setState(
                     {
                         sidepanel: update(this.state.sidepanel, {
                             props: {
-                                sceneWidth: { $set: width },
-                                sceneHeight: { $set: height }
+                                sceneWidth: { $set: this.refDOM.current.clientWidth },
+                                sceneHeight: { $set: this.refDOM.current.clientHeight }
                             }
                         })
                     },
