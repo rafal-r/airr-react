@@ -523,8 +523,7 @@ export default class AirrSidepanel extends PureComponent<Props> {
      * @returns {ReactNode}
      */
     content(): ReactNode {
-        console.warn("[Airr] This method should be overwritten in descendant class");
-        return null;
+        return undefined;
     }
 
     render(): ReactNode {
@@ -573,15 +572,19 @@ export default class AirrSidepanel extends PureComponent<Props> {
             bgLayerStyle = { opacity: 0 };
         }
 
-        const children =
-            typeof this.props.children === "function" ? this.props.children() : this.props.children;
+        let content: ReactNode = this.content();
+        if (content === undefined) {
+            content =
+                typeof this.props.children === "function"
+                    ? this.props.children()
+                    : this.props.children;
+        }
 
         return (
             <div className={className} ref={this.refDOM} style={sidepanelStyle}>
                 <div ref={this.refDOMBgLayer} style={bgLayerStyle} />
                 <div ref={this.refDOMDragCtn} style={dragCtnStyle}>
-                    {this.content()}
-                    {children}
+                    {content}
                 </div>
             </div>
         );

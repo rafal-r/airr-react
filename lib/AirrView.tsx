@@ -34,7 +34,6 @@ export default class AirrView extends PureComponent<CoreViewProps> {
      * @returns {ReactNode}
      */
     content(): ReactNode {
-        console.warn("[Airr] This method should be overwritten in descendant class");
         return undefined;
     }
 
@@ -44,21 +43,15 @@ export default class AirrView extends PureComponent<CoreViewProps> {
      * @returns {ReactNode}
      */
     render(): ReactNode {
-        const content = this.content();
-        let children: ReactNode = null;
+        let content: ReactNode = this.content();
         if (content === undefined) {
-            children =
+            content =
                 typeof this.props.children === "function"
                     ? this.props.children()
                     : this.props.children;
         }
 
-        return (
-            <AirrViewRenderer {...this.getViewProps()}>
-                {content}
-                {children}
-            </AirrViewRenderer>
-        );
+        return <AirrViewRenderer {...this.getViewProps()}>{content}</AirrViewRenderer>;
     }
 
     viewAfterActivation(): void {}
