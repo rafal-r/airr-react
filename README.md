@@ -15,37 +15,38 @@ Library can be used for:
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
--   [Installation](#installation)
--   [Usage](#usage)
--   [Concept](#concept)
-    -   [PureComponents](#purecomponents)
--   [View's life-cycles](#views-life-cycles)
--   [React Component's life-cycles](#react-components-life-cycles)
--   [Rendering View's content](#rendering-views-content)
--   [Examples](#examples)
-    -   [Kitchen sink app](#kitchen-sink-app)
-    -   [Infinite viewport](#infinite-viewport)
-    -   [Simple Scene](#simple-scene)
-    -   [SceneWrapper API](#scenewrapper-api)
-        -   [::changeView](#changeview)
-            -   [from ViewConfig](#from-viewconfig)
-            -   [push new view config](#push-new-view-config)
-            -   [update existing](#update-existing)
-        -   [::openSidepanel](#opensidepanel)
--   [Props documentation](#props-documentation)
-    -   [SceneWrapper Props](#scenewrapper-props)
-    -   [ViewWrapper Props](#viewwrapper-props)
-    -   [Sidepanel Props](#sidepanel-props)
-    -   [Mayer Props](#mayer-props)
-    -   [Common types](#common-types)
-        -   [AnimationType](#animationtype)
-        -   [NavbarMenu](#navbarmenu)
-        -   [SidepanelConfig](#sidepanelconfig)
-        -   [ViewConfig](#viewconfig)
-        -   [CSSStringProperties](#cssstringproperties)
-        -   [Placement](#placement)
-        -   [MayerButtonProps](#mayerbuttonprops)
--   [License](#license)
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Concept](#concept)
+  - [PureComponents](#purecomponents)
+- [View's life-cycles](#views-life-cycles)
+- [React Component's life-cycles](#react-components-life-cycles)
+- [Rendering View's content](#rendering-views-content)
+- [Examples](#examples)
+  - [Kitchen sink app](#kitchen-sink-app)
+  - [Infinite viewport](#infinite-viewport)
+  - [Simple Scene](#simple-scene)
+  - [Scene API](#scene-api)
+    - [::changeView](#changeview)
+      - [from ViewConfig](#from-viewconfig)
+      - [push new view config](#push-new-view-config)
+      - [update existing](#update-existing)
+    - [::openSidepanel](#opensidepanel)
+- [Props documentation](#props-documentation)
+  - [Scene Props](#scene-props)
+  - [View Props](#view-props)
+  - [Sidepanel Props](#sidepanel-props)
+  - [Mayer Props](#mayer-props)
+  - [Common types](#common-types)
+    - [AnimationType](#animationtype)
+    - [NavbarMenu](#navbarmenu)
+    - [SidepanelConfig](#sidepanelconfig)
+    - [ViewConfig](#viewconfig)
+    - [CSSStringProperties](#cssstringproperties)
+    - [Placement](#placement)
+    - [MayerButtonProps](#mayerbuttonprops)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -64,14 +65,14 @@ Here's a simple code usage that provides a viewport with two views.
 ```javascript
 import React from "react";
 import ReactDOM from "react-dom";
-import { SceneWrapper, ViewWrapper, Sidepanel } from "airr-react";
+import { Scene, View, Sidepanel } from "airr-react";
 import "airr-react/dist/airr-react.css";
 import "./styles.css";
 
 const BlueViewName = "blue-view";
 const RedViewName = "red-view";
 
-class BlueView extends ViewWrapper {
+class BlueView extends View {
     content() {
         return (
             <div className={BlueViewName}>
@@ -84,7 +85,7 @@ class BlueView extends ViewWrapper {
         );
     }
 }
-class RedView extends ViewWrapper {
+class RedView extends View {
     content() {
         return (
             <div className={RedViewName}>
@@ -96,7 +97,7 @@ class RedView extends ViewWrapper {
     }
 }
 
-class Viewport extends SceneWrapper {
+class Viewport extends Scene {
     viewsConfig = {
         [BlueViewName]: {
             type: BlueView,
@@ -151,9 +152,9 @@ ReactDOM.render(<Viewport />, rootElement);
 
 ## Concept
 
-The main concept is to put most of your jsx and html code into the View's components and to render them with `content()` method. That will be classes that extends `ViewWrapper` component.
+The main concept is to put most of your jsx and html code into the View's components and to render them with `content()` method. That will be classes that extends `View` component.
 
-All of the props and logic will be passed to this views from Scenes - these are classes that extends `SceneWrapper`.
+All of the props and logic will be passed to this views from Scenes - these are classes that extends `Scene`.
 They will be responsible for navigating between views and filling them with data.
 
 ### PureComponents
@@ -166,17 +167,17 @@ So remember that your views will not be updated unless you provide them with dif
 Airr library provides easy to implement views life-cycles methods.
 When you develop apps divided into certain views you have to deal with many tasks before or after certain view is activated and animated into the screen.
 
-Like React's `componentDidMount` method, Airr provides self explanatory methods that can be used by Components that extends `ViewWrapper` or `SceneWrapper` components. These methods are:
+Like React's `componentDidMount` method, Airr provides self explanatory methods that can be used by Components that extends `View` or `Scene` components. These methods are:
 
 -   `viewBeforeActivation`
 -   `viewAfterActivation`
 -   `viewBeforeDeactivation`
 -   `viewAfterDeactivation`
 
-`SceneWrapper` or `ViewWrapper` can:
+`Scene` or `View` can:
 
 ```javascript
-class JustView extends ViewWrapper {
+class JustView extends View {
     viewBeforeActivation() {
         console.log("JustView will be active soon");
     }
@@ -195,12 +196,12 @@ class JustView extends ViewWrapper {
 }
 ```
 
-Additionaly `SceneWrapper` has:
+Additionaly `Scene` has:
 
 -   `viewsAnimationEnd(oldViewName: string, newViewName: string)`
 
 ```javascript
-class BarScene extends SceneWrapper {
+class BarScene extends Scene {
     viewsAnimationEnd(oldViewName, newViewName) {
         console.log(
             `[BarScene::viewsAnimationEnd] oldViewName: ${oldViewName}, newViewName: ${newViewName}`
@@ -217,7 +218,7 @@ class BarScene extends SceneWrapper {
 ## React Component's life-cycles
 
 You can use all well known React's life-cycles methods when extending airr-react's components.  
-Only when using `componentDidMount` in the class that extends `SceneWrapper` you must also invoke super's method like:
+Only when using `componentDidMount` in the class that extends `Scene` you must also invoke super's method like:
 
 ```javascript
   componentDidMount() {
@@ -228,10 +229,10 @@ Only when using `componentDidMount` in the class that extends `SceneWrapper` you
 
 ## Rendering View's content
 
-In the classes that extends `ViewWrapper` (which will be all your views) to render children elements use `content` method instead of `render`:
+In the classes that extends `View` (which will be all your views) to render children elements use `content` method instead of `render`:
 
 ```javascript
-class FooView extends ViewWrapper {
+class FooView extends View {
     content() {
         return <div>Hello Foo world!</div>;
     }
@@ -241,7 +242,7 @@ class FooView extends ViewWrapper {
 You have to do it this way because core class must set correct properties to the inner view component:
 
 ```javascript
-export default class AirrViewWrapper extends PureComponent {
+export default class AirrView extends PureComponent {
     render() {
         return <AirrView {...this.getViewProps()}>{() => this.content()}</AirrView>;
     }
@@ -251,7 +252,7 @@ export default class AirrViewWrapper extends PureComponent {
 If you would like to overwrite this behaviour, you must do it like this:
 
 ```javascript
-class FooView extends ViewWrapper {
+class FooView extends View {
     render() {
         return (
             <AirrView {...this.getViewProps()}>
@@ -278,7 +279,7 @@ class FooView extends ViewWrapper {
 
 > Very simple app from 'Usage' chapter.
 
-### SceneWrapper API
+### Scene API
 
 #### ::changeView
 
@@ -292,7 +293,7 @@ class FooView extends ViewWrapper {
 
 ## Props documentation
 
-### SceneWrapper Props
+### Scene Props
 
 | property                       | type                                      | description                                                                                                                                                                  |
 | ------------------------------ | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -320,7 +321,7 @@ class FooView extends ViewWrapper {
 | children                       | ReactNode                                 | Children to be render in Scene's container. Might be useful for creating navigation UI.                                                                                      |
 | stackMode                      | boolean                                   | This propety changes behaviour of views animation when overlay animation is set                                                                                              |
 
-### ViewWrapper Props
+### View Props
 
 | property          | type                                         | description                                                                                                          |
 | ----------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -333,14 +334,14 @@ class FooView extends ViewWrapper {
 
 ### Sidepanel Props
 
-| property       | name                    | description                                                                                                                      |
-| -------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| side           | [Placement](#placement) | Side to which sidepanel will be attached                                                                                         |
-| isShown        | boolean                 | Bool determining if sidepanel is shown or not. Use SceneWrapper's methods (openSidepanel,closeSidepanel) to manipulate this bool |
-| enabled        | boolean                 | Bool determining if sidepanel is enabled.                                                                                        |
-| sizeFactor     | number                  | Number between 0 and 1 determining how much size of whole screen sidepanel will take                                             |
-| animationTime  | number                  | Animation time in miliseconds                                                                                                    |
-| bgLayerOpacity | number                  | Opacity between 0 and 1                                                                                                          |
+| property       | name                    | description                                                                                                               |
+| -------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| side           | [Placement](#placement) | Side to which sidepanel will be attached                                                                                  |
+| isShown        | boolean                 | Bool determining if sidepanel is shown or not. Use Scene's methods (openSidepanel,closeSidepanel) to manipulate this bool |
+| enabled        | boolean                 | Bool determining if sidepanel is enabled.                                                                                 |
+| sizeFactor     | number                  | Number between 0 and 1 determining how much size of whole screen sidepanel will take                                      |
+| animationTime  | number                  | Animation time in miliseconds                                                                                             |
+| bgLayerOpacity | number                  | Opacity between 0 and 1                                                                                                   |
 
 ### Mayer Props
 
@@ -377,10 +378,10 @@ Object defined with:
 
 Object defined with:
 
-| property name |                             type                             |                                                                                                                                       description |
-| ------------- | :----------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------: |
-| type          | ComponentClass<[ViewWrapperProps](#viewwrappers-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to specify class that extends AirrViewWrapper. |
-| props         |           [ViewWrapperProps](#viewwrappers-props)            |                                                Special properties of AirrView class. Go to class declaration for further properties documenation. |
+| property name |                      type                      |                                                                                                                                description |
+| ------------- | :--------------------------------------------: | -----------------------------------------------------------------------------------------------------------------------------------------: |
+| type          | ComponentClass<[ViewProps](#views-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to specify class that extends AirrView. |
+| props         |           [ViewProps](#views-props)            |                                         Special properties of AirrView class. Go to class declaration for further properties documenation. |
 
 #### CSSStringProperties
 
