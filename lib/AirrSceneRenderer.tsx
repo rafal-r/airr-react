@@ -265,7 +265,7 @@ export default class AirrSceneRenderer extends PureComponent<Props> {
         }
         return (
             <div className={className} ref={this.props.refDOM}>
-                <div className="content-wrap">
+                <div className="airr-content-wrap">
                     <NavbarRenderer
                         navbar={this.props.navbar}
                         activeViewIndex={activeViewIndex}
