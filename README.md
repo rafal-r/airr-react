@@ -15,38 +15,37 @@ Library can be used for:
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Concept](#concept)
-  - [PureComponents](#purecomponents)
-- [View's life-cycles](#views-life-cycles)
-- [React Component's life-cycles](#react-components-life-cycles)
-- [Rendering View's content](#rendering-views-content)
-- [Examples](#examples)
-  - [Kitchen sink app](#kitchen-sink-app)
-  - [Infinite viewport](#infinite-viewport)
-  - [Simple Scene](#simple-scene)
-  - [Scene API](#scene-api)
-    - [::changeView](#changeview)
-      - [from ViewConfig](#from-viewconfig)
-      - [push new view config](#push-new-view-config)
-      - [update existing](#update-existing)
-    - [::openSidepanel](#opensidepanel)
-- [Props documentation](#props-documentation)
-  - [Scene Props](#scene-props)
-  - [View Props](#view-props)
-  - [Sidepanel Props](#sidepanel-props)
-  - [Mayer Props](#mayer-props)
-  - [Common types](#common-types)
-    - [AnimationType](#animationtype)
-    - [NavbarMenu](#navbarmenu)
-    - [SidepanelConfig](#sidepanelconfig)
-    - [ViewConfig](#viewconfig)
-    - [CSSStringProperties](#cssstringproperties)
-    - [Placement](#placement)
-    - [MayerButtonProps](#mayerbuttonprops)
-- [License](#license)
+-   [Installation](#installation)
+-   [Usage](#usage)
+-   [Concept](#concept)
+    -   [PureComponents](#purecomponents)
+-   [View's life-cycles](#views-life-cycles)
+-   [React Component's life-cycles](#react-components-life-cycles)
+-   [Rendering View's content](#rendering-views-content)
+-   [Examples](#examples)
+    -   [Kitchen sink app](#kitchen-sink-app)
+    -   [Infinite viewport](#infinite-viewport)
+    -   [Simple Scene](#simple-scene)
+    -   [Scene API](#scene-api)
+        -   [::changeView](#changeview)
+            -   [from ViewConfig](#from-viewconfig)
+            -   [push new view config](#push-new-view-config)
+            -   [update existing](#update-existing)
+        -   [::openSidepanel](#opensidepanel)
+-   [Props documentation](#props-documentation)
+    -   [Scene Props](#scene-props)
+    -   [View Props](#view-props)
+    -   [Sidepanel Props](#sidepanel-props)
+    -   [Mayer Props](#mayer-props)
+    -   [Common types](#common-types)
+        -   [AnimationType](#animationtype)
+        -   [NavbarMenu](#navbarmenu)
+        -   [SidepanelConfig](#sidepanelconfig)
+        -   [ViewConfig](#viewconfig)
+        -   [CSSStringProperties](#cssstringproperties)
+        -   [Placement](#placement)
+        -   [MayerButtonProps](#mayerbuttonprops)
+-   [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -60,7 +59,7 @@ npm i airr-react
 
 Here's a simple code usage that provides a viewport with two views.
 
-[![Edit airr-react-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/pz83nwo50)
+[![Edit airr-react-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/rafal-r/airr-react-simple-scene)
 
 ```javascript
 import React from "react";
@@ -267,15 +266,15 @@ class FooView extends View {
 
 ## Examples
 
-### [Kitchen sink app](https://codesandbox.io/s/2xmmm725p)
+### [Kitchen sink app](https://codesandbox.io/s/github/rafal-r/airr-react-demo-app)
 
 > Demonstration app showing all library features.
 
-### [Infinite viewport](https://codesandbox.io/s/2xmmm725p)
+### [Infinite viewport](https://codesandbox.io/s/github/rafal-r/airr-react-infinite-viewport)
 
 > In this example you can push unlimited views and play with Scene properties.
 
-### [Simple Scene](https://codesandbox.io/s/pz83nwo50)
+### [Simple Scene](https://codesandbox.io/s/github/rafal-r/airr-react-simple-scene)
 
 > Very simple app from 'Usage' chapter.
 
