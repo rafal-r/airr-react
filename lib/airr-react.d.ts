@@ -1,5 +1,5 @@
 import { ReactNode, CSSProperties, ComponentClass } from "react";
-import { Props as ViewProps } from "./AirrView";
+import { Props as ViewProps } from "./AirrViewRenderer";
 import { Props as SidepanelProps } from "./AirrSidepanel";
 
 export type Placement = "top" | "bottom" | "left" | "right";
