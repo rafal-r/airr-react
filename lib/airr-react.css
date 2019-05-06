@@ -10,7 +10,9 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-
+#root {
+    height: 100%;
+}
 :after,
 :before {
     -webkit-box-sizing: border-box;
