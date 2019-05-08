@@ -403,7 +403,7 @@ CSSStringProperties extends CSSProperties {
 | style     | ?[CSSStringProperties](#cssstringproperties)    | Additional inline styles                                                  |
 | close     | boolean                                         | Option bool that will automatically add close functionality to the button |
 | handler   | ?(e: SyntheticEvent<HTMLButtonElement>) => void | OnClick function handler                                                  |
-| content   | ?ReactNode                                      | Content to render inside Mayer. Might be string or ReactNode.             |
+| children  | ?ReactNode                                      | Content to render inside button element                                   |
 
 ## License
 
