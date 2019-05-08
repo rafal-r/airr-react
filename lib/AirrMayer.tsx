@@ -26,9 +26,8 @@ interface MayerButtonProps {
      */
     handler?: (e: SyntheticEvent<HTMLButtonElement>) => void;
     /**
-     * Content to render inside Mayer. Might be string or ReactNode.
+     * Content of button
      */
-    content?: ReactNode;
     children?: ReactNode;
 }
 interface ButtonRendererProps {
@@ -185,7 +184,7 @@ export default class AirrMayer extends PureComponent<PreparedProps> {
     }
 }
 
-const BgRenderer = React.memo(function BgRenderer() {
+const BgRenderer = React.memo(function BgRenderer(): any {
     return <div className="bg" />;
 });
 interface BodyRendererProps {
@@ -195,7 +194,7 @@ interface BodyRendererProps {
 const BodyRenderer = React.memo<BodyRendererProps>(function BodyRenderer({
     children,
     content
-}: BodyRendererProps) {
+}: BodyRendererProps): any {
     return (
         <div className="text">
             {children}
@@ -209,7 +208,7 @@ const MayerButton = React.memo<MayerButtonProps>(function MayerButton({
     handler,
     children,
     ...spareAttribs
-}: MayerButtonProps) {
+}: MayerButtonProps): any {
     return (
         <button className={className} style={style} onClick={handler} {...spareAttribs}>
             {children}
@@ -218,34 +217,36 @@ const MayerButton = React.memo<MayerButtonProps>(function MayerButton({
 });
 const ButtonRenderer = React.memo<ButtonRendererProps>(function ButtonRenderer({
     buttons
-}: ButtonRendererProps) {
+}: ButtonRendererProps): any {
     return (
         <div className="btns">
             {buttons &&
-                buttons.map((config, index) => {
-                    let className = "btn text";
+                buttons.map(
+                    (config, index): ReactNode => {
+                        let className = "btn text";
 
-                    if (config.className) {
-                        className += " " + config.className;
+                        if (config.className) {
+                            className += " " + config.className;
+                        }
+
+                        let spareAttribs = {};
+                        if (config.attrs) {
+                            spareAttribs = config.attrs;
+                        }
+
+                        return (
+                            <MayerButton
+                                key={"btn" + index}
+                                className={className}
+                                style={config.style || null}
+                                handler={config.handler || null}
+                                {...spareAttribs}
+                            >
+                                {config.children}
+                            </MayerButton>
+                        );
                     }
-
-                    let spareAttribs = {};
-                    if (config.attrs) {
-                        spareAttribs = config.attrs;
-                    }
-
-                    return (
-                        <MayerButton
-                            key={"btn" + index}
-                            className={className}
-                            style={config.style || null}
-                            handler={config.handler || null}
-                            {...spareAttribs}
-                        >
-                            {config.content}
-                        </MayerButton>
-                    );
-                })}
+                )}
         </div>
     );
 });
