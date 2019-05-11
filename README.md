@@ -1,14 +1,3 @@
-<hr/>
-
-[![Build Status][build-badge]][build]
-[![Code Coverage][coverage-badge]][coverage]
-[![MIT License][license-badge]][license]
-
-[![PRs Welcome][prs-badge]][prs] [![Chat][chat-badge]][chat]
-[![Code of Conduct][coc-badge]][coc]
-
-[![size][size-badge]][unpkg-dist] [![gzip size][gzip-badge]][unpkg-dist]
-
 # airr-react
 
 This library is set of several components that helps building Single Page Apps with ReactJS.  
