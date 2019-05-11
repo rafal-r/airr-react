@@ -27,12 +27,12 @@ Library can be used for:
   - [Kitchen sink app](#kitchen-sink-app)
   - [Infinite viewport](#infinite-viewport)
   - [Simple Scene](#simple-scene)
-  - [Scene API](#scene-api)
-    - [changeView](#changeview)
-    - [openSidepanel](#opensidepanel)
-    - [hideSidepanel](#hidesidepanel)
-    - [openMayer](#openmayer)
-    - [closeMayer](#closemayer)
+- [Scene API](#scene-api)
+  - [changeView](#changeview)
+  - [openSidepanel](#opensidepanel)
+  - [hideSidepanel](#hidesidepanel)
+  - [openMayer](#openmayer)
+  - [closeMayer](#closemayer)
 - [Props documentation](#props-documentation)
   - [Scene Props](#scene-props)
   - [View Props](#view-props)
@@ -279,11 +279,11 @@ class FooView extends View {
 
 > Very simple app from 'Usage' chapter.
 
-### Scene API
+## Scene API
 
 Scene class posses many helpfull methods to navigate through views and modify Scene properties. Below is a list of most important ones. Check lib/Scene.tsx file to find all of with proper documentation.
 
-#### changeView
+### changeView
 
 `async changeView( view: string | ViewConfig, viewProps: ViewProps | {} = {}, sceneProps: Props | {} = {} ): Promise<string | void>`
 
@@ -303,7 +303,7 @@ Examples:
 -   Update current, active view - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateCurrentView.js&moduleview=1)
 -   Update scene - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateScene.js&moduleview=1)
 
-#### openSidepanel
+### openSidepanel
 
 `openSidepanel(): Promise<boolean | void>`
 
@@ -313,7 +313,7 @@ Example:
 
 -   Manually open sidepanel - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/OpenSidepanel.js&moduleview=1)
 
-#### hideSidepanel
+### hideSidepanel
 
 `hideSidepanel(): Promise<boolean | void>`
 
@@ -323,7 +323,7 @@ Example:
 
 -   Manually hide sidepanel - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/HideSidepanel.js&moduleview=1)
 
-#### openMayer
+### openMayer
 
 `openMayer(config: MayerProps): Promise<void>`
 
@@ -334,7 +334,7 @@ Example:
 
 -   Manually open modal layer - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/OpenMayer.js&moduleview=1)
 
-#### closeMayer
+### closeMayer
 
 `closeMayer(name: string): Promise<void>`
 
