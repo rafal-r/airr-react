@@ -15,38 +15,37 @@ Library can be used for:
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Concept](#concept)
-  - [PureComponents](#purecomponents)
-- [View's life-cycles](#views-life-cycles)
-- [React Component's life-cycles](#react-components-life-cycles)
-- [Rendering View's content](#rendering-views-content)
-- [Examples](#examples)
-  - [Kitchen sink app](#kitchen-sink-app)
-  - [Infinite viewport](#infinite-viewport)
-  - [Simple Scene](#simple-scene)
-- [Scene API](#scene-api)
-  - [changeView](#changeview)
-  - [openSidepanel](#opensidepanel)
-  - [hideSidepanel](#hidesidepanel)
-  - [openMayer](#openmayer)
-  - [closeMayer](#closemayer)
-- [Props documentation](#props-documentation)
-  - [Scene Props](#scene-props)
-  - [View Props](#view-props)
-  - [Sidepanel Props](#sidepanel-props)
-  - [Mayer Props](#mayer-props)
-  - [Common types](#common-types)
-    - [AnimationType](#animationtype)
-    - [NavbarMenu](#navbarmenu)
-    - [SidepanelConfig](#sidepanelconfig)
-    - [ViewConfig](#viewconfig)
-    - [CSSStringProperties](#cssstringproperties)
-    - [Placement](#placement)
-    - [MayerButtonProps](#mayerbuttonprops)
-- [License](#license)
+-   [Installation](#installation)
+-   [Usage](#usage)
+-   [Concept](#concept)
+    -   [PureComponents](#purecomponents)
+-   [View's life-cycles](#views-life-cycles)
+-   [React Component's life-cycles](#react-components-life-cycles)
+-   [Rendering View's content](#rendering-views-content)
+-   [Examples](#examples)
+    -   [Kitchen sink app](#kitchen-sink-app)
+    -   [Infinite viewport](#infinite-viewport)
+    -   [Simple Scene](#simple-scene)
+-   [Scene API](#scene-api)
+    -   [changeView](#changeview)
+    -   [openSidepanel](#opensidepanel)
+    -   [hideSidepanel](#hidesidepanel)
+    -   [openMayer](#openmayer)
+    -   [closeMayer](#closemayer)
+-   [Props documentation](#props-documentation)
+    -   [Scene Props](#scene-props)
+    -   [View Props](#view-props)
+    -   [Sidepanel Props](#sidepanel-props)
+    -   [Mayer Props](#mayer-props)
+    -   [Common types](#common-types)
+        -   [AnimationType](#animationtype)
+        -   [NavbarMenu](#navbarmenu)
+        -   [SidepanelConfig](#sidepanelconfig)
+        -   [ViewConfig](#viewconfig)
+        -   [CSSStringProperties](#cssstringproperties)
+        -   [Placement](#placement)
+        -   [MayerButtonProps](#mayerbuttonprops)
+-   [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -299,7 +298,7 @@ Examples:
 
 -   Go to another view - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/GoToAnotherView.js&moduleview=1)
 -   Push new view from views config - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromViewsConfig.js&moduleview=1)
--   Push new view from raw config definition - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromRawConfigDefinition.js.js&moduleview=1)
+-   Push new view from raw config definition - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromRawConfigDefinition.js&moduleview=1)
 -   Update current, active view - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateCurrentView.js&moduleview=1)
 -   Update scene - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateScene.js&moduleview=1)
 
@@ -451,14 +450,14 @@ CSSStringProperties extends CSSProperties {
 
 #### MayerButtonProps
 
-| property  | name                                            | description                                                               |
-| --------- | ----------------------------------------------- | ------------------------------------------------------------------------- |
-| className | string                                          | Extra class names to use upon button                                      |
-| attrs     | ?[CSSStringProperties](#cssstringproperties)    | Extra attributes to apply on HTML element                                 |
-| style     | ?[CSSStringProperties](#cssstringproperties)    | Additional inline styles                                                  |
-| close     | boolean                                         | Option bool that will automatically add close functionality to the button |
-| handler   | ?(e: SyntheticEvent<HTMLButtonElement>) => void | OnClick function handler                                                  |
-| children  | ?ReactNode                                      | Content to render inside button element                                   |
+| property  | name                                            | description                                                                 |
+| --------- | ----------------------------------------------- | --------------------------------------------------------------------------- |
+| className | string                                          | Extra class names to use upon button                                        |
+| attrs     | ?[CSSStringProperties](#cssstringproperties)    | Extra attributes to apply on HTML element                                   |
+| style     | ?[CSSStringProperties](#cssstringproperties)    | Additional inline styles                                                    |
+| close     | boolean                                         | Optional bool that will automatically add close functionality to the button |
+| handler   | ?(e: SyntheticEvent<HTMLButtonElement>) => void | OnClick function handler                                                    |
+| children  | ?ReactNode                                      | Content to render inside button element                                     |
 
 ## License
 
