@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/rafal-r/airr-react.svg?branch=master)](https://travis-ci.com/rafal-r/airr-react)
 [![Known Vulnerabilities](https://snyk.io/test/github/rafal-r/airr-react/badge.svg?targetFile=package.json)](https://snyk.io/test/github/rafal-r/airr-react?targetFile=package.json)
 
 <hr/>
