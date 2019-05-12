@@ -117,24 +117,24 @@ export default class Mayer extends PureComponent<PreparedProps> {
         const endProps = { opacity: "1" };
 
         if (bgDOM) {
-            FX.doTransitionAnimation(
-                bgDOM as HTMLElement,
-                startProps as CSSProperties,
-                ["opacity " + this.props.animationTime + "ms ease-out"],
-                endProps as CSSProperties
-            );
+            FX.doTransitionAnimation({
+                element: bgDOM as HTMLElement,
+                startProps: startProps as CSSProperties,
+                transitionProps: ["opacity " + this.props.animationTime + "ms ease-out"],
+                endProps: endProps as CSSProperties
+            });
         }
 
         const refDOMCtn = this.refDOMCtn.current;
 
         if (refDOMCtn && refDOMMayer) {
-            FX.doOverlayInAnimation(
-                refDOMCtn,
-                refDOMMayer.clientWidth,
-                refDOMMayer.clientHeight,
-                this.props.animationTime,
-                this.props.appearFrom
-            );
+            FX.doOverlayInAnimation({
+                dom: refDOMCtn,
+                width: refDOMMayer.clientWidth,
+                height: refDOMMayer.clientHeight,
+                t: this.props.animationTime,
+                appearFrom: this.props.appearFrom
+            });
         }
     }
 
@@ -149,25 +149,25 @@ export default class Mayer extends PureComponent<PreparedProps> {
         const endProps = { opacity: "0" };
 
         if (bgDOM) {
-            FX.doTransitionAnimation(
-                bgDOM as HTMLElement,
-                startProps as CSSProperties,
-                ["opacity " + this.props.animationTime + "ms ease-out"],
-                endProps as CSSProperties
-            );
+            FX.doTransitionAnimation({
+                element: bgDOM as HTMLElement,
+                startProps: startProps as CSSProperties,
+                transitionProps: ["opacity " + this.props.animationTime + "ms ease-out"],
+                endProps: endProps as CSSProperties
+            });
         }
 
         const refDOMCtn = this.refDOMCtn.current;
 
         if (refDOMCtn && refDOMMayer) {
-            FX.doOverlayOutAnimation(
-                refDOMCtn,
-                refDOMMayer.clientHeight,
-                refDOMMayer.clientWidth,
-                this.props.animationTime,
-                this.props.leaveTo,
+            FX.doOverlayOutAnimation({
+                dom: refDOMCtn,
+                height: refDOMMayer.clientHeight,
+                width: refDOMMayer.clientWidth,
+                t: this.props.animationTime,
+                headTo: this.props.leaveTo,
                 callback
-            );
+            });
         }
     }
 

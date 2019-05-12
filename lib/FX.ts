@@ -8,6 +8,29 @@ import {
     setElementTransforms
 } from "./FXHelpers";
 
+interface TransitionAnimationConfig {
+    element: HTMLElement;
+    startProps: CSSProperties;
+    transitionProps: string[];
+    endProps: CSSProperties;
+    preAnimationCallback?: () => void;
+    endAfter?: number;
+    endCallback?: () => void;
+}
+interface OverlayAnimationConfig {
+    dom: HTMLElement;
+    width: number;
+    height: number;
+    t: number;
+    callback?: () => void;
+}
+interface OverlayOutAnimationConfig extends OverlayAnimationConfig {
+    headTo: Placement;
+}
+interface OverlayInAnimationConfig extends OverlayAnimationConfig {
+    appearFrom: Placement;
+}
+
 /**
  * Animation utiliy class. Performs css based transition animations
  */
@@ -25,15 +48,17 @@ export default function FX(): void {}
  * @param {function} endCallback function to call after endAfter time parameter is gone
  * @returns {void}
  */
-FX.doTransitionAnimation = function(
-    element: HTMLElement,
-    startProps: CSSProperties,
-    transitionProps: string[],
-    endProps: CSSProperties,
-    preAnimationCallback?: () => void,
-    endAfter?: number,
-    endCallback?: () => void
-): void {
+FX.doTransitionAnimation = function(config: TransitionAnimationConfig): void {
+    const {
+        element,
+        startProps,
+        transitionProps,
+        endProps,
+        preAnimationCallback,
+        endAfter,
+        endCallback
+    } = config;
+
     resetElementTransition(element);
     refreshElement(element);
     prepareElementForAnimaton(element, startProps);
@@ -65,50 +90,34 @@ FX.doTransitionAnimation = function(
  * @param {function} callback
  * @returns {void}
  */
-FX.doOverlayOutAnimation = function(
-    dom: HTMLElement,
-    width: number,
-    height: number,
-    t: number,
-    headTo: Placement,
-    callback: () => void
-): void {
-    let startProps = { opacity: "1" };
-    let endProps = { zIndex: "102", opacity: "0", webkitTransform: "", transform: "" };
+FX.doOverlayOutAnimation = function(config: OverlayOutAnimationConfig): void {
+    const { dom, width, height, t, headTo, callback } = config;
 
+    const startProps = { opacity: 1 };
+    const endProps = { zIndex: 102, opacity: 0, webkitTransform: "", transform: "" };
+    let transform = "";
     if (["top", "bottom"].includes(headTo)) {
-        if (headTo === "top") {
-            endProps.webkitTransform = "scale(0, 1) translate3d(0,-" + height + "px,0)";
-            endProps.transform = "scale(0, 1) translate3d(0,-" + height + "px,0)";
-        } else {
-            endProps.webkitTransform = "scale(0, 1) translate3d(0," + height + "px,0)";
-            endProps.transform = "scale(0, 1) translate3d(0," + height + "px,0)";
-        }
+        transform = `scale(0, 1) translate3d(0,${headTo === "top" ? -1 * height : height}px,0)`;
     } else {
-        if (headTo === "left") {
-            endProps.webkitTransform = "scale(1, 0) translate3d(-" + width + "px,0,0)";
-            endProps.transform = "scale(1, 0) translate3d(-" + width + "px,0,0)";
-        } else {
-            endProps.webkitTransform = "scale(1, 0) translate3d(" + width + "px,0,0)";
-            endProps.transform = "scale(1, 0) translate3d(" + width + "px,0,0)";
-        }
+        transform = `scale(1, 0) translate3d(${headTo === "left" ? -1 * width : width}px,0,0)`;
     }
+    endProps.webkitTransform = transform;
+    endProps.transform = transform;
 
-    FX.doTransitionAnimation(
-        dom,
-        startProps as CSSProperties,
-        [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
-        endProps as CSSProperties,
-        null,
-        t,
-        (): void => {
+    FX.doTransitionAnimation({
+        element: dom,
+        startProps,
+        transitionProps: [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
+        endProps,
+        endAfter: t,
+        endCallback: (): void => {
             dom.style.cssText = "";
 
             if (typeof callback === "function") {
                 callback();
             }
         }
-    );
+    });
 };
 
 /**
@@ -122,56 +131,43 @@ FX.doOverlayOutAnimation = function(
  * @param {function} callback
  * @returns {void}
  */
-FX.doOverlayInAnimation = function(
-    dom: HTMLElement,
-    width: number,
-    height: number,
-    t: number,
-    appearFrom: Placement,
-    callback?: () => void
-): void {
-    let startProps = { opacity: "0", webkitTransform: "", transform: "" };
+FX.doOverlayInAnimation = function(config: OverlayInAnimationConfig): void {
+    const { dom, width, height, t, appearFrom, callback } = config;
+    let transform = "";
+    const startProps = { opacity: 0, webkitTransform: "", transform: "" };
 
     if (["top", "bottom"].includes(appearFrom)) {
-        if (appearFrom === "bottom") {
-            startProps.webkitTransform = "scale(0, 1) translate3d(0," + height + "px,0)";
-            startProps.transform = "scale(0, 1) translate3d(0," + height + "px,0)";
-        } else {
-            startProps.webkitTransform = "scale(0, 1) translate3d(0," + -1 * height + "px,0)";
-            startProps.transform = "scale(0, 1) translate3d(0," + -1 * height + "px,0)";
-        }
+        transform = `scale(0, 1) translate3d(0,${
+            appearFrom === "bottom" ? height : -1 * height
+        }px,0)`;
     } else {
-        if (appearFrom === "right") {
-            startProps.webkitTransform = "scale(1, 0) translate3d(" + width + "px,0,0)";
-            startProps.transform = "scale(1, 0) translate3d(" + width + "px,0,0)";
-        } else {
-            startProps.webkitTransform = "scale(1, 0) translate3d(" + -1 * width + "px,0,0)";
-            startProps.transform = "scale(1, 0) translate3d(" + -1 * width + "px,0,0)";
-        }
+        transform = `scale(1, 0) translate3d(${appearFrom === "right" ? width : -1 * width}px,0,0)`;
     }
 
+    startProps.webkitTransform = transform;
+    startProps.transform = transform;
+
     const endProps = {
-        zIndex: "102",
+        zIndex: 102,
         webkitTransform: "scale(1, 1) translate3d(0,0,0)",
         transform: "scale(1, 1) translate3d(0,0,0)",
-        opacity: "1"
+        opacity: 1
     };
 
-    FX.doTransitionAnimation(
-        dom,
-        startProps as CSSProperties,
-        [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
-        endProps as CSSProperties,
-        null,
-        t,
-        (): void => {
+    FX.doTransitionAnimation({
+        element: dom,
+        startProps,
+        transitionProps: [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
+        endProps: endProps,
+        endAfter: t,
+        endCallback: (): void => {
             dom.style.cssText = "";
 
             if (typeof callback === "function") {
                 callback();
             }
         }
-    );
+    });
 };
 
 /**
@@ -197,6 +193,7 @@ FX.doVerticalScrollAnimation = function(
         scrollCount = 0,
         scrollMargin,
         scrollEnd = direction === "top" ? 0 : scrollHeight - element.parentElement.clientHeight;
+
     let scrollInterval = setInterval((): void => {
         if (element.scrollTop !== scrollEnd) {
             scrollCount += 1;

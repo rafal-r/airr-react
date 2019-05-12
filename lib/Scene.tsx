@@ -961,21 +961,21 @@ export default class Scene extends View {
     ): Promise<void> {
         return new Promise(
             (resolve): void => {
-                FX.doTransitionAnimation(
-                    newViewDOM,
-                    {
+                FX.doTransitionAnimation({
+                    element: newViewDOM,
+                    startProps: {
                         display: "block",
                         opacity: 0
                     },
-                    [`opacity ${this.state.animationTime}ms ease-out`],
-                    {
+                    transitionProps: [`opacity ${this.state.animationTime}ms ease-out`],
+                    endProps: {
                         opacity: 1
                     },
-                    (): void => {
+                    preAnimationCallback: (): void => {
                         newViewDOM.style.zIndex = "102";
                     },
-                    this.state.animationTime,
-                    (): void => {
+                    endAfter: this.state.animationTime,
+                    endCallback: (): void => {
                         newViewDOM.style.display = "";
                         newViewDOM.style.zIndex = "";
                         newViewDOM.style.transform = "";
@@ -986,7 +986,7 @@ export default class Scene extends View {
 
                         resolve();
                     }
-                );
+                });
             }
         );
     }
@@ -998,9 +998,9 @@ export default class Scene extends View {
         return new Promise(
             (resolve): void => {
                 if (direction === 1) {
-                    FX.doTransitionAnimation(
-                        newViewDOM,
-                        {
+                    FX.doTransitionAnimation({
+                        element: newViewDOM,
+                        startProps: {
                             WebkitTransform: `translate3d(${this.refDOMContainer.current
                                 .clientWidth + "px"},0,0)`,
                             transform: `translate3d(${this.refDOMContainer.current.clientWidth +
@@ -1008,20 +1008,20 @@ export default class Scene extends View {
                             opacity: 0,
                             display: "block"
                         },
-                        [
+                        transitionProps: [
                             `opacity ${this.state.animationTime}ms ease-out`,
                             `transform ${this.state.animationTime}ms ease-out`
                         ],
-                        {
+                        endProps: {
                             WebkitTransform: `translate3d(0,0,0)`,
                             transform: `translate3d(0,0,0)`,
                             opacity: 1
                         },
-                        (): void => {
+                        preAnimationCallback: (): void => {
                             newViewDOM.style.zIndex = "102";
                         },
-                        this.state.animationTime,
-                        (): void => {
+                        endAfter: this.state.animationTime,
+                        endCallback: (): void => {
                             newViewDOM.style.zIndex = "";
                             newViewDOM.style.display = "";
                             newViewDOM.style.transform = "";
@@ -1032,24 +1032,24 @@ export default class Scene extends View {
 
                             resolve();
                         }
-                    );
+                    });
                 } else {
                     if (this.state.stackMode) {
                         newViewDOM.style.display = "block";
                         newViewDOM.style.opacity = "1";
 
-                        FX.doTransitionAnimation(
-                            oldViewDOM,
-                            {
+                        FX.doTransitionAnimation({
+                            element: oldViewDOM,
+                            startProps: {
                                 WebkitTransform: `translate3d(0,0,0)`,
                                 transform: `translate3d(0,0,0)`,
                                 opacity: 1
                             },
-                            [
+                            transitionProps: [
                                 `opacity ${this.state.animationTime}ms ease-out`,
                                 `transform ${this.state.animationTime}ms ease-out`
                             ],
-                            {
+                            endProps: {
                                 WebkitTransform: `translate3d(0,${this.refDOMContainer.current
                                     .clientHeight /
                                     4 +
@@ -1060,9 +1060,8 @@ export default class Scene extends View {
                                     "px"},0)`,
                                 opacity: 0
                             },
-                            null,
-                            this.state.animationTime,
-                            (): void => {
+                            endAfter: this.state.animationTime,
+                            endCallback: (): void => {
                                 oldViewDOM.style.transition = "";
                                 oldViewDOM.style.webkitTransition = "";
                                 oldViewDOM.style.transform = "";
@@ -1074,13 +1073,13 @@ export default class Scene extends View {
 
                                 resolve();
                             }
-                        );
+                        });
                     } else {
                         newViewDOM.style.display = "block";
 
-                        FX.doTransitionAnimation(
-                            newViewDOM,
-                            {
+                        FX.doTransitionAnimation({
+                            element: newViewDOM,
+                            startProps: {
                                 WebkitTransform: `translate3d(${-1 *
                                     this.refDOMContainer.current.clientWidth +
                                     "px"},0,0)`,
@@ -1089,20 +1088,20 @@ export default class Scene extends View {
                                     "px"},0,0)`,
                                 opacity: 0
                             },
-                            [
+                            transitionProps: [
                                 `opacity ${this.state.animationTime}ms ease-out`,
                                 `transform ${this.state.animationTime}ms ease-out`
                             ],
-                            {
+                            endProps: {
                                 WebkitTransform: `translate3d(0,0,0)`,
                                 transform: `translate3d(0,0,0)`,
                                 opacity: 1
                             },
-                            (): void => {
+                            preAnimationCallback: (): void => {
                                 newViewDOM.style.zIndex = "102";
                             },
-                            this.state.animationTime,
-                            (): void => {
+                            endAfter: this.state.animationTime,
+                            endCallback: (): void => {
                                 newViewDOM.style.display = "";
                                 newViewDOM.style.zIndex = "";
                                 newViewDOM.style.transform = "";
@@ -1113,7 +1112,7 @@ export default class Scene extends View {
 
                                 resolve();
                             }
-                        );
+                        });
                     }
                 }
             }
@@ -1144,14 +1143,13 @@ export default class Scene extends View {
                         "translate3d(" + -1 * this.refDOM.current.clientWidth + "px,0,0)";
                 }
 
-                FX.doTransitionAnimation(
-                    this.refDOMContainer.current,
+                FX.doTransitionAnimation({
+                    element: this.refDOMContainer.current,
                     startProps,
-                    [`transform ${this.state.animationTime}ms ease-out`],
+                    transitionProps: [`transform ${this.state.animationTime}ms ease-out`],
                     endProps,
-                    null,
-                    this.state.animationTime,
-                    (): void => {
+                    endAfter: this.state.animationTime,
+                    endCallback: (): void => {
                         newViewDOM.style.display = "";
                         this.refDOMContainer.current.style.webkitTransform = "";
                         this.refDOMContainer.current.style.transform = "";
@@ -1163,7 +1161,7 @@ export default class Scene extends View {
 
                         resolve();
                     }
-                );
+                });
             }
         );
     }
@@ -1177,9 +1175,9 @@ export default class Scene extends View {
             const mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
 
             if (titleNode) {
-                FX.doTransitionAnimation(
-                    titleNode,
-                    {
+                FX.doTransitionAnimation({
+                    element: titleNode,
+                    startProps: {
                         WebkitTransform: `translate3d(${(titleNode.clientWidth / 2 +
                             mockTextSpanWidth / 2) *
                             direction +
@@ -1190,41 +1188,39 @@ export default class Scene extends View {
                             "px"},0,0)`,
                         opacity: 0
                     },
-                    [
+                    transitionProps: [
                         `opacity ${this.state.animationTime}ms ease-out`,
                         `transform ${this.state.animationTime}ms ease-out`
                     ],
-                    {
+                    endProps: {
                         WebkitTransform: `translate3d(0,0,0)`,
                         transform: `translate3d(0,0,0)`,
                         opacity: 1
                     },
-                    null,
-                    this.state.animationTime
-                );
+                    endAfter: this.state.animationTime
+                });
             }
 
             if (mockTitle) {
-                FX.doTransitionAnimation(
-                    mockTitle,
-                    {
+                FX.doTransitionAnimation({
+                    element: mockTitle,
+                    startProps: {
                         WebkitTransform: "translate3d(0,0,0)",
                         transform: "translate3d(0,0,0)",
                         opacity: 1
                     },
-                    [
+                    transitionProps: [
                         `opacity ${this.state.animationTime}ms ease-out`,
                         `transform ${this.state.animationTime}ms ease-out`
                     ],
-                    {
+                    endProps: {
                         WebkitTransform: `translate3d(${mockTextSpanWidth * direction * -1 +
                             "px"},0,0)`,
                         transform: `translate3d(${mockTextSpanWidth * direction * -1 + "px"},0,0)`,
                         opacity: 0
                     },
-                    null,
-                    this.state.animationTime
-                );
+                    endAfter: this.state.animationTime
+                });
             }
 
             if (this.state.backButton && !this.state.backButtonOnFirstView) {
@@ -1232,53 +1228,52 @@ export default class Scene extends View {
 
                 if (oldViewIndex === 0) {
                     //show back button with animation
-                    FX.doTransitionAnimation(
-                        backDOM,
-                        {
+                    FX.doTransitionAnimation({
+                        element: backDOM,
+                        startProps: {
                             WebkitTransform: "translate3d(100%,0,0)",
                             transform: "translate3d(100%,0,0)",
                             opacity: 0
                         },
-                        [
+                        transitionProps: [
                             `opacity ${this.state.animationTime}ms ease-out`,
                             `transform ${this.state.animationTime}ms ease-out`
                         ],
-                        {
+                        endProps: {
                             WebkitTransform: "translate3d(0,0,0)",
                             transform: "translate3d(0,0,0)",
                             opacity: 1
                         },
-                        (): void => {
+                        preAnimationCallback: (): void => {
                             backDOM.classList.remove("hidden");
                         },
-                        this.state.animationTime
-                    );
+                        endAfter: this.state.animationTime
+                    });
                 } else if (newViewIndex === 0) {
                     //hide backbutton with animation
-                    FX.doTransitionAnimation(
-                        backDOM,
-                        {
+                    FX.doTransitionAnimation({
+                        element: backDOM,
+                        startProps: {
                             WebkitTransform: "translate3d(0,0,0)",
                             transform: "translate3d(0,0,0)",
                             opacity: 1
                         },
-                        [
+                        transitionProps: [
                             `opacity ${this.state.animationTime}ms ease-out`,
                             `transform ${this.state.animationTime}ms ease-out`
                         ],
-                        {
+                        endProps: {
                             WebkitTransform: "translate3d(-100%,0,0)",
                             transform: "translate3d(-100%,0,0)",
                             opacity: 0
                         },
-                        null,
-                        this.state.animationTime,
-                        (): void => {
+                        endAfter: this.state.animationTime,
+                        endCallback: (): void => {
                             backDOM.style.webkitTransform = "";
                             backDOM.style.transform = "";
                             backDOM.style.opacity = "";
                         }
-                    );
+                    });
                 }
             }
         }

@@ -20,37 +20,37 @@ Library can be used for:
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
--   [Installation](#installation)
--   [Usage](#usage)
--   [Concept](#concept)
-    -   [PureComponents](#purecomponents)
--   [View's life-cycles](#views-life-cycles)
--   [React Component's life-cycles](#react-components-life-cycles)
--   [Rendering View's content](#rendering-views-content)
--   [Examples](#examples)
-    -   [Kitchen sink app](#kitchen-sink-app)
-    -   [Infinite viewport](#infinite-viewport)
-    -   [Simple Scene](#simple-scene)
--   [Scene API](#scene-api)
-    -   [changeView](#changeview)
-    -   [openSidepanel](#opensidepanel)
-    -   [hideSidepanel](#hidesidepanel)
-    -   [openMayer](#openmayer)
-    -   [closeMayer](#closemayer)
--   [Props documentation](#props-documentation)
-    -   [Scene Props](#scene-props)
-    -   [View Props](#view-props)
-    -   [Sidepanel Props](#sidepanel-props)
-    -   [Mayer Props](#mayer-props)
-    -   [Common types](#common-types)
-        -   [AnimationType](#animationtype)
-        -   [NavbarMenu](#navbarmenu)
-        -   [SidepanelConfig](#sidepanelconfig)
-        -   [ViewConfig](#viewconfig)
-        -   [CSSStringProperties](#cssstringproperties)
-        -   [Placement](#placement)
-        -   [MayerButtonProps](#mayerbuttonprops)
--   [License](#license)
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Concept](#concept)
+  - [PureComponents](#purecomponents)
+- [View's life-cycles](#views-life-cycles)
+- [React Component's life-cycles](#react-components-life-cycles)
+- [Rendering View's content](#rendering-views-content)
+- [Examples](#examples)
+  - [Kitchen sink app](#kitchen-sink-app)
+  - [Infinite viewport](#infinite-viewport)
+  - [Simple Scene](#simple-scene)
+- [Scene API](#scene-api)
+  - [changeView](#changeview)
+  - [openSidepanel](#opensidepanel)
+  - [hideSidepanel](#hidesidepanel)
+  - [openMayer](#openmayer)
+  - [closeMayer](#closemayer)
+- [Props documentation](#props-documentation)
+  - [Scene Props](#scene-props)
+  - [View Props](#view-props)
+  - [Sidepanel Props](#sidepanel-props)
+  - [Mayer Props](#mayer-props)
+  - [Common types](#common-types)
+    - [AnimationType](#animationtype)
+    - [NavbarMenu](#navbarmenu)
+    - [SidepanelConfig](#sidepanelconfig)
+    - [ViewConfig](#viewconfig)
+    - [Placement](#placement)
+    - [MayerButtonProps](#mayerbuttonprops)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -381,14 +381,14 @@ Examples:
 
 ### View Props
 
-| property          | type                                         | description                                                                                                          |
-| ----------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| name              | string (required)                            | The name of the view. Must be unique among others views in scene. Will be used as identification string              |
-| title             | ReactNode                                    | Titlebar name. If parent scene navbar is enabled, this title will be showed there. Might be string or React element. |
-| active            | boolean                                      | Determine if this view is active. Set by parent scene. Readonly.                                                     |
-| className         | string                                       | Extra classes to use. Space separetad string list.                                                                   |
-| style             | ?[CSSStringProperties](#cssstringproperties) | Extra styles to use upon root DOM element of view.                                                                   |
-| [propname:string] | any                                          | Any property you will need to populate into the view                                                                 |
+| property          | type              | description                                                                                                          |
+| ----------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
+| name              | string (required) | The name of the view. Must be unique among others views in scene. Will be used as identification string              |
+| title             | ReactNode         | Titlebar name. If parent scene navbar is enabled, this title will be showed there. Might be string or React element. |
+| active            | boolean           | Determine if this view is active. Set by parent scene. Readonly.                                                     |
+| className         | string            | Extra classes to use. Space separetad string list.                                                                   |
+| style             | ?CSSProperties    | Extra styles to use upon root DOM element of view.                                                                   |
+| [propname:string] | any               | Any property you will need to populate into the view                                                                 |
 
 ### Sidepanel Props
 
@@ -403,15 +403,15 @@ Examples:
 
 ### Mayer Props
 
-| property      | name                                         | description                                                                                         |
-| ------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| name          | string (required)                            | The name of the mayer. Must be unique among others mayers in scene. Will be used as identification. |
-| style         | ?[CSSStringProperties](#cssstringproperties) | Extra styles to apply on Mayer's DOM element                                                        |
-| appearFrom    | [Placement](#placement)                      | Side from which mayer content box will enter                                                        |
-| leaveTo       | [Placement](#placement)                      | Side to which mayer content box will leave                                                          |
-| content       | ?ReactNode                                   | Content of mayer                                                                                    |
-| buttons       | ?[MayerButtonProps[]](#mayerbuttonprops)     | Array with buttons configuration                                                                    |
-| animationTime | number                                       | Time in miliseconds of mayer's appear/disappear animation                                           |
+| property      | name                                     | description                                                                                         |
+| ------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| name          | string (required)                        | The name of the mayer. Must be unique among others mayers in scene. Will be used as identification. |
+| style         | ?CSSProperties                           | Extra styles to apply on Mayer's DOM element                                                        |
+| appearFrom    | [Placement](#placement)                  | Side from which mayer content box will enter                                                        |
+| leaveTo       | [Placement](#placement)                  | Side to which mayer content box will leave                                                          |
+| content       | ?ReactNode                               | Content of mayer                                                                                    |
+| buttons       | ?[MayerButtonProps[]](#mayerbuttonprops) | Array with buttons configuration                                                                    |
+| animationTime | number                                   | Time in miliseconds of mayer's appear/disappear animation                                           |
 
 ### Common types
 
@@ -441,14 +441,6 @@ Object defined with:
 | type          | ComponentClass<[ViewProps](#views-props), any> | Refference to class or function that will render AirrView. The most common and adviced approach is to specify class that extends AirrView. |
 | props         |           [ViewProps](#views-props)            |                                         Special properties of AirrView class. Go to class declaration for further properties documenation. |
 
-#### CSSStringProperties
-
-```
-CSSStringProperties extends CSSProperties {
-    [index: string]: string | {};
-}
-```
-
 #### Placement
 
 `"top" | "bottom" | "left" | "right"`
@@ -458,8 +450,8 @@ CSSStringProperties extends CSSProperties {
 | property  | name                                            | description                                                                 |
 | --------- | ----------------------------------------------- | --------------------------------------------------------------------------- |
 | className | string                                          | Extra class names to use upon button                                        |
-| attrs     | ?[CSSStringProperties](#cssstringproperties)    | Extra attributes to apply on HTML element                                   |
-| style     | ?[CSSStringProperties](#cssstringproperties)    | Additional inline styles                                                    |
+| attrs     | ?CSSProperties                                  | Extra attributes to apply on HTML element                                   |
+| style     | ?CSSProperties                                  | Additional inline styles                                                    |
 | close     | boolean                                         | Optional bool that will automatically add close functionality to the button |
 | handler   | ?(e: SyntheticEvent<HTMLButtonElement>) => void | OnClick function handler                                                    |
 | children  | ?ReactNode                                      | Content to render inside button element                                     |
