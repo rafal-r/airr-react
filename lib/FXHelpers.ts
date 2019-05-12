@@ -51,3 +51,10 @@ export function setElementTransitions(el: HTMLElement, transitions: string[]): H
     el.style.transition = transitionString;
     return el;
 }
+export function resetCSSAndFireCallback(dom: HTMLElement, callback?: () => void): void {
+    dom.style.cssText = "";
+
+    if (typeof callback === "function") {
+        callback();
+    }
+}

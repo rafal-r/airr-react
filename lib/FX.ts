@@ -5,7 +5,8 @@ import {
     refreshElement,
     resetElementTransition,
     setElementTransitions,
-    setElementTransforms
+    setElementTransforms,
+    resetCSSAndFireCallback
 } from "./FXHelpers";
 
 interface TransitionAnimationConfig {
@@ -111,11 +112,7 @@ FX.doOverlayOutAnimation = function(config: OverlayOutAnimationConfig): void {
         endProps,
         endAfter: t,
         endCallback: (): void => {
-            dom.style.cssText = "";
-
-            if (typeof callback === "function") {
-                callback();
-            }
+            resetCSSAndFireCallback(dom, callback);
         }
     });
 };
@@ -161,11 +158,7 @@ FX.doOverlayInAnimation = function(config: OverlayInAnimationConfig): void {
         endProps: endProps,
         endAfter: t,
         endCallback: (): void => {
-            dom.style.cssText = "";
-
-            if (typeof callback === "function") {
-                callback();
-            }
+            resetCSSAndFireCallback(dom, callback);
         }
     });
 };
