@@ -22,7 +22,7 @@ describe("Scene", () => {
         mountedComponent = undefined;
     });
 
-    it("always renders", () => {
+    it("renders without crashing", () => {
         const div = getComponent();
         expect(div.length).toBeGreaterThan(0);
     });
@@ -38,6 +38,7 @@ describe("Scene", () => {
         beforeEach(() => {
             props = {
                 animation: "overlay",
+                activeViewName: "view-1",
                 views: [
                     {
                         type: View,
@@ -51,9 +52,14 @@ describe("Scene", () => {
             mountedComponent = undefined;
         });
 
-        it("has one length array length", () => {
+        it("has views length", () => {
             const cmp = getComponent();
             expect(cmp.props().views.length).toBe(1);
+        });
+
+        it("has activeViewName", () => {
+            const cmp = getComponent();
+            expect(cmp.props().activeViewName).toBe("view-1");
         });
     });
 });
