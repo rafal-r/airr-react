@@ -1,4 +1,4 @@
 /*global module*/
 "use strict";
 
-module.exports = require("./dist/Airr.js");
+module.exports = require("./dist/Airr");
