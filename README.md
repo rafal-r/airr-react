@@ -1,3 +1,7 @@
+[![Known Vulnerabilities](https://snyk.io/test/github/rafal-r/airr-react/badge.svg?targetFile=package.json)](https://snyk.io/test/github/rafal-r/airr-react?targetFile=package.json)
+
+<hr/>
+
 # airr-react
 
 This library is set of several components that helps building Single Page Apps with ReactJS.  
