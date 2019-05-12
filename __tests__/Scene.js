@@ -29,7 +29,7 @@ describe("Scene", () => {
 
     it("has proper class attribute", () => {
         const cmp = getComponent();
-        const div = cmp.find("AirrSceneRenderer").childAt(0);
+        const div = cmp.find("SceneRenderer").childAt(0);
         expect(div.is(".airr-view")).toBe(true);
         expect(div.is(".airr-scene")).toBe(true);
     });
