@@ -8,9 +8,9 @@ import {
     CSSProperties,
     ComponentClass
 } from "react";
-import AirrViewRenderer from "./AirrViewRenderer";
-import AirrMayer, { Props as MayerProps } from "./AirrMayer";
-import AirrSidepanel, { Props as SidepanelProps } from "./AirrSidepanel";
+import ViewRenderer from "./ViewRenderer";
+import Mayer, { Props as MayerProps } from "./Mayer";
+import Sidepanel, { Props as SidepanelProps } from "./Sidepanel";
 import { AnimationType, ViewConfig, NavbarMenu, SidepanelConfig } from "./airr-react";
 
 export interface CoreSceneProps {
@@ -89,8 +89,8 @@ export interface CoreSceneProps {
      */
     views: ViewConfig[];
     /**
-     * Array of `mayers` objects that will be render into this Scene. Must contain special AirrMayer class properties.
-     * To check the possible values of properties go to AirrMayer declaration.
+     * Array of `mayers` objects that will be render into this Scene. Must contain special Mayer class properties.
+     * To check the possible values of properties go to Mayer declaration.
      */
     mayers: MayerProps[];
     /**
@@ -110,7 +110,7 @@ export interface Props extends CoreSceneProps {
     /**
      * React component's ref object
      */
-    refCOMPSidepanel: RefObject<AirrSidepanel>;
+    refCOMPSidepanel: RefObject<Sidepanel>;
     /**
      * React ref to dom object
      */
@@ -161,7 +161,7 @@ export const sceneDefaultProps: CoreSceneProps = {
     sidepanelVisibilityCallback: null,
     children: null
 };
-export default class AirrSceneRenderer extends PureComponent<Props> {
+export default class SceneRenderer extends PureComponent<Props> {
     static defaultProps: Props = {
         ...sceneDefaultProps,
         refCOMPSidepanel: null,
@@ -211,7 +211,7 @@ export default class AirrSceneRenderer extends PureComponent<Props> {
         if (this.props.handleBackButton) {
             this.props.handleBackButton(e);
         } else {
-            console.warn("[Airr] Back button handler was not specified.");
+            console.warn("[] Back button handler was not specified.");
         }
     };
 
@@ -236,7 +236,7 @@ export default class AirrSceneRenderer extends PureComponent<Props> {
 
         if (!isAnyViewActive) {
             console.warn(
-                "[Airr] No view was set as active" +
+                "[] No view was set as active" +
                     (this.props.name && " in Scene named `" + this.props.name + "`") +
                     "."
             );
@@ -328,7 +328,7 @@ const MayersRenderer = React.memo<MayersRendererProps>(function MayersRenderer({
 }: MayersRendererProps): any {
     return mayers.map(
         ({ name, ...props }): ReactNode => {
-            return <AirrMayer key={name} name={name} {...props} />;
+            return <Mayer key={name} name={name} {...props} />;
         }
     );
 });
@@ -478,7 +478,7 @@ const ViewsMapper = React.memo<ViewsMapperProps>(function ViewsMapper({
 
             item.props.key = item.props.name;
             if (!item.props.ref) {
-                item.props.ref = React.createRef<AirrViewRenderer>();
+                item.props.ref = React.createRef<ViewRenderer>();
                 refsCOMPViews[item.props.name] = item.props.ref;
             }
 

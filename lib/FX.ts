@@ -1,9 +1,17 @@
-import { Placement, CSSStringProperties } from "./airr-react";
+import { CSSProperties } from "react";
+import { Placement } from "./airr-react";
+import {
+    prepareElementForAnimaton,
+    refreshElement,
+    resetElementTransition,
+    setElementTransitions,
+    setElementTransforms
+} from "./FXHelpers";
 
 /**
  * Animation utiliy class. Performs css based transition animations
  */
-export default function AirrFX(): void {}
+export default function FX(): void {}
 
 /**
  * Animate passed HTML element with power of css transitions
@@ -17,63 +25,27 @@ export default function AirrFX(): void {}
  * @param {function} endCallback function to call after endAfter time parameter is gone
  * @returns {void}
  */
-AirrFX.doTransitionAnimation = function(
+FX.doTransitionAnimation = function(
     element: HTMLElement,
-    startProps: CSSStringProperties,
+    startProps: CSSProperties,
     transitionProps: string[],
-    endProps: CSSStringProperties,
+    endProps: CSSProperties,
     preAnimationCallback?: () => void,
     endAfter?: number,
     endCallback?: () => void
 ): void {
-    element.style.webkitTransition = "none";
-    element.style.transition = "none";
-    element.offsetHeight;
-
-    element.style.webkitBackfaceVisibility = "hidden";
-    element.style.backfaceVisibility = "hidden";
-    for (let prop in startProps) {
-        if (prop === "transform") {
-            element.style.webkitTransform = startProps[prop];
-        }
-
-        // eslint-disable-next-line
-        (element.style as any)[prop] = startProps[prop];
-    }
-    let compatibilityString = null;
-    let transitionString = transitionProps.join(",");
-
-    if (
-        transitionString.indexOf("transform") !== -1 &&
-        transitionString.indexOf("-webkit-transform") === -1
-    ) {
-        compatibilityString = transitionString.replace("transform", "-webkit-transform");
-    }
+    resetElementTransition(element);
+    refreshElement(element);
+    prepareElementForAnimaton(element, startProps);
 
     if (typeof preAnimationCallback === "function") {
         preAnimationCallback();
     }
 
-    element.offsetHeight;
-
-    if (compatibilityString) {
-        element.style.webkitTransition = compatibilityString;
-    }
-
-    element.style.webkitTransition = transitionString;
-    if (compatibilityString) {
-        element.style.transition = compatibilityString;
-    }
-    element.style.transition = transitionString;
-    element.offsetHeight;
-
-    for (let prop in endProps) {
-        if (prop === "transform") {
-            element.style.webkitTransform = endProps[prop];
-        }
-        // eslint-disable-next-line
-        (element.style as any)[prop] = endProps[prop];
-    }
+    refreshElement(element);
+    setElementTransitions(element, transitionProps);
+    refreshElement(element);
+    setElementTransforms(element, endProps);
 
     if (typeof endCallback === "function" && endAfter) {
         setTimeout(function(): void {
@@ -93,7 +65,7 @@ AirrFX.doTransitionAnimation = function(
  * @param {function} callback
  * @returns {void}
  */
-AirrFX.doOverlayOutAnimation = function(
+FX.doOverlayOutAnimation = function(
     dom: HTMLElement,
     width: number,
     height: number,
@@ -122,11 +94,11 @@ AirrFX.doOverlayOutAnimation = function(
         }
     }
 
-    AirrFX.doTransitionAnimation(
+    FX.doTransitionAnimation(
         dom,
-        startProps as CSSStringProperties,
+        startProps as CSSProperties,
         [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
-        endProps as CSSStringProperties,
+        endProps as CSSProperties,
         null,
         t,
         (): void => {
@@ -150,7 +122,7 @@ AirrFX.doOverlayOutAnimation = function(
  * @param {function} callback
  * @returns {void}
  */
-AirrFX.doOverlayInAnimation = function(
+FX.doOverlayInAnimation = function(
     dom: HTMLElement,
     width: number,
     height: number,
@@ -185,11 +157,11 @@ AirrFX.doOverlayInAnimation = function(
         opacity: "1"
     };
 
-    AirrFX.doTransitionAnimation(
+    FX.doTransitionAnimation(
         dom,
-        startProps as CSSStringProperties,
+        startProps as CSSProperties,
         [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
-        endProps as CSSStringProperties,
+        endProps as CSSProperties,
         null,
         t,
         (): void => {
@@ -210,7 +182,7 @@ AirrFX.doOverlayInAnimation = function(
  * @param {string} direction top or bottom
  * @returns {void}
  */
-AirrFX.doVerticalScrollAnimation = function(
+FX.doVerticalScrollAnimation = function(
     element: HTMLElement,
     scrollDuration: number,
     direction: Placement

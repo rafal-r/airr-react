@@ -1,10 +1,10 @@
-import ViewRenderer from "./AirrViewRenderer";
-import SceneRenderer from "./AirrSceneRenderer";
-import Mayer from "./AirrMayer";
-import Sidepanel from "./AirrSidepanel";
-import Scene from "./AirrScene";
-import View from "./AirrView";
-import FX from "./AirrFX";
+import ViewRenderer from "./ViewRenderer";
+import SceneRenderer from "./SceneRenderer";
+import Mayer from "./Mayer";
+import Sidepanel from "./Sidepanel";
+import Scene from "./Scene";
+import View from "./View";
+import FX from "./FX";
 import { supportPassive, isMobileDevice } from "./eventHelpers";
 
 export const Helpers = { supportPassive, isMobileDevice };

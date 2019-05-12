@@ -1,8 +1,8 @@
 import * as React from "react";
 import { SyntheticEvent } from "react";
-import { PureComponent, ReactNode, createRef } from "react";
-import AirrFX from "./AirrFX";
-import { CSSStringProperties, Placement } from "./airr-react";
+import { PureComponent, ReactNode, createRef, CSSProperties } from "react";
+import FX from "./FX";
+import { Placement } from "./airr-react";
 
 interface MayerButtonProps {
     /**
@@ -12,11 +12,11 @@ interface MayerButtonProps {
     /**
      * Extra attributes to apply on HTML element
      */
-    attrs?: CSSStringProperties;
+    attrs?: CSSProperties;
     /**
      * Additional inline styles
      */
-    style?: CSSStringProperties;
+    style?: CSSProperties;
     /**
      * Option bool that will automatically add close functionality to the button
      */
@@ -41,7 +41,7 @@ export interface Props {
     /**
      * Extra styles to apply on Mayer's DOM element
      */
-    style?: CSSStringProperties;
+    style?: CSSProperties;
     /**
      * Side from which mayer content box will enter
      */
@@ -70,7 +70,7 @@ export interface PreparedProps extends Props {
      */
     avaibleHeight?: number;
 }
-export default class AirrMayer extends PureComponent<PreparedProps> {
+export default class Mayer extends PureComponent<PreparedProps> {
     static defaultProps: PreparedProps = {
         name: "",
         appearFrom: "bottom",
@@ -117,18 +117,18 @@ export default class AirrMayer extends PureComponent<PreparedProps> {
         const endProps = { opacity: "1" };
 
         if (bgDOM) {
-            AirrFX.doTransitionAnimation(
+            FX.doTransitionAnimation(
                 bgDOM as HTMLElement,
-                startProps as CSSStringProperties,
+                startProps as CSSProperties,
                 ["opacity " + this.props.animationTime + "ms ease-out"],
-                endProps as CSSStringProperties
+                endProps as CSSProperties
             );
         }
 
         const refDOMCtn = this.refDOMCtn.current;
 
         if (refDOMCtn && refDOMMayer) {
-            AirrFX.doOverlayInAnimation(
+            FX.doOverlayInAnimation(
                 refDOMCtn,
                 refDOMMayer.clientWidth,
                 refDOMMayer.clientHeight,
@@ -149,18 +149,18 @@ export default class AirrMayer extends PureComponent<PreparedProps> {
         const endProps = { opacity: "0" };
 
         if (bgDOM) {
-            AirrFX.doTransitionAnimation(
+            FX.doTransitionAnimation(
                 bgDOM as HTMLElement,
-                startProps as CSSStringProperties,
+                startProps as CSSProperties,
                 ["opacity " + this.props.animationTime + "ms ease-out"],
-                endProps as CSSStringProperties
+                endProps as CSSProperties
             );
         }
 
         const refDOMCtn = this.refDOMCtn.current;
 
         if (refDOMCtn && refDOMMayer) {
-            AirrFX.doOverlayOutAnimation(
+            FX.doOverlayOutAnimation(
                 refDOMCtn,
                 refDOMMayer.clientHeight,
                 refDOMMayer.clientWidth,

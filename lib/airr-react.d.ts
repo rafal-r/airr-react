@@ -1,6 +1,6 @@
 import { ReactNode, CSSProperties, ComponentClass } from "react";
-import { Props as ViewProps } from "./AirrViewRenderer";
-import { Props as SidepanelProps } from "./AirrSidepanel";
+import { Props as ViewProps } from "./ViewRenderer";
+import { Props as SidepanelProps } from "./Sidepanel";
 
 export type Placement = "top" | "bottom" | "left" | "right";
 export type AnimationType = "slide" | "overlay" | "fade";

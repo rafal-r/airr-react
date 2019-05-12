@@ -1,13 +1,13 @@
 import * as React from "react";
-import { ReactNode, RefObject } from "react";
-import AirrFX from "./AirrFX";
-import AirrSceneRenderer, { CoreSceneProps, sceneDefaultProps } from "./AirrSceneRenderer";
-import AirrSidepanel from "./AirrSidepanel";
-import AirrView from "./AirrView";
-import { Props as ViewProps } from "./AirrViewRenderer";
-import AirrMayer, { PreparedProps as MayerProps } from "./AirrMayer";
+import { ReactNode, RefObject, CSSProperties } from "react";
+import FX from "./FX";
+import SceneRenderer, { CoreSceneProps, sceneDefaultProps } from "./SceneRenderer";
+import Sidepanel from "./Sidepanel";
+import View from "./View";
+import { Props as ViewProps } from "./ViewRenderer";
+import Mayer, { PreparedProps as MayerProps } from "./Mayer";
 import update from "immutability-helper";
-import { ViewConfig, CSSStringProperties, SidepanelConfig } from "./airr-react";
+import { ViewConfig, SidepanelConfig } from "./airr-react";
 
 interface Props extends CoreSceneProps {
     /**
@@ -36,9 +36,9 @@ interface ViewsConfig {
     [name: string]: ViewsConfigItem;
 }
 interface RefsCOMPViews {
-    [viewname: string]: RefObject<AirrView>;
+    [viewname: string]: RefObject<View>;
 }
-export default class AirrScene extends AirrView {
+export default class Scene extends View {
     static defaultProps: Props = {
         ...sceneDefaultProps,
         stackMode: false
@@ -61,11 +61,11 @@ export default class AirrScene extends AirrView {
     /**
      * Instantiated mayers Components refferences
      */
-    refsCOMPMayers: { [configName: string]: RefObject<AirrMayer> } = {};
+    refsCOMPMayers: { [configName: string]: RefObject<Mayer> } = {};
     /**
      * Instantiated sidepanel Component refference
      */
-    refCOMPSidepanel = React.createRef<AirrSidepanel>();
+    refCOMPSidepanel = React.createRef<Sidepanel>();
     /**
      * Refference to DOM element of container's div (first child of most outer element)
      */
@@ -148,7 +148,7 @@ export default class AirrScene extends AirrView {
         const { views, sidepanel, className, ...stateRest } = this.state;
 
         return (
-            <AirrSceneRenderer
+            <SceneRenderer
                 {...{
                     ...stateRest,
                     views: views,
@@ -244,7 +244,7 @@ export default class AirrScene extends AirrView {
                     this.setState({ views: newviewdefinition }, (): void => resolve(viewName))
             );
         } else {
-            console.warn("[Airr] No view to pop.");
+            console.warn("[] No view to pop.");
             return Promise.resolve();
         }
     };
@@ -359,7 +359,7 @@ export default class AirrScene extends AirrView {
                     )
             );
         }
-        console.warn("[Airr] No sidepanel to disable");
+        console.warn("[] No sidepanel to disable");
         return Promise.resolve();
     };
 
@@ -384,7 +384,7 @@ export default class AirrScene extends AirrView {
                     )
             );
         }
-        console.warn("[Airr] No sidepanel to enable");
+        console.warn("[] No sidepanel to enable");
         return Promise.resolve();
     };
 
@@ -426,7 +426,7 @@ export default class AirrScene extends AirrView {
      */
     openMayer(config: MayerProps): Promise<void> {
         if (this.state.mayers.findIndex((item): boolean => item.name === config.name) !== -1) {
-            console.warn("[Airr] Scene allready has Mayer with this name: " + config.name);
+            console.warn("[] Scene allready has Mayer with this name: " + config.name);
             return Promise.reject();
         }
 
@@ -690,7 +690,7 @@ export default class AirrScene extends AirrView {
     __prepareMayerConfig(mayerConfig: MayerProps): MayerProps {
         const config = Object.assign({ ref: undefined }, mayerConfig);
 
-        const ref = React.createRef<AirrMayer>();
+        const ref = React.createRef<Mayer>();
         config.ref = ref;
         this.refsCOMPMayers[config.name] = ref;
 
@@ -824,7 +824,7 @@ export default class AirrScene extends AirrView {
             return new Promise(
                 (resolve, reject): void => {
                     if (newViewName === this.state.activeViewName) {
-                        console.warn("[Airr] This View is already active.");
+                        console.warn("[] This View is already active.");
                         this.viewChangeInProgress = false;
                         return resolve();
                     }
@@ -904,7 +904,7 @@ export default class AirrScene extends AirrView {
                             } else {
                                 this.viewChangeInProgress = false;
                                 console.warn(
-                                    "[Airr] View with name " +
+                                    "[] View with name " +
                                         newViewName +
                                         " is not presence in this Scene."
                                 );
@@ -915,7 +915,7 @@ export default class AirrScene extends AirrView {
                 }
             );
         } else {
-            console.warn("[Airr] You must specify view name property as string value");
+            console.warn("[] You must specify view name property as string value");
             return Promise.reject();
         }
     }
@@ -961,7 +961,7 @@ export default class AirrScene extends AirrView {
     ): Promise<void> {
         return new Promise(
             (resolve): void => {
-                AirrFX.doTransitionAnimation(
+                FX.doTransitionAnimation(
                     newViewDOM,
                     {
                         display: "block",
@@ -998,10 +998,10 @@ export default class AirrScene extends AirrView {
         return new Promise(
             (resolve): void => {
                 if (direction === 1) {
-                    AirrFX.doTransitionAnimation(
+                    FX.doTransitionAnimation(
                         newViewDOM,
                         {
-                            webkitTransform: `translate3d(${this.refDOMContainer.current
+                            WebkitTransform: `translate3d(${this.refDOMContainer.current
                                 .clientWidth + "px"},0,0)`,
                             transform: `translate3d(${this.refDOMContainer.current.clientWidth +
                                 "px"},0,0)`,
@@ -1013,7 +1013,7 @@ export default class AirrScene extends AirrView {
                             `transform ${this.state.animationTime}ms ease-out`
                         ],
                         {
-                            webkitTransform: `translate3d(0,0,0)`,
+                            WebkitTransform: `translate3d(0,0,0)`,
                             transform: `translate3d(0,0,0)`,
                             opacity: 1
                         },
@@ -1038,10 +1038,10 @@ export default class AirrScene extends AirrView {
                         newViewDOM.style.display = "block";
                         newViewDOM.style.opacity = "1";
 
-                        AirrFX.doTransitionAnimation(
+                        FX.doTransitionAnimation(
                             oldViewDOM,
                             {
-                                webkitTransform: `translate3d(0,0,0)`,
+                                WebkitTransform: `translate3d(0,0,0)`,
                                 transform: `translate3d(0,0,0)`,
                                 opacity: 1
                             },
@@ -1050,7 +1050,7 @@ export default class AirrScene extends AirrView {
                                 `transform ${this.state.animationTime}ms ease-out`
                             ],
                             {
-                                webkitTransform: `translate3d(0,${this.refDOMContainer.current
+                                WebkitTransform: `translate3d(0,${this.refDOMContainer.current
                                     .clientHeight /
                                     4 +
                                     "px"},0)`,
@@ -1078,10 +1078,10 @@ export default class AirrScene extends AirrView {
                     } else {
                         newViewDOM.style.display = "block";
 
-                        AirrFX.doTransitionAnimation(
+                        FX.doTransitionAnimation(
                             newViewDOM,
                             {
-                                webkitTransform: `translate3d(${-1 *
+                                WebkitTransform: `translate3d(${-1 *
                                     this.refDOMContainer.current.clientWidth +
                                     "px"},0,0)`,
                                 transform: `translate3d(${-1 *
@@ -1094,7 +1094,7 @@ export default class AirrScene extends AirrView {
                                 `transform ${this.state.animationTime}ms ease-out`
                             ],
                             {
-                                webkitTransform: `translate3d(0,0,0)`,
+                                WebkitTransform: `translate3d(0,0,0)`,
                                 transform: `translate3d(0,0,0)`,
                                 opacity: 1
                             },
@@ -1127,24 +1127,24 @@ export default class AirrScene extends AirrView {
         return new Promise(
             (resolve): void => {
                 newViewDOM.style.display = "block";
-                let startProps: CSSStringProperties = {};
-                let endProps: CSSStringProperties = {};
+                let startProps: CSSProperties = {};
+                let endProps: CSSProperties = {};
 
                 if (direction === -1) {
-                    startProps.webkitTransform =
+                    startProps.WebkitTransform =
                         "translate3d(" + -1 * this.refDOM.current.clientWidth + "px,0,0)";
                     startProps.transform =
                         "translate3d(" + -1 * this.refDOM.current.clientWidth + "px,0,0)";
-                    endProps.webkitTransform = "translate3d(0,0,0)";
+                    endProps.WebkitTransform = "translate3d(0,0,0)";
                     endProps.transform = "translate3d(0,0,0)";
                 } else {
-                    endProps.webkitTransform =
+                    endProps.WebkitTransform =
                         "translate3d(" + -1 * this.refDOM.current.clientWidth + "px,0,0)";
                     endProps.transform =
                         "translate3d(" + -1 * this.refDOM.current.clientWidth + "px,0,0)";
                 }
 
-                AirrFX.doTransitionAnimation(
+                FX.doTransitionAnimation(
                     this.refDOMContainer.current,
                     startProps,
                     [`transform ${this.state.animationTime}ms ease-out`],
@@ -1177,10 +1177,10 @@ export default class AirrScene extends AirrView {
             const mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
 
             if (titleNode) {
-                AirrFX.doTransitionAnimation(
+                FX.doTransitionAnimation(
                     titleNode,
                     {
-                        webkitTransform: `translate3d(${(titleNode.clientWidth / 2 +
+                        WebkitTransform: `translate3d(${(titleNode.clientWidth / 2 +
                             mockTextSpanWidth / 2) *
                             direction +
                             "px"},0,0)`,
@@ -1195,7 +1195,7 @@ export default class AirrScene extends AirrView {
                         `transform ${this.state.animationTime}ms ease-out`
                     ],
                     {
-                        webkitTransform: `translate3d(0,0,0)`,
+                        WebkitTransform: `translate3d(0,0,0)`,
                         transform: `translate3d(0,0,0)`,
                         opacity: 1
                     },
@@ -1205,10 +1205,10 @@ export default class AirrScene extends AirrView {
             }
 
             if (mockTitle) {
-                AirrFX.doTransitionAnimation(
+                FX.doTransitionAnimation(
                     mockTitle,
                     {
-                        webkitTransform: "translate3d(0,0,0)",
+                        WebkitTransform: "translate3d(0,0,0)",
                         transform: "translate3d(0,0,0)",
                         opacity: 1
                     },
@@ -1217,7 +1217,7 @@ export default class AirrScene extends AirrView {
                         `transform ${this.state.animationTime}ms ease-out`
                     ],
                     {
-                        webkitTransform: `translate3d(${mockTextSpanWidth * direction * -1 +
+                        WebkitTransform: `translate3d(${mockTextSpanWidth * direction * -1 +
                             "px"},0,0)`,
                         transform: `translate3d(${mockTextSpanWidth * direction * -1 + "px"},0,0)`,
                         opacity: 0
@@ -1232,10 +1232,10 @@ export default class AirrScene extends AirrView {
 
                 if (oldViewIndex === 0) {
                     //show back button with animation
-                    AirrFX.doTransitionAnimation(
+                    FX.doTransitionAnimation(
                         backDOM,
                         {
-                            webkitTransform: "translate3d(100%,0,0)",
+                            WebkitTransform: "translate3d(100%,0,0)",
                             transform: "translate3d(100%,0,0)",
                             opacity: 0
                         },
@@ -1244,7 +1244,7 @@ export default class AirrScene extends AirrView {
                             `transform ${this.state.animationTime}ms ease-out`
                         ],
                         {
-                            webkitTransform: "translate3d(0,0,0)",
+                            WebkitTransform: "translate3d(0,0,0)",
                             transform: "translate3d(0,0,0)",
                             opacity: 1
                         },
@@ -1255,10 +1255,10 @@ export default class AirrScene extends AirrView {
                     );
                 } else if (newViewIndex === 0) {
                     //hide backbutton with animation
-                    AirrFX.doTransitionAnimation(
+                    FX.doTransitionAnimation(
                         backDOM,
                         {
-                            webkitTransform: "translate3d(0,0,0)",
+                            WebkitTransform: "translate3d(0,0,0)",
                             transform: "translate3d(0,0,0)",
                             opacity: 1
                         },
@@ -1267,7 +1267,7 @@ export default class AirrScene extends AirrView {
                             `transform ${this.state.animationTime}ms ease-out`
                         ],
                         {
-                            webkitTransform: "translate3d(-100%,0,0)",
+                            WebkitTransform: "translate3d(-100%,0,0)",
                             transform: "translate3d(-100%,0,0)",
                             opacity: 0
                         },

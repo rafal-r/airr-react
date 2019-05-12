@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CSSStringProperties } from "./airr-react";
+import { CSSProperties } from "react";
 import { PureComponent, ReactNode, RefObject } from "react";
 
 export interface CoreViewProps {
@@ -22,7 +22,7 @@ export interface CoreViewProps {
     /**
      * Extra styles to use upon root DOM element of view.
      */
-    style?: CSSStringProperties;
+    style?: CSSProperties;
 }
 export interface Props extends CoreViewProps {
     /**
@@ -32,7 +32,7 @@ export interface Props extends CoreViewProps {
     children?: ReactNode;
     [propname: string]: any;
 }
-export default class AirrViewRenderer extends PureComponent<Props> {
+export default class ViewRenderer extends PureComponent<Props> {
     static defaultProps: Props = {
         name: "",
         title: "",

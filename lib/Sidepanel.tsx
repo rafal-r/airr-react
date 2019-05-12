@@ -42,11 +42,11 @@ export interface Props {
      */
     bgLayerOpacity: number;
     children?: ReactNode;
-    ref?: RefObject<AirrSidepanel>;
+    ref?: RefObject<Sidepanel>;
 }
 type Axis = "X" | "Y";
 
-export default class AirrSidepanel extends PureComponent<Props> {
+export default class Sidepanel extends PureComponent<Props> {
     static defaultProps: Props = {
         side: "left",
         isShown: false,

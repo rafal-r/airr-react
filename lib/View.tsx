@@ -1,8 +1,8 @@
 import * as React from "react";
 import { PureComponent, ReactNode } from "react";
-import AirrViewRenderer, { CoreViewProps } from "./AirrViewRenderer";
+import ViewRenderer, { CoreViewProps } from "./ViewRenderer";
 
-export default class AirrView extends PureComponent<CoreViewProps> {
+export default class View extends PureComponent<CoreViewProps> {
     static defaultProps: CoreViewProps = {
         name: "",
         title: "",
@@ -16,7 +16,7 @@ export default class AirrView extends PureComponent<CoreViewProps> {
     refDOM = React.createRef<HTMLDivElement>();
 
     /**
-     * Special method for delivering props to AirrView component's.
+     * Special method for delivering props to View component's.
      * Used in render method.
      */
     getViewProps = () => ({
@@ -38,7 +38,7 @@ export default class AirrView extends PureComponent<CoreViewProps> {
     }
 
     /**
-     * Wrapper method to render content. Generate special props upon AirrView component.
+     * Wrapper method to render content. Generate special props upon View component.
      * Use ::content() in descenadant class instead of overwritting this one.
      * @returns {ReactNode}
      */
@@ -51,7 +51,7 @@ export default class AirrView extends PureComponent<CoreViewProps> {
                     : this.props.children;
         }
 
-        return <AirrViewRenderer {...this.getViewProps()}>{content}</AirrViewRenderer>;
+        return <ViewRenderer {...this.getViewProps()}>{content}</ViewRenderer>;
     }
 
     viewAfterActivation(): void {}
