@@ -1,7 +1,8 @@
 import * as React from "react";
 import { ReactNode, RefObject, CSSProperties } from "react";
 import FX from "./FX";
-import SceneRenderer, { CoreSceneProps, sceneDefaultProps } from "./SceneRenderer";
+import SceneRenderer, { sceneDefaultProps } from "./SceneRenderer";
+import { CoreSceneProps } from "./SceneRenderer.d";
 import Sidepanel from "./Sidepanel";
 import View from "./View";
 import { Props as ViewProps } from "./ViewRenderer";
