@@ -113,17 +113,15 @@ export default class Mayer extends PureComponent<PreparedProps> {
     animateIn(): void {
         const refDOMMayer = this.refDOMMayer.current;
         const bgDOM = refDOMMayer && refDOMMayer.querySelector(".bg");
-        const startProps = { opacity: "0" };
-        const endProps = { opacity: "1" };
+        const startProps = { opacity: 0 };
+        const endProps = { opacity: 1 };
 
-        if (bgDOM) {
-            FX.doTransitionAnimation({
-                element: bgDOM as HTMLElement,
-                startProps: startProps as CSSProperties,
-                transitionProps: ["opacity " + this.props.animationTime + "ms ease-out"],
-                endProps: endProps as CSSProperties
-            });
-        }
+        this.doTransitionAnimation(
+            bgDOM as HTMLElement,
+            startProps,
+            ["opacity " + this.props.animationTime + "ms ease-out"],
+            endProps
+        );
 
         const refDOMCtn = this.refDOMCtn.current;
 
@@ -138,6 +136,21 @@ export default class Mayer extends PureComponent<PreparedProps> {
         }
     }
 
+    doTransitionAnimation(
+        element: HTMLElement | null,
+        startProps: CSSProperties,
+        transitionProps: string[],
+        endProps: CSSProperties
+    ): void {
+        if (element) {
+            FX.doTransitionAnimation({
+                element,
+                startProps,
+                transitionProps,
+                endProps
+            });
+        }
+    }
     /**
      * Animates Mayers html dom element out of the screen
      * @param {function} callback Called after animation end
@@ -145,17 +158,15 @@ export default class Mayer extends PureComponent<PreparedProps> {
     animateOut(callback: () => void): void {
         const refDOMMayer = this.refDOMMayer.current;
         const bgDOM = refDOMMayer && refDOMMayer.querySelector(".bg");
-        const startProps = { opacity: "1" };
-        const endProps = { opacity: "0" };
+        const startProps = { opacity: 1 };
+        const endProps = { opacity: 0 };
 
-        if (bgDOM) {
-            FX.doTransitionAnimation({
-                element: bgDOM as HTMLElement,
-                startProps: startProps as CSSProperties,
-                transitionProps: ["opacity " + this.props.animationTime + "ms ease-out"],
-                endProps: endProps as CSSProperties
-            });
-        }
+        this.doTransitionAnimation(
+            bgDOM as HTMLElement,
+            startProps,
+            ["opacity " + this.props.animationTime + "ms ease-out"],
+            endProps
+        );
 
         const refDOMCtn = this.refDOMCtn.current;
 
