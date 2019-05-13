@@ -1,6 +1,7 @@
 import * as React from "react";
 import { PureComponent, ReactNode } from "react";
-import ViewRenderer, { CoreViewProps } from "./ViewRenderer";
+import ViewRenderer, { CoreViewProps, Props } from "./ViewRenderer";
+import { getProperContent } from "./Utils";
 
 export default class View extends PureComponent<CoreViewProps> {
     static defaultProps: CoreViewProps = {
@@ -19,7 +20,7 @@ export default class View extends PureComponent<CoreViewProps> {
      * Special method for delivering props to View component's.
      * Used in render method.
      */
-    getViewProps = () => ({
+    getViewProps = (): Props => ({
         refDOM: this.refDOM,
         name: this.props.name,
         active: this.props.active,
@@ -43,13 +44,7 @@ export default class View extends PureComponent<CoreViewProps> {
      * @returns {ReactNode}
      */
     render(): ReactNode {
-        let content: ReactNode = this.content();
-        if (content === undefined) {
-            content =
-                typeof this.props.children === "function"
-                    ? this.props.children()
-                    : this.props.children;
-        }
+        const content: ReactNode = getProperContent(this.content(), this.props.children);
 
         return <ViewRenderer {...this.getViewProps()}>{content}</ViewRenderer>;
     }

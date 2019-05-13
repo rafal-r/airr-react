@@ -1,6 +1,6 @@
 import { ReactNode, CSSProperties, ComponentClass } from "react";
 import { Props as ViewProps } from "./ViewRenderer";
-import { Props as SidepanelProps } from "./Sidepanel";
+import { Props as SidepanelProps } from "./Sidepanel.d";
 
 export type Placement = "top" | "bottom" | "left" | "right";
 export type AnimationType = "slide" | "overlay" | "fade";
