@@ -54,7 +54,6 @@ export default class Scene extends View {
 
     constructor(props: Props) {
         super(props);
-
         this.state = {
             name: props.name,
             active: props.active,
@@ -316,24 +315,7 @@ export default class Scene extends View {
      * @returns {Promise} Resolved on state succesful change or reject on failure.
      */
     disableSidepanel = (): Promise<void> => {
-        if (this.state.sidepanel && this.refCOMPSidepanel.current) {
-            this.refCOMPSidepanel.current.disable();
-            return new Promise(
-                (resolve): void =>
-                    this.setState(
-                        {
-                            sidepanel: update(this.state.sidepanel, {
-                                props: {
-                                    enabled: { $set: false }
-                                }
-                            })
-                        },
-                        resolve
-                    )
-            );
-        }
-        console.warn("[] No sidepanel to disable");
-        return Promise.resolve();
+        return this.__toggleSidepanel(false);
     };
 
     /**
@@ -341,24 +323,7 @@ export default class Scene extends View {
      * @returns {Promise} Resolved on state succesful change or reject on failure.
      */
     enableSidepanel = (): Promise<void> => {
-        if (this.state.sidepanel && this.refCOMPSidepanel.current) {
-            this.refCOMPSidepanel.current.enable();
-            return new Promise(
-                (resolve): void =>
-                    this.setState(
-                        {
-                            sidepanel: update(this.state.sidepanel, {
-                                props: {
-                                    enabled: { $set: true }
-                                }
-                            })
-                        },
-                        resolve
-                    )
-            );
-        }
-        console.warn("[] No sidepanel to enable");
-        return Promise.resolve();
+        return this.__toggleSidepanel(true);
     };
 
     /**
@@ -566,10 +531,12 @@ export default class Scene extends View {
         viewProps: ViewProps | {} = {},
         sceneProps: Props | {} = {}
     ): Promise<string> {
+        let promiseToReturn: Promise<string>;
+
         if (typeof view === "string") {
             if (this.hasViewInState(view)) {
                 //if already in state then update its props
-                return new Promise(
+                promiseToReturn = new Promise(
                     (resolve): void => {
                         const viewIndex = this.getViewIndex(view);
                         const currentViewConfig = Object.assign(
@@ -600,20 +567,50 @@ export default class Scene extends View {
                 );
             } else if (this.hasViewInConfig(view)) {
                 //push fresh config
-                return this.__pushView(this.getFreshViewConfig(view, viewProps), sceneProps);
+                promiseToReturn = this.__pushView(
+                    this.getFreshViewConfig(view, viewProps),
+                    sceneProps
+                );
             } else return Promise.reject();
         } else if (this.isValidViewConfig(view)) {
             //push allready prepared config
-            return this.__pushView(
+            promiseToReturn = this.__pushView(
                 Object.assign({}, view, {
                     props: { ...view.props, ...viewProps }
                 }),
                 sceneProps
             );
         } else {
-            return Promise.reject("Invalid `view` argument specify");
+            promiseToReturn = Promise.reject("Invalid `view` argument specify");
         }
+
+        return promiseToReturn;
     }
+
+    /**
+     * Toggle scene's sidepanel by setting it enabled property
+     * @returns {Promise} Resolved on state succesful change or reject on failure.
+     */
+    __toggleSidepanel = (enable: boolean): Promise<void> => {
+        if (this.state.sidepanel && this.refCOMPSidepanel.current) {
+            this.refCOMPSidepanel.current[enable ? "enable" : "disable"]();
+            return new Promise(
+                (resolve): void =>
+                    this.setState(
+                        {
+                            sidepanel: update(this.state.sidepanel, {
+                                props: {
+                                    enabled: { $set: enable }
+                                }
+                            })
+                        },
+                        resolve
+                    )
+            );
+        }
+        console.warn(`[Scene] No sidepanel to ${enable ? "enable" : "disable"}`);
+        return Promise.resolve();
+    };
 
     /**
      * If config has buttons that contains logical true `close` property,
