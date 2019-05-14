@@ -9,7 +9,12 @@ import Mayer, { PreparedProps as MayerProps } from "./Mayer";
 import update from "immutability-helper";
 import { ViewConfig, SidepanelConfig } from "./airr-react";
 import { Props, ViewsConfig, RefsCOMPViews, ViewsConfigItem } from "./Scene.d";
-import { clearViewAnimationStyles } from "./SceneHelpers";
+import {
+    clearViewAnimationStyles,
+    doNavbarTitleAnimation,
+    doNavbarMockTitleAnimation,
+    doBackButtonAnimation
+} from "./SceneHelpers";
 
 export default class Scene extends View {
     static defaultProps: Props = {
@@ -1072,51 +1077,21 @@ export default class Scene extends View {
             const mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
 
             if (titleNode) {
-                FX.doTransitionAnimation({
+                doNavbarTitleAnimation({
                     element: titleNode,
-                    startProps: {
-                        WebkitTransform: `translate3d(${(titleNode.clientWidth / 2 +
-                            mockTextSpanWidth / 2) *
-                            direction +
-                            "px"},0,0)`,
-                        transform: `translate3d(${(titleNode.clientWidth / 2 +
-                            mockTextSpanWidth / 2) *
-                            direction +
-                            "px"},0,0)`,
-                        opacity: 0
-                    },
-                    transitionProps: [
-                        `opacity ${this.state.animationTime}ms ease-out`,
-                        `transform ${this.state.animationTime}ms ease-out`
-                    ],
-                    endProps: {
-                        WebkitTransform: `translate3d(0,0,0)`,
-                        transform: `translate3d(0,0,0)`,
-                        opacity: 1
-                    },
-                    endAfter: this.state.animationTime
+                    titleNodeWidth: titleNode.clientWidth,
+                    direction,
+                    mockTextSpanWidth: mockTextSpanWidth,
+                    animationTime: this.state.animationTime
                 });
             }
 
             if (mockTitle) {
-                FX.doTransitionAnimation({
+                doNavbarMockTitleAnimation({
                     element: mockTitle,
-                    startProps: {
-                        WebkitTransform: "translate3d(0,0,0)",
-                        transform: "translate3d(0,0,0)",
-                        opacity: 1
-                    },
-                    transitionProps: [
-                        `opacity ${this.state.animationTime}ms ease-out`,
-                        `transform ${this.state.animationTime}ms ease-out`
-                    ],
-                    endProps: {
-                        WebkitTransform: `translate3d(${mockTextSpanWidth * direction * -1 +
-                            "px"},0,0)`,
-                        transform: `translate3d(${mockTextSpanWidth * direction * -1 + "px"},0,0)`,
-                        opacity: 0
-                    },
-                    endAfter: this.state.animationTime
+                    direction,
+                    mockTextSpanWidth,
+                    animationTime: this.state.animationTime
                 });
             }
 
@@ -1124,51 +1099,10 @@ export default class Scene extends View {
                 const backDOM = this.refDOMNavbar.current.querySelector(".back") as HTMLElement;
 
                 if (oldViewIndex === 0) {
-                    //show back button with animation
-                    FX.doTransitionAnimation({
-                        element: backDOM,
-                        startProps: {
-                            WebkitTransform: "translate3d(100%,0,0)",
-                            transform: "translate3d(100%,0,0)",
-                            opacity: 0
-                        },
-                        transitionProps: [
-                            `opacity ${this.state.animationTime}ms ease-out`,
-                            `transform ${this.state.animationTime}ms ease-out`
-                        ],
-                        endProps: {
-                            WebkitTransform: "translate3d(0,0,0)",
-                            transform: "translate3d(0,0,0)",
-                            opacity: 1
-                        },
-                        preAnimationCallback: (): void => {
-                            backDOM.classList.remove("hidden");
-                        },
-                        endAfter: this.state.animationTime
-                    });
+                    doBackButtonAnimation("show", backDOM, this.state.animationTime);
                 } else if (newViewIndex === 0) {
                     //hide backbutton with animation
-                    FX.doTransitionAnimation({
-                        element: backDOM,
-                        startProps: {
-                            WebkitTransform: "translate3d(0,0,0)",
-                            transform: "translate3d(0,0,0)",
-                            opacity: 1
-                        },
-                        transitionProps: [
-                            `opacity ${this.state.animationTime}ms ease-out`,
-                            `transform ${this.state.animationTime}ms ease-out`
-                        ],
-                        endProps: {
-                            WebkitTransform: "translate3d(-100%,0,0)",
-                            transform: "translate3d(-100%,0,0)",
-                            opacity: 0
-                        },
-                        endAfter: this.state.animationTime,
-                        endCallback: (): void => {
-                            clearViewAnimationStyles(backDOM);
-                        }
-                    });
+                    doBackButtonAnimation("hide", backDOM, this.state.animationTime);
                 }
             }
         }
