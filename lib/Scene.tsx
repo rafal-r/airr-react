@@ -2,43 +2,15 @@ import * as React from "react";
 import { ReactNode, RefObject, CSSProperties } from "react";
 import FX from "./FX";
 import SceneRenderer, { sceneDefaultProps } from "./SceneRenderer";
-import { CoreSceneProps } from "./SceneRenderer.d";
 import Sidepanel from "./Sidepanel";
 import View from "./View";
 import { Props as ViewProps } from "./ViewRenderer";
 import Mayer, { PreparedProps as MayerProps } from "./Mayer";
 import update from "immutability-helper";
 import { ViewConfig, SidepanelConfig } from "./airr-react";
+import { Props, ViewsConfig, RefsCOMPViews, ViewsConfigItem } from "./Scene.d";
+import { clearViewAnimationStyles } from "./SceneHelpers";
 
-interface Props extends CoreSceneProps {
-    /**
-     * This propety changes behaviour of views animation when overlay animation is set
-     */
-    stackMode: boolean;
-}
-interface ViewsConfigItem extends ViewConfig {
-    /**
-     * Props to modify Scene
-     */
-    sceneProps?: Props;
-    /**
-     *
-     * Common view configutaion can have nameGenerator function used to create another view name propperty.
-     * Gets current state views list as argument.
-     * Example:
-     * nameGenerator: views => { return "common-view-*".replace("*", views.length + 1);}
-     */
-    nameGenerator?(views: Props["views"]): string;
-}
-interface ViewsConfig {
-    /**
-     * Simple view configuraion which can be found by key which is also it's name.
-     */
-    [name: string]: ViewsConfigItem;
-}
-interface RefsCOMPViews {
-    [viewname: string]: RefObject<View>;
-}
 export default class Scene extends View {
     static defaultProps: Props = {
         ...sceneDefaultProps,
@@ -553,44 +525,6 @@ export default class Scene extends View {
             : false;
 
     /**
-     * Disables back button meaning it will not be visible in navbar anymore.
-     * @returns {Promise}
-     */
-    disableBackButton = (): Promise<void> => {
-        return new Promise((resolve): void => this.setState({ backButton: false }, resolve));
-    };
-
-    /**
-     * Enables back button meaning it will be visible in navbar.
-     * @returns {Promise}
-     */
-    enableBackButton = (): Promise<void> => {
-        return new Promise((resolve): void => this.setState({ backButton: true }, resolve));
-    };
-
-    /**
-     * Disables scene's GUI by provinding extra layer on top of everything else.
-     * This layer can be customize by `cover` argument.
-     * @param {ReactNode} cover React element to be placed in covering layer
-     * @returns {Promise}  Will be resolved on succesful state update
-     */
-    disableGUI = (cover: ReactNode = null): Promise<void> => {
-        return new Promise(
-            (resolve): void => this.setState({ GUIDisabled: true, GUIDisableCover: cover }, resolve)
-        );
-    };
-
-    /**
-     * Disables layer covering scene and enable user interactions.
-     * @returns {Promise} Will be resolved on succesful state update
-     */
-    enableGUI = (): Promise<void> => {
-        return new Promise(
-            (resolve): void => this.setState({ GUIDisabled: false, GUIDisableCover: null }, resolve)
-        );
-    };
-
-    /**
      * Get view index in views array
      * @param {string} viewName
      * @returns {number}
@@ -977,14 +911,7 @@ export default class Scene extends View {
                     },
                     endAfter: this.state.animationTime,
                     endCallback: (): void => {
-                        newViewDOM.style.display = "";
-                        newViewDOM.style.zIndex = "";
-                        newViewDOM.style.transform = "";
-                        newViewDOM.style.webkitTransform = "";
-                        newViewDOM.style.transition = "";
-                        newViewDOM.style.webkitTransition = "";
-                        newViewDOM.style.opacity = "";
-
+                        clearViewAnimationStyles(newViewDOM);
                         resolve();
                     }
                 });
@@ -1023,14 +950,7 @@ export default class Scene extends View {
                         },
                         endAfter: this.state.animationTime,
                         endCallback: (): void => {
-                            newViewDOM.style.zIndex = "";
-                            newViewDOM.style.display = "";
-                            newViewDOM.style.transform = "";
-                            newViewDOM.style.webkitTransform = "";
-                            newViewDOM.style.transition = "";
-                            newViewDOM.style.webkitTransition = "";
-                            newViewDOM.style.opacity = "";
-
+                            clearViewAnimationStyles(newViewDOM);
                             resolve();
                         }
                     });
@@ -1063,15 +983,8 @@ export default class Scene extends View {
                             },
                             endAfter: this.state.animationTime,
                             endCallback: (): void => {
-                                oldViewDOM.style.transition = "";
-                                oldViewDOM.style.webkitTransition = "";
-                                oldViewDOM.style.transform = "";
-                                oldViewDOM.style.webkitTransform = "";
-                                oldViewDOM.style.opacity = "";
-
-                                newViewDOM.style.display = "";
-                                newViewDOM.style.opacity = "";
-
+                                clearViewAnimationStyles(oldViewDOM);
+                                clearViewAnimationStyles(newViewDOM);
                                 resolve();
                             }
                         });
@@ -1103,14 +1016,7 @@ export default class Scene extends View {
                             },
                             endAfter: this.state.animationTime,
                             endCallback: (): void => {
-                                newViewDOM.style.display = "";
-                                newViewDOM.style.zIndex = "";
-                                newViewDOM.style.transform = "";
-                                newViewDOM.style.webkitTransform = "";
-                                newViewDOM.style.transition = "";
-                                newViewDOM.style.webkitTransition = "";
-                                newViewDOM.style.opacity = "";
-
+                                clearViewAnimationStyles(newViewDOM);
                                 resolve();
                             }
                         });
@@ -1151,15 +1057,8 @@ export default class Scene extends View {
                     endProps,
                     endAfter: this.state.animationTime,
                     endCallback: (): void => {
-                        newViewDOM.style.display = "";
-                        this.refDOMContainer.current.style.webkitTransform = "";
-                        this.refDOMContainer.current.style.transform = "";
-                        this.refDOMContainer.current.style.webkitTransition = "";
-                        this.refDOMContainer.current.style.transition = "";
-                        this.refDOMContainer.current.style.transition = "";
-                        this.refDOMContainer.current.style.webkitBackfaceVisibility = "";
-                        this.refDOMContainer.current.style.backfaceVisibility = "";
-
+                        clearViewAnimationStyles(newViewDOM);
+                        clearViewAnimationStyles(this.refDOMContainer.current);
                         resolve();
                     }
                 });
@@ -1270,9 +1169,7 @@ export default class Scene extends View {
                         },
                         endAfter: this.state.animationTime,
                         endCallback: (): void => {
-                            backDOM.style.webkitTransform = "";
-                            backDOM.style.transform = "";
-                            backDOM.style.opacity = "";
+                            clearViewAnimationStyles(backDOM);
                         }
                     });
                 }

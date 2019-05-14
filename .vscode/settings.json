@@ -4,7 +4,7 @@
     "prettier.eslintIntegration": true,
     "editor.tabSize": 4,
     "editor.detectIndentation": false,
-    "editor.insertSpaces": false,
+    "editor.insertSpaces": true,
     "editor.formatOnSave": true,
     "[javascript]": {
         "editor.formatOnSave": false
