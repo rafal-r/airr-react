@@ -58,3 +58,14 @@ export function resetCSSAndFireCallback(dom: HTMLElement, callback?: () => void)
         callback();
     }
 }
+export function clearElementAnimationsStyles(el: HTMLElement): void {
+    el.style.display = "";
+    el.style.opacity = "";
+    el.style.transform = "";
+    el.style.transition = "";
+    el.style.webkitTransform = "";
+    el.style.webkitTransition = "";
+    el.style.zIndex = "";
+    el.style.webkitBackfaceVisibility = "";
+    el.style.backfaceVisibility = "";
+}

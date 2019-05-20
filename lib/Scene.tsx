@@ -1,6 +1,5 @@
 import * as React from "react";
-import { ReactNode, RefObject, CSSProperties } from "react";
-import FX from "./FX";
+import { ReactNode, RefObject } from "react";
 import SceneRenderer, { sceneDefaultProps } from "./SceneRenderer";
 import Sidepanel from "./Sidepanel";
 import View from "./View";
@@ -10,11 +9,15 @@ import update from "immutability-helper";
 import { ViewConfig, SidepanelConfig } from "./airr-react";
 import { Props, ViewsConfig, RefsCOMPViews, ViewsConfigItem } from "./Scene.d";
 import {
-    clearViewAnimationStyles,
     doNavbarTitleAnimation,
     doNavbarMockTitleAnimation,
     doBackButtonAnimation
-} from "./SceneHelpers";
+} from "./Scene/ItemsAnimationHelpers";
+import {
+    doViewsFadeAnimation,
+    doViewsOverlayAnimation,
+    doViewsSlideAnimation
+} from "./Scene/ViewsAnimationHelpers";
 
 export default class Scene extends View {
     static defaultProps: Props = {
@@ -866,7 +869,7 @@ export default class Scene extends View {
      */
     __doViewsAnimation(newViewName: string, oldViewName: string): Promise<void> {
         return new Promise(
-            (resolve, reject): void => {
+            (resolve): void => {
                 const newViewDOM = this.refsCOMPViews[newViewName].current.refDOM.current;
                 const oldViewDOM = this.refsCOMPViews[oldViewName].current.refDOM.current;
                 const oldViewIndex = this.getViewIndex(oldViewName);
@@ -881,189 +884,26 @@ export default class Scene extends View {
                 this.__doNavbarItemsAnimation(newViewIndex, oldViewIndex, direction);
 
                 if (this.state.animation === "slide" && oldViewName) {
-                    this.__doViewsSlideAnimation(newViewDOM, oldViewDOM, direction).then(resolve);
+                    doViewsSlideAnimation(
+                        newViewDOM,
+                        this.refDOM.current.clientWidth,
+                        this.refDOMContainer.current,
+                        direction,
+                        this.state.animationTime
+                    ).then(resolve);
                 } else if (this.state.animation === "overlay" && oldViewName) {
-                    this.__doViewsOverlayAnimation(newViewDOM, oldViewDOM, direction).then(resolve);
+                    doViewsOverlayAnimation({
+                        newViewDOM,
+                        oldViewDOM,
+                        direction,
+                        animationTime: this.state.animationTime,
+                        ctnWidth: this.refDOMContainer.current.clientWidth,
+                        ctnHeight: this.refDOMContainer.current.clientHeight,
+                        stackMode: this.state.stackMode
+                    }).then(resolve);
                 } else if (this.state.animation === "fade" || !oldViewName) {
-                    this.__doViewsFadeAnimation(newViewDOM, oldViewDOM, direction).then(resolve);
+                    doViewsFadeAnimation(newViewDOM, this.state.animationTime).then(resolve);
                 }
-            }
-        );
-    }
-
-    __doViewsFadeAnimation(
-        newViewDOM: HTMLElement,
-        oldViewDOM: HTMLElement,
-        direction: 1 | -1
-    ): Promise<void> {
-        return new Promise(
-            (resolve): void => {
-                FX.doTransitionAnimation({
-                    element: newViewDOM,
-                    startProps: {
-                        display: "block",
-                        opacity: 0
-                    },
-                    transitionProps: [`opacity ${this.state.animationTime}ms ease-out`],
-                    endProps: {
-                        opacity: 1
-                    },
-                    preAnimationCallback: (): void => {
-                        newViewDOM.style.zIndex = "102";
-                    },
-                    endAfter: this.state.animationTime,
-                    endCallback: (): void => {
-                        clearViewAnimationStyles(newViewDOM);
-                        resolve();
-                    }
-                });
-            }
-        );
-    }
-    __doViewsOverlayAnimation(
-        newViewDOM: HTMLElement,
-        oldViewDOM: HTMLElement,
-        direction: 1 | -1
-    ): Promise<void> {
-        return new Promise(
-            (resolve): void => {
-                if (direction === 1) {
-                    FX.doTransitionAnimation({
-                        element: newViewDOM,
-                        startProps: {
-                            WebkitTransform: `translate3d(${this.refDOMContainer.current
-                                .clientWidth + "px"},0,0)`,
-                            transform: `translate3d(${this.refDOMContainer.current.clientWidth +
-                                "px"},0,0)`,
-                            opacity: 0,
-                            display: "block"
-                        },
-                        transitionProps: [
-                            `opacity ${this.state.animationTime}ms ease-out`,
-                            `transform ${this.state.animationTime}ms ease-out`
-                        ],
-                        endProps: {
-                            WebkitTransform: `translate3d(0,0,0)`,
-                            transform: `translate3d(0,0,0)`,
-                            opacity: 1
-                        },
-                        preAnimationCallback: (): void => {
-                            newViewDOM.style.zIndex = "102";
-                        },
-                        endAfter: this.state.animationTime,
-                        endCallback: (): void => {
-                            clearViewAnimationStyles(newViewDOM);
-                            resolve();
-                        }
-                    });
-                } else {
-                    if (this.state.stackMode) {
-                        newViewDOM.style.display = "block";
-                        newViewDOM.style.opacity = "1";
-
-                        FX.doTransitionAnimation({
-                            element: oldViewDOM,
-                            startProps: {
-                                WebkitTransform: `translate3d(0,0,0)`,
-                                transform: `translate3d(0,0,0)`,
-                                opacity: 1
-                            },
-                            transitionProps: [
-                                `opacity ${this.state.animationTime}ms ease-out`,
-                                `transform ${this.state.animationTime}ms ease-out`
-                            ],
-                            endProps: {
-                                WebkitTransform: `translate3d(0,${this.refDOMContainer.current
-                                    .clientHeight /
-                                    4 +
-                                    "px"},0)`,
-                                transform: `translate3d(0,${this.refDOMContainer.current
-                                    .clientHeight /
-                                    4 +
-                                    "px"},0)`,
-                                opacity: 0
-                            },
-                            endAfter: this.state.animationTime,
-                            endCallback: (): void => {
-                                clearViewAnimationStyles(oldViewDOM);
-                                clearViewAnimationStyles(newViewDOM);
-                                resolve();
-                            }
-                        });
-                    } else {
-                        newViewDOM.style.display = "block";
-
-                        FX.doTransitionAnimation({
-                            element: newViewDOM,
-                            startProps: {
-                                WebkitTransform: `translate3d(${-1 *
-                                    this.refDOMContainer.current.clientWidth +
-                                    "px"},0,0)`,
-                                transform: `translate3d(${-1 *
-                                    this.refDOMContainer.current.clientWidth +
-                                    "px"},0,0)`,
-                                opacity: 0
-                            },
-                            transitionProps: [
-                                `opacity ${this.state.animationTime}ms ease-out`,
-                                `transform ${this.state.animationTime}ms ease-out`
-                            ],
-                            endProps: {
-                                WebkitTransform: `translate3d(0,0,0)`,
-                                transform: `translate3d(0,0,0)`,
-                                opacity: 1
-                            },
-                            preAnimationCallback: (): void => {
-                                newViewDOM.style.zIndex = "102";
-                            },
-                            endAfter: this.state.animationTime,
-                            endCallback: (): void => {
-                                clearViewAnimationStyles(newViewDOM);
-                                resolve();
-                            }
-                        });
-                    }
-                }
-            }
-        );
-    }
-    __doViewsSlideAnimation(
-        newViewDOM: HTMLElement,
-        oldViewDOM: HTMLElement,
-        direction: 1 | -1
-    ): Promise<void> {
-        return new Promise(
-            (resolve): void => {
-                newViewDOM.style.display = "block";
-                let startProps: CSSProperties = {};
-                let endProps: CSSProperties = {};
-
-                if (direction === -1) {
-                    startProps.WebkitTransform =
-                        "translate3d(" + -1 * this.refDOM.current.clientWidth + "px,0,0)";
-                    startProps.transform =
-                        "translate3d(" + -1 * this.refDOM.current.clientWidth + "px,0,0)";
-                    endProps.WebkitTransform = "translate3d(0,0,0)";
-                    endProps.transform = "translate3d(0,0,0)";
-                } else {
-                    endProps.WebkitTransform =
-                        "translate3d(" + -1 * this.refDOM.current.clientWidth + "px,0,0)";
-                    endProps.transform =
-                        "translate3d(" + -1 * this.refDOM.current.clientWidth + "px,0,0)";
-                }
-
-                FX.doTransitionAnimation({
-                    element: this.refDOMContainer.current,
-                    startProps,
-                    transitionProps: [`transform ${this.state.animationTime}ms ease-out`],
-                    endProps,
-                    endAfter: this.state.animationTime,
-                    endCallback: (): void => {
-                        clearViewAnimationStyles(newViewDOM);
-                        clearViewAnimationStyles(this.refDOMContainer.current);
-                        resolve();
-                    }
-                });
             }
         );
     }

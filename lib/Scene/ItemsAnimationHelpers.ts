@@ -1,5 +1,6 @@
-import FX from "./FX";
+import FX from "../FX";
 import { CSSProperties } from "react";
+import { clearElementAnimationsStyles } from "../FXHelpers";
 
 interface NavbarMockTitleAnimationConfig {
     element: HTMLElement;
@@ -10,19 +11,8 @@ interface NavbarMockTitleAnimationConfig {
 interface NavbarTitleAnimationConfig extends NavbarMockTitleAnimationConfig {
     titleNodeWidth: number;
 }
-function getCommonTransitionsSpec(animationTime: number): string[] {
+export function getCommonTransitionsSpec(animationTime: number): string[] {
     return [`opacity ${animationTime}ms ease-out`, `transform ${animationTime}ms ease-out`];
-}
-export function clearViewAnimationStyles(view: HTMLElement): void {
-    view.style.display = "";
-    view.style.opacity = "";
-    view.style.transform = "";
-    view.style.transition = "";
-    view.style.webkitTransform = "";
-    view.style.webkitTransition = "";
-    view.style.zIndex = "";
-    view.style.webkitBackfaceVisibility = "";
-    view.style.backfaceVisibility = "";
 }
 export function doNavbarTitleAnimation({
     element,
@@ -97,7 +87,7 @@ export function doBackButtonAnimation(
         };
     } else {
         endCallback = (): void => {
-            clearViewAnimationStyles(element);
+            clearElementAnimationsStyles(element);
         };
     }
 

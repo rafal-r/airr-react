@@ -22,7 +22,8 @@ module.exports = {
     rules: {
 		"@typescript-eslint/explicit-member-accessibility": 0,
         "no-console": 0,
-        "@typescript-eslint/no-unused-vars": ["error", { args: "none" }]
+        "@typescript-eslint/no-unused-vars": ["error", { args: "none" }],
+        "@typescript-eslint/explicit-function-return-type": ["warn", { allowExpressions: true }]
     },
     settings: {
         react: {
