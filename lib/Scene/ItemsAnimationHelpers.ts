@@ -1,10 +1,11 @@
 import FX from "../FX";
 import { CSSProperties } from "react";
 import { clearElementAnimationsStyles } from "../FXHelpers";
+import { Direction } from "../airr-react.d";
 
 interface NavbarMockTitleAnimationConfig {
     element: HTMLElement;
-    direction: 1 | -1;
+    direction: Direction;
     mockTextSpanWidth: number;
     animationTime: number;
 }
@@ -111,4 +112,54 @@ export function doBackButtonAnimation(
         endAfter: animationTime,
         endCallback
     });
+}
+interface DoNavbarItemsAnimationArg {
+    newViewIndex: number;
+    oldViewIndex: number;
+    direction: Direction;
+    titleNode: HTMLElement;
+    mockTitle: HTMLElement;
+    animationTime: number;
+    backDOM?: HTMLElement;
+}
+export function doNavbarItemsAnimation({
+    newViewIndex,
+    oldViewIndex,
+    direction,
+    titleNode,
+    mockTitle,
+    animationTime,
+    backDOM
+}: DoNavbarItemsAnimationArg): void {
+    //perform navbar animations
+    const mockTextSpan = mockTitle && mockTitle.children[0];
+    const mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
+
+    if (titleNode) {
+        doNavbarTitleAnimation({
+            element: titleNode,
+            titleNodeWidth: titleNode.clientWidth,
+            direction,
+            mockTextSpanWidth: mockTextSpanWidth,
+            animationTime
+        });
+    }
+
+    if (mockTitle) {
+        doNavbarMockTitleAnimation({
+            element: mockTitle,
+            direction,
+            mockTextSpanWidth,
+            animationTime
+        });
+    }
+
+    if (backDOM) {
+        if (oldViewIndex === 0) {
+            doBackButtonAnimation("show", backDOM, animationTime);
+        } else if (newViewIndex === 0) {
+            //hide backbutton with animation
+            doBackButtonAnimation("hide", backDOM, animationTime);
+        }
+    }
 }

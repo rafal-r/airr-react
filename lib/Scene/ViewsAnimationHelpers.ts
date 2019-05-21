@@ -2,6 +2,7 @@ import FX from "../FX";
 import { clearElementAnimationsStyles } from "../FXHelpers";
 import { getCommonTransitionsSpec } from "./ItemsAnimationHelpers";
 import { CSSProperties } from "react";
+import { Direction } from "../airr-react.d";
 
 interface ViewsCommonOverlayAnimation {
     newViewDOM: HTMLElement;
@@ -14,7 +15,7 @@ interface ViewsStackOverlayAnimation extends ViewsCommonOverlayAnimation {
 }
 interface ViewsOverlayAnimation extends ViewsCommonOverlayAnimation {
     oldViewDOM: HTMLElement;
-    direction: 1 | -1;
+    direction: Direction;
     stackMode: boolean;
     ctnHeight: number;
 }
@@ -189,7 +190,7 @@ export function doViewsFadeAnimation(
     );
 }
 function getSlideAnimationProps(
-    direction: 1 | -1,
+    direction: Direction,
     sceneWidth: number
 ): { startProps: CSSProperties; endProps: CSSProperties } {
     let startProps: CSSProperties = {};
@@ -218,7 +219,7 @@ export function doViewsSlideAnimation(
     newViewDOM: HTMLElement,
     sceneWidth: number,
     ctnDOM: HTMLElement,
-    direction: 1 | -1,
+    direction: Direction,
     animationTime: number
 ): Promise<void> {
     return new Promise(

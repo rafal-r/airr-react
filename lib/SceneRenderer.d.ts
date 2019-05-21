@@ -3,6 +3,7 @@ import { Props as MayerProps } from "./Mayer";
 import Sidepanel from "./Sidepanel";
 import { AnimationType, ViewConfig, NavbarMenu, SidepanelConfig } from "./airr-react";
 
+export type NavbarProp = 1 | true | -1 | 0 | false;
 export interface CoreSceneProps {
     /**
      * The name of the scene. Must be unique among others views in parent scene. Will be used as identification string
@@ -32,7 +33,7 @@ export interface CoreSceneProps {
     /**
      * Specify if navbar is present (1,true) or not (0,false). Or maybe hidden (-1)
      */
-    navbar: 1 | true | -1 | 0 | false;
+    navbar: NavbarProp;
     /**
      * Height of the navbar in pixels
      */

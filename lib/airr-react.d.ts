@@ -33,3 +33,4 @@ export interface SidepanelConfig {
      */
     props: SidepanelProps;
 }
+export type Direction = 1 | -1;

@@ -8,16 +8,7 @@ import Mayer, { PreparedProps as MayerProps } from "./Mayer";
 import update from "immutability-helper";
 import { ViewConfig, SidepanelConfig } from "./airr-react";
 import { Props, ViewsConfig, RefsCOMPViews, ViewsConfigItem } from "./Scene.d";
-import {
-    doNavbarTitleAnimation,
-    doNavbarMockTitleAnimation,
-    doBackButtonAnimation
-} from "./Scene/ItemsAnimationHelpers";
-import {
-    doViewsFadeAnimation,
-    doViewsOverlayAnimation,
-    doViewsSlideAnimation
-} from "./Scene/ViewsAnimationHelpers";
+import { performViewsTransition, invokeViewsAfterEffects } from "./Scene/ViewsTransitionHelpers";
 
 export default class Scene extends View {
     static defaultProps: Props = {
@@ -746,6 +737,19 @@ export default class Scene extends View {
         );
     };
 
+    __preAnimEndStateChange = (newViewName: string): Promise<void> => {
+        return new Promise(resolve => {
+            this.setState(
+                {
+                    activeViewName: newViewName,
+                    GUIDisabled: false,
+                    mockTitleName: null
+                },
+                resolve
+            );
+        });
+    };
+
     /**
      * Describes if views animation is taking place
      */
@@ -768,88 +772,64 @@ export default class Scene extends View {
                         this.viewChangeInProgress = false;
                         return resolve();
                     }
+                    if (this.getViewIndex(newViewName) === -1) {
+                        this.viewChangeInProgress = false;
+                        console.warn(
+                            "[] View with name " + newViewName + " is not presence in this Scene."
+                        );
+                        return reject();
+                    }
 
                     this.setState(
                         { GUIDisabled: true, mockTitleName: newViewName },
                         (): void => {
-                            if (this.getViewIndex(newViewName) !== -1) {
-                                const oldViewName = this.state.activeViewName;
-                                const newViewComp =
-                                    this.refsCOMPViews[newViewName] &&
-                                    this.refsCOMPViews[newViewName].current;
-                                const oldViewComp =
-                                    this.refsCOMPViews[oldViewName] &&
-                                    this.refsCOMPViews[oldViewName].current;
-                                const animEndCallback = (): void => {
-                                    this.viewChangeInProgress = false;
+                            const oldViewName = this.state.activeViewName;
+                            const newViewComp = this.refsCOMPViews[newViewName].current;
+                            const oldViewComp = this.refsCOMPViews[oldViewName].current;
+                            const newViewIndex = this.getViewIndex(newViewName);
+                            const oldViewIndex = this.getViewIndex(oldViewName);
 
-                                    if (
-                                        newViewComp &&
-                                        typeof newViewComp.viewAfterActivation === "function"
-                                    ) {
-                                        newViewComp.viewAfterActivation();
-                                    }
+                            performViewsTransition({
+                                newViewComp,
+                                oldViewComp,
+                                newViewIndex,
+                                oldViewIndex,
+                                navbar: this.state.navbar,
+                                titleNode:
+                                    this.refDOMNavbar.current &&
+                                    (this.refDOMNavbar.current.querySelector(
+                                        ".title"
+                                    ) as HTMLElement),
+                                mockTitle:
+                                    this.refDOMNavbar.current &&
+                                    (this.refDOMNavbar.current.querySelector(
+                                        ".mock-title"
+                                    ) as HTMLElement),
+                                animation: this.state.animation,
+                                animationTime: this.state.animationTime,
+                                sceneWidth: this.refDOM.current.clientWidth,
+                                ctnDOM: this.refDOMContainer.current,
+                                stackMode: this.state.stackMode,
+                                backDOM:
+                                    this.state.backButton && !this.state.backButtonOnFirstView
+                                        ? (this.refDOMNavbar.current.querySelector(
+                                              ".back"
+                                          ) as HTMLElement)
+                                        : null,
+                                animEndCallback: () => {
+                                    this.__preAnimEndStateChange(newViewName).then(() => {
+                                        this.viewChangeInProgress = false;
 
-                                    if (
-                                        oldViewComp &&
-                                        typeof oldViewComp.viewAfterDeactivation === "function"
-                                    ) {
-                                        oldViewComp.viewAfterDeactivation();
-                                    }
+                                        invokeViewsAfterEffects(newViewComp, oldViewComp);
 
-                                    if (typeof this.viewsAnimationEnd === "function") {
-                                        this.viewsAnimationEnd(oldViewName, newViewName);
-                                    }
-
-                                    resolve();
-                                };
-
-                                if (
-                                    newViewComp &&
-                                    typeof newViewComp.viewBeforeActivation === "function"
-                                ) {
-                                    newViewComp.viewBeforeActivation();
-                                }
-
-                                if (
-                                    oldViewComp &&
-                                    typeof oldViewComp.viewBeforeDeactivation === "function"
-                                ) {
-                                    oldViewComp.viewBeforeDeactivation();
-                                }
-
-                                if (this.state.animation) {
-                                    this.__doViewsAnimation(newViewName, oldViewName).then(
-                                        (): void => {
-                                            this.setState(
-                                                {
-                                                    activeViewName: newViewName,
-                                                    GUIDisabled: false,
-                                                    mockTitleName: null
-                                                },
-                                                animEndCallback
-                                            );
+                                        if (typeof this.viewsAnimationEnd === "function") {
+                                            this.viewsAnimationEnd(oldViewName, newViewName);
                                         }
-                                    );
-                                } else {
-                                    this.setState(
-                                        {
-                                            activeViewName: newViewName,
-                                            GUIDisabled: false,
-                                            mockTitleName: null
-                                        },
-                                        animEndCallback
-                                    );
+
+                                        resolve();
+                                    });
                                 }
-                            } else {
-                                this.viewChangeInProgress = false;
-                                console.warn(
-                                    "[] View with name " +
-                                        newViewName +
-                                        " is not presence in this Scene."
-                                );
-                                reject();
-                            }
+                            });
                         }
                     );
                 }
@@ -857,94 +837,6 @@ export default class Scene extends View {
         } else {
             console.warn("[] You must specify view name property as string value");
             return Promise.reject();
-        }
-    }
-
-    /**
-     * Private utility function. This one actually makes css animations.
-     *
-     * @param {string} newViewName
-     * @param {string} oldViewName
-     * @returns {Promise}
-     */
-    __doViewsAnimation(newViewName: string, oldViewName: string): Promise<void> {
-        return new Promise(
-            (resolve): void => {
-                const newViewDOM = this.refsCOMPViews[newViewName].current.refDOM.current;
-                const oldViewDOM = this.refsCOMPViews[oldViewName].current.refDOM.current;
-                const oldViewIndex = this.getViewIndex(oldViewName);
-                const newViewIndex = this.getViewIndex(newViewName);
-
-                const direction = newViewIndex > oldViewIndex ? 1 : -1;
-
-                if (!newViewDOM) {
-                    throw new Error("new view DOM refference was not found");
-                }
-
-                this.__doNavbarItemsAnimation(newViewIndex, oldViewIndex, direction);
-
-                if (this.state.animation === "slide" && oldViewName) {
-                    doViewsSlideAnimation(
-                        newViewDOM,
-                        this.refDOM.current.clientWidth,
-                        this.refDOMContainer.current,
-                        direction,
-                        this.state.animationTime
-                    ).then(resolve);
-                } else if (this.state.animation === "overlay" && oldViewName) {
-                    doViewsOverlayAnimation({
-                        newViewDOM,
-                        oldViewDOM,
-                        direction,
-                        animationTime: this.state.animationTime,
-                        ctnWidth: this.refDOMContainer.current.clientWidth,
-                        ctnHeight: this.refDOMContainer.current.clientHeight,
-                        stackMode: this.state.stackMode
-                    }).then(resolve);
-                } else if (this.state.animation === "fade" || !oldViewName) {
-                    doViewsFadeAnimation(newViewDOM, this.state.animationTime).then(resolve);
-                }
-            }
-        );
-    }
-
-    __doNavbarItemsAnimation(newViewIndex: number, oldViewIndex: number, direction: 1 | -1): void {
-        if (this.state.navbar) {
-            //perform navbar animations
-            const titleNode = this.refDOMNavbar.current.querySelector(".title") as HTMLElement;
-            const mockTitle = this.refDOMNavbar.current.querySelector(".mock-title") as HTMLElement;
-            const mockTextSpan = mockTitle && mockTitle.children[0];
-            const mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
-
-            if (titleNode) {
-                doNavbarTitleAnimation({
-                    element: titleNode,
-                    titleNodeWidth: titleNode.clientWidth,
-                    direction,
-                    mockTextSpanWidth: mockTextSpanWidth,
-                    animationTime: this.state.animationTime
-                });
-            }
-
-            if (mockTitle) {
-                doNavbarMockTitleAnimation({
-                    element: mockTitle,
-                    direction,
-                    mockTextSpanWidth,
-                    animationTime: this.state.animationTime
-                });
-            }
-
-            if (this.state.backButton && !this.state.backButtonOnFirstView) {
-                const backDOM = this.refDOMNavbar.current.querySelector(".back") as HTMLElement;
-
-                if (oldViewIndex === 0) {
-                    doBackButtonAnimation("show", backDOM, this.state.animationTime);
-                } else if (newViewIndex === 0) {
-                    //hide backbutton with animation
-                    doBackButtonAnimation("hide", backDOM, this.state.animationTime);
-                }
-            }
         }
     }
 }
