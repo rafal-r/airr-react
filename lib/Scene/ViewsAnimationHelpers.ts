@@ -1,244 +1,210 @@
-import FX from "../FX";
-import { clearElementAnimationsStyles } from "../FXHelpers";
-import { getCommonTransitionsSpec } from "./ItemsAnimationHelpers";
-import { CSSProperties } from "react";
-import { Direction } from "../airr-react.d";
+import View from "../View";
+import { doNavbarItemsAnimation } from "./ItemsAnimationHelpers";
+import {
+    doViewsSlideAnimation,
+    doViewsOverlayAnimation,
+    doViewsFadeAnimation
+} from "./ViewsFXHelpers";
+import { NavbarProp } from "../SceneRenderer.d";
+import { AnimationType } from "../airr-react";
+import Scene from "../Scene";
 
-interface ViewsCommonOverlayAnimation {
-    newViewDOM: HTMLElement;
+function invokeViewsAfterEffects(newViewComp: View, oldViewComp: View): void {
+    if (newViewComp && typeof newViewComp.viewAfterActivation === "function") {
+        newViewComp.viewAfterActivation();
+    }
+
+    if (oldViewComp && typeof oldViewComp.viewAfterDeactivation === "function") {
+        oldViewComp.viewAfterDeactivation();
+    }
+}
+interface DoViewsAnimationConfig {
+    newViewComp: View;
+    oldViewComp: View;
+    newViewIndex: number;
+    oldViewIndex: number;
+    navbar: NavbarProp;
     animationTime: number;
-    ctnWidth: number;
-}
-interface ViewsStackOverlayAnimation extends ViewsCommonOverlayAnimation {
-    oldViewDOM: HTMLElement;
-    ctnHeight: number;
-}
-interface ViewsOverlayAnimation extends ViewsCommonOverlayAnimation {
-    oldViewDOM: HTMLElement;
-    direction: Direction;
+    animation: AnimationType;
     stackMode: boolean;
-    ctnHeight: number;
+    ctnDOM: HTMLElement;
+    sceneWidth: number;
+    mockTitle?: HTMLElement;
+    titleNode?: HTMLElement;
+    backDOM?: HTMLElement;
 }
-function doViewsOverlayForwardAnimation({
-    newViewDOM,
+function doViewsAnimation({
+    newViewComp,
+    oldViewComp,
+    newViewIndex,
+    oldViewIndex,
+    navbar,
+    mockTitle,
+    titleNode,
+    backDOM,
+    animation,
     animationTime,
-    ctnWidth
-}: ViewsCommonOverlayAnimation): Promise<void> {
-    const transform = `translate3d(${ctnWidth + "px"},0,0)`;
-    const endTransform = `translate3d(0,0,0)`;
-
+    stackMode,
+    ctnDOM,
+    sceneWidth
+}: DoViewsAnimationConfig): Promise<void> {
     return new Promise(
         (resolve): void => {
-            FX.doTransitionAnimation({
-                element: newViewDOM,
-                startProps: {
-                    WebkitTransform: transform,
-                    transform,
-                    opacity: 0,
-                    display: "block"
-                },
-                transitionProps: getCommonTransitionsSpec(animationTime),
-                endProps: {
-                    WebkitTransform: endTransform,
-                    transform: endTransform,
-                    opacity: 1
-                },
-                preAnimationCallback: (): void => {
-                    newViewDOM.style.zIndex = "102";
-                },
-                endAfter: animationTime,
-                endCallback: (): void => {
-                    clearElementAnimationsStyles(newViewDOM);
-                    resolve();
-                }
-            });
+            const oldViewName = oldViewComp.props.name;
+            const newViewDOM = newViewComp.refDOM.current;
+            const oldViewDOM = oldViewComp.refDOM.current;
+
+            const direction = newViewIndex > oldViewIndex ? 1 : -1;
+
+            if (!newViewDOM) {
+                throw new Error("new view DOM refference was not found");
+            }
+
+            if (navbar) {
+                doNavbarItemsAnimation({
+                    newViewIndex,
+                    oldViewIndex,
+                    direction,
+                    mockTitle,
+                    titleNode,
+                    backDOM,
+                    animationTime
+                });
+            }
+
+            if (animation === "slide" && oldViewName) {
+                doViewsSlideAnimation(
+                    newViewDOM,
+                    sceneWidth,
+                    ctnDOM,
+                    direction,
+                    animationTime
+                ).then(resolve);
+            } else if (animation === "overlay" && oldViewName) {
+                doViewsOverlayAnimation({
+                    newViewDOM,
+                    oldViewDOM,
+                    direction,
+                    animationTime,
+                    ctnWidth: ctnDOM.clientWidth,
+                    ctnHeight: ctnDOM.clientHeight,
+                    stackMode
+                }).then(resolve);
+            } else if (animation === "fade" || !oldViewName) {
+                doViewsFadeAnimation(newViewDOM, animationTime).then(resolve);
+            }
         }
     );
 }
-function doViewsOverlayBackwardStackAnimation({
-    newViewDOM,
-    oldViewDOM,
-    animationTime,
-    ctnHeight
-}: ViewsStackOverlayAnimation): Promise<void> {
-    return new Promise(
-        (resolve): void => {
-            const transform = `translate3d(0,0,0)`;
-            const endTransform = `translate3d(0,${ctnHeight / 4 + "px"},0)`;
-
-            newViewDOM.style.display = "block";
-            newViewDOM.style.opacity = "1";
-
-            FX.doTransitionAnimation({
-                element: oldViewDOM,
-                startProps: {
-                    WebkitTransform: transform,
-                    transform,
-                    opacity: 1
-                },
-                transitionProps: [
-                    `opacity ${animationTime}ms ease-out`,
-                    `transform ${animationTime}ms ease-out`
-                ],
-                endProps: {
-                    WebkitTransform: endTransform,
-                    transform: endTransform,
-                    opacity: 0
-                },
-                endAfter: animationTime,
-                endCallback: (): void => {
-                    clearElementAnimationsStyles(oldViewDOM);
-                    clearElementAnimationsStyles(newViewDOM);
-                    resolve();
-                }
-            });
-        }
-    );
+interface PerformViewsTransitionConfig extends DoViewsAnimationConfig {
+    animEndCallback: () => void;
 }
-function doViewsOverlayBackwardAnimation({
-    newViewDOM,
+export function performViewsTransition({
+    newViewComp,
+    oldViewComp,
+    newViewIndex,
+    oldViewIndex,
+    navbar,
+    mockTitle,
+    titleNode,
+    backDOM,
+    animation,
     animationTime,
-    ctnWidth
-}: ViewsCommonOverlayAnimation): Promise<void> {
-    return new Promise(
-        (resolve): void => {
-            const transform = `translate3d(${-1 * ctnWidth + "px"},0,0)`;
-            const endTransform = `translate3d(0,0,0)`;
-
-            newViewDOM.style.display = "block";
-
-            FX.doTransitionAnimation({
-                element: newViewDOM,
-                startProps: {
-                    WebkitTransform: transform,
-                    transform,
-                    opacity: 0
-                },
-                transitionProps: getCommonTransitionsSpec(animationTime),
-                endProps: {
-                    WebkitTransform: endTransform,
-                    transform: endTransform,
-                    opacity: 1
-                },
-                preAnimationCallback: (): void => {
-                    newViewDOM.style.zIndex = "102";
-                },
-                endAfter: animationTime,
-                endCallback: (): void => {
-                    clearElementAnimationsStyles(newViewDOM);
-                    resolve();
-                }
-            });
-        }
-    );
-}
-export function doViewsOverlayAnimation({
-    newViewDOM,
-    oldViewDOM,
-    direction,
-    animationTime,
-    ctnWidth,
-    ctnHeight,
-    stackMode
-}: ViewsOverlayAnimation): Promise<void> {
-    let promise: Promise<void>;
-
-    if (direction === 1) {
-        promise = doViewsOverlayForwardAnimation({ newViewDOM, animationTime, ctnWidth });
-    } else {
-        if (stackMode) {
-            promise = doViewsOverlayBackwardStackAnimation({
-                newViewDOM,
-                oldViewDOM,
-                animationTime,
-                ctnWidth,
-                ctnHeight
-            });
-        } else {
-            promise = doViewsOverlayBackwardAnimation({ newViewDOM, animationTime, ctnWidth });
-        }
+    stackMode,
+    ctnDOM,
+    sceneWidth,
+    animEndCallback
+}: PerformViewsTransitionConfig): void {
+    if (newViewComp && typeof newViewComp.viewBeforeActivation === "function") {
+        newViewComp.viewBeforeActivation();
     }
 
-    return promise;
-}
-export function doViewsFadeAnimation(
-    newViewDOM: HTMLElement,
-    animationTime: number
-): Promise<void> {
-    return new Promise(
-        (resolve): void => {
-            FX.doTransitionAnimation({
-                element: newViewDOM,
-                startProps: {
-                    display: "block",
-                    opacity: 0
-                },
-                transitionProps: [`opacity ${animationTime}ms ease-out`],
-                endProps: {
-                    opacity: 1
-                },
-                preAnimationCallback: (): void => {
-                    newViewDOM.style.zIndex = "102";
-                },
-                endAfter: animationTime,
-                endCallback: (): void => {
-                    clearElementAnimationsStyles(newViewDOM);
-                    resolve();
-                }
-            });
-        }
-    );
-}
-function getSlideAnimationProps(
-    direction: Direction,
-    sceneWidth: number
-): { startProps: CSSProperties; endProps: CSSProperties } {
-    let startProps: CSSProperties = {};
-    let endProps: CSSProperties = {};
-
-    if (direction === -1) {
-        const transform = "translate3d(" + -1 * sceneWidth + "px,0,0)";
-        const endTransform = "translate3d(0,0,0)";
-        startProps = {
-            WebkitTransform: transform,
-            transform
-        };
-        endProps = {
-            WebkitTransform: endTransform,
-            transform: endTransform
-        };
-    } else {
-        const transform = "translate3d(" + -1 * sceneWidth + "px,0,0)";
-        endProps.WebkitTransform = transform;
-        endProps.transform = transform;
+    if (oldViewComp && typeof oldViewComp.viewBeforeDeactivation === "function") {
+        oldViewComp.viewBeforeDeactivation();
     }
 
-    return { startProps, endProps };
+    if (animation) {
+        doViewsAnimation({
+            newViewComp,
+            oldViewComp,
+            newViewIndex,
+            oldViewIndex,
+            navbar,
+            mockTitle,
+            titleNode,
+            backDOM,
+            animation,
+            animationTime,
+            stackMode,
+            ctnDOM,
+            sceneWidth
+        }).then(
+            (): void => {
+                animEndCallback();
+            }
+        );
+    } else {
+        animEndCallback();
+    }
 }
-export function doViewsSlideAnimation(
-    newViewDOM: HTMLElement,
-    sceneWidth: number,
-    ctnDOM: HTMLElement,
-    direction: Direction,
-    animationTime: number
-): Promise<void> {
-    return new Promise(
-        (resolve): void => {
-            const { startProps, endProps } = getSlideAnimationProps(direction, sceneWidth);
-            newViewDOM.style.display = "block";
 
-            FX.doTransitionAnimation({
-                element: ctnDOM,
-                startProps,
-                transitionProps: [`transform ${animationTime}ms ease-out`],
-                endProps,
-                endAfter: animationTime,
-                endCallback: (): void => {
-                    clearElementAnimationsStyles(newViewDOM);
-                    clearElementAnimationsStyles(ctnDOM);
-                    resolve();
+function scenePreAnimEndStateChange(scene: Scene, newViewName: string): Promise<void> {
+    return new Promise(resolve => {
+        scene.setState(
+            {
+                activeViewName: newViewName,
+                GUIDisabled: false,
+                mockTitleName: null
+            },
+            resolve
+        );
+    });
+}
+
+export function getViewsTransitionConfig(
+    newViewName: string,
+    scene: Scene,
+    callback: () => void
+): PerformViewsTransitionConfig {
+    const oldViewName = scene.state.activeViewName;
+    const newViewComp = scene.refsCOMPViews[newViewName].current;
+    const oldViewComp = scene.refsCOMPViews[oldViewName].current;
+    const newViewIndex = scene.getViewIndex(newViewName);
+    const oldViewIndex = scene.getViewIndex(oldViewName);
+
+    return {
+        newViewComp,
+        oldViewComp,
+        newViewIndex,
+        oldViewIndex,
+        navbar: scene.state.navbar,
+        titleNode:
+            scene.refDOMNavbar.current &&
+            (scene.refDOMNavbar.current.querySelector(".title") as HTMLElement),
+        mockTitle:
+            scene.refDOMNavbar.current &&
+            (scene.refDOMNavbar.current.querySelector(".mock-title") as HTMLElement),
+        animation: scene.state.animation,
+        animationTime: scene.state.animationTime,
+        sceneWidth: scene.refDOM.current.clientWidth,
+        ctnDOM: scene.refDOMContainer.current,
+        stackMode: scene.state.stackMode,
+        backDOM:
+            scene.state.backButton && !scene.state.backButtonOnFirstView
+                ? (scene.refDOMNavbar.current.querySelector(".back") as HTMLElement)
+                : null,
+        animEndCallback: () => {
+            scenePreAnimEndStateChange(scene, newViewName).then(() => {
+                scene.viewChangeInProgress = false;
+
+                invokeViewsAfterEffects(newViewComp, oldViewComp);
+
+                if (typeof scene.viewsAnimationEnd === "function") {
+                    scene.viewsAnimationEnd(oldViewName, newViewName);
                 }
+
+                callback();
             });
         }
-    );
+    };
 }

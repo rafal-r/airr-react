@@ -8,7 +8,9 @@ import Mayer, { PreparedProps as MayerProps } from "./Mayer";
 import update from "immutability-helper";
 import { ViewConfig, SidepanelConfig } from "./airr-react";
 import { Props, ViewsConfig, RefsCOMPViews, ViewsConfigItem } from "./Scene.d";
-import { performViewsTransition, getViewsTransitionConfig } from "./Scene/ViewsTransitionHelpers";
+import ViewsAPIHelper from "./Scene/ViewsAPIHelper";
+import SidepanelAPIHelper from "./Scene/SidepanelAPIHelper";
+import MayersAPIHelper from "./Scene/MayersAPIHelper";
 
 export default class Scene extends View {
     static defaultProps: Props = {
@@ -51,6 +53,11 @@ export default class Scene extends View {
      */
     viewsNamesToStayList: string[] = [];
 
+    /**
+     * Describes if views animation is taking place
+     */
+    viewChangeInProgress = false;
+
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -88,14 +95,14 @@ export default class Scene extends View {
                         "resize",
                         (): void => {
                             if (this.state.sidepanel) {
-                                this.__updateSidepanelSizeProps();
+                                SidepanelAPIHelper.updateSidepanelSizeProps(this);
                             }
                         }
                     );
                 }
 
                 if (this.state.sidepanel) {
-                    this.__updateSidepanelSizeProps().then(resolve);
+                    SidepanelAPIHelper.updateSidepanelSizeProps(this).then(resolve);
                 } else {
                     resolve();
                 }
@@ -239,8 +246,8 @@ export default class Scene extends View {
         viewProps: ViewProps | {} = {},
         sceneProps: Props | {} = {}
     ): Promise<string | void> {
-        const viewName = await this.__changeView(view, viewProps, sceneProps);
-        return this.__performViewsAnimation(viewName);
+        const viewName = await ViewsAPIHelper.changeView(this, view, viewProps, sceneProps);
+        return ViewsAPIHelper.performViewsAnimation(this, viewName);
     }
 
     /**
@@ -303,7 +310,7 @@ export default class Scene extends View {
                         sidepanel: config
                     },
                     (): void => {
-                        this.__updateSidepanelSizeProps().then(resolve);
+                        SidepanelAPIHelper.updateSidepanelSizeProps(this).then(resolve);
                     }
                 )
         );
@@ -314,7 +321,7 @@ export default class Scene extends View {
      * @returns {Promise} Resolved on state succesful change or reject on failure.
      */
     disableSidepanel = (): Promise<void> => {
-        return this.__toggleSidepanel(false);
+        return SidepanelAPIHelper.toggleSidepanel(this, false);
     };
 
     /**
@@ -322,7 +329,7 @@ export default class Scene extends View {
      * @returns {Promise} Resolved on state succesful change or reject on failure.
      */
     enableSidepanel = (): Promise<void> => {
-        return this.__toggleSidepanel(true);
+        return SidepanelAPIHelper.toggleSidepanel(this, true);
     };
 
     /**
@@ -373,9 +380,9 @@ export default class Scene extends View {
         }
 
         //add special functionality,props
-        const preparedConfig = this.__prepareMayerConfig(config);
+        const preparedConfig = MayersAPIHelper.prepareMayerConfig(this, config);
 
-        return this.__addMayer(preparedConfig);
+        return MayersAPIHelper.addMayer(this, preparedConfig);
     }
 
     /**
@@ -406,7 +413,7 @@ export default class Scene extends View {
                                 mayerConfigIndex !== -1 &&
                                 (this.refsCOMPMayers[name] && this.refsCOMPMayers[name].current)
                             ) {
-                                this.__removeMayer(name).then(
+                                MayersAPIHelper.removeMayer(this, name).then(
                                     (): void => {
                                         delete this.refsCOMPMayers[name];
 
@@ -497,289 +504,9 @@ export default class Scene extends View {
         this.state.views.findIndex((view): boolean => view.props.name === viewName);
 
     /**
-     * Private method for pushing new view config into this.state.views array
-     * @param {ViewsConfigItem} config
-     * @param {Props} sceneProps
-     * @returns {Promise}  Will be resolved on succesful state update
+     * Utility function for updating sidepanel isShown prop
      */
-    __pushView(config: ViewsConfigItem, sceneProps: Props | {} = {}): Promise<string> {
-        const newviewdefinition = update(this.state.views, { $push: [config] });
-        const stateChange = Object.assign(
-            {
-                views: newviewdefinition
-            },
-            Object.assign({}, config.sceneProps || {}),
-            Object.assign({}, sceneProps || {})
-        );
-
-        return new Promise(
-            (resolve): void => this.setState(stateChange, (): void => resolve(config.props.name))
-        );
-    }
-
-    /**
-     * Make modification to scene's views by pushing new, updating current or changing between added views
-     *
-     * @param {string|object} view View name to change or view config to be added
-     * @param {object} viewProps Extra props to be added to changing view
-     * @param {object} sceneProps Extra props to manipulate this scene while changing view
-     * @returns {Promise} Resolved on state succesful change and animation end. Or reject on failure.
-     */
-    __changeView(
-        view: string | ViewConfig,
-        viewProps: ViewProps | {} = {},
-        sceneProps: Props | {} = {}
-    ): Promise<string> {
-        let promiseToReturn: Promise<string>;
-
-        if (typeof view === "string") {
-            if (this.hasViewInState(view)) {
-                //if already in state then update its props
-                promiseToReturn = new Promise(
-                    (resolve): void => {
-                        const viewIndex = this.getViewIndex(view);
-                        const currentViewConfig = Object.assign(
-                            { sceneProps: {} }, //for a default props which will be latter used
-                            this.state.views[viewIndex]
-                        );
-                        const newViewConfig = update(currentViewConfig, {
-                            props: {
-                                $set: {
-                                    ...currentViewConfig.props,
-                                    ...viewProps
-                                }
-                            }
-                        });
-
-                        let stateChange = {
-                            views: update(this.state.views, {
-                                [viewIndex]: {
-                                    $set: newViewConfig
-                                }
-                            }),
-                            ...currentViewConfig.sceneProps,
-                            ...Object.assign({}, sceneProps)
-                        };
-
-                        this.setState(stateChange, (): void => resolve(view));
-                    }
-                );
-            } else if (this.hasViewInConfig(view)) {
-                //push fresh config
-                promiseToReturn = this.__pushView(
-                    this.getFreshViewConfig(view, viewProps),
-                    sceneProps
-                );
-            } else return Promise.reject();
-        } else if (this.isValidViewConfig(view)) {
-            //push allready prepared config
-            promiseToReturn = this.__pushView(
-                Object.assign({}, view, {
-                    props: { ...view.props, ...viewProps }
-                }),
-                sceneProps
-            );
-        } else {
-            promiseToReturn = Promise.reject("Invalid `view` argument specify");
-        }
-
-        return promiseToReturn;
-    }
-
-    /**
-     * Toggle scene's sidepanel by setting it enabled property
-     * @returns {Promise} Resolved on state succesful change or reject on failure.
-     */
-    __toggleSidepanel = (enable: boolean): Promise<void> => {
-        if (this.state.sidepanel && this.refCOMPSidepanel.current) {
-            this.refCOMPSidepanel.current[enable ? "enable" : "disable"]();
-            return new Promise(
-                (resolve): void =>
-                    this.setState(
-                        {
-                            sidepanel: update(this.state.sidepanel, {
-                                props: {
-                                    enabled: { $set: enable }
-                                }
-                            })
-                        },
-                        resolve
-                    )
-            );
-        }
-        console.warn(`[Scene] No sidepanel to ${enable ? "enable" : "disable"}`);
-        return Promise.resolve();
-    };
-
-    /**
-     * If config has buttons that contains logical true `close` property,
-     * this method will attach close mayer functionality to tap event on this button.
-     *
-     * @param {object} mayerConfig mayer config object
-     * @returns {object}
-     */
-    __prepareMayerConfig(mayerConfig: MayerProps): MayerProps {
-        const config = Object.assign({ ref: undefined }, mayerConfig);
-
-        const ref = React.createRef<Mayer>();
-        config.ref = ref;
-        this.refsCOMPMayers[config.name] = ref;
-
-        if (config.buttons && config.buttons.length) {
-            config.buttons.forEach(
-                (item): void => {
-                    if (item.close) {
-                        if (item.handler) {
-                            const oldHandler = item.handler;
-                            item.handler = (e): void => {
-                                oldHandler(e);
-                                this.closeMayer(config.name);
-                            };
-                        } else {
-                            item.handler = (e): void => {
-                                this.closeMayer(config.name);
-                            };
-                        }
-                    }
-                }
-            );
-        }
-
-        config.avaibleHeight = this.refDOM.current.clientHeight || window.innerHeight;
-
-        return config;
-    }
-
-    /**
-     * Private utility for adding mayers
-     * @param {objec} config
-     * @returns {Promise}
-     */
-    __addMayer = (config: MayerProps): Promise<void> => {
-        const newMayersDef = update(this.state.mayers, { $push: [config] });
-
-        return new Promise(
-            (resolve): void =>
-                this.setState(
-                    {
-                        mayers: newMayersDef
-                    },
-                    resolve
-                )
-        );
-    };
-
-    /**
-     * Private utility for removing mayers
-     * @param {string} name Mayer name
-     * @returns {Promise}
-     */
-    __removeMayer = (name: string): Promise<void> => {
-        const newMayersDef = this.state.mayers.filter(
-            (item): boolean => {
-                return item.name !== name;
-            }
-        );
-
-        return new Promise(
-            (resolve): void =>
-                this.setState(
-                    {
-                        mayers: newMayersDef
-                    },
-                    resolve
-                )
-        );
-    };
-
-    /**
-     * Private utility function for updating sidepanel's sceneWidth,sceneHeight properties
-     * @returns {Promise}
-     */
-    __updateSidepanelSizeProps(): Promise<void> {
-        return new Promise(
-            (resolve): void => {
-                this.setState(
-                    {
-                        sidepanel: update(this.state.sidepanel, {
-                            props: {
-                                sceneWidth: { $set: this.refDOM.current.clientWidth },
-                                sceneHeight: { $set: this.refDOM.current.clientHeight }
-                            }
-                        })
-                    },
-                    resolve
-                );
-            }
-        );
-    }
-
-    /**
-     * Private utility function for updating sidepanel isShown prop
-     * @param {boolean} isShown
-     * @returns {void}
-     */
-
     __sidepanelVisibilityCallback = (isShown: boolean): void => {
-        this.setState(
-            {
-                sidepanel: update(this.state.sidepanel, {
-                    props: {
-                        isShown: {
-                            $set: isShown
-                        }
-                    }
-                })
-            },
-            (): void =>
-                this.state.sidepanelVisibilityCallback &&
-                this.state.sidepanelVisibilityCallback(isShown)
-        );
+        return SidepanelAPIHelper.sidepanelVisibilityCallback(this, isShown);
     };
-
-    /**
-     * Describes if views animation is taking place
-     */
-    viewChangeInProgress = false;
-
-    /**
-     * Private utility function that changes views with animation
-     *
-     * @param {string} newViewName
-     * @returns {Promise}
-     */
-    __performViewsAnimation(newViewName: string): Promise<void> {
-        if (typeof newViewName === "string") {
-            this.viewChangeInProgress = true;
-
-            return new Promise(
-                (resolve, reject): void => {
-                    if (newViewName === this.state.activeViewName) {
-                        console.warn("[] This View is already active.");
-                        this.viewChangeInProgress = false;
-                        return resolve();
-                    }
-                    if (this.getViewIndex(newViewName) === -1) {
-                        this.viewChangeInProgress = false;
-                        console.warn(
-                            "[] View with name " + newViewName + " is not presence in this Scene."
-                        );
-                        return reject();
-                    }
-
-                    this.setState(
-                        { GUIDisabled: true, mockTitleName: newViewName },
-                        (): void => {
-                            performViewsTransition(
-                                getViewsTransitionConfig(newViewName, this, resolve)
-                            );
-                        }
-                    );
-                }
-            );
-        } else {
-            console.warn("[] You must specify view name property as string value");
-            return Promise.reject();
-        }
-    }
 }
