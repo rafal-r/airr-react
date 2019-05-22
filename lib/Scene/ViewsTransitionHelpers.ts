@@ -7,8 +7,9 @@ import {
 } from "./ViewsAnimationHelpers";
 import { NavbarProp } from "../SceneRenderer.d";
 import { AnimationType } from "../airr-react";
+import Scene from "../Scene";
 
-export const invokeViewsAfterEffects = (newViewComp: View, oldViewComp: View): void => {
+function invokeViewsAfterEffects(newViewComp: View, oldViewComp: View): void {
     if (newViewComp && typeof newViewComp.viewAfterActivation === "function") {
         newViewComp.viewAfterActivation();
     }
@@ -16,7 +17,7 @@ export const invokeViewsAfterEffects = (newViewComp: View, oldViewComp: View): v
     if (oldViewComp && typeof oldViewComp.viewAfterDeactivation === "function") {
         oldViewComp.viewAfterDeactivation();
     }
-};
+}
 interface DoViewsAnimationConfig {
     newViewComp: View;
     oldViewComp: View;
@@ -145,4 +146,65 @@ export function performViewsTransition({
     } else {
         animEndCallback();
     }
+}
+
+function scenePreAnimEndStateChange(scene: Scene, newViewName: string): Promise<void> {
+    return new Promise(resolve => {
+        scene.setState(
+            {
+                activeViewName: newViewName,
+                GUIDisabled: false,
+                mockTitleName: null
+            },
+            resolve
+        );
+    });
+}
+
+export function getViewsTransitionConfig(
+    newViewName: string,
+    scene: Scene,
+    callback: () => void
+): PerformViewsTransitionConfig {
+    const oldViewName = scene.state.activeViewName;
+    const newViewComp = scene.refsCOMPViews[newViewName].current;
+    const oldViewComp = scene.refsCOMPViews[oldViewName].current;
+    const newViewIndex = scene.getViewIndex(newViewName);
+    const oldViewIndex = scene.getViewIndex(oldViewName);
+
+    return {
+        newViewComp,
+        oldViewComp,
+        newViewIndex,
+        oldViewIndex,
+        navbar: scene.state.navbar,
+        titleNode:
+            scene.refDOMNavbar.current &&
+            (scene.refDOMNavbar.current.querySelector(".title") as HTMLElement),
+        mockTitle:
+            scene.refDOMNavbar.current &&
+            (scene.refDOMNavbar.current.querySelector(".mock-title") as HTMLElement),
+        animation: scene.state.animation,
+        animationTime: scene.state.animationTime,
+        sceneWidth: scene.refDOM.current.clientWidth,
+        ctnDOM: scene.refDOMContainer.current,
+        stackMode: scene.state.stackMode,
+        backDOM:
+            scene.state.backButton && !scene.state.backButtonOnFirstView
+                ? (scene.refDOMNavbar.current.querySelector(".back") as HTMLElement)
+                : null,
+        animEndCallback: () => {
+            scenePreAnimEndStateChange(scene, newViewName).then(() => {
+                scene.viewChangeInProgress = false;
+
+                invokeViewsAfterEffects(newViewComp, oldViewComp);
+
+                if (typeof scene.viewsAnimationEnd === "function") {
+                    scene.viewsAnimationEnd(oldViewName, newViewName);
+                }
+
+                callback();
+            });
+        }
+    };
 }

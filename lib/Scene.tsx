@@ -8,7 +8,7 @@ import Mayer, { PreparedProps as MayerProps } from "./Mayer";
 import update from "immutability-helper";
 import { ViewConfig, SidepanelConfig } from "./airr-react";
 import { Props, ViewsConfig, RefsCOMPViews, ViewsConfigItem } from "./Scene.d";
-import { performViewsTransition, invokeViewsAfterEffects } from "./Scene/ViewsTransitionHelpers";
+import { performViewsTransition, getViewsTransitionConfig } from "./Scene/ViewsTransitionHelpers";
 
 export default class Scene extends View {
     static defaultProps: Props = {
@@ -737,19 +737,6 @@ export default class Scene extends View {
         );
     };
 
-    __preAnimEndStateChange = (newViewName: string): Promise<void> => {
-        return new Promise(resolve => {
-            this.setState(
-                {
-                    activeViewName: newViewName,
-                    GUIDisabled: false,
-                    mockTitleName: null
-                },
-                resolve
-            );
-        });
-    };
-
     /**
      * Describes if views animation is taking place
      */
@@ -783,53 +770,9 @@ export default class Scene extends View {
                     this.setState(
                         { GUIDisabled: true, mockTitleName: newViewName },
                         (): void => {
-                            const oldViewName = this.state.activeViewName;
-                            const newViewComp = this.refsCOMPViews[newViewName].current;
-                            const oldViewComp = this.refsCOMPViews[oldViewName].current;
-                            const newViewIndex = this.getViewIndex(newViewName);
-                            const oldViewIndex = this.getViewIndex(oldViewName);
-
-                            performViewsTransition({
-                                newViewComp,
-                                oldViewComp,
-                                newViewIndex,
-                                oldViewIndex,
-                                navbar: this.state.navbar,
-                                titleNode:
-                                    this.refDOMNavbar.current &&
-                                    (this.refDOMNavbar.current.querySelector(
-                                        ".title"
-                                    ) as HTMLElement),
-                                mockTitle:
-                                    this.refDOMNavbar.current &&
-                                    (this.refDOMNavbar.current.querySelector(
-                                        ".mock-title"
-                                    ) as HTMLElement),
-                                animation: this.state.animation,
-                                animationTime: this.state.animationTime,
-                                sceneWidth: this.refDOM.current.clientWidth,
-                                ctnDOM: this.refDOMContainer.current,
-                                stackMode: this.state.stackMode,
-                                backDOM:
-                                    this.state.backButton && !this.state.backButtonOnFirstView
-                                        ? (this.refDOMNavbar.current.querySelector(
-                                              ".back"
-                                          ) as HTMLElement)
-                                        : null,
-                                animEndCallback: () => {
-                                    this.__preAnimEndStateChange(newViewName).then(() => {
-                                        this.viewChangeInProgress = false;
-
-                                        invokeViewsAfterEffects(newViewComp, oldViewComp);
-
-                                        if (typeof this.viewsAnimationEnd === "function") {
-                                            this.viewsAnimationEnd(oldViewName, newViewName);
-                                        }
-
-                                        resolve();
-                                    });
-                                }
-                            });
+                            performViewsTransition(
+                                getViewsTransitionConfig(newViewName, this, resolve)
+                            );
                         }
                     );
                 }
