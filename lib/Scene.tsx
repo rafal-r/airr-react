@@ -90,33 +90,17 @@ export default class Scene extends View {
     componentDidMount(): Promise<void> {
         return new Promise(
             (resolve): void => {
-                if (window.addEventListener) {
-                    window.addEventListener(
-                        "resize",
-                        (): void => {
-                            if (this.state.sidepanel) {
-                                SidepanelAPIHelper.updateSidepanelSizeProps(this);
-                            }
-                        }
-                    );
-                }
+                SidepanelAPIHelper.initWindowResizeListener(this);
+
+                /**
+                 * Call first active view life cycle method - viewAfterActivation
+                 */
+                ViewsAPIHelper.invokeActivationEffectOnActiveView(this);
 
                 if (this.state.sidepanel) {
                     SidepanelAPIHelper.updateSidepanelSizeProps(this).then(resolve);
                 } else {
                     resolve();
-                }
-
-                /**
-                 * Call first active view life cycle method - viewAfterActivation
-                 */
-                if (
-                    this.state.activeViewName &&
-                    this.refsCOMPViews[this.state.activeViewName] &&
-                    typeof this.refsCOMPViews[this.state.activeViewName].current
-                        .viewAfterActivation === "function"
-                ) {
-                    this.refsCOMPViews[this.state.activeViewName].current.viewAfterActivation();
                 }
             }
         );
@@ -374,11 +358,6 @@ export default class Scene extends View {
             return Promise.reject();
         }
 
-        //if scene has sidepanel - disable it
-        if (this.state.sidepanel && this.state.sidepanel.props.enabled) {
-            this.disableSidepanel();
-        }
-
         //add special functionality,props
         const preparedConfig = MayersAPIHelper.prepareMayerConfig(this, config);
 
@@ -392,52 +371,15 @@ export default class Scene extends View {
      * @returns {Promise}
      */
     closeMayer(name: string): Promise<void> {
-        let mayerConfigIndex = this.state.mayers.findIndex((item): boolean => item.name === name);
-
-        if (
-            mayerConfigIndex !== -1 &&
-            (this.refsCOMPMayers[name] && this.refsCOMPMayers[name].current)
-        ) {
+        //TODO hasMountedMayer might be deprecated in favour to simple check in this.state.mayers
+        if (MayersAPIHelper.hasMountedMayer(this, name)) {
             return new Promise(
                 (resolve): void => {
                     this.refsCOMPMayers[name].current.animateOut(
                         (): void => {
-                            //renew index because after animation
-                            //things might have changed
-                            mayerConfigIndex = this.state.mayers.findIndex(
-                                (item): boolean => item.name === name
-                            );
-
-                            //last check if stil present
-                            if (
-                                mayerConfigIndex !== -1 &&
-                                (this.refsCOMPMayers[name] && this.refsCOMPMayers[name].current)
-                            ) {
-                                MayersAPIHelper.removeMayer(this, name).then(
-                                    (): void => {
-                                        delete this.refsCOMPMayers[name];
-
-                                        if (this.state.sidepanel) {
-                                            let hasMayerLeft = false;
-                                            const children = [
-                                                ...Array.from(this.refDOM.current.children)
-                                            ];
-                                            children.forEach(
-                                                (item): void => {
-                                                    if (item.classList.contains("airr-mayer")) {
-                                                        hasMayerLeft = true;
-                                                    }
-                                                }
-                                            );
-
-                                            if (!hasMayerLeft) {
-                                                this.enableSidepanel();
-                                            }
-                                        }
-
-                                        resolve();
-                                    }
-                                );
+                            //renew check because after animation things might have changed
+                            if (MayersAPIHelper.hasMountedMayer(this, name)) {
+                                MayersAPIHelper.removeMayer(this, name).then(resolve);
                             }
                         }
                     );

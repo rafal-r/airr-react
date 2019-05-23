@@ -8,22 +8,24 @@ interface SidepanelRendererProps {
     props: SidepanelProps;
     refCOMPSidepanel: Props["refCOMPSidepanel"];
     visibilityCallback: Props["sidepanelVisibilityCallback"];
+    sceneHasMayers: boolean;
 }
-export default React.memo<SidepanelRendererProps>(function SidepanelRenderer({
+const SidepanelRenderer = React.memo<SidepanelRendererProps>(function SidepanelRenderer({
     type,
     refCOMPSidepanel,
     visibilityCallback,
+    sceneHasMayers,
     props
 }: SidepanelRendererProps): any {
+    props.sceneHasMayers = sceneHasMayers;
     if (!props.ref) {
         props.ref = refCOMPSidepanel;
     }
     if (!props.visibilityCallback) {
         props.visibilityCallback = visibilityCallback;
     }
-    if (typeof props.enabled === "undefined") {
-        props.enabled = true; //force explicit value, e.g needed when checking if panel is enabled in `openMayer` method
-    }
 
     return React.createElement(type, props);
 });
+SidepanelRenderer.displayName = "SidepanelRenderer";
+export default SidepanelRenderer;

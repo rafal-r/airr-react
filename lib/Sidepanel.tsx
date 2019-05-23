@@ -15,7 +15,8 @@ export default class Sidepanel extends PureComponent<Props> {
         sceneHeight: null,
         visibilityCallback: (isShown: boolean): void => {},
         animationTime: 200,
-        bgLayerOpacity: 0.7
+        bgLayerOpacity: 0.7,
+        sceneHasMayers: false
     };
     private size: number;
     private sceneSize: number;
@@ -64,6 +65,10 @@ export default class Sidepanel extends PureComponent<Props> {
         }
     }
 
+    componentWillUnmount(): void {
+        this.disable();
+    }
+
     private __bubbleChildTillParent(
         child: Element,
         parent: Element,
@@ -97,17 +102,21 @@ export default class Sidepanel extends PureComponent<Props> {
     };
 
     private handleTouchStart = (e: TouchEvent | MouseEvent): void => {
+        if (this.props.sceneHasMayers) {
+            return;
+        }
         const pos = this.getPosition(e, this.axis);
         let dragCtnOnTouchPath = false;
         // @ts-ignore
         const path = e.path || (e.composedPath && e.composedPath());
 
         if (path) {
-            for (let i = 0; i < path.length; i++) {
-                if (path[i] === this.refDOMDragCtn.current) {
+            dragCtnOnTouchPath = path.reduce((dragCtnOnTouchPath: boolean, item: HTMLElement) => {
+                if (item === this.refDOMDragCtn.current) {
                     dragCtnOnTouchPath = true;
                 }
-            }
+                return dragCtnOnTouchPath;
+            }, false);
         } else {
             if (
                 e.target instanceof Element &&

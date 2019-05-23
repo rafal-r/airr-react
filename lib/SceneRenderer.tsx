@@ -173,6 +173,7 @@ export default class SceneRenderer extends PureComponent<Props> {
                         type={this.props.sidepanel.type}
                         refCOMPSidepanel={this.props.refCOMPSidepanel}
                         visibilityCallback={this.props.sidepanelVisibilityCallback}
+                        sceneHasMayers={Boolean(this.props.mayers.length)}
                         props={this.props.sidepanel.props}
                     />
                 )}

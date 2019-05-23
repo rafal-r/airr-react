@@ -66,4 +66,14 @@ export default class SidepanelAPIHelper {
                 scene.state.sidepanelVisibilityCallback(isShown)
         );
     };
+
+    static initWindowResizeListener = (scene: Scene): void => {
+        if (window.addEventListener) {
+            window.addEventListener("resize", () => {
+                if (scene.state.sidepanel) {
+                    SidepanelAPIHelper.updateSidepanelSizeProps(scene);
+                }
+            });
+        }
+    };
 }

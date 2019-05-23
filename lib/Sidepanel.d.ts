@@ -36,6 +36,10 @@ export interface Props {
      */
     animationTime: number;
     /**
+     * Boolean saying if parent scene has any open mayer. Set by parent scene. Do not overwrite!.
+     */
+    sceneHasMayers: boolean;
+    /**
      * Opacity between 0 and 1
      */
     bgLayerOpacity: number;

@@ -73,8 +73,20 @@ export default class MayersAPIHelper {
                     {
                         mayers: newMayersDef
                     },
-                    resolve
+                    () => {
+                        delete scene.refsCOMPMayers[name];
+                        resolve();
+                    }
                 )
+        );
+    };
+
+    static hasMountedMayer = (scene: Scene, name: string): boolean => {
+        let mayerConfigIndex = scene.state.mayers.findIndex((item): boolean => item.name === name);
+
+        return Boolean(
+            mayerConfigIndex !== -1 &&
+                (scene.refsCOMPMayers[name] && scene.refsCOMPMayers[name].current)
         );
     };
 }

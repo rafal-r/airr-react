@@ -132,4 +132,15 @@ export default class ViewsAPIHelper {
             return Promise.reject();
         }
     }
+
+    static invokeActivationEffectOnActiveView = (scene: Scene): void => {
+        if (
+            scene.state.activeViewName &&
+            scene.refsCOMPViews[scene.state.activeViewName] &&
+            typeof scene.refsCOMPViews[scene.state.activeViewName].current.viewAfterActivation ===
+                "function"
+        ) {
+            scene.refsCOMPViews[scene.state.activeViewName].current.viewAfterActivation();
+        }
+    };
 }

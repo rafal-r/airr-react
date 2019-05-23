@@ -17,7 +17,7 @@ interface NavbarRendererProps {
     refDOMNavbar: Props["refDOMNavbar"];
     navbarHeight: Props["navbarHeight"];
 }
-export default React.memo<NavbarRendererProps>(function NavbarRenderer({
+const NavbarRenderer = React.memo<NavbarRendererProps>(function NavbarRenderer({
     navbar,
     activeViewIndex,
     backButtonOnFirstView,
@@ -94,3 +94,5 @@ export default React.memo<NavbarRendererProps>(function NavbarRenderer({
         );
     }
 });
+NavbarRenderer.displayName = "NavbarRenderer";
+export default NavbarRenderer;

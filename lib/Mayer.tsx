@@ -93,7 +93,7 @@ export default class Mayer extends PureComponent<PreparedProps> {
     constructor(props: Props) {
         super(props);
         if (!props.name) {
-            throw new Error("Every Mayer must has its `name` property set");
+            console.error("[Airr] Every Mayer must has its `name` property set");
         }
     }
 
@@ -198,6 +198,7 @@ export default class Mayer extends PureComponent<PreparedProps> {
 const BgRenderer = React.memo(function BgRenderer(): any {
     return <div className="bg" />;
 });
+BgRenderer.displayName = "BgRenderer";
 interface BodyRendererProps {
     children?: ReactNode;
     content?: ReactNode;
@@ -213,6 +214,7 @@ const BodyRenderer = React.memo<BodyRendererProps>(function BodyRenderer({
         </div>
     );
 });
+BodyRenderer.displayName = "BodyRenderer";
 const MayerButton = React.memo<MayerButtonProps>(function MayerButton({
     className,
     style,
@@ -226,6 +228,7 @@ const MayerButton = React.memo<MayerButtonProps>(function MayerButton({
         </button>
     );
 });
+MayerButton.displayName = "MayerButton";
 const ButtonRenderer = React.memo<ButtonRendererProps>(function ButtonRenderer({
     buttons
 }: ButtonRendererProps): any {
@@ -261,3 +264,4 @@ const ButtonRenderer = React.memo<ButtonRendererProps>(function ButtonRenderer({
         </div>
     );
 });
+ButtonRenderer.displayName = "ButtonRenderer";
