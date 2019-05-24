@@ -5,11 +5,10 @@ import {
     refreshElement,
     resetElementTransition,
     setElementTransitions,
-    setElementTransforms,
-    resetCSSAndFireCallback
+    setElementTransforms
 } from "./FXHelpers";
 
-interface TransitionAnimationConfig {
+export interface TransitionAnimationConfig {
     element: HTMLElement;
     startProps: CSSProperties;
     transitionProps: string[];
@@ -17,19 +16,6 @@ interface TransitionAnimationConfig {
     preAnimationCallback?: () => void;
     endAfter?: number;
     endCallback?: () => void;
-}
-interface OverlayAnimationConfig {
-    dom: HTMLElement;
-    width: number;
-    height: number;
-    t: number;
-    callback?: () => void;
-}
-interface OverlayOutAnimationConfig extends OverlayAnimationConfig {
-    headTo: Placement;
-}
-interface OverlayInAnimationConfig extends OverlayAnimationConfig {
-    appearFrom: Placement;
 }
 
 /**
@@ -78,89 +64,6 @@ FX.doTransitionAnimation = function(config: TransitionAnimationConfig): void {
             endCallback && endCallback();
         }, endAfter);
     }
-};
-
-/**
- * Used by Mayers for leaving animation
- *
- * @param {HTMLElement} dom
- * @param {int} width
- * @param {int} height
- * @param {int} t time in miliseconds
- * @param {string} headTo top,bottom,left,right
- * @param {function} callback
- * @returns {void}
- */
-FX.doOverlayOutAnimation = function(config: OverlayOutAnimationConfig): void {
-    const { dom, width, height, t, headTo, callback } = config;
-
-    const startProps = { opacity: 1 };
-    const endProps = { zIndex: 102, opacity: 0, webkitTransform: "", transform: "" };
-    let transform = "";
-    if (["top", "bottom"].includes(headTo)) {
-        transform = `scale(0, 1) translate3d(0,${headTo === "top" ? -1 * height : height}px,0)`;
-    } else {
-        transform = `scale(1, 0) translate3d(${headTo === "left" ? -1 * width : width}px,0,0)`;
-    }
-    endProps.webkitTransform = transform;
-    endProps.transform = transform;
-
-    FX.doTransitionAnimation({
-        element: dom,
-        startProps,
-        transitionProps: [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
-        endProps,
-        endAfter: t,
-        endCallback: (): void => {
-            resetCSSAndFireCallback(dom, callback);
-        }
-    });
-};
-
-/**
- * Used by Mayers for entering animation
- *
- * @param {HTMLElement} dom
- * @param {int} width
- * @param {int} height
- * @param {int} t time in miliseconds
- * @param {string} appearFrom top,bottom,left,right direction from which element will appear on the screen
- * @param {function} callback
- * @returns {void}
- */
-FX.doOverlayInAnimation = function(config: OverlayInAnimationConfig): void {
-    const { dom, width, height, t, appearFrom, callback } = config;
-    let transform = "";
-    const startProps = { opacity: 0, webkitTransform: "", transform: "" };
-
-    if (["top", "bottom"].includes(appearFrom)) {
-        transform = `scale(0, 1) translate3d(0,${
-            appearFrom === "bottom" ? height : -1 * height
-        }px,0)`;
-    } else {
-        transform = `scale(1, 0) translate3d(${appearFrom === "right" ? width : -1 * width}px,0,0)`;
-    }
-
-    startProps.webkitTransform = transform;
-    startProps.transform = transform;
-
-    const endProps = {
-        zIndex: 102,
-        webkitTransform: "scale(1, 1) translate3d(0,0,0)",
-        transform: "scale(1, 1) translate3d(0,0,0)",
-        opacity: 1
-    };
-
-    FX.doTransitionAnimation({
-        element: dom,
-        startProps,
-        transitionProps: [`opacity ${t}ms ease-out`, `transform ${t}ms ease-out`],
-        endProps: endProps,
-        endAfter: t,
-        endCallback: (): void => {
-            resetCSSAndFireCallback(dom, callback);
-        }
-    });
 };
 
 /**

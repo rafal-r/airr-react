@@ -3,6 +3,7 @@ import { SyntheticEvent } from "react";
 import { PureComponent, ReactNode, createRef, CSSProperties } from "react";
 import FX from "./FX";
 import { Placement } from "./airr-react";
+import { doOverlayAnimation } from "./MayerHelper";
 
 interface MayerButtonProps {
     /**
@@ -126,7 +127,7 @@ export default class Mayer extends PureComponent<PreparedProps> {
         const refDOMCtn = this.refDOMCtn.current;
 
         if (refDOMCtn && refDOMMayer) {
-            FX.doOverlayInAnimation({
+            doOverlayAnimation({
                 dom: refDOMCtn,
                 width: refDOMMayer.clientWidth,
                 height: refDOMMayer.clientHeight,
@@ -171,7 +172,7 @@ export default class Mayer extends PureComponent<PreparedProps> {
         const refDOMCtn = this.refDOMCtn.current;
 
         if (refDOMCtn && refDOMMayer) {
-            FX.doOverlayOutAnimation({
+            doOverlayAnimation({
                 dom: refDOMCtn,
                 height: refDOMMayer.clientHeight,
                 width: refDOMMayer.clientWidth,
