@@ -3,66 +3,52 @@ import { CSSProperties } from "react";
 import { clearElementAnimationsStyles } from "../FXHelpers";
 import { Direction } from "../airr-react.d";
 
-interface NavbarMockTitleAnimationConfig {
+interface NavbarTitleElementAnimationConfig {
     element: HTMLElement;
     direction: Direction;
     mockTextSpanWidth: number;
     animationTime: number;
-}
-interface NavbarTitleAnimationConfig extends NavbarMockTitleAnimationConfig {
-    titleNodeWidth: number;
+    titleNodeWidth?: number;
+    target: "title" | "mock-title";
 }
 export function getCommonTransitionsSpec(animationTime: number): string[] {
     return [`opacity ${animationTime}ms ease-out`, `transform ${animationTime}ms ease-out`];
 }
-export function doNavbarTitleAnimation({
+export function doNavbarTitleElementAnimation({
+    target,
     element,
+    direction,
+    mockTextSpanWidth,
     titleNodeWidth,
-    direction,
-    mockTextSpanWidth,
     animationTime
-}: NavbarTitleAnimationConfig): void {
-    const transform = `translate3d(${(titleNodeWidth / 2 + mockTextSpanWidth / 2) * direction +
-        "px"},0,0)`;
-    const endTransform = "translate3d(0,0,0)";
+}: NavbarTitleElementAnimationConfig): void {
+    let startTransform: string, endTransform: string, startOpacity: number, endOpacity: number;
 
-    FX.doTransitionAnimation({
-        element,
-        startProps: {
-            WebkitTransform: transform,
-            transform,
-            opacity: 0
-        },
-        transitionProps: getCommonTransitionsSpec(animationTime),
-        endProps: {
-            WebkitTransform: endTransform,
-            transform: endTransform,
-            opacity: 1
-        },
-        endAfter: animationTime
-    });
-}
-export function doNavbarMockTitleAnimation({
-    element,
-    direction,
-    mockTextSpanWidth,
-    animationTime
-}: NavbarMockTitleAnimationConfig): void {
-    const startTransform = "translate3d(0,0,0)";
-    const endTransform = `translate3d(${mockTextSpanWidth * direction * -1 + "px"},0,0)`;
+    if (target === "title" && titleNodeWidth) {
+        startTransform = `translate3d(${(titleNodeWidth / 2 + mockTextSpanWidth / 2) * direction +
+            "px"},0,0)`;
+        endTransform = "translate3d(0,0,0)";
+        startOpacity = 0;
+        endOpacity = 1;
+    } else {
+        startTransform = "translate3d(0,0,0)";
+        endTransform = `translate3d(${mockTextSpanWidth * direction * -1 + "px"},0,0)`;
+        startOpacity = 1;
+        endOpacity = 0;
+    }
 
     FX.doTransitionAnimation({
         element,
         startProps: {
             WebkitTransform: startTransform,
             transform: startTransform,
-            opacity: 1
+            opacity: startOpacity
         },
         transitionProps: getCommonTransitionsSpec(animationTime),
         endProps: {
             WebkitTransform: endTransform,
             transform: endTransform,
-            opacity: 0
+            opacity: endOpacity
         },
         endAfter: animationTime
     });
@@ -136,7 +122,8 @@ export function doNavbarItemsAnimation({
     const mockTextSpanWidth = mockTextSpan ? mockTextSpan.clientWidth : 0;
 
     if (titleNode) {
-        doNavbarTitleAnimation({
+        doNavbarTitleElementAnimation({
+            target: "title",
             element: titleNode,
             titleNodeWidth: titleNode.clientWidth,
             direction,
@@ -146,7 +133,8 @@ export function doNavbarItemsAnimation({
     }
 
     if (mockTitle) {
-        doNavbarMockTitleAnimation({
+        doNavbarTitleElementAnimation({
+            target: "mock-title",
             element: mockTitle,
             direction,
             mockTextSpanWidth,

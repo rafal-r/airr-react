@@ -4,9 +4,11 @@ import { Props } from "../SceneRenderer.d";
 interface ChildrenRendererProps {
     children: Props["children"];
 }
-export default React.memo<ChildrenRendererProps>(function ChildrenRenderer({
+const ChildrenRenderer = React.memo<ChildrenRendererProps>(function ChildrenRenderer({
     children,
     ...rest
-}: ChildrenRendererProps): any {
+}: ChildrenRendererProps): React.ReactElement {
     return typeof children === "function" ? children(rest) : children;
 });
+ChildrenRenderer.displayName = "ChildrenRenderer";
+export default ChildrenRenderer;

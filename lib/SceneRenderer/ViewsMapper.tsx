@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactNode } from "react";
+import { ReactElement } from "react";
 import { Props } from "../SceneRenderer.d";
 import ViewRenderer from "../ViewRenderer";
 
@@ -8,13 +8,13 @@ export interface ViewsMapperProps {
     activeViewName: Props["activeViewName"];
     refsCOMPViews: Props["refsCOMPViews"];
 }
-export default React.memo<ViewsMapperProps>(function ViewsMapper({
+const ViewsMapper = React.memo<ViewsMapperProps>(function ViewsMapper({
     views,
     activeViewName,
     refsCOMPViews
 }: ViewsMapperProps): any {
     return views.map(
-        (item): ReactNode => {
+        (item): ReactElement => {
             if (item.props.name === activeViewName) {
                 item.props.active = true;
             } else {
@@ -31,3 +31,5 @@ export default React.memo<ViewsMapperProps>(function ViewsMapper({
         }
     );
 });
+ViewsMapper.displayName = "ViewsMapper";
+export default ViewsMapper;

@@ -6,7 +6,7 @@ import Mayer from "../Mayer";
 interface MayersRendererProps {
     mayers: Props["mayers"];
 }
-export default React.memo<MayersRendererProps>(function MayersRenderer({
+const MayersRenderer = React.memo<MayersRendererProps>(function MayersRenderer({
     mayers
 }: MayersRendererProps): any {
     return mayers.map(
@@ -15,3 +15,5 @@ export default React.memo<MayersRendererProps>(function MayersRenderer({
         }
     );
 });
+MayersRenderer.displayName = "MayersRenderer";
+export default MayersRenderer;

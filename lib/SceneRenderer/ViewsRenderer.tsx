@@ -9,14 +9,14 @@ interface ViewsRendererProps extends ViewsMapperProps {
     containersHeight: Props["containersHeight"];
 }
 
-export default React.memo<ViewsRendererProps>(function ViewsRenderer({
+const ViewsRenderer = React.memo<ViewsRendererProps>(function ViewsRenderer({
     views,
     className = "",
     refDOMContainer,
     activeViewName,
     containersHeight,
     refsCOMPViews
-}: ViewsRendererProps): ReactElement<any> {
+}: ViewsRendererProps): ReactElement {
     return (
         <div
             className={"airr-container " + className}
@@ -31,3 +31,5 @@ export default React.memo<ViewsRendererProps>(function ViewsRenderer({
         </div>
     );
 });
+ViewsRenderer.displayName = "ViewsRenderer";
+export default ViewsRenderer;

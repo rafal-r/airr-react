@@ -16,7 +16,7 @@ const SidepanelRenderer = React.memo<SidepanelRendererProps>(function SidepanelR
     visibilityCallback,
     sceneHasMayers,
     props
-}: SidepanelRendererProps): any {
+}: SidepanelRendererProps): React.ReactElement {
     props.sceneHasMayers = sceneHasMayers;
     if (!props.ref) {
         props.ref = refCOMPSidepanel;

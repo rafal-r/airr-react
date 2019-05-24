@@ -6,9 +6,11 @@ interface BlankMaskRendererProps {
     GUIDisabled: Props["GUIDisabled"];
     GUIDisableCover: Props["GUIDisableCover"];
 }
-export default React.memo<BlankMaskRendererProps>(function BlankMaskRenderer({
+const BlankMaskRenderer = React.memo<BlankMaskRendererProps>(function BlankMaskRenderer({
     GUIDisabled,
     GUIDisableCover
-}: BlankMaskRendererProps): ReactElement<any> {
+}: BlankMaskRendererProps): ReactElement {
     return GUIDisabled && <div className="airr-blank-mask">{GUIDisableCover}</div>;
 });
+BlankMaskRenderer.displayName = "BlankMaskRenderer";
+export default BlankMaskRenderer;

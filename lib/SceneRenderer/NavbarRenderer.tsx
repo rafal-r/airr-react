@@ -31,7 +31,7 @@ const NavbarRenderer = React.memo<NavbarRendererProps>(function NavbarRenderer({
     navbarClass,
     refDOMNavbar,
     navbarHeight
-}: NavbarRendererProps): any {
+}: NavbarRendererProps): React.ReactElement {
     if (navbar) {
         let mockTitle = null;
         let title: ReactNode;
