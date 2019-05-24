@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Placement } from "./airr-react";
 
 export function getProperContent(content: ReactNode, children: ReactNode): ReactNode {
     if (content === undefined) {
@@ -6,4 +7,13 @@ export function getProperContent(content: ReactNode, children: ReactNode): React
     }
 
     return content;
+}
+export function isTopOrLeftPlacement(placement: Placement): boolean {
+    return placement === "top" || placement === "left";
+}
+export function isBottomOrRightPlacement(placement: Placement): boolean {
+    return placement === "bottom" || placement === "right";
+}
+export function isTopOrBottomPlacement(placement: Placement): boolean {
+    return placement === "bottom" || placement === "top";
 }

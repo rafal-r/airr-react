@@ -3,7 +3,7 @@ import { PureComponent, ReactNode } from "react";
 import { isMobileDevice, supportPassive } from "./eventHelpers";
 import { Placement, TouchPosition } from "./airr-react";
 import { Props, Axis, DOMNodesStyles } from "./Sidepanel.d";
-import { getProperContent } from "./Utils";
+import { getProperContent, isTopOrLeftPlacement, isBottomOrRightPlacement } from "./Utils";
 
 export default class Sidepanel extends PureComponent<Props> {
     static defaultProps: Props = {
@@ -132,8 +132,8 @@ export default class Sidepanel extends PureComponent<Props> {
 
         if (
             !dragCtnOnTouchPath &&
-            ((["left", "top"].indexOf(this.props.side) !== -1 && pos < 20) ||
-                (["right", "bottom"].indexOf(this.props.side) !== -1 && pos > this.hiddenVal - 20))
+            ((isTopOrLeftPlacement(this.props.side) && pos < 20) ||
+                (isBottomOrRightPlacement(this.props.side) && pos > this.hiddenVal - 20))
         ) {
             //corner touch, show moves
 
@@ -177,8 +177,8 @@ export default class Sidepanel extends PureComponent<Props> {
         if (e.target === this.refDOMBgLayer.current) {
             //tap to hide
             if (
-                (["left", "top"].indexOf(this.props.side) !== -1 && this.currentVal === 0) ||
-                (["right", "bottom"].indexOf(this.props.side) !== -1 && this.currentVal)
+                (isTopOrLeftPlacement(this.props.side) && this.currentVal === 0) ||
+                (isBottomOrRightPlacement(this.props.side) && this.currentVal)
             ) {
                 const hidedragctn = (e: TouchEvent | MouseEvent): void => {
                     this.sceneDOM.removeEventListener(this.endEvent, hidedragctn);
@@ -199,7 +199,7 @@ export default class Sidepanel extends PureComponent<Props> {
         let newVal,
             progress = 0;
 
-        if (["left", "top"].indexOf(this.props.side) !== -1) {
+        if (isTopOrLeftPlacement(this.props.side)) {
             if (pos <= -1 * this.hiddenVal) {
                 newVal = this.hiddenVal + pos;
             } else {
@@ -243,9 +243,8 @@ export default class Sidepanel extends PureComponent<Props> {
 
         if (
             moveAxis === this.axis &&
-            ((["left", "top"].indexOf(this.props.side) !== -1 &&
-                this.getPosition(e, moveAxis) < this.size) ||
-                (["right", "bottom"].indexOf(this.props.side) !== -1 &&
+            ((isTopOrLeftPlacement(this.props.side) && this.getPosition(e, moveAxis) < this.size) ||
+                (isBottomOrRightPlacement(this.props.side) &&
                     this.getPosition(e, moveAxis) > this.hiddenVal - this.size))
         ) {
             change = this.getPosition(e, this.axis) - this.lastTouch["client" + this.axis];
@@ -283,7 +282,7 @@ export default class Sidepanel extends PureComponent<Props> {
 
         if (!this.animating) {
             if (this.currentVal !== this.shownVal && this.currentVal !== this.hiddenVal) {
-                if (["left", "top"].indexOf(this.props.side) !== -1) {
+                if (isTopOrLeftPlacement(this.props.side)) {
                     if (this.currentVal >= this.hiddenVal / 2) {
                         val = this.shownVal;
                     } else {
