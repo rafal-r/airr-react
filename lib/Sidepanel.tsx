@@ -327,19 +327,12 @@ export default class Sidepanel extends PureComponent<Props> {
         if (newVal !== this.currentVal) {
             this.currentVal = newVal;
             const newProgress = progress > 1 ? 1 : progress < 0 ? 0 : progress;
-
+            const transform = this.transformScheme.replace("%v", String(this.currentVal));
             this.refDOMBgLayer.current.style.opacity = String(
                 newProgress * this.props.bgLayerOpacity
             );
-
-            this.refDOMDragCtn.current.style.webkitTransform = this.transformScheme.replace(
-                "%v",
-                String(this.currentVal)
-            );
-            this.refDOMDragCtn.current.style.transform = this.transformScheme.replace(
-                "%v",
-                String(this.currentVal)
-            );
+            this.refDOMDragCtn.current.style.webkitTransform = transform;
+            this.refDOMDragCtn.current.style.transform = transform;
         }
     }
 
