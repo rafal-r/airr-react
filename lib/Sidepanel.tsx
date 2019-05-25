@@ -379,7 +379,7 @@ export default class Sidepanel extends PureComponent<Props> {
         );
     };
 
-    private updateSideProps(): void {
+    private updateSideProps = (): void => {
         if (isLeftOrRightPlacement(this.props.side)) {
             this.size = this.props.sceneWidth * this.props.sizeFactor;
             this.sceneSize = this.props.sceneWidth;
@@ -398,7 +398,7 @@ export default class Sidepanel extends PureComponent<Props> {
         updateShownVal(this);
         updateCurrentVal(this);
         updateLastVals(this);
-    }
+    };
 
     componentDidUpdate(prevProps: Props): void {
         if (prevProps.enabled !== this.props.enabled) {
