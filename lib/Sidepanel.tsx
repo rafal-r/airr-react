@@ -4,6 +4,11 @@ import { isMobileDevice, supportPassive } from "./eventHelpers";
 import { Placement, TouchPosition } from "./airr-react";
 import { Props, Axis, DOMNodesStyles } from "./Sidepanel.d";
 import { getProperContent, isTopOrLeftPlacement, isBottomOrRightPlacement } from "./Utils";
+import {
+    makeNewValStickyToLimits,
+    getProgressValueForTLSide,
+    getProgressValueForBRSide
+} from "./SidepanelHelpers";
 
 export default class Sidepanel extends PureComponent<Props> {
     static defaultProps: Props = {
@@ -250,22 +255,12 @@ export default class Sidepanel extends PureComponent<Props> {
             change = this.getPosition(e, this.axis) - this.lastTouch["client" + this.axis];
             newVal = this.currentVal + change;
 
-            if (this.props.side === "left" || this.props.side === "top") {
-                if (newVal < this.hiddenVal) {
-                    newVal = this.hiddenVal;
-                } else if (newVal > this.shownVal) {
-                    newVal = this.shownVal;
-                }
-
-                progress = 1 - Math.abs(newVal / this.size);
+            if (isTopOrLeftPlacement(this.props.side)) {
+                newVal = makeNewValStickyToLimits(newVal, this.hiddenVal, this.shownVal);
+                progress = getProgressValueForTLSide(newVal, this.size);
             } else {
-                if (newVal > this.hiddenVal) {
-                    newVal = this.hiddenVal;
-                } else if (newVal < this.shownVal) {
-                    newVal = this.shownVal;
-                }
-
-                progress = (this.sceneSize - newVal) / this.size;
+                newVal = makeNewValStickyToLimits(newVal, this.shownVal, this.hiddenVal);
+                progress = getProgressValueForBRSide(newVal, this.size, this.sceneSize);
             }
 
             this.updateDOMItemsPosition(newVal, progress);
