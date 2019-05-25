@@ -32,12 +32,10 @@ function fixProgressValue(progress: number): number {
     return progress;
 }
 export function updateDOMItemsStyles(newVal: number, progress: number, sidepanel: Sidepanel): void {
-    if (newVal !== sidepanel.getCurrentVal()) {
-        sidepanel.setCurrentVal(newVal);
+    if (newVal !== sidepanel.currentVal) {
+        sidepanel.currentVal = newVal;
         const newProgress = fixProgressValue(progress);
-        const transform = sidepanel
-            .getTransformScheme()
-            .replace("%v", String(sidepanel.getCurrentVal()));
+        const transform = sidepanel.transformScheme.replace("%v", String(sidepanel.currentVal));
         const dragCtn = sidepanel.refDOMDragCtn.current;
         sidepanel.refDOMBgLayer.current.style.opacity = String(
             newProgress * sidepanel.props.bgLayerOpacity

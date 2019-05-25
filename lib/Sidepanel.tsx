@@ -25,12 +25,13 @@ export default class Sidepanel extends PureComponent<Props> {
         bgLayerOpacity: 0.7,
         sceneHasMayers: false
     };
+
+    currentVal: number;
+    transformScheme: string;
     private size: number;
     private sceneSize: number;
-    private currentVal: number;
     private hiddenVal: number;
     private shownVal: number;
-    private transformScheme: string;
     private axis: Axis;
     private lastSide: Placement;
     private lastSizeFactor: number;
@@ -76,15 +77,6 @@ export default class Sidepanel extends PureComponent<Props> {
         this.disable();
     }
 
-    getTransformScheme(): string {
-        return this.transformScheme;
-    }
-    getCurrentVal(): number {
-        return this.currentVal;
-    }
-    setCurrentVal(v: number): void {
-        this.currentVal = v;
-    }
     private getPosition = (e: TouchEvent | MouseEvent, axis: Axis): number => {
         const obj = "changedTouches" in e ? e.changedTouches[0] : e;
         return axis === "X" ? obj.clientX : obj.clientY;
