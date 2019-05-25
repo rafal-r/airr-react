@@ -7,7 +7,9 @@ import { getProperContent, isTopOrLeftPlacement, isBottomOrRightPlacement } from
 import {
     makeNewValStickyToLimits,
     getProgressValueForTLSide,
-    getProgressValueForBRSide
+    getProgressValueForBRSide,
+    updateDOMItemsStyles,
+    bubbleChildTillParent
 } from "./SidepanelHelpers";
 
 export default class Sidepanel extends PureComponent<Props> {
@@ -74,22 +76,15 @@ export default class Sidepanel extends PureComponent<Props> {
         this.disable();
     }
 
-    private __bubbleChildTillParent(
-        child: Element,
-        parent: Element,
-        tillElements: Element[]
-    ): boolean {
-        if (child.parentNode === parent) {
-            return true;
-        } else {
-            if (!child.parentElement || tillElements.indexOf(child.parentElement) !== -1) {
-                return false;
-            } else {
-                return this.__bubbleChildTillParent(child.parentElement, parent, tillElements);
-            }
-        }
+    getTransformScheme(): string {
+        return this.transformScheme;
     }
-
+    getCurrentVal(): number {
+        return this.currentVal;
+    }
+    setCurrentVal(v: number): void {
+        this.currentVal = v;
+    }
     private getPosition = (e: TouchEvent | MouseEvent, axis: Axis): number => {
         const obj = "changedTouches" in e ? e.changedTouches[0] : e;
         return axis === "X" ? obj.clientX : obj.clientY;
@@ -126,7 +121,7 @@ export default class Sidepanel extends PureComponent<Props> {
             if (
                 e.target instanceof Element &&
                 (e.target === this.refDOMDragCtn.current ||
-                    this.__bubbleChildTillParent(e.target, this.refDOMDragCtn.current, [
+                    bubbleChildTillParent(e.target, this.refDOMDragCtn.current, [
                         this.refDOMDragCtn.current.parentElement,
                         document.body
                     ]))
@@ -220,7 +215,7 @@ export default class Sidepanel extends PureComponent<Props> {
             progress = (this.sceneSize - pos) / this.size;
         }
 
-        this.updateDOMItemsPosition(newVal, progress);
+        updateDOMItemsStyles(newVal, progress, this);
 
         this.lastTouch = this.getLastPosition(e);
 
@@ -263,7 +258,7 @@ export default class Sidepanel extends PureComponent<Props> {
                 progress = getProgressValueForBRSide(newVal, this.size, this.sceneSize);
             }
 
-            this.updateDOMItemsPosition(newVal, progress);
+            updateDOMItemsStyles(newVal, progress, this);
         }
 
         this.lastTouch = this.getLastPosition(e);
@@ -322,19 +317,6 @@ export default class Sidepanel extends PureComponent<Props> {
     isShown = (): boolean => {
         return this.refDOM.current.offsetParent !== null;
     };
-
-    private updateDOMItemsPosition(newVal: number, progress: number): void {
-        if (newVal !== this.currentVal) {
-            this.currentVal = newVal;
-            const newProgress = progress > 1 ? 1 : progress < 0 ? 0 : progress;
-            const transform = this.transformScheme.replace("%v", String(this.currentVal));
-            this.refDOMBgLayer.current.style.opacity = String(
-                newProgress * this.props.bgLayerOpacity
-            );
-            this.refDOMDragCtn.current.style.webkitTransform = transform;
-            this.refDOMDragCtn.current.style.transform = transform;
-        }
-    }
 
     private translateTo = (finishVal: number): Promise<boolean> => {
         return new Promise(
