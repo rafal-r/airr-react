@@ -1,4 +1,8 @@
 import { Sidepanel } from "./Airr";
+import { Axis, DOMNodesStyles } from "./Sidepanel.d";
+import { isTopOrLeftPlacement, isLeftOrRightPlacement } from "./Utils";
+import { Placement } from "./airr-react";
+import { CSSProperties } from "react";
 
 export function makeNewValStickyToLimits(newVal: number, limit1: number, limit2: number): number {
     if (newVal < limit1) {
@@ -58,4 +62,68 @@ export function bubbleChildTillParent(
             return bubbleChildTillParent(child.parentElement, parent, tillElements);
         }
     }
+}
+export function getPosition(e: TouchEvent | MouseEvent, axis: Axis): number {
+    const obj = "changedTouches" in e ? e.changedTouches[0] : e;
+    return axis === "X" ? obj.clientX : obj.clientY;
+}
+
+export function getLastPosition(e: TouchEvent | MouseEvent): { clientX: number; clientY: number } {
+    const obj = "changedTouches" in e ? e.changedTouches[0] : e;
+    return { clientX: obj.clientX, clientY: obj.clientY };
+}
+export function getEventPos(e: TouchEvent | MouseEvent, axis: Axis): number {
+    return "changedTouches" in e ? e.changedTouches[0]["client" + axis] : e["client" + axis];
+}
+export function updateShownVal(sidepanel: Sidepanel): void {
+    if (isTopOrLeftPlacement(sidepanel.props.side)) {
+        sidepanel.shownVal = 0;
+    } else {
+        sidepanel.shownVal = sidepanel.sceneSize - sidepanel.size;
+    }
+}
+export function updateCurrentVal(sidepanel: Sidepanel): void {
+    if (sidepanel.props.isShown) {
+        sidepanel.currentVal = sidepanel.shownVal;
+    } else {
+        sidepanel.currentVal = sidepanel.hiddenVal;
+    }
+}
+export function updateLastVals(sidepanel: Sidepanel): void {
+    sidepanel.lastSide = sidepanel.props.side;
+    sidepanel.lastSizeFactor = sidepanel.props.sizeFactor;
+    sidepanel.lastSceneWidth = sidepanel.props.sceneWidth;
+    sidepanel.lastSceneHeight = sidepanel.props.sceneHeight;
+}
+export function getClassName(side: Placement, enabled: boolean): string {
+    return "airr-sidepanel " + side + " " + (enabled ? "enabled" : "disabled");
+}
+export function getDOMNodesStyles(sidepanel: Sidepanel): DOMNodesStyles {
+    const dragCtnStyle = { width: "", height: "", transform: "", WebkitTransform: "" };
+    let sidepanelStyle: CSSProperties;
+    let bgLayerStyle: CSSProperties;
+    let dragCtnTransform: string;
+
+    if (isLeftOrRightPlacement(sidepanel.props.side)) {
+        dragCtnStyle.width = sidepanel.size + "px";
+        dragCtnStyle.height = "100%";
+    } else {
+        //top,bottom
+        dragCtnStyle.height = sidepanel.size + "px";
+        dragCtnStyle.width = "100%";
+    }
+
+    if (sidepanel.props.isShown) {
+        dragCtnTransform = sidepanel.transformScheme.replace("%v", String(sidepanel.shownVal));
+        sidepanelStyle = { display: "block" };
+        bgLayerStyle = { opacity: sidepanel.props.bgLayerOpacity };
+    } else {
+        dragCtnTransform = sidepanel.transformScheme.replace("%v", String(sidepanel.hiddenVal));
+        sidepanelStyle = { display: "none" };
+        bgLayerStyle = { opacity: 0 };
+    }
+    dragCtnStyle.WebkitTransform = dragCtnTransform;
+    dragCtnStyle.transform = dragCtnTransform;
+
+    return { dragCtnStyle, sidepanelStyle, bgLayerStyle };
 }

@@ -2,14 +2,27 @@ import * as React from "react";
 import { PureComponent, ReactNode } from "react";
 import { isMobileDevice, supportPassive } from "./eventHelpers";
 import { Placement, TouchPosition } from "./airr-react";
-import { Props, Axis, DOMNodesStyles } from "./Sidepanel.d";
-import { getProperContent, isTopOrLeftPlacement, isBottomOrRightPlacement } from "./Utils";
+import { Props, Axis } from "./Sidepanel.d";
+import {
+    getProperContent,
+    isTopOrLeftPlacement,
+    isBottomOrRightPlacement,
+    isLeftOrRightPlacement
+} from "./Utils";
 import {
     makeNewValStickyToLimits,
     getProgressValueForTLSide,
     getProgressValueForBRSide,
     updateDOMItemsStyles,
-    bubbleChildTillParent
+    bubbleChildTillParent,
+    getPosition,
+    getLastPosition,
+    getEventPos,
+    updateShownVal,
+    updateCurrentVal,
+    updateLastVals,
+    getClassName,
+    getDOMNodesStyles
 } from "./SidepanelHelpers";
 
 export default class Sidepanel extends PureComponent<Props> {
@@ -28,29 +41,29 @@ export default class Sidepanel extends PureComponent<Props> {
 
     currentVal: number;
     transformScheme: string;
-    private size: number;
-    private sceneSize: number;
-    private hiddenVal: number;
-    private shownVal: number;
-    private axis: Axis;
-    private lastSide: Placement;
-    private lastSizeFactor: number;
+    size: number;
+    sceneSize: number;
+    hiddenVal: number;
+    shownVal: number;
+    axis: Axis;
+    lastSide: Placement;
+    lastSizeFactor: number;
 
     refDOMDragCtn = React.createRef<HTMLDivElement>();
     refDOMBgLayer = React.createRef<HTMLDivElement>();
     refDOM = React.createRef<HTMLDivElement>();
     sceneDOM: Node;
 
-    private lastTouch: TouchPosition;
+    lastTouch: TouchPosition;
 
-    private startEvent = isMobileDevice ? "touchstart" : "mousedown";
-    private moveEvent = isMobileDevice ? "touchmove" : "mousemove";
-    private endEvent = isMobileDevice ? "touchend" : "mouseup";
+    startEvent = isMobileDevice ? "touchstart" : "mousedown";
+    moveEvent = isMobileDevice ? "touchmove" : "mousemove";
+    endEvent = isMobileDevice ? "touchend" : "mouseup";
 
-    private animating = false;
+    animating = false;
 
-    private lastSceneWidth: number;
-    private lastSceneHeight: number;
+    lastSceneWidth: number;
+    lastSceneHeight: number;
 
     enable(): void {
         this.sceneDOM.removeEventListener(this.startEvent, this.handleTouchStart);
@@ -77,27 +90,11 @@ export default class Sidepanel extends PureComponent<Props> {
         this.disable();
     }
 
-    private getPosition = (e: TouchEvent | MouseEvent, axis: Axis): number => {
-        const obj = "changedTouches" in e ? e.changedTouches[0] : e;
-        return axis === "X" ? obj.clientX : obj.clientY;
-    };
-
-    private getLastPosition = (
-        e: TouchEvent | MouseEvent
-    ): { clientX: number; clientY: number } => {
-        const obj = "changedTouches" in e ? e.changedTouches[0] : e;
-        return { clientX: obj.clientX, clientY: obj.clientY };
-    };
-
-    private getEventPos = (e: TouchEvent | MouseEvent, axis: Axis): number => {
-        return "changedTouches" in e ? e.changedTouches[0]["client" + axis] : e["client" + axis];
-    };
-
     private handleTouchStart = (e: TouchEvent | MouseEvent): void => {
         if (this.props.sceneHasMayers) {
             return;
         }
-        const pos = this.getPosition(e, this.axis);
+        const pos = getPosition(e, this.axis);
         let dragCtnOnTouchPath = false;
         // @ts-ignore
         const path = e.path || (e.composedPath && e.composedPath());
@@ -174,7 +171,7 @@ export default class Sidepanel extends PureComponent<Props> {
             ) {
                 const hidedragctn = (e: TouchEvent | MouseEvent): void => {
                     this.sceneDOM.removeEventListener(this.endEvent, hidedragctn);
-                    if (Math.abs(pos - this.getPosition(e, this.axis)) <= 2.5) {
+                    if (Math.abs(pos - getPosition(e, this.axis)) <= 2.5) {
                         this.hide();
                     }
                 };
@@ -183,12 +180,12 @@ export default class Sidepanel extends PureComponent<Props> {
             }
         }
 
-        this.lastTouch = this.getLastPosition(e);
+        this.lastTouch = getLastPosition(e);
     };
 
     private handleShowTouchMove = (e: TouchEvent | MouseEvent): void => {
-        const pos = this.getPosition(e, this.axis);
-        let newVal,
+        const pos = getPosition(e, this.axis);
+        let newVal: number,
             progress = 0;
 
         if (isTopOrLeftPlacement(this.props.side)) {
@@ -209,7 +206,7 @@ export default class Sidepanel extends PureComponent<Props> {
 
         updateDOMItemsStyles(newVal, progress, this);
 
-        this.lastTouch = this.getLastPosition(e);
+        this.lastTouch = getLastPosition(e);
 
         if (!supportPassive) {
             e.preventDefault();
@@ -224,8 +221,8 @@ export default class Sidepanel extends PureComponent<Props> {
 
         if (this.lastTouch) {
             if (
-                Math.abs(this.lastTouch.clientX - this.getEventPos(e, "X")) >=
-                Math.abs(this.lastTouch.clientY - this.getEventPos(e, "Y"))
+                Math.abs(this.lastTouch.clientX - getEventPos(e, "X")) >=
+                Math.abs(this.lastTouch.clientY - getEventPos(e, "Y"))
             ) {
                 moveAxis = "X";
             } else {
@@ -235,11 +232,11 @@ export default class Sidepanel extends PureComponent<Props> {
 
         if (
             moveAxis === this.axis &&
-            ((isTopOrLeftPlacement(this.props.side) && this.getPosition(e, moveAxis) < this.size) ||
+            ((isTopOrLeftPlacement(this.props.side) && getPosition(e, moveAxis) < this.size) ||
                 (isBottomOrRightPlacement(this.props.side) &&
-                    this.getPosition(e, moveAxis) > this.hiddenVal - this.size))
+                    getPosition(e, moveAxis) > this.hiddenVal - this.size))
         ) {
-            change = this.getPosition(e, this.axis) - this.lastTouch["client" + this.axis];
+            change = getPosition(e, this.axis) - this.lastTouch["client" + this.axis];
             newVal = this.currentVal + change;
 
             if (isTopOrLeftPlacement(this.props.side)) {
@@ -253,7 +250,7 @@ export default class Sidepanel extends PureComponent<Props> {
             updateDOMItemsStyles(newVal, progress, this);
         }
 
-        this.lastTouch = this.getLastPosition(e);
+        this.lastTouch = getLastPosition(e);
         if (!supportPassive) {
             e.preventDefault();
         }
@@ -382,38 +379,25 @@ export default class Sidepanel extends PureComponent<Props> {
         );
     };
 
-    private updateSideProps(side: Placement, sizeFactor: number): void {
-        if (side === "left" || side === "right") {
-            this.size = this.props.sceneWidth * sizeFactor;
+    private updateSideProps(): void {
+        if (isLeftOrRightPlacement(this.props.side)) {
+            this.size = this.props.sceneWidth * this.props.sizeFactor;
             this.sceneSize = this.props.sceneWidth;
-            this.hiddenVal = side === "left" ? -1 * this.size : this.props.sceneWidth;
+            this.hiddenVal = this.props.side === "left" ? -1 * this.size : this.props.sceneWidth;
             this.transformScheme = "translate3d(%vpx,0,0)";
             this.axis = "X";
         } else {
             //top,bottom
-            this.size = this.props.sceneHeight * sizeFactor;
+            this.size = this.props.sceneHeight * this.props.sizeFactor;
             this.sceneSize = this.props.sceneHeight;
-            this.hiddenVal = side === "top" ? -1 * this.size : this.props.sceneHeight;
+            this.hiddenVal = this.props.side === "top" ? -1 * this.size : this.props.sceneHeight;
             this.transformScheme = "translate3d(0,%vpx,0)";
             this.axis = "Y";
         }
 
-        if (side === "top" || side === "left") {
-            this.shownVal = 0;
-        } else {
-            this.shownVal = this.sceneSize - this.size;
-        }
-
-        if (this.props.isShown) {
-            this.currentVal = this.shownVal;
-        } else {
-            this.currentVal = this.hiddenVal;
-        }
-
-        this.lastSide = side;
-        this.lastSizeFactor = sizeFactor;
-        this.lastSceneWidth = this.props.sceneWidth;
-        this.lastSceneHeight = this.props.sceneHeight;
+        updateShownVal(this);
+        updateCurrentVal(this);
+        updateLastVals(this);
     }
 
     componentDidUpdate(prevProps: Props): void {
@@ -438,57 +422,14 @@ export default class Sidepanel extends PureComponent<Props> {
             this.props.sceneWidth !== this.lastSceneWidth ||
             this.props.sceneHeight !== this.lastSceneHeight
         ) {
-            this.updateSideProps(this.props.side, this.props.sizeFactor);
+            this.updateSideProps();
         }
-    }
-
-    private getDOMNodesStyles(): DOMNodesStyles {
-        const dragCtnStyle = { width: "", height: "", transform: "", WebkitTransform: "" };
-        let sidepanelStyle;
-        let bgLayerStyle;
-        if (this.props.side === "left" || this.props.side === "right") {
-            dragCtnStyle.width = this.size + "px";
-            dragCtnStyle.height = "100%";
-        } else {
-            //top,bottom
-            dragCtnStyle.height = this.size + "px";
-            dragCtnStyle.width = "100%";
-        }
-
-        if (this.props.isShown) {
-            dragCtnStyle.WebkitTransform = this.transformScheme.replace(
-                "%v",
-                String(this.shownVal)
-            );
-            dragCtnStyle.transform = this.transformScheme.replace("%v", String(this.shownVal));
-            sidepanelStyle = { display: "block" };
-            bgLayerStyle = { opacity: this.props.bgLayerOpacity };
-        } else {
-            dragCtnStyle.WebkitTransform = this.transformScheme.replace(
-                "%v",
-                String(this.hiddenVal)
-            );
-            dragCtnStyle.transform = this.transformScheme.replace("%v", String(this.hiddenVal));
-            sidepanelStyle = { display: "none" };
-            bgLayerStyle = { opacity: 0 };
-        }
-
-        return { dragCtnStyle, sidepanelStyle, bgLayerStyle };
-    }
-
-    private getClassName(): string {
-        return (
-            "airr-sidepanel " +
-            this.props.side +
-            " " +
-            (this.props.enabled ? "enabled" : "disabled")
-        );
     }
 
     render(): ReactNode {
-        const className = this.getClassName();
+        const className = getClassName(this.props.side, this.props.enabled);
         this.conditionalyUpdateSideProps();
-        const { dragCtnStyle, sidepanelStyle, bgLayerStyle } = this.getDOMNodesStyles();
+        const { dragCtnStyle, sidepanelStyle, bgLayerStyle } = getDOMNodesStyles(this);
 
         const content: ReactNode = getProperContent(this.content(), this.props.children);
 

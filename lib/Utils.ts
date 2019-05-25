@@ -8,6 +8,9 @@ export function getProperContent(content: ReactNode, children: ReactNode): React
 
     return content;
 }
+export function isLeftOrRightPlacement(placement: Placement): boolean {
+    return placement === "left" || placement === "right";
+}
 export function isTopOrLeftPlacement(placement: Placement): boolean {
     return placement === "top" || placement === "left";
 }
