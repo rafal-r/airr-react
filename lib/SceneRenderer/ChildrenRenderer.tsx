@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Props } from "../SceneRenderer.d";
+import { Props } from "../SceneRenderer";
 
 interface ChildrenRendererProps {
     children: Props["children"];

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ComponentClass } from "react";
-import { Props } from "../SceneRenderer.d";
-import { Props as SidepanelProps } from "../Sidepanel.d";
+import { Props } from "../SceneRenderer";
+import { Props as SidepanelProps } from "../Sidepanel";
 
 interface SidepanelRendererProps {
     type: ComponentClass<SidepanelProps, any>;

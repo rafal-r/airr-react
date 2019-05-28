@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ReactNode, SyntheticEvent, CSSProperties } from "react";
-import { Props } from "../SceneRenderer.d";
+import { Props } from "../SceneRenderer";
 
 interface NavbarRendererProps {
     navbar: Props["navbar"];

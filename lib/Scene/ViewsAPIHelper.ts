@@ -1,7 +1,8 @@
 import Scene from "../Scene";
-import { Props as ViewProps } from "../ViewRenderer";
-import { ViewConfig } from "../airr-react";
-import { Props, ViewsConfigItem } from "../Scene.d";
+// import { Props as ViewProps } from "../ViewRenderer";
+import { CommonViewProps } from "../ViewRenderer";
+import { ViewConfig } from "../Airr";
+import { Props, ViewsConfigItem } from "../Scene";
 import update from "immutability-helper";
 import { performViewsTransition, getViewsTransitionConfig } from "./ViewsAnimationHelpers";
 
@@ -12,7 +13,7 @@ export default class ViewsAPIHelper {
     static changeView(
         scene: Scene,
         view: string | ViewConfig,
-        viewProps: ViewProps | {} = {},
+        viewProps: CommonViewProps | {} = {},
         sceneProps: Props | {} = {}
     ): Promise<string> {
         let promiseToReturn: Promise<string>;
@@ -37,6 +38,7 @@ export default class ViewsAPIHelper {
                         });
 
                         let stateChange = {
+                            name: scene.props.name, //special fix for TS not to report missing 'name' prop error, TODO find better solution
                             views: update(scene.state.views, {
                                 [viewIndex]: {
                                     $set: newViewConfig

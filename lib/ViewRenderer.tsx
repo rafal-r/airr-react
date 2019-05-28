@@ -2,7 +2,7 @@ import * as React from "react";
 import { CSSProperties } from "react";
 import { PureComponent, ReactNode, RefObject } from "react";
 
-export interface CoreViewProps {
+export interface CommonViewProps {
     /**
      * The name of the view. Must be unique among others views in scene. Will be used as identification string
      */
@@ -23,17 +23,26 @@ export interface CoreViewProps {
      * Extra styles to use upon root DOM element of view.
      */
     style?: CSSProperties;
-}
-export interface Props extends CoreViewProps {
     /**
-     * Refference to view's root DOM element.
+     * Refference to view's root DOM element. Passed by parent scene. Do not overwrite.
      */
     refDOM?: RefObject<HTMLDivElement>;
     children?: ReactNode;
+    /**
+     * Custom user defined props
+     */
     [propname: string]: any;
 }
-export default class ViewRenderer extends PureComponent<Props> {
-    static defaultProps: Props = {
+// export interface Props extends CoreViewProps {
+//     /**
+//      * Refference to view's root DOM element.
+//      */
+//     refDOM?: RefObject<HTMLDivElement>;
+//     children?: ReactNode;
+//     [propname: string]: any;
+// }
+export default class ViewRenderer extends PureComponent<CommonViewProps> {
+    static defaultProps: CommonViewProps = {
         name: "",
         title: "",
         active: false,

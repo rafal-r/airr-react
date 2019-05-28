@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { Placement } from "./airr-react";
+import { Placement } from "./Airr";
 import {
     prepareElementForAnimaton,
     refreshElement,

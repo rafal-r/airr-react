@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ReactElement } from "react";
-import { Props } from "../SceneRenderer.d";
+import { Props } from "../SceneRenderer";
 
 interface BlankMaskRendererProps {
     GUIDisabled: Props["GUIDisabled"];

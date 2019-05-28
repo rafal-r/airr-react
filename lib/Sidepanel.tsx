@@ -1,8 +1,7 @@
 import * as React from "react";
-import { PureComponent, ReactNode } from "react";
+import { PureComponent, ReactNode, RefObject, CSSProperties } from "react";
 import { isMobileDevice, supportPassive } from "./eventHelpers";
-import { Placement, TouchPosition } from "./airr-react";
-import { Props, Axis } from "./Sidepanel.d";
+import { Placement, TouchPosition } from "./Airr";
 import {
     getProperContent,
     isTopOrLeftPlacement,
@@ -24,6 +23,57 @@ import {
     getClassName,
     getDOMNodesStyles
 } from "./SidepanelHelpers";
+
+export interface Props {
+    /**
+     * Side to which sidepanel will be attached
+     */
+    side: Placement;
+    /**
+     * Bool determining if sidepanel is shown or not
+     */
+    isShown: boolean;
+    /**
+     * Bool determining if sidepanel is enabled.
+     */
+    enabled: boolean;
+    /**
+     * Number between 0 and 1 determining how much size of whole screen sidepanel will take
+     */
+    sizeFactor: number;
+    /**
+     * Parent scene width dimension. Set by parent scene. Do not overwrite!.
+     */
+    sceneWidth: number;
+    /**
+     * Parent scene height dimension. Set by parent scene. Do not overwrite!.
+     */
+    sceneHeight: number;
+    /**
+     * Callback invoked when sidepanel changes its visibility during touch events. Set by parent scene. Do not overwrite!.
+     */
+    visibilityCallback: (isShown: boolean) => void;
+    /**
+     * Animation time in miliseconds
+     */
+    animationTime: number;
+    /**
+     * Boolean saying if parent scene has any open mayer. Set by parent scene. Do not overwrite!.
+     */
+    sceneHasMayers: boolean;
+    /**
+     * Opacity between 0 and 1
+     */
+    bgLayerOpacity: number;
+    children?: ReactNode;
+    ref?: RefObject<Sidepanel>;
+}
+export type Axis = "X" | "Y";
+export interface DOMNodesStyles {
+    dragCtnStyle: CSSProperties;
+    sidepanelStyle: CSSProperties;
+    bgLayerStyle: CSSProperties;
+}
 
 export default class Sidepanel extends PureComponent<Props> {
     static defaultProps: Props = {

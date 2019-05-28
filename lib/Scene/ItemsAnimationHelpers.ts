@@ -1,7 +1,7 @@
 import FX from "../FX";
 import { CSSProperties } from "react";
 import { clearElementAnimationsStyles } from "../FXHelpers";
-import { Direction } from "../airr-react.d";
+import { Direction } from "../Airr";
 
 interface NavbarTitleElementAnimationConfig {
     element: HTMLElement;

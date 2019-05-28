@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Placement } from "./airr-react";
+import { Placement } from "./Airr";
 
 export function getProperContent(content: ReactNode, children: ReactNode): ReactNode {
     if (content === undefined) {

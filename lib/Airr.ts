@@ -1,6 +1,15 @@
+import ViewRenderer from "./ViewRenderer";
+import SceneRenderer from "./SceneRenderer";
+import Mayer from "./Mayer";
+import Sidepanel from "./Sidepanel";
+import Scene from "./Scene";
+import View from "./View";
+import FX from "./FX";
+import { supportPassive, isMobileDevice } from "./eventHelpers";
 import { ReactNode, CSSProperties, ComponentClass } from "react";
-import { Props as ViewProps } from "./ViewRenderer";
-import { Props as SidepanelProps } from "./Sidepanel.d";
+// import { Props as ViewProps } from "./ViewRenderer";
+import { CommonViewProps } from "./ViewRenderer";
+import { Props as SidepanelProps } from "./Sidepanel";
 
 export type Placement = "top" | "bottom" | "left" | "right";
 export type AnimationType = "slide" | "overlay" | "fade";
@@ -8,11 +17,11 @@ export interface ViewConfig {
     /**
      * Refference to class or function that will render AirrView. The most common and adviced approach is to use AirrViewWrapper.
      */
-    type: ComponentClass<ViewProps, any>;
+    type: ComponentClass<CommonViewProps, any>;
     /**
      * Special properties of AirrView class. Go to class declaration for further properties documenation.
      */
-    props: ViewProps;
+    props: CommonViewProps;
 }
 export interface CSSStringProperties extends CSSProperties {
     [index: string]: string | {};
@@ -34,3 +43,6 @@ export interface SidepanelConfig {
     props: SidepanelProps;
 }
 export type Direction = 1 | -1;
+
+export const Helpers = { supportPassive, isMobileDevice };
+export { ViewRenderer, SceneRenderer, Mayer, Sidepanel, Scene, View, FX };

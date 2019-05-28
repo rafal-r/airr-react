@@ -2,7 +2,7 @@ import FX from "../FX";
 import { clearElementAnimationsStyles } from "../FXHelpers";
 import { getCommonTransitionsSpec } from "./ItemsAnimationHelpers";
 import { CSSProperties } from "react";
-import { Direction } from "../airr-react.d";
+import { Direction } from "../Airr";
 
 interface ViewsCommonOverlayAnimation {
     newViewDOM: HTMLElement;

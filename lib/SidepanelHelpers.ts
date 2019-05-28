@@ -1,7 +1,7 @@
 import { Sidepanel } from "./Airr";
-import { Axis, DOMNodesStyles } from "./Sidepanel.d";
+import { Axis, DOMNodesStyles } from "./Sidepanel";
 import { isTopOrLeftPlacement, isLeftOrRightPlacement } from "./Utils";
-import { Placement } from "./airr-react";
+import { Placement } from "./Airr";
 import { CSSProperties } from "react";
 
 export function makeNewValStickyToLimits(newVal: number, limit1: number, limit2: number): number {

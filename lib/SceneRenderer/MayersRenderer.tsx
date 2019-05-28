@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ReactNode } from "react";
-import { Props } from "../SceneRenderer.d";
+import { Props } from "../SceneRenderer";
 import Mayer from "../Mayer";
 
 interface MayersRendererProps {

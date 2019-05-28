@@ -5,8 +5,8 @@ import {
     doViewsOverlayAnimation,
     doViewsFadeAnimation
 } from "./ViewsFXHelpers";
-import { NavbarProp } from "../SceneRenderer.d";
-import { AnimationType } from "../airr-react";
+import { NavbarProp } from "../SceneRenderer";
+import { AnimationType } from "../Airr";
 import Scene from "../Scene";
 
 function invokeViewsAfterEffects(newViewComp: View, oldViewComp: View): void {

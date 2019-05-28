@@ -2,7 +2,7 @@ import * as React from "react";
 import { SyntheticEvent } from "react";
 import { PureComponent, ReactNode, createRef, CSSProperties } from "react";
 import FX from "./FX";
-import { Placement } from "./airr-react";
+import { Placement } from "./Airr";
 import { doOverlayAnimation } from "./MayerHelper";
 
 interface MayerButtonProps {

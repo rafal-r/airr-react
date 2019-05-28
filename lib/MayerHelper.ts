@@ -1,5 +1,5 @@
 import FX, { TransitionAnimationConfig } from "./FX";
-import { Placement } from "./airr-react";
+import { Placement } from "./Airr";
 import { resetCSSAndFireCallback } from "./FXHelpers";
 import { isTopOrBottomPlacement } from "./Utils";
 
