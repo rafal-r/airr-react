@@ -1,4 +1,4 @@
-import FX, { TransitionAnimationConfig } from "./FX";
+import { doTransitionAnimation, TransitionAnimationConfig } from "./FX";
 import { Placement } from "./Airr";
 import { resetCSSAndFireCallback } from "./FXHelpers";
 import { isTopOrBottomPlacement } from "./Utils";
@@ -84,7 +84,7 @@ function getOverlayAnimationConfig(config: OverlayAnimationConfig): TransitionAn
 export function doOverlayAnimation(config: OverlayAnimationConfig): void {
     const { dom, width, height, t, headTo, callback, appearFrom } = config;
 
-    FX.doTransitionAnimation(
+    doTransitionAnimation(
         getOverlayAnimationConfig({ dom, width, height, t, headTo, appearFrom, callback })
     );
 }

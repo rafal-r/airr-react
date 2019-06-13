@@ -1,4 +1,4 @@
-import FX from "../FX";
+import { doTransitionAnimation } from "../FX";
 import { CSSProperties } from "react";
 import { clearElementAnimationsStyles } from "../FXHelpers";
 import { Direction } from "../Airr";
@@ -37,7 +37,7 @@ export function doNavbarTitleElementAnimation({
         endOpacity = 0;
     }
 
-    FX.doTransitionAnimation({
+    doTransitionAnimation({
         element,
         startProps: {
             WebkitTransform: startTransform,
@@ -89,7 +89,7 @@ export function doBackButtonAnimation(
         opacity: endOpacity
     };
 
-    FX.doTransitionAnimation({
+    doTransitionAnimation({
         element,
         startProps,
         transitionProps: getCommonTransitionsSpec(animationTime),

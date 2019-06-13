@@ -1,23 +1,22 @@
 import * as React from "react";
 import { PureComponent, ReactNode } from "react";
-// import ViewRenderer, { CoreViewProps, Props } from "./ViewRenderer";
-import ViewRenderer, { CommonViewProps } from "./ViewRenderer";
+import ViewRenderer, { ViewProps } from "./ViewRenderer";
 import { getProperContent } from "./Utils";
 import { getViewProps } from "./CommonViewHelpers";
 
 export abstract class CommonViewClass {
-    static defaultProps: CommonViewProps;
+    static defaultProps: ViewProps;
     refDOM: React.Ref<HTMLDivElement>;
-    getViewProps: () => CommonViewProps;
+    getViewProps: () => ViewProps;
     render: () => ReactNode;
     viewAfterActivation: () => void;
     viewAfterDeactivation: () => void;
     viewBeforeActivation: () => void;
     viewBeforeDeactivation: () => void;
 }
-export default class View extends PureComponent<CommonViewProps> implements CommonViewClass {
-    static defaultProps: CommonViewProps = {
-        name: "",
+export default class View<P extends ViewProps = ViewProps, S = {}> extends PureComponent<P, S>
+    implements CommonViewClass {
+    static defaultProps = {
         title: "",
         active: false,
         className: "",

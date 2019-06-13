@@ -3,28 +3,40 @@ import { ReactNode, RefObject, PureComponent } from "react";
 import SceneRenderer, { sceneDefaultProps } from "./SceneRenderer";
 import Sidepanel from "./Sidepanel";
 import View, { CommonViewClass } from "./View";
-// import { Props as ViewProps } from "./ViewRenderer";
-import { CommonViewProps } from "./ViewRenderer";
+import { ViewProps } from "./ViewRenderer";
 import Mayer, { PreparedProps as MayerProps } from "./Mayer";
 import update from "immutability-helper";
-import { ViewConfig, SidepanelConfig } from "./Airr";
+import { SidepanelConfig } from "./Airr";
 import ViewsAPIHelper from "./Scene/ViewsAPIHelper";
 import SidepanelAPIHelper from "./Scene/SidepanelAPIHelper";
 import MayersAPIHelper from "./Scene/MayersAPIHelper";
 import { CoreSceneProps } from "./SceneRenderer";
 import { getViewProps } from "./CommonViewHelpers";
 
-export interface Props extends CoreSceneProps {
+export interface SceneProps extends CoreSceneProps {
     /**
      * This propety changes behaviour of views animation when overlay animation is set
      */
     stackMode?: boolean;
 }
-export interface ViewsConfigItem extends ViewConfig {
+export type SceneState = SceneProps;
+export type CommonViewProps = ViewProps | SceneProps;
+
+export interface ViewConfig<T> {
     /**
-     * Props to modify Scene
+     * Refference to class or function that will render View. Use View class refference or class that extends View.
      */
-    sceneProps?: Props;
+    type: React.ComponentClass<T & CommonViewProps, any>;
+    /**
+     * Special properties of AirrView class. Go to class declaration for further properties documenation.
+     */
+    props: T & CommonViewProps;
+}
+export interface ViewsConfigItem<T> extends ViewConfig<T> {
+    /**
+     * Props to modify this Scene
+     */
+    sceneProps?: Pick<SceneProps, Exclude<keyof SceneProps, "name">>;
     /**
      *
      * Common view configutaion can have nameGenerator function used to create another view name propperty.
@@ -32,24 +44,25 @@ export interface ViewsConfigItem extends ViewConfig {
      * Example:
      * nameGenerator: views => { return "common-view-*".replace("*", views.length + 1);}
      */
-    nameGenerator?(views: Props["views"]): string;
+    nameGenerator?(views: SceneProps["views"]): string;
 }
-export interface ViewsConfig {
-    /**
-     * Simple view configuraion which can be found by key which is also it's name.
-     */
-    [name: string]: ViewsConfigItem;
-}
+/**
+ * View configuraion which can be found by key which is also it's name.
+ */
+export type ViewsConfig<T = {}> = { [K in keyof T]: ViewsConfigItem<T[K]> };
+
 export interface RefsCOMPViews {
-    [viewname: string]: RefObject<View>;
+    [viewname: string]: RefObject<View<ViewProps>>;
 }
-export default class Scene extends PureComponent<Props, Props> implements CommonViewClass {
-    static defaultProps: Props = {
+
+export default class Scene<P extends SceneProps = SceneProps, S extends SceneState = SceneState>
+    extends PureComponent<P, S>
+    implements CommonViewClass {
+    static defaultProps = {
         ...sceneDefaultProps,
         stackMode: false
     };
 
-    state: Props;
     /**
      * Object that keep information about views configuraion objects.
      * Every key in this object describes another view.
@@ -108,34 +121,32 @@ export default class Scene extends PureComponent<Props, Props> implements Common
     viewBeforeActivation(): void {}
     viewBeforeDeactivation(): void {}
 
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            name: props.name,
-            active: props.active,
-            className: props.className,
-            title: props.title,
-            navbar: props.navbar,
-            navbarHeight: props.navbarHeight,
-            navbarMenu: props.navbarMenu,
-            navbarClass: props.navbarClass,
-            backButton: props.backButton,
-            backButtonOnFirstView: props.backButtonOnFirstView,
-            activeViewName: props.activeViewName,
-            animation: props.animation,
-            views: props.views,
-            sidepanel: props.sidepanel,
-            sidepanelVisibilityCallback: props.sidepanelVisibilityCallback,
-            GUIDisabled: props.GUIDisabled,
-            GUIDisableCover: props.GUIDisableCover,
-            mayers: props.mayers,
-            children: props.children,
-            animationTime: props.animationTime,
-            handleBackBehaviourOnFirstView: props.handleBackBehaviourOnFirstView,
-            handleBackButton: props.handleBackButton,
-            stackMode: props.stackMode
-        };
-    }
+    state: S = {
+        ...this.state,
+        name: this.props.name,
+        active: this.props.active,
+        className: this.props.className,
+        title: this.props.title,
+        navbar: this.props.navbar,
+        navbarHeight: this.props.navbarHeight,
+        navbarMenu: this.props.navbarMenu,
+        navbarClass: this.props.navbarClass,
+        backButton: this.props.backButton,
+        backButtonOnFirstView: this.props.backButtonOnFirstView,
+        activeViewName: this.props.activeViewName,
+        animation: this.props.animation,
+        views: this.props.views,
+        sidepanel: this.props.sidepanel,
+        sidepanelVisibilityCallback: this.props.sidepanelVisibilityCallback,
+        GUIDisabled: this.props.GUIDisabled,
+        GUIDisableCover: this.props.GUIDisableCover,
+        mayers: this.props.mayers,
+        children: this.props.children,
+        animationTime: this.props.animationTime,
+        handleBackBehaviourOnFirstView: this.props.handleBackBehaviourOnFirstView,
+        handleBackButton: this.props.handleBackButton,
+        stackMode: this.props.stackMode
+    };
 
     componentDidMount(): Promise<void> {
         return new Promise(
@@ -188,28 +199,37 @@ export default class Scene extends PureComponent<Props, Props> implements Common
      * When `viewNameGenerator` in present base configuration it will use to create new view name property.
      * This feature is handy when you want to easly create next views based upon generic view configuration.
      *
-     * @param {string} viewName Name of the configuraion key in `this.viewsConfig` object
+     * @param {string|ViewConfig} view Name of the configuraion key in `this.viewsConfig` object or raw ViewConfig object
      * @param {object} props Additional prop to be merged with base config
      */
-    getFreshViewConfig(viewName: string, props: CommonViewProps | {} = {}): ViewsConfigItem {
-        if (viewName in this.viewsConfig) {
-            const config = Object.assign({}, this.viewsConfig[viewName]);
-            const viewNameGenerator = this.viewsConfig[viewName].nameGenerator;
+    getFreshViewConfig<T>(
+        view: string | ViewsConfigItem<T>,
+        props: CommonViewProps | {} = {}
+    ): ViewsConfigItem<T> {
+        if (typeof view === "string" && view in this.viewsConfig) {
+            const config = Object.assign({}, this.viewsConfig[view]);
+            const viewGenerator = this.viewsConfig[view].nameGenerator;
 
-            return update(this.viewsConfig[viewName], {
+            return update(this.viewsConfig[view], {
                 props: {
                     $set: {
                         ...Object.assign({}, config.props),
                         ...Object.assign({}, props),
                         name:
-                            viewNameGenerator && typeof viewNameGenerator === "function"
-                                ? viewNameGenerator(this.state.views)
-                                : viewName
+                            viewGenerator && typeof viewGenerator === "function"
+                                ? viewGenerator(this.state.views)
+                                : view
                     }
                 }
             });
+        } else if (typeof view === "object" && this.isValidViewConfig<T>(view)) {
+            return Object.assign({}, view, {
+                props: { ...view.props, ...props }
+            });
         } else {
-            throw new Error(`Passed view name '${viewName}' is not present in viewsConfig.`);
+            throw new Error(
+                `Passed view is not present in viewsConfig or is invalid raw ViewConfig object.`
+            );
         }
     }
 
@@ -240,8 +260,8 @@ export default class Scene extends PureComponent<Props, Props> implements Common
      * @returns {Promise}  Will be resolved on succesful state update or rejected when no view to pop
      */
     popView = async (
-        viewProps: CommonViewProps | {} = {},
-        sceneProps: Props | {} = {}
+        viewProps: ViewProps | {} = {},
+        sceneProps: SceneProps | {} = {}
     ): Promise<string | void> => {
         if (this.state.views.length > 1) {
             const viewName = this.state.views[this.state.views.length - 2].props.name;
@@ -276,9 +296,9 @@ export default class Scene extends PureComponent<Props, Props> implements Common
      * @returns {Promise} Resolved on state succesful change and animation end. Or reject on failure.
      */
     async changeView(
-        view: string | ViewConfig,
+        view: string | ViewConfig<CommonViewProps>,
         viewProps: CommonViewProps | {} = {},
-        sceneProps: Props | {} = {}
+        sceneProps: SceneProps | {} = {}
     ): Promise<string | void> {
         const viewName = await ViewsAPIHelper.changeView(this, view, viewProps, sceneProps);
         return ViewsAPIHelper.performViewsAnimation(this, viewName);
@@ -321,8 +341,8 @@ export default class Scene extends PureComponent<Props, Props> implements Common
      * @returns {Promise} Resolved on state succesful change or reject on failure.
      */
     handleBackButton = (
-        viewProps: CommonViewProps | {} = {},
-        sceneProps: Props | {} = {}
+        viewProps: ViewProps | {} = {},
+        sceneProps: SceneProps | {} = {}
     ): Promise<string | void> => {
         if (this.state.views.length > 1) {
             return this.popView(viewProps, sceneProps);
@@ -448,8 +468,8 @@ export default class Scene extends PureComponent<Props, Props> implements Common
      */
     goToView = (name: string, viewsNamesToStayList: string[] = []): Function => {
         return (
-            params: CommonViewProps | {} = {},
-            sceneProps: Props | {} = {}
+            params: ViewProps | {} = {},
+            sceneProps: SceneProps | {} = {}
         ): Promise<string | void> => {
             this.viewsNamesToStayList = viewsNamesToStayList;
             return this.changeView(name, params, sceneProps);
@@ -461,7 +481,7 @@ export default class Scene extends PureComponent<Props, Props> implements Common
      * @param {object} object
      * @returns {boolean}
      */
-    isValidViewConfig(object: ViewConfig): boolean {
+    isValidViewConfig<T>(object: ViewsConfigItem<T>): boolean {
         return (
             typeof object === "object" &&
             "type" in object &&

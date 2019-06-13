@@ -1,7 +1,7 @@
 import * as React from "react";
 import { SyntheticEvent } from "react";
 import { PureComponent, ReactNode, createRef, CSSProperties } from "react";
-import FX from "./FX";
+import { doTransitionAnimation } from "./FX";
 import { Placement } from "./Airr";
 import { doOverlayAnimation } from "./MayerHelper";
 
@@ -46,11 +46,11 @@ export interface Props {
     /**
      * Side from which mayer content box will enter
      */
-    appearFrom: Placement;
+    appearFrom?: Placement;
     /**
      * Side to which mayer content box will leave
      */
-    leaveTo: Placement;
+    leaveTo?: Placement;
     /**
      * Content of mayer
      */
@@ -62,8 +62,8 @@ export interface Props {
     /**
      * Time in miliseconds of mayer's appear/disappear animation
      */
-    animationTime: number;
-    children: ReactNode;
+    animationTime?: number;
+    children?: ReactNode;
 }
 export interface PreparedProps extends Props {
     /**
@@ -144,7 +144,7 @@ export default class Mayer extends PureComponent<PreparedProps> {
         endProps: CSSProperties
     ): void {
         if (element) {
-            FX.doTransitionAnimation({
+            doTransitionAnimation({
                 element,
                 startProps,
                 transitionProps,

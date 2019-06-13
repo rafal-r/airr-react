@@ -8,8 +8,9 @@ import {
 import { NavbarProp } from "../SceneRenderer";
 import { AnimationType } from "../Airr";
 import Scene from "../Scene";
+import { ViewProps } from "../ViewRenderer";
 
-function invokeViewsAfterEffects(newViewComp: View, oldViewComp: View): void {
+function invokeViewsAfterEffects(newViewComp: View<ViewProps>, oldViewComp: View<ViewProps>): void {
     if (newViewComp && typeof newViewComp.viewAfterActivation === "function") {
         newViewComp.viewAfterActivation();
     }
@@ -19,8 +20,8 @@ function invokeViewsAfterEffects(newViewComp: View, oldViewComp: View): void {
     }
 }
 interface DoViewsAnimationConfig {
-    newViewComp: View;
-    oldViewComp: View;
+    newViewComp: View<ViewProps>;
+    oldViewComp: View<ViewProps>;
     newViewIndex: number;
     oldViewIndex: number;
     navbar: NavbarProp;

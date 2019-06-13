@@ -10,9 +10,12 @@ import {
 import { PureComponent, SyntheticEvent, ReactNode, RefObject } from "react";
 import { Props as MayerProps } from "./Mayer";
 import Sidepanel from "./Sidepanel";
-import { AnimationType, ViewConfig, NavbarMenu, SidepanelConfig } from "./Airr";
+import { AnimationType, NavbarMenu, SidepanelConfig } from "./Airr";
+import { ViewsConfigItem } from "./Scene";
 
 export type NavbarProp = 1 | true | -1 | 0 | false;
+export type ViewsArray = ViewsConfigItem<any>[];
+
 export interface CoreSceneProps {
     /**
      * The name of the scene. Must be unique among others views in parent scene. Will be used as identification string
@@ -87,7 +90,7 @@ export interface CoreSceneProps {
     /**
      * Array of `views`. Every view object declaration must contain two properties: `type` and `props`.
      */
-    views?: ViewConfig[];
+    views?: ViewsArray;
     /**
      * Array of `mayers` objects that will be render into this Scene. Must contain special Mayer class properties.
      * To check the possible values of properties go to Mayer declaration.
@@ -109,6 +112,10 @@ export interface CoreSceneProps {
      * Inner, private prop for manipulating navbar title. Do not set manually.
      */
     mockTitleName?: string;
+
+    //inner props
+    key?: string;
+    ref?: React.LegacyRef<PureComponent>;
 }
 export interface Props extends CoreSceneProps {
     /**

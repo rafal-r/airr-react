@@ -28,43 +28,43 @@ export interface Props {
     /**
      * Side to which sidepanel will be attached
      */
-    side: Placement;
+    side?: Placement;
     /**
-     * Bool determining if sidepanel is shown or not
+     * Bool determining if sidepanel is shown or not. Readonly. Set by inner callback. Do not overwrite.
      */
-    isShown: boolean;
+    isShown?: boolean;
     /**
      * Bool determining if sidepanel is enabled.
      */
-    enabled: boolean;
+    enabled?: boolean;
     /**
      * Number between 0 and 1 determining how much size of whole screen sidepanel will take
      */
-    sizeFactor: number;
+    sizeFactor?: number;
     /**
      * Parent scene width dimension. Set by parent scene. Do not overwrite!.
      */
-    sceneWidth: number;
+    sceneWidth?: number;
     /**
      * Parent scene height dimension. Set by parent scene. Do not overwrite!.
      */
-    sceneHeight: number;
+    sceneHeight?: number;
     /**
      * Callback invoked when sidepanel changes its visibility during touch events. Set by parent scene. Do not overwrite!.
      */
-    visibilityCallback: (isShown: boolean) => void;
+    visibilityCallback?: (isShown: boolean) => void;
     /**
      * Animation time in miliseconds
      */
-    animationTime: number;
+    animationTime?: number;
     /**
      * Boolean saying if parent scene has any open mayer. Set by parent scene. Do not overwrite!.
      */
-    sceneHasMayers: boolean;
+    sceneHasMayers?: boolean;
     /**
      * Opacity between 0 and 1
      */
-    bgLayerOpacity: number;
+    bgLayerOpacity?: number;
     children?: ReactNode;
     ref?: RefObject<Sidepanel>;
 }

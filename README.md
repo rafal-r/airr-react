@@ -13,8 +13,8 @@ All of it when minified and gzipped weights ~11.8kB ([bundlephobia.com](https://
 Library can be used for:
 
 -   creating unique looking and behaving apps,
--   rapidly designing prototypes showing your ideas,
--   creating responsive apps that will handle mobile and desktop rendering.
+-   creating PWA or standard responsive web apps for dektop, phones and tablets browsers,
+-   rapidly designing prototypes showing your ideas.
 
 # Table of contents
 
@@ -392,14 +392,14 @@ Examples:
 
 ### Sidepanel Props
 
-| property       | name                    | description                                                                                                               |
-| -------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| side           | [Placement](#placement) | Side to which sidepanel will be attached                                                                                  |
-| isShown        | boolean                 | Bool determining if sidepanel is shown or not. Use Scene's methods (openSidepanel,closeSidepanel) to manipulate this bool |
-| enabled        | boolean                 | Bool determining if sidepanel is enabled.                                                                                 |
-| sizeFactor     | number                  | Number between 0 and 1 determining how much size of whole screen sidepanel will take                                      |
-| animationTime  | number                  | Animation time in miliseconds                                                                                             |
-| bgLayerOpacity | number                  | Opacity between 0 and 1                                                                                                   |
+| property       | name                    | description                                                                                                                                    |
+| -------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| side           | [Placement](#placement) | Side to which sidepanel will be attached                                                                                                       |
+| isShown        | boolean                 | Bool determining if sidepanel is shown or not. Use Scene's methods (openSidepanel,closeSidepanel) to manipulate this bool. Do no set manually. |
+| enabled        | boolean                 | Bool determining if sidepanel is enabled.                                                                                                      |
+| sizeFactor     | number                  | Number between 0 and 1 determining how much size of whole screen sidepanel will take                                                           |
+| animationTime  | number                  | Animation time in miliseconds                                                                                                                  |
+| bgLayerOpacity | number                  | Opacity between 0 and 1                                                                                                                        |
 
 ### Mayer Props
 

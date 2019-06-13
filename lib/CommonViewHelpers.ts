@@ -1,9 +1,9 @@
-import { CommonViewProps } from "./ViewRenderer";
+import { ViewProps } from "./ViewRenderer";
 /**
  * Special method for delivering props to View component's.
  * Used in render method.
  */
-export function getViewProps(): CommonViewProps {
+export function getViewProps(): ViewProps {
     return {
         refDOM: this.refDOM,
         name: this.props.name,

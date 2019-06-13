@@ -1,3 +1,6 @@
+/**
+ * Animation utility functions. Performs css based transition animations
+ */
 import { CSSProperties } from "react";
 import { Placement } from "./Airr";
 import {
@@ -10,32 +13,18 @@ import {
 
 export interface TransitionAnimationConfig {
     element: HTMLElement;
-    startProps: CSSProperties;
-    transitionProps: string[];
-    endProps: CSSProperties;
-    preAnimationCallback?: () => void;
-    endAfter?: number;
-    endCallback?: () => void;
+    startProps: CSSProperties; //css properties that will be set prior the animation
+    transitionProps: string[]; //array of css transition definitions, e.g. ['opacity 700ms ease-in', 'transform .4s ease-out']. Compatibility props like `-webkit-transform` are not needed as they will be added automatically
+    endProps: CSSProperties; //target css properties values that animation will go to
+    preAnimationCallback?: () => void; //callback to call before animation begins
+    endAfter?: number; //time in miliseconds after which `endCallback` will be invoke
+    endCallback?: () => void; //function to call after endAfter time parameter is gone
 }
 
 /**
- * Animation utiliy class. Performs css based transition animations
- */
-export default function FX(): void {}
-
-/**
  * Animate passed HTML element with power of css transitions
- *
- * @param {HTMLElement} element
- * @param {object} startProps css properties that will be set prior the animation
- * @param {array} transitionProps array of css transition definitions, e.g. ['opacity 700ms ease-in', 'transform .4s ease-out']. Compatibility props like `-webkit-transform` are not needed as they will be added automatically
- * @param {object} endProps target css properties values that animation will go to
- * @param {function} preAnimationCallback callback to call before animation begins
- * @param {integer} endAfter time in miliseconds after which `endCallback` will be invoke
- * @param {function} endCallback function to call after endAfter time parameter is gone
- * @returns {void}
  */
-FX.doTransitionAnimation = function(config: TransitionAnimationConfig): void {
+export function doTransitionAnimation(config: TransitionAnimationConfig): void {
     const {
         element,
         startProps,
@@ -64,7 +53,7 @@ FX.doTransitionAnimation = function(config: TransitionAnimationConfig): void {
             endCallback && endCallback();
         }, endAfter);
     }
-};
+}
 
 /**
  * Used for animating scroll in vertical axis
@@ -74,7 +63,7 @@ FX.doTransitionAnimation = function(config: TransitionAnimationConfig): void {
  * @param {string} direction top or bottom
  * @returns {void}
  */
-FX.doVerticalScrollAnimation = function(
+export function doVerticalScrollAnimation(
     element: HTMLElement,
     scrollDuration: number,
     direction: Placement
@@ -104,4 +93,4 @@ FX.doVerticalScrollAnimation = function(
             clearInterval(scrollInterval);
         }
     }, 15);
-};
+}

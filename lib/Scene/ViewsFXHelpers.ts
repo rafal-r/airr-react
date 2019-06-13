@@ -1,4 +1,4 @@
-import FX from "../FX";
+import { doTransitionAnimation } from "../FX";
 import { clearElementAnimationsStyles } from "../FXHelpers";
 import { getCommonTransitionsSpec } from "./ItemsAnimationHelpers";
 import { CSSProperties } from "react";
@@ -29,7 +29,7 @@ function doViewsOverlayForwardAnimation({
 
     return new Promise(
         (resolve): void => {
-            FX.doTransitionAnimation({
+            doTransitionAnimation({
                 element: newViewDOM,
                 startProps: {
                     WebkitTransform: transform,
@@ -69,7 +69,7 @@ function doViewsOverlayBackwardStackAnimation({
             newViewDOM.style.display = "block";
             newViewDOM.style.opacity = "1";
 
-            FX.doTransitionAnimation({
+            doTransitionAnimation({
                 element: oldViewDOM,
                 startProps: {
                     WebkitTransform: transform,
@@ -107,7 +107,7 @@ function doViewsOverlayBackwardAnimation({
 
             newViewDOM.style.display = "block";
 
-            FX.doTransitionAnimation({
+            doTransitionAnimation({
                 element: newViewDOM,
                 startProps: {
                     WebkitTransform: transform,
@@ -167,7 +167,7 @@ export function doViewsFadeAnimation(
 ): Promise<void> {
     return new Promise(
         (resolve): void => {
-            FX.doTransitionAnimation({
+            doTransitionAnimation({
                 element: newViewDOM,
                 startProps: {
                     display: "block",
@@ -227,7 +227,7 @@ export function doViewsSlideAnimation(
             const { startProps, endProps } = getSlideAnimationProps(direction, sceneWidth);
             newViewDOM.style.display = "block";
 
-            FX.doTransitionAnimation({
+            doTransitionAnimation({
                 element: ctnDOM,
                 startProps,
                 transitionProps: [`transform ${animationTime}ms ease-out`],

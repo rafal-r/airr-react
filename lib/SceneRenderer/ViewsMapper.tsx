@@ -1,7 +1,9 @@
 import * as React from "react";
 import { ReactElement } from "react";
-import { Props } from "../SceneRenderer";
+import SceneRenderer, { Props } from "../SceneRenderer";
 import ViewRenderer from "../ViewRenderer";
+import View from "../View";
+import Scene from "../Scene";
 
 export interface ViewsMapperProps {
     views: Props["views"];
@@ -22,6 +24,7 @@ const ViewsMapper = React.memo<ViewsMapperProps>(function ViewsMapper({
             }
 
             item.props.key = item.props.name;
+
             if (!item.props.ref) {
                 item.props.ref = React.createRef<ViewRenderer>();
                 refsCOMPViews[item.props.name] = item.props.ref;

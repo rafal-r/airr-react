@@ -38,7 +38,8 @@
         "url": "git+https://github.com/rafal-r/airr-react"
     },
     "files": [
-        "dist"
+        "dist",
+        "tsconfig.json"
     ],
     "devDependencies": {
         "@babel/cli": "^7.4.4",

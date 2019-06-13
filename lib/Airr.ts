@@ -1,30 +1,28 @@
-import ViewRenderer from "./ViewRenderer";
-import SceneRenderer from "./SceneRenderer";
-import Mayer from "./Mayer";
+import { ViewsArray } from "./SceneRenderer";
+import Mayer, { Props as MayerProps } from "./Mayer";
 import Sidepanel from "./Sidepanel";
-import Scene from "./Scene";
+import Scene, { SceneProps, SceneState, ViewConfig, CommonViewProps, ViewsConfig } from "./Scene";
 import View from "./View";
-import FX from "./FX";
+import { doTransitionAnimation, doVerticalScrollAnimation } from "./FX";
 import { supportPassive, isMobileDevice } from "./eventHelpers";
-import { ReactNode, CSSProperties, ComponentClass } from "react";
-// import { Props as ViewProps } from "./ViewRenderer";
-import { CommonViewProps } from "./ViewRenderer";
+import { ReactNode } from "react";
+import { ViewProps } from "./ViewRenderer";
 import { Props as SidepanelProps } from "./Sidepanel";
+import { TSValidateViewsConfig } from "./Scene/Helpers";
 
 export type Placement = "top" | "bottom" | "left" | "right";
-export type AnimationType = "slide" | "overlay" | "fade";
-export interface ViewConfig {
-    /**
-     * Refference to class or function that will render AirrView. The most common and adviced approach is to use AirrViewWrapper.
-     */
-    type: ComponentClass<CommonViewProps, any>;
-    /**
-     * Special properties of AirrView class. Go to class declaration for further properties documenation.
-     */
-    props: CommonViewProps;
+function isPlacement(val?: string): val is Placement {
+    if (val && (val === "top" || val === "bottom" || val === "let" || val === "right")) {
+        return true;
+    }
+    return false;
 }
-export interface CSSStringProperties extends CSSProperties {
-    [index: string]: string | {};
+export type AnimationType = "slide" | "overlay" | "fade";
+function isAnimation(val?: string): val is AnimationType {
+    if (val && (val === "slide" || val === "overlay" || val === "fade")) {
+        return true;
+    }
+    return false;
 }
 export type NavbarMenu = "toggleSidepanel" | ReactNode[];
 export interface TouchPosition {
@@ -36,7 +34,7 @@ export interface SidepanelConfig {
     /**
      * Reference to class or function that will render AirrSidepanel. Might be AirrSidepanel itself.
      */
-    type: ComponentClass<SidepanelProps, any>;
+    type: React.ComponentClass<SidepanelProps>;
     /**
      * Special properties of AirrSidepanel class. Go to class declaration for further properties documenation.
      */
@@ -45,4 +43,21 @@ export interface SidepanelConfig {
 export type Direction = 1 | -1;
 
 export const Helpers = { supportPassive, isMobileDevice };
-export { ViewRenderer, SceneRenderer, Mayer, Sidepanel, Scene, View, FX };
+//Typescript related things:
+export {
+    ViewProps,
+    SceneProps,
+    SceneState,
+    ViewConfig,
+    CommonViewProps,
+    ViewsConfig,
+    MayerProps,
+    ViewsArray,
+    TSValidateViewsConfig,
+    isPlacement,
+    isAnimation
+};
+//FX functions:
+export { doTransitionAnimation, doVerticalScrollAnimation };
+//Main lib classes:
+export { Mayer, Sidepanel, Scene, View };
