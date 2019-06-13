@@ -1,8 +1,7 @@
 import Scene from "../Scene";
 // import { Props as ViewProps } from "../ViewRenderer";
 import { ViewProps } from "../ViewRenderer";
-import { ViewConfig, CommonViewProps } from "../Airr";
-import { SceneProps, ViewsConfigItem } from "../Scene";
+import { SceneProps, ViewsConfigItem, CommonViewProps, ViewConfig } from "../Scene";
 import update from "immutability-helper";
 import { performViewsTransition, getViewsTransitionConfig } from "./ViewsAnimationHelpers";
 
