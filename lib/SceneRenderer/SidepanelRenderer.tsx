@@ -1,11 +1,8 @@
 import * as React from "react";
-import { ComponentClass } from "react";
 import { Props } from "../SceneRenderer";
-import { Props as SidepanelProps } from "../Sidepanel";
+import { SidepanelConfig } from "../Airr";
 
-interface SidepanelRendererProps {
-    type: ComponentClass<SidepanelProps, any>;
-    props: SidepanelProps;
+interface SidepanelRendererProps extends SidepanelConfig {
     refCOMPSidepanel: Props["refCOMPSidepanel"];
     visibilityCallback: Props["sidepanelVisibilityCallback"];
     sceneHasMayers: boolean;

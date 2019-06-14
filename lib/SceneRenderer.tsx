@@ -81,7 +81,7 @@ export interface CoreSceneProps {
     /**
      * Sidepanels declaration. Must contain two properties: `type` and `props`
      **/
-    sidepanel?: SidepanelConfig;
+    sidepanel?: SidepanelConfig<any>;
     /**
      * This function will be called when sidepanel changes it's visibility.
      * It's argument will be isShown bool.

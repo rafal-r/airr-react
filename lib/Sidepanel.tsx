@@ -24,7 +24,7 @@ import {
     getDOMNodesStyles
 } from "./SidepanelHelpers";
 
-export interface Props {
+export interface SidepanelProps {
     /**
      * Side to which sidepanel will be attached
      */
@@ -75,8 +75,11 @@ export interface DOMNodesStyles {
     bgLayerStyle: CSSProperties;
 }
 
-export default class Sidepanel extends PureComponent<Props> {
-    static defaultProps: Props = {
+export default class Sidepanel<
+    P extends SidepanelProps = SidepanelProps,
+    S = {}
+> extends PureComponent<P, S> {
+    static defaultProps: SidepanelProps = {
         side: "left",
         isShown: false,
         enabled: false,
@@ -450,7 +453,7 @@ export default class Sidepanel extends PureComponent<Props> {
         updateLastVals(this);
     };
 
-    componentDidUpdate(prevProps: Props): void {
+    componentDidUpdate(prevProps: SidepanelProps): void {
         if (prevProps.enabled !== this.props.enabled) {
             this[this.props.enabled ? "enable" : "disable"]();
         }
