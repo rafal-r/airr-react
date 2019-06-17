@@ -498,7 +498,7 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
     hasViewInConfig = (name: string): boolean => name in this.viewsConfig;
 
     /**
-     * Check if view recognize by name argument is present in state
+     * Check if view recognized by name argument is present in state
      * @param {string} name
      * @returns {boolean}
      */

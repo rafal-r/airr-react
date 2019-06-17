@@ -13,7 +13,7 @@ All of it when minified and gzipped weights ~11.8kB ([bundlephobia.com](https://
 Library can be used for:
 
 -   creating unique looking and behaving apps,
--   creating PWA or standard responsive web apps for dektop, phones and tablets browsers,
+-   creating PWA or standard responsive web apps for dektop, phone and tablet browsers,
 -   rapidly designing prototypes showing your ideas.
 
 # Table of contents
@@ -156,10 +156,10 @@ ReactDOM.render(<Viewport />, rootElement);
 
 ## Concept
 
-The main concept is to put most of your jsx and html code into the View's components and to render them with `content()` method. That will be classes that extends `View` component.
+`View` class component is responsible for your single view instance. Put all other components that creates you view inside it and render with `content()` method.
 
-All of the props and logic will be passed to this views from Scenes - these are classes that extends `Scene`.
-They will be responsible for navigating between views and filling them with data.
+Other props and functions that will manage changing of your views can be pass to `View` class from `Scene` class.
+The `Scene` is a views container, core class that can fill view with proper methods to navigate between views, open popups and define sidepanel.
 
 ### PureComponents
 
@@ -171,7 +171,7 @@ So remember that your views will not be updated unless you provide them with dif
 Airr library provides easy to implement views life-cycles methods.
 When you develop apps divided into certain views you have to deal with many tasks before or after certain view is activated and animated into the screen.
 
-Like React's `componentDidMount` method, Airr provides self explanatory methods that can be used by Components that extends `View` or `Scene` components. These methods are:
+Like React's `componentDidMount` method, Airr provides self explanatory methods that can be used by Components that extends `View` or `Scene` component. These methods are:
 
 -   `viewBeforeActivation`
 -   `viewAfterActivation`
@@ -246,9 +246,11 @@ class FooView extends View {
 You have to do it this way because core class must set correct properties to the inner view component:
 
 ```javascript
-export default class AirrView extends PureComponent {
-    render() {
-        return <AirrView {...this.getViewProps()}>{() => this.content()}</AirrView>;
+export default class View<P extends ViewProps = ViewProps, S = {}> extends PureComponent<P, S>
+    render(): ReactNode {
+        const content: ReactNode = getProperContent(this.content(), this.props.children);
+
+        return <ViewRenderer {...this.getViewProps()}>{content}</ViewRenderer>;
     }
 }
 ```
@@ -256,14 +258,19 @@ export default class AirrView extends PureComponent {
 If you would like to overwrite this behaviour, you must do it like this:
 
 ```javascript
+import { getViewProps } from "airr-react/dist/CommonViewHelpers";
+import ViewRenderer from "airr-react/dist/ViewRenderer";
+
 class FooView extends View {
-    render() {
+    render(): ReactNode {
+        const content: ReactNode = getProperContent(this.content(), this.props.children);
+
         return (
-            <AirrView {...this.getViewProps()}>
+            <ViewRenderer {...this.getViewProps()}>
                 {() => this.myCustomRenderMethodCall()}
                 //or
-                {this.props.customChildThing}
-            </AirrView>
+                {content}
+            </ViewRenderer>
         );
     }
 }
@@ -271,25 +278,31 @@ class FooView extends View {
 
 ## Examples
 
-### [Kitchen sink app](https://codesandbox.io/s/github/rafal-r/airr-react-demo-app)
+### Kitchen sink app
 
-> Demonstration app showing all library features.
+Go to example: [Standard](https://codesandbox.io/s/github/rafal-r/airr-react-demo-app), [Typescript](https://codesandbox.io/s/github/rafal-r/airr-react-demo-app-ts)
 
-### [Infinite viewport](https://codesandbox.io/s/github/rafal-r/airr-react-infinite-viewport)
+> Demon app showing all library features.
+
+### Infinite viewport
+
+Go to example: [Standard](https://codesandbox.io/s/github/rafal-r/airr-react-infinite-viewport), [Typescript](https://codesandbox.io/s/github/rafal-r/airr-react-infinite-viewport-ts)
 
 > In this example you can push unlimited views and play with Scene properties.
 
-### [Simple Scene](https://codesandbox.io/s/github/rafal-r/airr-react-simple-scene)
+### Simple Scene
+
+Go to example: [Standard](https://codesandbox.io/s/github/rafal-r/airr-react-simple-scene), [Typescript](https://codesandbox.io/s/github/rafal-r/airr-react-simple-scene-ts)
 
 > Very simple app from 'Usage' chapter.
 
 ## Scene API
 
-Scene class posses many helpfull methods to navigate through views and modify Scene properties. Below is a list of most important ones. Check lib/Scene.tsx file to find all of with proper documentation.
+Scene class has many helpfull methods to navigate through views and modify Scene properties. Some properties needs to be modify only by using coresponding methods. Which properties requires this approach is descibed in [Props documentation](#props-documentation) in 'change with method' column.
 
 ### changeView
 
-`async changeView( view: string | ViewConfig, viewProps: ViewProps | {} = {}, sceneProps: Props | {} = {} ): Promise<string | void>`
+`async changeView( view: string | ViewConfig<CommonViewProps>, viewProps: CommonViewProps | {} = {}, sceneProps: SceneProps | {} = {} ): Promise<string | void>`
 
 > Crucial method of the scene component for manipalutaing views and scene properties and performing animations.
 > Can change active view with animation or just update view and scene properties.
@@ -301,11 +314,11 @@ Scene class posses many helpfull methods to navigate through views and modify Sc
 
 Examples:
 
--   Go to another view - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/GoToAnotherView.js&moduleview=1)
--   Push new view from views config - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromViewsConfig.js&moduleview=1)
--   Push new view from raw config definition - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromRawConfigDefinition.js&moduleview=1)
--   Update current, active view - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateCurrentView.js&moduleview=1)
--   Update scene - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateScene.js&moduleview=1)
+-   Go to another view - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/GoToAnotherView.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/GoToAnotherView.js&moduleview=1)
+-   Push new view from views config - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromViewsConfig.js&moduleview=1), [typescrip](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/PushNewViewFromViewsConfig.js&moduleview=1)
+-   Push new view from raw config definition - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromRawConfigDefinition.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/PushNewViewFromRawConfigDefinition.js&moduleview=1)
+-   Update current, active view - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateCurrentView.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/UpdateCurrentView.js&moduleview=1)
+-   Update scene - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateScene.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateScene.js&moduleview=1)
 
 ### openSidepanel
 
@@ -315,7 +328,7 @@ Examples:
 
 Example:
 
--   Manually open sidepanel - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/OpenSidepanel.js&moduleview=1)
+-   Manually open sidepanel - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/OpenSidepanel.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/SidepanelAPI/OpenSidepanel.js&moduleview=1)
 
 ### hideSidepanel
 
@@ -325,7 +338,7 @@ Example:
 
 Example:
 
--   Manually hide sidepanel - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/HideSidepanel.js&moduleview=1)
+-   Manually hide sidepanel - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/HideSidepanel.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/SidepanelAPI/HideSidepanel.js&moduleview=1)
 
 ### openMayer
 
@@ -336,7 +349,7 @@ Example:
 
 Example:
 
--   Manually open modal layer - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/OpenMayer.js&moduleview=1)
+-   Manually open modal layer - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/OpenMayer.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/MayersAPI/OpenMayer.js&moduleview=1)
 
 ### closeMayer
 
@@ -346,38 +359,55 @@ Example:
 
 Examples:
 
--   Close mayer by prop drilling - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/CloseMayer.js&moduleview=1)
--   Close mayer by mayer button config - [open example](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/CloseMayerFromButtonsConfig.js&moduleview=1)
+-   Close mayer by prop drilling - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/CloseMayer.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/MayersAPI/CloseMayer.js&moduleview=1)
+-   Close mayer by mayer button config - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/CloseMayerFromButtonsConfig.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/MayersAPI/CloseMayerFromButtonsConfig.js&moduleview=1)
+
+### Other methods
+
+For more detailed documentation of these methods please go to lib/Scene.tsx file. As everything is typescripted now I hope finding good information will not be a problem.
+
+> getFreshViewConfig - very usefull for getting new view config from viewsConfig variable.
+> filterViews - removes views that are not pointed in array.
+> popView - go back one view and removes currently active view.
+> destroyView - removes view from Scene views property.
+> handleBackButton - utility function. Overwrite it in your Scene class to define back button click behaviour. On default it pops view out.
+> setSidepanelConfig - special function for enabling sidepanel config after mounting of scene. It will ensure proper sidepanel size (width,height) after incjeting it into DOM.
+> disableSidepanel - self explanatory.
+> enableSidepanel - self explanatory.
+> goToView - action dispatcher method. It will return a function ready to fire view change.
+> isValidViewConfig - checks wheter object is valid view config and can be added to view's array.
+> hasViewInConfig - checks if view's name is described by some config in `this.viewsConfig` object.
+> hasViewInState - checks if view recognized by name argument is present in state
+> getViewIndex - self explanatory.
 
 ## Props documentation
 
 ### Scene Props
 
-| property                       | type                                      | description                                                                                                                                                                  |
-| ------------------------------ | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| name                           | string (required)                         | The name of the scene. Must be unique among others views in parent scene. Will be used as identification string                                                              |
-| activeViewName                 | string                                    | Name of the active view                                                                                                                                                      |
-| GUIDisabled                    | boolean                                   | Boolean telling if GUI should be disabled meaning no user actions, events are allowed. GUI is disabled via absolute positioned, not visible div that has the biggest z-Index |
-| GUIDisableCover                | ?ReactNode                                | React element to be placed in GUI disabling div                                                                                                                              |
-| animation                      | [AnimationType](#animationtype)           | Type of animation to perform when switching views                                                                                                                            |
-| animationTime                  | number                                    | Time of views changing animation in miliseconds                                                                                                                              |
-| navbar                         | 1 / true / -1 / 0 / false                 | Specify if navbar is present (1,true) or not (0,false). Or maybe hidden (-1)                                                                                                 |
-| navbarHeight                   | number                                    | Height of the navbar in pixels                                                                                                                                               |
-| navbarMenu                     | [?NavbarMenu](#navbarmenu)                | Navbar menu is placed on the right most side. Might contain "toggleSidepanel" button or any custom buttons list.                                                             |
-| navbarClass                    | string                                    | Extra, space separated, navbar's class list                                                                                                                                  |
-| backButton                     | boolean                                   | Boolean specifing if navbar renders BackButton. Placed by default on the left side of navbar.                                                                                |
-| backButtonOnFirstView          | boolean                                   | Do you need to still show backButton even if scene is rendering first view from stack?                                                                                       |
-| handleBackButton               | ?(e: SyntheticEvent<HTMLElement>) => void | Function that will handle back button click events                                                                                                                           |
-| handleBackBehaviourOnFirstView | ?() => void                               | Function that will handle back button clicks events on when first view in stack is active                                                                                    |
-| active                         | boolean                                   | Is this view active in parent scene. Readonly. Set by parent Scene.                                                                                                          |
-| sidepanel                      | [?SidepanelConfig](#sidepanelconfig)      | Sidepanels configuration declaration. Must contain two properties: `type` and `props`                                                                                        |
-| sidepanelVisibilityCallback    | ?(isShown: boolean) => void               | This function will be called when sidepanel changes it's visibility. It's argument will be isShown bool.                                                                     |
-| views                          | [ViewConfig[]](#viewconfig)               | Array of `views`. Every view object declaration must contain two properties: `type` and `props`.                                                                             |
-| mayers                         | [MayerProps[]](#mayer-props)              | Array of `mayers` objects that will be render into this Scene. Must contain special AirrMayer class properties.                                                              |
-| title                          | ReactNode                                 | Title that will be use in parent Scene navbar title section                                                                                                                  |
-| className                      | string                                    | Extra, space separated classes names to use upon first div element.                                                                                                          |
-| children                       | ReactNode                                 | Children to be render in Scene's container. Might be useful for creating navigation UI.                                                                                      |
-| stackMode                      | boolean                                   | This propety changes behaviour of views animation when overlay animation is set                                                                                              |
+| property                       | type                                      | description                                                                                                                                                                  | change with method                                                                                                                                               |
+| ------------------------------ | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name                           | string (required)                         | The name of the scene. Must be unique among others views in parent scene. Will be used as identification string                                                              | setState                                                                                                                                                         |
+| activeViewName                 | string                                    | Name of the active view                                                                                                                                                      | setState                                                                                                                                                         |
+| GUIDisabled                    | boolean                                   | Boolean telling if GUI should be disabled meaning no user actions, events are allowed. GUI is disabled via absolute positioned, not visible div that has the biggest z-Index | setState                                                                                                                                                         |
+| GUIDisableCover                | ?ReactNode                                | React element to be placed in GUI disabling div                                                                                                                              | setState                                                                                                                                                         |
+| animation                      | [AnimationType](#animationtype)           | Type of animation to perform when switching views                                                                                                                            | setState                                                                                                                                                         |
+| animationTime                  | number                                    | Time of views changing animation in miliseconds                                                                                                                              | setState                                                                                                                                                         |
+| navbar                         | 1 / true / -1 / 0 / false                 | Specify if navbar is present (1,true) or not (0,false). Or maybe hidden (-1)                                                                                                 | setState                                                                                                                                                         |
+| navbarHeight                   | number                                    | Height of the navbar in pixels                                                                                                                                               | setState                                                                                                                                                         |
+| navbarMenu                     | [?NavbarMenu](#navbarmenu)                | Navbar menu is placed on the right most side. Might contain "toggleSidepanel" button or any custom buttons list.                                                             | setState                                                                                                                                                         |
+| navbarClass                    | string                                    | Extra, space separated, navbar's class list                                                                                                                                  | setState                                                                                                                                                         |
+| backButton                     | boolean                                   | Boolean specifing if navbar renders BackButton. Placed by default on the left side of navbar.                                                                                | setState                                                                                                                                                         |
+| backButtonOnFirstView          | boolean                                   | Do you need to still show backButton even if scene is rendering first view from stack?                                                                                       | setState                                                                                                                                                         |
+| handleBackButton               | ?(e: SyntheticEvent<HTMLElement>) => void | Function that will handle back button click events                                                                                                                           | setState                                                                                                                                                         |
+| handleBackBehaviourOnFirstView | ?() => void                               | Function that will handle back button clicks events on when first view in stack is active                                                                                    | setState                                                                                                                                                         |
+| sidepanel                      | [?SidepanelConfig](#sidepanelconfig)      | Sidepanels configuration declaration. Must contain two properties: `type` and `props`                                                                                        | setState (for side, sizeFactor, animationTime,bgLayerOpacity), openSidepanel and hideSidepanel (for isShown), enableSidepanel and disableSidepanel (for enabled) |
+| sidepanelVisibilityCallback    | ?(isShown: boolean) => void               | This function will be called when sidepanel changes it's visibility. It's argument will be isShown bool.                                                                     | setState                                                                                                                                                         |
+| views                          | [ViewConfig[]](#viewconfig)               | Array of `views`. Every view object declaration must contain two properties: `type` and `props`.                                                                             | changeView                                                                                                                                                       |
+| mayers                         | [MayerProps[]](#mayer-props)              | Array of `mayers` objects that will be render into this Scene. Must contain special AirrMayer class properties.                                                              | openMayer, closeMayer                                                                                                                                            |
+| title                          | ReactNode                                 | Title that will be use in parent Scene navbar title section                                                                                                                  | setState                                                                                                                                                         |
+| className                      | string                                    | Extra, space separated classes names to use upon first div element.                                                                                                          | setState                                                                                                                                                         |
+| children                       | ReactNode                                 | Children to be render in Scene's container. Might be useful for creating navigation UI.                                                                                      | setState                                                                                                                                                         |
+| stackMode                      | boolean                                   | This propety changes behaviour of views animation when overlay animation is set                                                                                              | setState                                                                                                                                                         |
 
 ### View Props
 
