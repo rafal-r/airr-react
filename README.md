@@ -21,38 +21,37 @@ Library can be used for:
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Concept](#concept)
-  - [PureComponents](#purecomponents)
-- [View's life-cycles](#views-life-cycles)
-- [React Component's life-cycles](#react-components-life-cycles)
-- [Rendering View's content](#rendering-views-content)
-- [Examples](#examples)
-  - [Kitchen sink app](#kitchen-sink-app)
-  - [Infinite viewport](#infinite-viewport)
-  - [Simple Scene](#simple-scene)
-- [Scene API](#scene-api)
-  - [changeView](#changeview)
-  - [openSidepanel](#opensidepanel)
-  - [hideSidepanel](#hidesidepanel)
-  - [openMayer](#openmayer)
-  - [closeMayer](#closemayer)
-  - [Other methods](#other-methods)
-- [Props documentation](#props-documentation)
-  - [Scene Props](#scene-props)
-  - [View Props](#view-props)
-  - [Sidepanel Props](#sidepanel-props)
-  - [Mayer Props](#mayer-props)
-  - [Common types](#common-types)
-    - [AnimationType](#animationtype)
-    - [NavbarMenu](#navbarmenu)
-    - [SidepanelConfig](#sidepanelconfig)
-    - [ViewConfig](#viewconfig)
-    - [Placement](#placement)
-    - [MayerButtonProps](#mayerbuttonprops)
-- [License](#license)
+-   [Installation](#installation)
+-   [Usage](#usage)
+-   [Concept](#concept)
+    -   [PureComponents](#purecomponents)
+-   [View's life-cycles](#views-life-cycles)
+-   [React Component's life-cycles](#react-components-life-cycles)
+-   [Rendering View's content](#rendering-views-content)
+-   [Examples](#examples)
+    -   [Kitchen sink app](#kitchen-sink-app)
+    -   [Infinite viewport](#infinite-viewport)
+    -   [Simple Scene](#simple-scene)
+-   [Scene API](#scene-api)
+    -   [changeView](#changeview)
+    -   [openSidepanel](#opensidepanel)
+    -   [hideSidepanel](#hidesidepanel)
+    -   [openMayer](#openmayer)
+    -   [closeMayer](#closemayer)
+    -   [Other methods](#other-methods)
+-   [Props documentation](#props-documentation)
+    -   [Scene Props](#scene-props)
+    -   [View Props](#view-props)
+    -   [Sidepanel Props](#sidepanel-props)
+    -   [Mayer Props](#mayer-props)
+    -   [Common types](#common-types)
+        -   [AnimationType](#animationtype)
+        -   [NavbarMenu](#navbarmenu)
+        -   [SidepanelConfig](#sidepanelconfig)
+        -   [ViewConfig](#viewconfig)
+        -   [Placement](#placement)
+        -   [MayerButtonProps](#mayerbuttonprops)
+-   [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -369,17 +368,29 @@ Examples:
 For more detailed documentation of these methods please go to lib/Scene.tsx file. As everything is typescripted now I hope finding good information will not be a problem.
 
 > getFreshViewConfig - very usefull for getting new view config from viewsConfig variable.
+
 > filterViews - removes views that are not pointed in array.
+
 > popView - go back one view and removes currently active view.
+
 > destroyView - removes view from Scene views property.
+
 > handleBackButton - utility function. Overwrite it in your Scene class to define back button click behaviour. On default it pops view out.
+
 > setSidepanelConfig - special function for enabling sidepanel config after mounting of scene. It will ensure proper sidepanel size (width,height) after incjeting it into DOM.
+
 > disableSidepanel - self explanatory.
+
 > enableSidepanel - self explanatory.
+
 > goToView - action dispatcher method. It will return a function ready to fire view change.
+
 > isValidViewConfig - checks wheter object is valid view config and can be added to view's array.
+
 > hasViewInConfig - checks if view's name is described by some config in `this.viewsConfig` object.
-> hasViewInState - checks if view recognized by name argument is present in state
+
+> hasViewInState - checks if view recognized by name argument is present in state.
+
 > getViewIndex - self explanatory.
 
 ## Props documentation
