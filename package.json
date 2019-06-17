@@ -39,6 +39,7 @@
     },
     "files": [
         "dist",
+        "types",
         "tsconfig.json"
     ],
     "devDependencies": {
