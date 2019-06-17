@@ -64,11 +64,11 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
     };
 
     /**
-     * Object that keep information about views configuraion objects.
+     * Class member that keep information about views configuraion objects.
      * Every key in this object describes another view.
      * That configuration later will be used to create new view and add it to state views array.
      * Used by ::getFreshViewConfig to deliver new view config.
-     * This approach is mainly used in crucial components's ::changeView method.
+     * This variable is mainly used in crucial components's ::changeView method.
      */
     viewsConfig: ViewsConfig;
 
