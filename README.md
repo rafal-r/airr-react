@@ -326,11 +326,11 @@ Scene class has many helpfull methods to navigate through views and modify Scene
 
 Examples:
 
--   Go to another view - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/GoToAnotherView.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/GoToAnotherView.js&moduleview=1)
--   Push new view from views config - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromViewsConfig.js&moduleview=1), [typescrip](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/PushNewViewFromViewsConfig.js&moduleview=1)
--   Push new view from raw config definition - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromRawConfigDefinition.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/PushNewViewFromRawConfigDefinition.js&moduleview=1)
--   Update current, active view - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateCurrentView.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/UpdateCurrentView.js&moduleview=1)
--   Update scene - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateScene.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateScene.js&moduleview=1)
+-   Go to another view - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/GoToAnotherView.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/GoToAnotherView.tsx&moduleview=1)
+-   Push new view from views config - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromViewsConfig.js&moduleview=1), [typescrip](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/PushNewViewFromViewsConfig.tsx&moduleview=1)
+-   Push new view from raw config definition - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/PushNewViewFromRawConfigDefinition.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/PushNewViewFromRawConfigDefinition.tsx&moduleview=1)
+-   Update current, active view - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateCurrentView.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/ViewsAPI/UpdateCurrentView.tsx&moduleview=1)
+-   Update scene - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateScene.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/ViewsAPI/UpdateScene.tsx&moduleview=1)
 
 ### openSidepanel
 
@@ -340,7 +340,7 @@ Examples:
 
 Example:
 
--   Manually open sidepanel - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/OpenSidepanel.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/SidepanelAPI/OpenSidepanel.js&moduleview=1)
+-   Manually open sidepanel - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/OpenSidepanel.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/SidepanelAPI/OpenSidepanel.tsx&moduleview=1)
 
 ### hideSidepanel
 
@@ -350,7 +350,7 @@ Example:
 
 Example:
 
--   Manually hide sidepanel - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/HideSidepanel.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/SidepanelAPI/HideSidepanel.js&moduleview=1)
+-   Manually hide sidepanel - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/SidepanelAPI/HideSidepanel.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/SidepanelAPI/HideSidepanel.tsx&moduleview=1)
 
 ### openMayer
 
@@ -361,7 +361,7 @@ Example:
 
 Example:
 
--   Manually open modal layer - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/OpenMayer.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/MayersAPI/OpenMayer.js&moduleview=1)
+-   Manually open modal layer - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/OpenMayer.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/MayersAPI/OpenMayer.tsx&moduleview=1)
 
 ### closeMayer
 
@@ -371,8 +371,8 @@ Example:
 
 Examples:
 
--   Close mayer by prop drilling - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/CloseMayer.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/MayersAPI/CloseMayer.js&moduleview=1)
--   Close mayer by mayer button config - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/CloseMayerFromButtonsConfig.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/MayersAPI/CloseMayerFromButtonsConfig.js&moduleview=1)
+-   Close mayer by prop drilling - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/CloseMayer.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/MayersAPI/CloseMayer.tsx&moduleview=1)
+-   Close mayer by mayer button config - [standard](https://codesandbox.io/s/github/rafal-r/airr-react-components-api?module=./src/Scene/MayersAPI/CloseMayerFromButtonsConfig.js&moduleview=1), [typescript](https://codesandbox.io/s/github/rafal-r/airr-react-components-api-ts?module=./src/Scene/MayersAPI/CloseMayerFromButtonsConfig.tsx&moduleview=1)
 
 ### Other methods
 
