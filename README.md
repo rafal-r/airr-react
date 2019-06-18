@@ -457,14 +457,13 @@ For more detailed documentation of these methods please go to lib/Scene.tsx file
 
 ### View Props
 
-| property          | type              | description                                                                                                          |
-| ----------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
-| name              | string (required) | The name of the view. Must be unique among others views in scene. Will be used as identification string              |
-| title             | ReactNode         | Titlebar name. If parent scene navbar is enabled, this title will be showed there. Might be string or React element. |
-| active            | boolean           | Determine if this view is active. Set by parent scene. Readonly.                                                     |
-| className         | string            | Extra classes to use. Space separetad string list.                                                                   |
-| style             | ?CSSProperties    | Extra styles to use upon root DOM element of view.                                                                   |
-| [propname:string] | any               | Any property you will need to populate into the view                                                                 |
+| property  | type              | description                                                                                                          |
+| --------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
+| name      | string (required) | The name of the view. Must be unique among others views in scene. Will be used as identification string              |
+| title     | ReactNode         | Titlebar name. If parent scene navbar is enabled, this title will be showed there. Might be string or React element. |
+| active    | boolean           | Determine if this view is active. Set by parent scene. Readonly.                                                     |
+| className | string            | Extra classes to use. Space separetad string list.                                                                   |
+| style     | ?CSSProperties    | Extra styles to use upon root DOM element of view.                                                                   |
 
 ### Sidepanel Props
 
@@ -535,4 +534,4 @@ Object defined with:
 ## License
 
 Licensed under the MIT License.
-Copyright (c) 2018 Rafal Rajtar
+Copyright (c) 2019 Rafal Rajtar
