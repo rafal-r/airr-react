@@ -1,6 +1,6 @@
 # Contributing
 
-Contributing is very welcome. Especially in the field of testing because I must admit i'm not very fluent in that realm :)
+Contributing is welcome
 
 ## Code
 
