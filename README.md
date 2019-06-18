@@ -21,40 +21,39 @@ Library can be used for:
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Concept](#concept)
-  - [PureComponents](#purecomponents)
-- [View's life-cycles](#views-life-cycles)
-- [React Component's life-cycles](#react-components-life-cycles)
-- [Rendering View's content](#rendering-views-content)
-- [Typescript support](#typescript-support)
-- [Examples](#examples)
-  - [Kitchen sink app](#kitchen-sink-app)
-  - [Infinite viewport](#infinite-viewport)
-  - [Simple Scene](#simple-scene)
-- [Scene API](#scene-api)
-  - [viewsConfig](#viewsconfig)
-  - [changeView](#changeview)
-  - [openSidepanel](#opensidepanel)
-  - [hideSidepanel](#hidesidepanel)
-  - [openMayer](#openmayer)
-  - [closeMayer](#closemayer)
-  - [Other methods](#other-methods)
-- [Props documentation](#props-documentation)
-  - [Scene Props](#scene-props)
-  - [View Props](#view-props)
-  - [Sidepanel Props](#sidepanel-props)
-  - [Mayer Props](#mayer-props)
-  - [Common types](#common-types)
-    - [AnimationType](#animationtype)
-    - [NavbarMenu](#navbarmenu)
-    - [SidepanelConfig](#sidepanelconfig)
-    - [ViewConfig](#viewconfig)
-    - [Placement](#placement)
-    - [MayerButtonProps](#mayerbuttonprops)
-- [License](#license)
+-   [Installation](#installation)
+-   [Usage](#usage)
+-   [Concept](#concept)
+    -   [PureComponents](#purecomponents)
+-   [View's life-cycles](#views-life-cycles)
+-   [React Component's life-cycles](#react-components-life-cycles)
+-   [Rendering View's content](#rendering-views-content)
+-   [Typescript support](#typescript-support)
+-   [Examples](#examples)
+    -   [Kitchen sink app](#kitchen-sink-app)
+    -   [Infinite viewport](#infinite-viewport)
+    -   [Simple Scene](#simple-scene)
+-   [Scene API](#scene-api)
+    -   [viewsConfig](#viewsconfig)
+    -   [changeView](#changeview)
+    -   [openSidepanel](#opensidepanel)
+    -   [hideSidepanel](#hidesidepanel)
+    -   [openMayer](#openmayer)
+    -   [closeMayer](#closemayer)
+    -   [Other methods](#other-methods)
+-   [Props documentation](#props-documentation)
+    -   [Scene Props](#scene-props)
+    -   [View Props](#view-props)
+    -   [Sidepanel Props](#sidepanel-props)
+    -   [Mayer Props](#mayer-props)
+    -   [Common types](#common-types)
+        -   [AnimationType](#animationtype)
+        -   [NavbarMenu](#navbarmenu)
+        -   [SidepanelConfig](#sidepanelconfig)
+        -   [ViewConfig](#viewconfig)
+        -   [Placement](#placement)
+        -   [MayerButtonProps](#mayerbuttonprops)
+-   [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -280,7 +279,7 @@ class FooView extends View {
 }
 ```
 
-## Typescript support
+## TypeScript support
 
 Library is fully typed in TypeScript from version 6.0.0. Check the corespoding examples below to find out how to use certain types and interfaces with library components. Proper summary of this usage will be added here soon.
 
