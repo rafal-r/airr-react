@@ -281,7 +281,7 @@ class FooView extends View {
 
 ## TypeScript support
 
-Library is fully typed in TypeScript from version 6.0.0. Check the corespoding examples below to find out how to use certain types and interfaces with library components. Proper summary of this usage will be added here soon.
+Library is fully typed in TypeScript from version 6.0.0. The declarations files are included in library. Check the corespoding examples below to find out how to use certain types and interfaces with library components. Proper summary of this usage will be added here soon.
 
 ## Examples
 
