@@ -306,11 +306,32 @@ Scene class has many helpfull methods to navigate through views and modify Scene
 
 `viewsConfig: ViewsConfig`
 
-> Class member that keep information about views configuraion objects.
-> Every key in this object describes another view.
+> Class member that keep information about views configuration objects.
+> Every key in this object describes view config.
 > That configuration later will be used to create new view and add it to state views array.
 > Used by ::getFreshViewConfig to deliver new view config.
 > This variable is mainly used in crucial components's ::changeView method.
+
+Example:
+
+```
+  viewsConfig = {
+    "login-view": {
+      type: LoginView,
+      props: {
+          handleLoginBtnClick: this.handleLoginBtnClick
+      }
+    },
+    "home-view": {
+      type: HomeView,
+      props: {
+          showPopup: this.showNewUserPopup
+      }
+    }
+  }
+```
+
+view
 
 ### changeView
 
