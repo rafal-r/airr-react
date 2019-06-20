@@ -266,13 +266,9 @@ import ViewRenderer from "airr-react/dist/ViewRenderer";
 
 class FooView extends View {
     render(): ReactNode {
-        const content: ReactNode = getProperContent(this.content(), this.props.children);
-
         return (
             <ViewRenderer {...this.getViewProps()}>
                 {() => this.myCustomRenderMethodCall()}
-                //or
-                {content}
             </ViewRenderer>
         );
     }
