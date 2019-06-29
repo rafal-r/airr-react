@@ -1,7 +1,7 @@
 import { ViewsArray } from "./SceneRenderer";
 import Mayer, { Props as MayerProps } from "./Mayer";
 import Sidepanel, { SidepanelProps } from "./Sidepanel";
-import Scene, { SceneProps, SceneState, ViewConfig } from "./Scene";
+import Scene, { SceneProps, SceneState, ViewConfigItem } from "./Scene";
 import View from "./View";
 import { doTransitionAnimation, doVerticalScrollAnimation } from "./FX";
 import { supportPassive, isMobileDevice } from "./eventHelpers";
@@ -48,7 +48,7 @@ export {
     SceneProps,
     SidepanelProps,
     SceneState,
-    ViewConfig,
+    ViewConfigItem,
     MayerProps,
     ViewsArray,
     TSValidateViewsConfig,

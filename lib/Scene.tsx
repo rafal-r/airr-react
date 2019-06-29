@@ -22,7 +22,7 @@ export interface SceneProps extends CoreSceneProps {
 export type SceneState = SceneProps;
 export type CommonViewProps = ViewProps | SceneProps;
 
-export interface ViewConfig<T> {
+export interface ViewConfigItem<T> {
     /**
      * Refference to class or function that will render View. Use View class refference or class that extends View.
      */
@@ -31,8 +31,8 @@ export interface ViewConfig<T> {
      * Special properties of AirrView class. Go to class declaration for further properties documenation.
      */
     props: T & CommonViewProps;
-}
-export interface ViewsConfigItem<T> extends ViewConfig<T> {
+    //TODO
+    feedWithProps?: string[];
     /**
      * Props to modify this Scene
      */
@@ -49,7 +49,7 @@ export interface ViewsConfigItem<T> extends ViewConfig<T> {
 /**
  * View configuraion which can be found by key which is also it's name.
  */
-export type ViewsConfig<T = {}> = { [K in keyof T]: ViewsConfigItem<T[K]> };
+export type ViewsConfig<T = {}> = { [K in keyof T]: ViewConfigItem<T[K]> };
 
 export interface RefsCOMPViews {
     [viewname: string]: RefObject<View<ViewProps>>;
@@ -167,12 +167,45 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
         );
     }
 
+    //TODO
+    static getDerivedStateFromProps(p, s): any {
+        console.log("getDerivedStateFromProps", p.views === s.views);
+
+        const stateChange: any = {};
+
+        if (p.views !== s.views) {
+            stateChange.views = p.views;
+        }
+
+        return stateChange;
+    }
+
+    //TODO
+    //pamietac o tym ze update z gory rowniez beda dokynywane z zachowaniem zasady
+    //niemutowalnosci, czyli jesli dojdzie do jakeis zmiany w tablicy views, zostanie podana
+    //nowa referencja do nowej tablicy
+    //poszczeglony propsy view i tak ostatecznie zostana rozbite za male czesci i w razie braku
+    //aktualizacji widok i tak nie wywola render
+    // przetestowac ostatecznie
+    componentDidUpdate(prevProps: P): void {
+        console.log("component did update", this.props.animation);
+
+        if (
+            !this.viewChangeInProgress &&
+            this.props.activeViewName &&
+            this.props.activeViewName !== this.state.activeViewName
+        ) {
+            this.changeView(this.props.activeViewName);
+        }
+    }
+
     render(): ReactNode {
         const { views, sidepanel, className, ...stateRest } = this.state;
 
         return (
-            <SceneRenderer
+            <SceneRenderer<P>
                 {...{
+                    ...this.props,
                     ...stateRest,
                     views: views,
                     sidepanel: sidepanel,
@@ -199,13 +232,13 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
      * When `viewNameGenerator` in present base configuration it will use to create new view name property.
      * This feature is handy when you want to easly create next views based upon generic view configuration.
      *
-     * @param {string|ViewConfig} view Name of the configuraion key in `this.viewsConfig` object or raw ViewConfig object
+     * @param {string|ViewConfigItem} view Name of the configuraion key in `this.viewsConfig` object or raw ViewConfigItem object
      * @param {object} props Additional prop to be merged with base config
      */
     getFreshViewConfig<T>(
-        view: string | ViewsConfigItem<T>,
+        view: string | ViewConfigItem<T>,
         props: CommonViewProps | {} = {}
-    ): ViewsConfigItem<T> {
+    ): ViewConfigItem<T> {
         if (typeof view === "string" && view in this.viewsConfig) {
             const config = Object.assign({}, this.viewsConfig[view]);
             const viewGenerator = this.viewsConfig[view].nameGenerator;
@@ -296,10 +329,11 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
      * @returns {Promise} Resolved on state succesful change and animation end. Or reject on failure.
      */
     async changeView(
-        view: string | ViewConfig<CommonViewProps>,
+        view: string | ViewConfigItem<CommonViewProps>,
         viewProps: CommonViewProps | {} = {},
         sceneProps: SceneProps | {} = {}
     ): Promise<string | void> {
+        this.viewChangeInProgress = true;
         const viewName = await ViewsAPIHelper.changeView(this, view, viewProps, sceneProps);
         return ViewsAPIHelper.performViewsAnimation(this, viewName);
     }
@@ -481,7 +515,7 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
      * @param {object} object
      * @returns {boolean}
      */
-    isValidViewConfig<T>(object: ViewsConfigItem<T>): boolean {
+    isValidViewConfig<T>(object: ViewConfigItem<T>): boolean {
         return (
             typeof object === "object" &&
             "type" in object &&

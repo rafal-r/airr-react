@@ -1,7 +1,7 @@
 import Scene from "../Scene";
 // import { Props as ViewProps } from "../ViewRenderer";
 import { ViewProps } from "../ViewRenderer";
-import { SceneProps, ViewsConfigItem, CommonViewProps, ViewConfig } from "../Scene";
+import { SceneProps, ViewConfigItem, CommonViewProps } from "../Scene";
 import update from "immutability-helper";
 import { performViewsTransition, getViewsTransitionConfig } from "./ViewsAnimationHelpers";
 
@@ -11,7 +11,7 @@ export default class ViewsAPIHelper {
      */
     static changeView(
         scene: Scene,
-        view: string | ViewConfig<CommonViewProps>,
+        view: string | ViewConfigItem<CommonViewProps>,
         viewProps: ViewProps | {} = {},
         sceneProps: SceneProps | {} = {}
     ): Promise<string> {
@@ -79,7 +79,7 @@ export default class ViewsAPIHelper {
      */
     static pushView<T>(
         scene: Scene,
-        config: ViewsConfigItem<T>,
+        config: ViewConfigItem<T>,
         sceneProps: SceneProps | {} = {}
     ): Promise<string> {
         const newviewdefinition = update(scene.state.views, { $push: [config] });
@@ -101,8 +101,6 @@ export default class ViewsAPIHelper {
      */
     static performViewsAnimation(scene: Scene, newViewName: string): Promise<void> {
         if (typeof newViewName === "string") {
-            scene.viewChangeInProgress = true;
-
             return new Promise(
                 (resolve, reject): void => {
                     if (newViewName === scene.state.activeViewName) {

@@ -1,20 +1,23 @@
 import * as React from "react";
 import { ReactElement } from "react";
-import SceneRenderer, { Props } from "../SceneRenderer";
+import { Props } from "../SceneRenderer";
 import ViewRenderer from "../ViewRenderer";
-import View from "../View";
-import Scene from "../Scene";
+import { SceneProps } from "../Scene";
 
-export interface ViewsMapperProps {
+export type ViewsMapperProps<P extends SceneProps = SceneProps> = Partial<P> & {
     views: Props["views"];
     activeViewName: Props["activeViewName"];
     refsCOMPViews: Props["refsCOMPViews"];
-}
-const ViewsMapper = React.memo<ViewsMapperProps>(function ViewsMapper({
+};
+const ViewsMapper = React.memo(function ViewsMapper<P extends SceneProps = SceneProps>({
     views,
     activeViewName,
-    refsCOMPViews
-}: ViewsMapperProps): any {
+    refsCOMPViews,
+    ...restProps
+}: ViewsMapperProps<P>): any {
+    //TODO
+    console.log("views mapper render");
+
     return views.map(
         (item): ReactElement => {
             if (item.props.name === activeViewName) {
@@ -28,6 +31,14 @@ const ViewsMapper = React.memo<ViewsMapperProps>(function ViewsMapper({
             if (!item.props.ref) {
                 item.props.ref = React.createRef<ViewRenderer>();
                 refsCOMPViews[item.props.name] = item.props.ref;
+            }
+
+            if (item.feedWithProps) {
+                item.feedWithProps.forEach(prop => {
+                    if (prop in restProps) {
+                        item.props[prop] = restProps[prop];
+                    }
+                });
             }
 
             return React.createElement(item.type, item.props);

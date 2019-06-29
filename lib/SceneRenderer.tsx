@@ -11,10 +11,11 @@ import { PureComponent, SyntheticEvent, ReactNode, RefObject } from "react";
 import { Props as MayerProps } from "./Mayer";
 import Sidepanel from "./Sidepanel";
 import { AnimationType, NavbarMenu, SidepanelConfig } from "./Airr";
-import { ViewsConfigItem } from "./Scene";
+import { ViewConfigItem, SceneProps } from "./Scene";
+import { extractAllPropsToFeed, getPropsFeedObject } from "./SceneRenderer/Helpers";
 
 export type NavbarProp = 1 | true | -1 | 0 | false;
-export type ViewsArray = ViewsConfigItem<any>[];
+export type ViewsArray = ViewConfigItem<any>[];
 
 export interface CoreSceneProps {
     /**
@@ -117,7 +118,7 @@ export interface CoreSceneProps {
     key?: string;
     ref?: React.LegacyRef<PureComponent>;
 }
-export interface Props extends CoreSceneProps {
+export interface Props<P extends SceneProps = SceneProps> extends CoreSceneProps {
     /**
      * React component's ref object
      */
@@ -142,6 +143,8 @@ export interface Props extends CoreSceneProps {
      * Inner, private prop with containers height information
      */
     containersHeight: number;
+    //TODO
+    parentProps: P;
 }
 
 export const sceneDefaultProps: CoreSceneProps = {
@@ -170,7 +173,9 @@ export const sceneDefaultProps: CoreSceneProps = {
     children: null,
     mockTitleName: null
 };
-export default class SceneRenderer extends PureComponent<Props> {
+export default class SceneRenderer<P extends SceneProps = SceneProps> extends PureComponent<
+    Props<P>
+> {
     static defaultProps: Props = {
         ...sceneDefaultProps,
         refCOMPSidepanel: null,
@@ -179,7 +184,8 @@ export default class SceneRenderer extends PureComponent<Props> {
         refsCOMPViews: null,
         refDOMContainer: null,
         mockTitleName: "",
-        containersHeight: null
+        containersHeight: null,
+        parentProps: null
     };
     /**
      * Mayers Components refferencies
@@ -255,6 +261,9 @@ export default class SceneRenderer extends PureComponent<Props> {
     };
 
     render(): ReactNode {
+        //TODO
+        console.log("scene renderer render");
+
         let className = "airr-view airr-scene";
         this.props.active && (className += " active");
         this.props.className && (className += " " + this.props.className);
@@ -263,6 +272,7 @@ export default class SceneRenderer extends PureComponent<Props> {
 
         const activeViewIndex = this.getViewIndex(this.props.activeViewName);
         let mockViewTitle;
+
         if (this.props.mockTitleName) {
             const mockViewIndex = this.getViewIndex(this.props.mockTitleName);
             if (mockViewIndex >= 0) {
@@ -272,6 +282,13 @@ export default class SceneRenderer extends PureComponent<Props> {
                 }
             }
         }
+
+        //extract list of all props that views will request to feed
+        const propsFeedList = extractAllPropsToFeed(this.props.views);
+        //then get props feed object that will be spread over ViewsRenderer
+        //this will ensure ViewsRenderer,ViewsMapper updates only when needed props change
+        const propsFeed = getPropsFeedObject(this.props, propsFeedList);
+
         return (
             <div className={className} ref={this.props.refDOM}>
                 <div className="airr-content-wrap">
@@ -300,6 +317,7 @@ export default class SceneRenderer extends PureComponent<Props> {
                         views={this.props.views}
                         refDOMContainer={this.props.refDOMContainer}
                         containersHeight={this.props.containersHeight}
+                        {...propsFeed}
                     />
                 </div>
                 <ChildrenRenderer {...this.props}>{this.props.children}</ChildrenRenderer>
