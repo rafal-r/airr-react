@@ -15,33 +15,54 @@ const ViewsMapper = React.memo(function ViewsMapper<P extends SceneProps = Scene
     refsCOMPViews,
     ...restProps
 }: ViewsMapperProps<P>): any {
-    //TODO
-    console.log("views mapper render");
-
     return views.map(
         (item): ReactElement => {
-            if (item.props.name === activeViewName) {
-                item.props.active = true;
+            const props = Object.assign({}, item.props);
+
+            // if (item.props.name === activeViewName) {
+            //     item.props.active = true;
+            // } else {
+            //     item.props.active = false;
+            // }
+
+            // item.props.key = item.props.name;
+
+            // if (!item.props.ref) {
+            //     item.props.ref = React.createRef<ViewRenderer>();
+            //     refsCOMPViews[item.props.name] = item.props.ref;
+            // }
+
+            // if (item.feedWithProps) {
+            //     item.feedWithProps.forEach(prop => {
+            //         if (prop in restProps) {
+            //             item.props[prop] = restProps[prop];
+            //         }
+            //     });
+            // }
+            if (props.name === activeViewName) {
+                props.active = true;
             } else {
-                item.props.active = false;
+                props.active = false;
             }
 
-            item.props.key = item.props.name;
+            props.key = props.name;
 
             if (!item.props.ref) {
                 item.props.ref = React.createRef<ViewRenderer>();
                 refsCOMPViews[item.props.name] = item.props.ref;
             }
 
+            props.ref = item.props.ref;
+
             if (item.feedWithProps) {
                 item.feedWithProps.forEach(prop => {
                     if (prop in restProps) {
-                        item.props[prop] = restProps[prop];
+                        props[prop] = restProps[prop];
                     }
                 });
             }
 
-            return React.createElement(item.type, item.props);
+            return React.createElement(item.type, props);
         }
     );
 });

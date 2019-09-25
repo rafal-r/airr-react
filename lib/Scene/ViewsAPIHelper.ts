@@ -57,7 +57,13 @@ export default class ViewsAPIHelper {
                     scene.getFreshViewConfig(view, viewProps),
                     sceneProps
                 );
-            } else return Promise.reject();
+            } else {
+                console.warn(
+                    "[Airr] The specified view is not in state and viewConfig either. Details about view:",
+                    view
+                );
+                promiseToReturn = Promise.reject("[Airr] Invalid `view` argument specify");
+            }
         } else if (scene.isValidViewConfig(view)) {
             //push allready prepared config
             promiseToReturn = ViewsAPIHelper.pushView(
@@ -68,7 +74,7 @@ export default class ViewsAPIHelper {
                 sceneProps
             );
         } else {
-            promiseToReturn = Promise.reject("Invalid `view` argument specify");
+            promiseToReturn = Promise.reject("[Airr] Invalid `view` argument specify");
         }
 
         return promiseToReturn;

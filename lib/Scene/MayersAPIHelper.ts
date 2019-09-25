@@ -9,25 +9,23 @@ export default class MayersAPIHelper {
      * this method will attach close mayer functionality to tap event on this button.
      */
     static prepareMayerConfig(scene: Scene, mayerConfig: MayerProps): MayerProps {
-        const config = Object.assign({ ref: undefined }, mayerConfig);
-
         const ref = React.createRef<Mayer>();
-        config.ref = ref;
-        scene.refsCOMPMayers[config.name] = ref;
+        mayerConfig.ref = ref;
+        scene.refsCOMPMayers[mayerConfig.name] = ref;
 
-        if (config.buttons && config.buttons.length) {
-            config.buttons.forEach(
+        if (mayerConfig.buttons && mayerConfig.buttons.length) {
+            mayerConfig.buttons.forEach(
                 (item): void => {
                     if (item.close) {
                         if (item.handler) {
                             const oldHandler = item.handler;
                             item.handler = (e): void => {
                                 oldHandler(e);
-                                scene.closeMayer(config.name);
+                                scene.closeMayer(mayerConfig.name);
                             };
                         } else {
                             item.handler = (e): void => {
-                                scene.closeMayer(config.name);
+                                scene.closeMayer(mayerConfig.name);
                             };
                         }
                     }
@@ -35,9 +33,9 @@ export default class MayersAPIHelper {
             );
         }
 
-        config.avaibleHeight = scene.refDOM.current.clientHeight || window.innerHeight;
+        mayerConfig.avaibleHeight = scene.refDOM.current.clientHeight || window.innerHeight;
 
-        return config;
+        return mayerConfig;
     }
 
     /**
@@ -52,7 +50,13 @@ export default class MayersAPIHelper {
                     {
                         mayers: newMayersDef
                     },
-                    resolve
+                    //TODO think of removal the setTimeout, it wasnt here previosuly, just 'resolve'
+                    () => {
+                        setTimeout(
+                            resolve,
+                            config.animationTime || Mayer.defaultProps.animationTime
+                        );
+                    }
                 )
         );
     };
@@ -61,6 +65,7 @@ export default class MayersAPIHelper {
      * Utility for removing mayers
      */
     static removeMayer = (scene: Scene, name: string): Promise<void> => {
+        const animTime = scene.state.mayers.find(item => item.name === name).animationTime;
         const newMayersDef = scene.state.mayers.filter(
             (item): boolean => {
                 return item.name !== name;
@@ -75,7 +80,10 @@ export default class MayersAPIHelper {
                     },
                     () => {
                         delete scene.refsCOMPMayers[name];
-                        resolve();
+                        //TODO think of removal the setTimeout, it wasnt here previosuly, just 'resolve'
+                        () => {
+                            setTimeout(resolve, animTime || Mayer.defaultProps.animationTime);
+                        };
                     }
                 )
         );

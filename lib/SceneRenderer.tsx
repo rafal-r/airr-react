@@ -8,7 +8,7 @@ import {
     ViewsRenderer
 } from "./SceneRenderer/Items";
 import { PureComponent, SyntheticEvent, ReactNode, RefObject } from "react";
-import { Props as MayerProps } from "./Mayer";
+import { MayerProps } from "./Mayer";
 import Sidepanel from "./Sidepanel";
 import { AnimationType, NavbarMenu, SidepanelConfig } from "./Airr";
 import { ViewConfigItem, SceneProps } from "./Scene";
@@ -261,9 +261,6 @@ export default class SceneRenderer<P extends SceneProps = SceneProps> extends Pu
     };
 
     render(): ReactNode {
-        //TODO
-        console.log("scene renderer render");
-
         let className = "airr-view airr-scene";
         this.props.active && (className += " active");
         this.props.className && (className += " " + this.props.className);

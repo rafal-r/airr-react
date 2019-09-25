@@ -34,7 +34,7 @@ interface MayerButtonProps {
 interface ButtonRendererProps {
     buttons?: MayerButtonProps[];
 }
-export interface Props {
+export interface MayerProps {
     /**
      * The name of the mayer. Must be unique among others mayers in scene. Will be used as identification.
      */
@@ -65,11 +65,12 @@ export interface Props {
     animationTime?: number;
     children?: ReactNode;
 }
-export interface PreparedProps extends Props {
+export interface PreparedProps extends MayerProps {
     /**
      * Parent scene height. Set by parent Scene. Do not overwrite!
      */
     avaibleHeight?: number;
+    ref?: React.RefObject<Mayer>;
 }
 export default class Mayer extends PureComponent<PreparedProps> {
     static defaultProps: PreparedProps = {
@@ -91,7 +92,7 @@ export default class Mayer extends PureComponent<PreparedProps> {
      */
     refDOMCtn = createRef<HTMLDivElement>();
 
-    constructor(props: Props) {
+    constructor(props: MayerProps) {
         super(props);
         if (!props.name) {
             console.error("[Airr] Every Mayer must has its `name` property set");

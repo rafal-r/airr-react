@@ -12,6 +12,7 @@ import SidepanelAPIHelper from "./Scene/SidepanelAPIHelper";
 import MayersAPIHelper from "./Scene/MayersAPIHelper";
 import { CoreSceneProps } from "./SceneRenderer";
 import { getViewProps } from "./CommonViewHelpers";
+import { componentDidUpdate } from "./Scene/componentDidUdpate";
 
 export interface SceneProps extends CoreSceneProps {
     /**
@@ -167,37 +168,7 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
         );
     }
 
-    //TODO
-    static getDerivedStateFromProps(p, s): any {
-        console.log("getDerivedStateFromProps", p.views === s.views);
-
-        const stateChange: any = {};
-
-        if (p.views !== s.views) {
-            stateChange.views = p.views;
-        }
-
-        return stateChange;
-    }
-
-    //TODO
-    //pamietac o tym ze update z gory rowniez beda dokynywane z zachowaniem zasady
-    //niemutowalnosci, czyli jesli dojdzie do jakeis zmiany w tablicy views, zostanie podana
-    //nowa referencja do nowej tablicy
-    //poszczeglony propsy view i tak ostatecznie zostana rozbite za male czesci i w razie braku
-    //aktualizacji widok i tak nie wywola render
-    // przetestowac ostatecznie
-    componentDidUpdate(prevProps: P): void {
-        console.log("component did update", this.props.animation);
-
-        if (
-            !this.viewChangeInProgress &&
-            this.props.activeViewName &&
-            this.props.activeViewName !== this.state.activeViewName
-        ) {
-            this.changeView(this.props.activeViewName);
-        }
-    }
+    componentDidUpdate = componentDidUpdate.bind(this);
 
     render(): ReactNode {
         const { views, sidepanel, className, ...stateRest } = this.state;
@@ -334,6 +305,7 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
         sceneProps: SceneProps | {} = {}
     ): Promise<string | void> {
         this.viewChangeInProgress = true;
+
         const viewName = await ViewsAPIHelper.changeView(this, view, viewProps, sceneProps);
         return ViewsAPIHelper.performViewsAnimation(this, viewName);
     }
@@ -458,7 +430,7 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
      */
     openMayer(config: MayerProps): Promise<void> {
         if (this.state.mayers.findIndex((item): boolean => item.name === config.name) !== -1) {
-            console.warn("[] Scene allready has Mayer with this name: " + config.name);
+            console.warn("[Airr] Scene allready has Mayer with this name: " + config.name);
             return Promise.reject();
         }
 
@@ -479,8 +451,11 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
         if (MayersAPIHelper.hasMountedMayer(this, name)) {
             return new Promise(
                 (resolve): void => {
+                    //TODO remove console
+                    console.log("before anim");
                     this.refsCOMPMayers[name].current.animateOut(
                         (): void => {
+                            console.log("after anim and callback");
                             //renew check because after animation things might have changed
                             if (MayersAPIHelper.hasMountedMayer(this, name)) {
                                 MayersAPIHelper.removeMayer(this, name).then(resolve);
@@ -490,6 +465,7 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
                 }
             );
         }
+        console.log("resolving", name, " not mounted");
 
         return Promise.resolve();
     }

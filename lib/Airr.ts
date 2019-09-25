@@ -1,5 +1,5 @@
 import { ViewsArray } from "./SceneRenderer";
-import Mayer, { Props as MayerProps } from "./Mayer";
+import Mayer, { MayerProps } from "./Mayer";
 import Sidepanel, { SidepanelProps } from "./Sidepanel";
 import Scene, { SceneProps, SceneState, ViewConfigItem } from "./Scene";
 import View from "./View";

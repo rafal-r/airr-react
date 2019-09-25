@@ -4,13 +4,6 @@ import { Props } from "../SceneRenderer";
 import ViewsMapper, { ViewsMapperProps } from "./ViewsMapper";
 import { SceneProps } from "../Scene";
 
-// interface ViewsRendererProps<P extends SceneProps = SceneProps> extends ViewsMapperProps {
-//     className: Props["className"];
-//     refDOMContainer: Props["refDOMContainer"];
-//     containersHeight: Props["containersHeight"];
-//     parentProps: P;
-// }
-
 type ViewsRendererProps<P extends SceneProps = SceneProps> = ViewsMapperProps<P> & {
     className: Props["className"];
     refDOMContainer: Props["refDOMContainer"];
@@ -28,9 +21,6 @@ const ViewsRenderer = React.memo(function ViewsRenderer({
     key,
     ...restProps
 }: ViewsRendererProps): ReactElement {
-    //TODO
-    console.log("views renderer render");
-
     return (
         <div
             className={"airr-container " + className}

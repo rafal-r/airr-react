@@ -51,8 +51,11 @@ export default class SidepanelAPIHelper {
      * Utility function for updating sidepanel isShown prop
      */
     static sidepanelVisibilityCallback = (scene: Scene, isShown: boolean): void => {
-        scene.setState(
-            {
+        //case we have a callback function to handle sidepanel visibility change
+        if (scene.state.sidepanelVisibilityCallback) {
+            scene.state.sidepanelVisibilityCallback(isShown);
+        } else {
+            scene.setState({
                 sidepanel: update(scene.state.sidepanel, {
                     props: {
                         isShown: {
@@ -60,11 +63,8 @@ export default class SidepanelAPIHelper {
                         }
                     }
                 })
-            },
-            (): void =>
-                scene.state.sidepanelVisibilityCallback &&
-                scene.state.sidepanelVisibilityCallback(isShown)
-        );
+            });
+        }
     };
 
     static initWindowResizeListener = (scene: Scene): void => {
