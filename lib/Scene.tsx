@@ -167,38 +167,6 @@ export default class Scene<P extends SceneProps = SceneProps, S extends SceneSta
         );
     }
 
-    //TODO
-    static getDerivedStateFromProps(p, s): any {
-        console.log("getDerivedStateFromProps", p.views === s.views);
-
-        const stateChange: any = {};
-
-        if (p.views !== s.views) {
-            stateChange.views = p.views;
-        }
-
-        return stateChange;
-    }
-
-    //TODO
-    //pamietac o tym ze update z gory rowniez beda dokynywane z zachowaniem zasady
-    //niemutowalnosci, czyli jesli dojdzie do jakeis zmiany w tablicy views, zostanie podana
-    //nowa referencja do nowej tablicy
-    //poszczeglony propsy view i tak ostatecznie zostana rozbite za male czesci i w razie braku
-    //aktualizacji widok i tak nie wywola render
-    // przetestowac ostatecznie
-    componentDidUpdate(prevProps: P): void {
-        console.log("component did update", this.props.animation);
-
-        if (
-            !this.viewChangeInProgress &&
-            this.props.activeViewName &&
-            this.props.activeViewName !== this.state.activeViewName
-        ) {
-            this.changeView(this.props.activeViewName);
-        }
-    }
-
     render(): ReactNode {
         const { views, sidepanel, className, ...stateRest } = this.state;
 
