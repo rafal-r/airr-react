@@ -28,9 +28,6 @@ const ViewsRenderer = React.memo(function ViewsRenderer({
     key,
     ...restProps
 }: ViewsRendererProps): ReactElement {
-    //TODO
-    console.log("views renderer render");
-
     return (
         <div
             className={"airr-container " + className}

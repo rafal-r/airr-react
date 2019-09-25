@@ -15,9 +15,6 @@ const ViewsMapper = React.memo(function ViewsMapper<P extends SceneProps = Scene
     refsCOMPViews,
     ...restProps
 }: ViewsMapperProps<P>): any {
-    //TODO
-    console.log("views mapper render");
-
     return views.map(
         (item): ReactElement => {
             if (item.props.name === activeViewName) {

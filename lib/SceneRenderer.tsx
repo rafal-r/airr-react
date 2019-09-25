@@ -143,7 +143,6 @@ export interface Props<P extends SceneProps = SceneProps> extends CoreSceneProps
      * Inner, private prop with containers height information
      */
     containersHeight: number;
-    //TODO
     parentProps: P;
 }
 
@@ -261,9 +260,6 @@ export default class SceneRenderer<P extends SceneProps = SceneProps> extends Pu
     };
 
     render(): ReactNode {
-        //TODO
-        console.log("scene renderer render");
-
         let className = "airr-view airr-scene";
         this.props.active && (className += " active");
         this.props.className && (className += " " + this.props.className);
