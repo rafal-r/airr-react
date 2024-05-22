@@ -365,9 +365,6 @@ export default class Sidepanel<
             (resolve): void => {
                 this.animating = true;
 
-                this.refDOMBgLayer.current.style.webkitTransition = `opacity ${
-                    this.props.animationTime
-                }ms ease-in`;
                 this.refDOMBgLayer.current.style.transition = `opacity ${
                     this.props.animationTime
                 }ms ease-in`;
@@ -384,24 +381,14 @@ export default class Sidepanel<
                 }
 
                 this.refDOM.current.offsetHeight;
-                this.refDOM.current.style.webkitTransition = "initial";
                 this.refDOM.current.style.transition = "initial";
 
-                this.refDOMDragCtn.current.style.webkitTransition = `-webkit-transform ${
-                    this.props.animationTime
-                }ms ease-out`;
-                this.refDOMDragCtn.current.style.webkitTransition = `transform ${
-                    this.props.animationTime
-                }ms ease-out`;
                 this.refDOMDragCtn.current.style.transition = `transform ${
                     this.props.animationTime
                 }ms ease-out`;
 
                 this.refDOMDragCtn.current.offsetHeight;
-                this.refDOMDragCtn.current.style.webkitTransform = this.transformScheme.replace(
-                    "%v",
-                    String(finishVal)
-                );
+
                 this.refDOMDragCtn.current.style.transform = this.transformScheme.replace(
                     "%v",
                     String(finishVal)
@@ -409,11 +396,7 @@ export default class Sidepanel<
 
                 this.refDOMDragCtn.current.offsetHeight;
 
-                this.refDOMDragCtn.current.style.webkitTransition = "initial";
-                this.refDOMDragCtn.current.style.transition = "initial";
-
                 setTimeout((): void => {
-                    this.refDOMBgLayer.current.style.webkitTransition = "initial";
                     this.refDOMBgLayer.current.style.transition = "initial";
 
                     this.currentVal = finishVal;
