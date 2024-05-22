@@ -348,19 +348,19 @@ export default class Sidepanel<
     }
 
     hide = (): Promise<boolean> => {
-        return this.translateTo(this.hiddenVal);
+        return this.translateTo(this.hiddenVal, true);
     };
 
     show = (): Promise<boolean> => {
         this.enable();
-        return this.translateTo(this.shownVal);
+        return this.translateTo(this.shownVal, true);
     };
 
     isShown = (): boolean => {
         return this.refDOM.current.offsetParent !== null;
     };
 
-    private translateTo = (finishVal: number): Promise<boolean> => {
+    private translateTo = (finishVal: number, animateWithTransition = false): Promise<boolean> => {
         return new Promise(
             (resolve): void => {
                 this.animating = true;
@@ -383,11 +383,15 @@ export default class Sidepanel<
                 this.refDOM.current.offsetHeight;
                 this.refDOM.current.style.transition = "initial";
 
-                this.refDOMDragCtn.current.style.transition = `transform ${
-                    this.props.animationTime
-                }ms ease-out`;
-
+                this.refDOMDragCtn.current.style.transition = "none";
                 this.refDOMDragCtn.current.offsetHeight;
+
+                if (animateWithTransition) {
+                    this.refDOMDragCtn.current.style.transition = `transform ${
+                        this.props.animationTime
+                    }ms ease-out`;
+                    this.refDOMDragCtn.current.offsetHeight;
+                }
 
                 this.refDOMDragCtn.current.style.transform = this.transformScheme.replace(
                     "%v",
